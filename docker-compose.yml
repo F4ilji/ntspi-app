@@ -1,0 +1,36 @@
+version: '3'
+services:
+  webserver:
+    image: nginx:latest
+    volumes:
+      - ./:/var/www
+      - ./_docker/nginx/conf.d/:/etc/nginx/conf.d/
+    ports:
+      - "80:80"
+    container_name: ntspi-nginx
+    depends_on:
+      - app
+
+  app:
+    build:
+      context: .
+      dockerfile: _docker/app/Dockerfile
+    volumes:
+      - ./:/var/www
+    container_name: ntspi-php
+    ports:
+      - '5173'
+
+  db:
+    image: mysql:8.0
+    restart: always
+    container_name: ntspi-db
+    volumes:
+      - "./sourcefiles/mysql:/var/lib/mysql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=ntspi_db
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=secret
+    ports:
+      - "3306:3306"

@@ -1,0 +1,138 @@
+<script>
+import MainNavbar from "@/Navbars/MainNavbar.vue";
+import {Head, Link} from "@inertiajs/vue3";
+import FsLightbox from "fslightbox-vue/v3";
+import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
+import ClientFooterDown from "@/Components/ClientFooterDown.vue";
+import AdminIndexSearch from "@/Components/AdminIndexSearch.vue";
+import AdminIndexFilter from "@/Components/AdminIndexFilter.vue";
+import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
+import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
+import ClientPostFilter from '@/Components/ClientPostFilter.vue';
+import ClientPost from '@/Components/ClientPost.vue';
+import ClientPostSearch from '@/Components/ClientPostSearch.vue';
+import PostBadge from "@/Components/BuilderUi/Events/EventBadgeBuilder.vue";
+
+export default {
+  name: "Index",
+  components: {
+		PostBadge,
+    AdminIndexHeaderTitle, AdminIndexHeader,
+    AdminIndexFilter, AdminIndexSearch,
+    ClientFooterDown,
+    ClientScrollTimeline,
+    ClientPostFilter,
+    Link,
+    MainNavbar,
+    FsLightbox,
+    Head,
+    ClientPost,
+    ClientPostSearch
+  },
+  data() {
+    return {
+
+    };
+  },
+  props: {
+    posts: {
+        type: Object,
+    },
+    filters: {
+        type: Object,
+    },
+    categories: {
+        type: Object,
+    },
+		tags: {
+			type: Object,
+		},
+		navigation: {
+			type: Object,
+		},
+  },
+  methods: {
+
+  },
+
+	mounted() {
+  }
+};
+</script>
+
+<template>
+  <Head>
+    <title>Новости</title>
+    <meta name="description" content="Your page description"/>
+  </Head>
+  <MainNavbar class="border-b" :sections="$page.props.navigation"></MainNavbar>
+	<div class="flex flex-col h-screen">
+		<main class="flex-grow">
+			<div class="relative mx-auto mt-[67px] max-w-screen-xl py-10 md:flex md:flex-row md:py-10">
+				<div class="pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
+					<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
+						<h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Новости НТГСПИ</h2>
+						<p class="mt-1 text-gray-600 dark:text-neutral-400">Узнайте последние новости любимого вуза</p>
+					</div>
+					<div>
+						<AdminIndexHeader>
+							<ClientPostSearch :search_filter="this.filters.search_filter" />
+							<ClientPostFilter :sorting-by_filter="this.filters.sortingBy_filter" :category_filter="this.filters.category_filter" :tag_filter="this.filters.tag_filter" :tags="tags" :items="categories"/>
+						</AdminIndexHeader>
+
+
+						<div class="px-6">
+							<h3 v-if="filters.category_filter.value || filters.tag_filter.value || filters.search_filter.value" class="text-sm text-gray-500 mb-4">Найдено новостей: {{ posts.meta.total }}</h3>
+							<div class="flex-wrap flex gap-3 md:items-center">
+								<PostBadge :filters="this.filters" />
+							</div>
+						</div>
+
+
+
+
+						<!-- Avatar Media -->
+						<!-- End Avatar Media -->
+						<!-- Content -->
+						<div class="space-y-5 md:space-y-4">
+							<div class="space-y-5 md:space-y-4">
+								<div>
+									<div class="container px-4 mx-auto xl:px-5 max-w-screen-lg py-5 lg:py-8">
+										<div class="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
+											<template v-for="post in posts.data" :key="post.id">
+												<ClientPost :post="post" />
+											</template>
+										</div>
+										<div class="mt-10 flex items-center justify-center">
+											<nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+												<Link as="button" :href="posts.links.prev" :disabled="$props.posts.links.prev === null"
+															class="relative inline-flex items-center gap-1 rounded-l-md border border-gray-300 bg-white px-3 py-2 pr-4 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 disabled:pointer-events-none disabled:opacity-40 dark:border-gray-500 dark:bg-gray-800 dark:text-gray-300">
+													<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+															 stroke="currentColor" aria-hidden="true" data-slot="icon" class="h-3 w-3">
+														<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"></path>
+													</svg>
+													<span>Предыдущая</span></Link>
+												<Link as="button" :href="posts.links.next" :disabled="$props.posts.links.next === null"
+															class="relative inline-flex items-center gap-1 rounded-r-md border border-gray-300 bg-white px-3 py-2 pl-4 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 disabled:pointer-events-none disabled:opacity-40 dark:border-gray-500 dark:bg-gray-800 dark:text-gray-300">
+													<span>Следующая</span>
+													<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+															 stroke="currentColor" aria-hidden="true" data-slot="icon" class="h-3 w-3">
+														<path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path>
+													</svg>
+												</Link>
+											</nav>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- End Content -->
+					</div>
+				</div>
+			</div>
+		</main>
+		<ClientFooterDown/>
+	</div>
+</template>
+
+<style scoped></style>
