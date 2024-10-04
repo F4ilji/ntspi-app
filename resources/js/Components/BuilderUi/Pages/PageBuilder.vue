@@ -28,7 +28,6 @@ export default {
 				pageItem: () => import('@/Components/BuilderUi/Pages/Blocks/PageItemBlock.vue'),
 				customForm: () => import('@/Components/BuilderUi/Pages/Blocks/FormBlock.vue')
 			};
-
 			return defineAsyncComponent(componentMap[type] || null);
 		},
 	},

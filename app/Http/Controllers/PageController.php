@@ -61,6 +61,8 @@ class PageController extends Controller
 
         $error = $page->code;
 
+
+
         if ($page->code != 200) {
             abort($error);
         }

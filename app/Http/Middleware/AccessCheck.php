@@ -33,6 +33,7 @@ class AccessCheck
         }
 
 
+
         // Если код не 200, возвращаем соответствующий код ошибки
         if ($registeredRoute->code != 200) {
             abort($registeredRoute->code);

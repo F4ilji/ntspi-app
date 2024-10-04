@@ -9,52 +9,28 @@
 </template>
 
 <script>
-import HeadingBlock from "@/Components/BuilderUi/Events/Blocks/HeadingBlock.vue";
-import ParagraphBlock from "@/Components/BuilderUi/Events/Blocks/ParagraphBlock.vue";
-import ClientImageSlider from "@/Components/ClientImageSlider.vue";
-import ImageBlock from "@/Components/BuilderUi/Events/Blocks/ImageBlock.vue";
-import FileBlock from "@/Components/BuilderUi/Events/Blocks/FileBlock.vue";
-import PersonBlock from "@/Components/BuilderUi/Events/Blocks/PersonBlock.vue";
-import StepperBlock from "@/Components/BuilderUi/Events/Blocks/StepperBlock.vue";
-import VideoBlock from "@/Components/BuilderUi/Events/Blocks/VideoBlock.vue";
-import TabBlock from "@/Components/BuilderUi/Events/Blocks/TabBlock.vue";
-import PostListBlock from "@/Components/BuilderUi/Events/Blocks/PostListBlock.vue";
-import PageItemBlock from "@/Components/BuilderUi/Events/Blocks/PageItemBlock.vue";
-import PostItemBlock from "@/Components/BuilderUi/Events/Blocks/PostItemBlock.vue";
+
+import {defineAsyncComponent} from "vue";
 
 export default {
 	name: "PostBuilder",
-	components: {
-		FileBlock,
-		ImageBlock,
-		ClientImageSlider,
-		ParagraphBlock,
-		HeadingBlock,
-		PersonBlock,
-		StepperBlock,
-		VideoBlock,
-		TabBlock,
-		PostListBlock,
-		PageItemBlock,
-		PostItemBlock},
 	methods: {
 		getComponent(type) {
 			const componentMap = {
-				heading: 'HeadingBlock',
-				paragraph: 'ParagraphBlock',
-				images: 'ClientImageSlider',
-				image: 'ImageBlock',
-				files: 'FileBlock',
-				person: 'PersonBlock',
-				stepper: 'StepperBlock',
-				video: 'VideoBlock',
-				tabs: 'TabBlock',
-				postsList: 'PostListBlock',
-				postItem: 'PostItemBlock',
-				pageItem: 'PageItemBlock',
-
+				heading: () => import('@/Components/BuilderUi/Posts/Blocks/HeadingBlock.vue'),
+				paragraph: () => import('@/Components/BuilderUi/Posts/Blocks/ParagraphBlock.vue'),
+				images: () => import('@/Components/ClientImageSlider.vue'),
+				image: () => import('@/Components/BuilderUi/Posts/Blocks/ImageBlock.vue'),
+				files: () => import('@/Components/BuilderUi/Posts/Blocks/FileBlock.vue'),
+				person: () => import('@/Components/BuilderUi/Posts/Blocks/PersonBlock.vue'),
+				stepper: () => import('@/Components/BuilderUi/Posts/Blocks/StepperBlock.vue'),
+				video: () => import('@/Components/BuilderUi/Posts/Blocks/VideoBlock.vue'),
+				tabs: () => import('@/Components/BuilderUi/Posts/Blocks/TabBlock.vue'),
+				postsList: () => import('@/Components/BuilderUi/Posts/Blocks/PostListBlock.vue'),
+				postItem: () => import('@/Components/BuilderUi/Posts/Blocks/PageItemBlock.vue'),
+				pageItem: () => import('@/Components/BuilderUi/Posts/Blocks/PostItemBlock.vue'),
 			};
-			return componentMap[type] || null;
+			return defineAsyncComponent(componentMap[type] || null);
 		},
 	},
 

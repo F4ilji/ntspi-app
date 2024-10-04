@@ -1,6 +1,4 @@
 <template>
-
-
 	<div id="open-mobile-nav" class="hs-overlay hs-overlay-open hs-overlay-open:translate-x-0 hidden [--overlay-backdrop:false] -translate-x-full fixed top-0 start-0 transition-all duration-300 transform h-full w-full z-[80] bg-white border-e" role="dialog" tabindex="-1" aria-labelledby="open-mobile-nav-label">
 		<div class="flex justify-between items-center py-3 px-4 border-b">
 			<img class="max-w-[75px] p-2"
@@ -109,10 +107,9 @@
 <script>
 
 import {Link} from "@inertiajs/vue3";
-import axios from "axios";
-import ClientGlobalSearch from "@/Components/ClientGlobalSearch.vue";
 import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
 import jsonIcons from "@/Components/other/icons.json";
+import {defineAsyncComponent} from "vue";
 
 
 export default {
@@ -130,7 +127,9 @@ export default {
 	},
 	components: {
 		BaseIcon,
-		ClientGlobalSearch,
+		ClientGlobalSearch: defineAsyncComponent(() =>
+				import('@/Components/ClientGlobalSearch.vue')
+		),
 		Link,
 	},
 	methods: {
