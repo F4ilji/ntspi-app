@@ -27,11 +27,15 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 
+Route::middleware('signed')->get('invitation/{invitation}/accept', \App\Livewire\AcceptInvitation::class)
+    ->name('invitation.accept');
+
 Route::middleware('access-check')->group(function () {
 
-    Route::get('/dashboard/schedule/create', function () {
-        return Inertia::render('Dashboard/CreateSchedule');
-    });
+//    Route::get('/dashboard/schedule/create', function () {
+//        return Inertia::render('Dashboard/CreateSchedule');
+//    });
+
     // Главная страница
     Route::get('/', [MainController::class, 'index'])->name('index');
 
@@ -55,7 +59,6 @@ Route::middleware('access-check')->group(function () {
 //    Route::get('/programs/bakalavriat/', [ClientProgramController::class, 'bakalavriat'])->name('client.program.bakalavriat');
 //    Route::get('/programs/spo/', [ClientProgramController::class, 'spo'])->name('client.program.spo');
 //    Route::get('/programs/magistratura/', [ClientProgramController::class, 'magistratura'])->name('client.program.magistratura');
-
 
     // Образовательные программы
     Route::get('/additional-education/', [ClientAdditionalEducationController::class, 'index'])->name('client.additionalEducation.index');
@@ -92,9 +95,7 @@ Route::middleware('access-check')->group(function () {
     Route::get('/divisions', [ClientDivisionController::class, 'index'])->name('client.division.index');
     Route::get('/divisions/{slug}', [ClientDivisionController::class, 'show'])->name('client.division.show');
 
-
     Route::get('/get-data', [UpdateEduDataApiController::class, 'index']);
-
 
     Route::get('{path}', [PageController::class, 'render'])->where('path', '[0-9,a-z,/,-]+')->name('page.view');
 

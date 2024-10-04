@@ -22,6 +22,11 @@ class Post extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function seo()
+    {
+        return $this->morphOne(Seo::class, 'seoable');
+    }
+
     protected $casts = [
         'content' => 'array',
         'authors' => 'array',

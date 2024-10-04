@@ -31,6 +31,18 @@ use Symfony\Component\Finder\Finder;
 
 class PostForm
 {
+
+    private static function findSeoActive(array $data) : bool
+    {
+        $bool = false;
+        foreach ($data as $item) {
+            if ($item['data']['seo_active'] === true) {
+                $bool = true;
+                break;
+            }
+        }
+        return $bool;
+    }
     public static function getForm(Form $form): Form
     {
         return $form
@@ -46,14 +58,16 @@ class PostForm
                                                 ->live(onBlur: true)
                                                 ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
                                                     $set('slug', Str::slug($state));
+                                                    $set('seo.title', $state);
                                                 }),
                                             TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
                                         ]),
-                                        Select::make('status')->options([
-                                            'verification' => 'На рассмотрении',
-                                            'published' => 'Одобрено',
-                                            'rejected' => 'Отказано',
-                                        ])->label('Статус')->required()->default(PostStatus::VERIFICATION),
+                                        Select::make('status')->options(PostStatus::class)
+                                            ->label('Статус')->required()
+                                            ->disableOptionWhen(fn (string $value): bool =>
+                                                $value == PostStatus::PUBLISHED->value && !auth()->user()->can('publish_post')
+                                            )
+                                            ->default(PostStatus::VERIFICATION),
                                         Select::make('category_id')
                                             ->options(Category::all()->pluck('title', 'id'))
                                             ->preload()
@@ -64,7 +78,7 @@ class PostForm
                                     ]),
                                 Tabs\Tab::make('Содержание новости')
                                     ->schema([
-                                        \Filament\Forms\Components\Builder::make('content')->label('')->blocks([
+                                        Builder::make('content')->label('')->blocks([
                                             Builder\Block::make('heading')->label('Заголовок')
                                                 ->schema([
                                                     TextInput::make('id')->hidden()->integer()->default(rand(2335235,324634264263426)),
@@ -76,6 +90,13 @@ class PostForm
                                                 ]),
                                             Builder\Block::make('paragraph')->label('Текст')
                                                 ->schema([
+                                                    Toggle::make('seo_active')->label('Использовать блок как seo')
+                                                        ->live(onBlur: true)
+                                                        ->disabled(function ($state, Forms\Get $get) {
+                                                            $data = $get('../../');
+                                                            return self::findSeoActive($data) && !$state;
+                                                        })
+                                                        ->dehydrated(),
                                                     RichEditor::make('content')
                                                         ->toolbarButtons([
                                                             'blockquote',
@@ -90,7 +111,7 @@ class PostForm
                                                             'undo',
                                                         ])
                                                         ->label(''),
-                                                ]),
+                                                ])->live(onBlur: true),
                                             Builder\Block::make('files')->label('Файлы')
                                                 ->schema([
                                                     Forms\Components\Repeater::make('file')->schema([

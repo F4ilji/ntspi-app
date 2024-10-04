@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('days');
-            $table->string('type');
+//            $table->string('title');
             $table->boolean('is_zaoch');
+            $table->text('file');
+//            $table->text('days');
+//            $table->string('type');
             $table->unsignedBigInteger('educational_group_id');
             $table->foreign('educational_group_id')->references('id')->on('educational_groups')->onDelete('cascade');
             $table->timestamps();

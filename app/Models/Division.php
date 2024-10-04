@@ -15,6 +15,11 @@ class Division extends Model
         'description' => 'array',
     ];
 
+    public function seo()
+    {
+        return $this->morphOne(Seo::class, 'seoable');
+    }
+
     public function workers()
     {
         return $this->belongsToMany(User::class, 'division_user')->withPivot(['administrativePosition', 'sort']);

@@ -3,6 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Providers\Filament\AdminPanelProvider;
+use BezhanSalleh\FilamentShield\FilamentShield;
+use BezhanSalleh\FilamentShield\Support\Utils;
+use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Tables\Columns\Layout\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +17,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPanelShield;
 
     /**
      * The attributes that are mass assignable.
@@ -72,8 +76,39 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsToMany(Faculty::class, 'workers_faculties')->withPivot(['position']);
     }
 
+    // Отношение к отправленным приглашениям
+    public function sentInvitations()
+    {
+        return $this->hasMany(AcceptedInvitation::class, 'sender_id');
+    }
+
+    // Отношение к полученным приглашениям
+    public function receivedInvitation()
+    {
+        return $this->hasOne(AcceptedInvitation::class, 'receiver_id');
+    }
+
+    protected static function booted(): void
+    {
+        if (config('filament-shield.dashboard_user.enabled', false)) {
+            FilamentShield::createRole(name: config('filament-shield.dashboard_user.name', 'dashboard_user'));
+            static::created(function (User $user) {
+                $user->assignRole(config('filament-shield.dashboard_user.name', 'dashboard_user'));
+            });
+            static::deleting(function (User $user) {
+                $user->assignRole(config('filament-shield.dashboard_user.name', 'dashboard_user'));
+            });
+        }
+    }
     public function canAccessPanel(Panel|\Filament\Panel $panel): bool
     {
-        return true;
+        switch ($panel->getId()) {
+            case "admin":
+                return $this->hasRole(Utils::getSuperAdminName());
+            case "dashboard":
+                return $this->hasRole(config('filament-shield.dashboard_user.name', 'dashboard_user')) || $this->hasRole(Utils::getSuperAdminName());
+            default:
+                return false;
+        }
     }
 }

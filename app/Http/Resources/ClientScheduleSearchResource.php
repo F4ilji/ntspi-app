@@ -16,7 +16,7 @@ class ClientScheduleSearchResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'file' => $this->file,
         ];
     }
 }

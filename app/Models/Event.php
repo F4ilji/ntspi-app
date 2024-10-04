@@ -17,6 +17,11 @@ class Event extends Model
         'content' => 'array',
     ];
 
+    public function seo()
+    {
+        return $this->morphOne(Seo::class, 'seoable');
+    }
+
     public function category() : BelongsTo
     {
         return $this->belongsTo(EventCategory::class);

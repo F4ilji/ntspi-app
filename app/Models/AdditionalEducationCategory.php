@@ -20,4 +20,6 @@ class AdditionalEducationCategory extends Model
     {
         return $this->belongsTo(DirectionAdditionalEducation::class, 'dir_addit_educat_id', 'id');
     }
+
+
 }

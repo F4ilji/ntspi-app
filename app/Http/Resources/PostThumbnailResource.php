@@ -18,6 +18,7 @@ class PostThumbnailResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
+            'preview_text' => $this->preview_text,
             'category' => $this->category,
             'authors' => $this->authors,
             'preview' => $this->preview,

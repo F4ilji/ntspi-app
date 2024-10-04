@@ -3,12 +3,7 @@
 		<title>{{ department.data.title }}</title>
 		<meta name="description" content="Your page description">
 	</Head>
-	<MainNavbar class="border-b" :sections="$page.props.navigation" />
-
-
-
-
-
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="flex flex-col h-screen justify-between">
 		<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
@@ -208,11 +203,9 @@
 
 import {Link} from "@inertiajs/vue3";
 import FsLightbox from "fslightbox-vue/v3";
-import MainNavbar from "@/Navbars/MainNavbar.vue";
 import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import { Head } from '@inertiajs/vue3'
 import slugify from "slugify";
-import axios from "axios";
 import PageNavigateLinks from "@/Components/BuilderUi/Pages/PageNavigateLinks.vue";
 import PageBreadcrumbs from "@/Components/BuilderUi/Pages/PageBreadcrumbs.vue";
 import PageBuilder from "@/Components/BuilderUi/Pages/PageBuilder.vue";
@@ -222,6 +215,7 @@ import ClientDepartmentTeacherCard from "@/Components/PersonCards/ClientDepartme
 import FacultyBuilder from "@/Components/BuilderUi/Faculties/FacultyBuilder.vue";
 import DepartmentBuilder from "@/Components/BuilderUi/Departments/DepartmentBuilder.vue";
 import DepartmentBackButton from "@/Components/BuilderUi/Departments/DepartmentBackButton.vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 
 export default {
@@ -246,6 +240,7 @@ export default {
 	},
 
 	components: {
+		MainPageNavBar,
 		DepartmentBackButton,
 		DepartmentBuilder,
 		FacultyBuilder,
@@ -253,7 +248,6 @@ export default {
 		ClientDepartmentWorkerCard,
 		PageTitle, PageBuilder, PageBreadcrumbs, PageNavigateLinks,
 		ClientFooterDown,
-		MainNavbar,
 		Link,
 		FsLightbox,
 		Head

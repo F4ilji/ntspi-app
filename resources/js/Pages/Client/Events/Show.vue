@@ -12,11 +12,13 @@ import EventBuilder from "@/Components/BuilderUi/Events/EventBuilder.vue";
 import EventtBuilder from "@/Components/BuilderUi/Events/EventBuilder.vue";
 import ClientEventSelectDate from "@/Components/ClientEventSelectDate.vue";
 import ClientEventFilter from "@/Components/ClientEventFilter.vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 
 export default {
 	name: "Show",
 	components: {
+		MainPageNavBar,
 		ClientEventFilter, ClientEventSelectDate,
 		EventtBuilder,
 		EventBuilder,
@@ -60,7 +62,7 @@ export default {
 		<meta name="description" content="Your page description">
 	</Head>
 
-	<MainNavbar :sections="$page.props.navigation"></MainNavbar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl py-10 md:flex md:flex-row md:py-10">

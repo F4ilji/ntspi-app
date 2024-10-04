@@ -105,8 +105,7 @@ class ClientEventController extends Controller
             ->orderBy('event_date_start')
             ->get();
 
-        // Извлекаем уникальные даты из событий
-        return $events->map(function ($event) {
+        $mappingDates = $events->map(function ($event) {
             $date = new DateTime($event->event_date_start);
             return [
                 'day' => $date->format('j'),
@@ -119,10 +118,15 @@ class ClientEventController extends Controller
             })
             ->map(function ($group, $month) {
                 return [
-                    'month' => $this->getMonthNameRussian((int)$month),
-                    'events' => $group->toArray()
+                    "month" => $this->getMonthNameRussian((int)$month),
+                    "events" => $group->toArray()
                 ];
-            });
+            })
+            ->sortKeys() // Сортируем ключи по возрастанию
+            ->values(); // Получаем массив без ключей
+
+        // Извлекаем уникальные даты из событий
+        return $mappingDates;
     }
 
     private function getFilters(): array

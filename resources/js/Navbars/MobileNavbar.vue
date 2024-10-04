@@ -1,7 +1,7 @@
 <template>
 
 
-	<div id="open-mobile-nav" class="hs-overlay hs-overlay-open:translate-x-0 hidden [--overlay-backdrop:false] -translate-x-full fixed top-0 start-0 transition-all duration-300 transform h-full w-full w-full z-[80] bg-white border-e" role="dialog" tabindex="-1" aria-labelledby="open-mobile-nav-label">
+	<div id="open-mobile-nav" class="hs-overlay hs-overlay-open hs-overlay-open:translate-x-0 hidden [--overlay-backdrop:false] -translate-x-full fixed top-0 start-0 transition-all duration-300 transform h-full w-full z-[80] bg-white border-e" role="dialog" tabindex="-1" aria-labelledby="open-mobile-nav-label">
 		<div class="flex justify-between items-center py-3 px-4 border-b">
 			<img class="max-w-[75px] p-2"
 					 src="/logos/only_logo.svg" alt="">
@@ -91,10 +91,6 @@
 							<BaseIcon class="w-4" name="search" />
 							Поиск
 						</a>
-
-
-
-
 					</li>
 				</ul>
 			</nav>
@@ -182,7 +178,6 @@ export default {
 </script>
 
 <style scoped>
-
 
 .header-filter {
 	transition: all 0.3s;

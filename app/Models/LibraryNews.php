@@ -11,6 +11,11 @@ class LibraryNews extends Model
 
     protected $guarded = false;
 
+    public function seo()
+    {
+        return $this->morphOne(Seo::class, 'seoable');
+    }
+
     protected $casts = [
         'content' => 'array',
     ];

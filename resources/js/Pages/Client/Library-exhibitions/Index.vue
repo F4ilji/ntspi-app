@@ -9,10 +9,12 @@ import AdminIndexFilter from "@/Components/AdminIndexFilter.vue";
 import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
 import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
 import ClientEventSelectDate from "@/Components/ClientEventSelectDate.vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 export default {
 	name: "Index",
 	components: {
+		MainPageNavBar,
 		ClientEventSelectDate,
 		AdminIndexHeaderTitle, AdminIndexHeader,
 		AdminIndexFilter, AdminIndexSearch,
@@ -41,7 +43,7 @@ export default {
 		<title>Виртуальные выставки</title>
 		<meta name="description" content="Your page description"/>
 	</Head>
-	<MainNavbar class="border-b" :sections="$page.props.navigation"></MainNavbar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">

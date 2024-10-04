@@ -3,10 +3,11 @@
 		<label :for="block.data.name_field + '-id'" class="block mb-2 text-sm font-medium">{{ block.data.title_field }}</label>
 		<div class="relative">
 			<input
+					v-model="text"
 					:required="block.data.rules.required"
 					:name="block.data.name_field"
-					:min="block.data.rules.min"
-					:max="block.data.rules.max"
+					:minlength="block.data.rules.min"
+					:maxlength="block.data.rules.max"
 					type="text"
 					:id="block.data.name_field + '-id'"
 					:class="(error) ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'focus:border-blue-500 focus:ring-blue-500'"
@@ -21,7 +22,12 @@
 				</svg>
 			</div>
 		</div>
-		<p v-if="!error" class="mt-2 text-sm text-gray-500" id="hs-input-helper-text">{{ block.data.description }}</p>
+		<div class="flex items-center mt-2 justify-between flex-wrap">
+			<p v-if="!error" class="text-sm text-gray-500" id="hs-input-helper-text">
+				{{ block.data.description }}
+			</p>
+			<p class="text-sm text-primaryBlue">{{ text.length }} / {{ block.data.rules.max }}</p>
+		</div>
 		<p v-for="item in error" class="text-sm text-red-600 mt-2" id="hs-validation-name-error-helper">{{ item }}</p>
 
 	</div>
@@ -34,6 +40,7 @@ export default {
 	name: "TextBlock",
 	data() {
 		return {
+			text: "",
 		}
 	},
 	methods: {},

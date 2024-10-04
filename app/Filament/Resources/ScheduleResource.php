@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ScheduleResource\Pages;
 use App\Filament\Resources\ScheduleResource\RelationManagers;
+use App\Helpers\ByteConverter;
 use App\Models\Category;
 use App\Models\EducationalGroup;
 use App\Models\Schedule;
@@ -26,8 +27,10 @@ use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\Livewire;
 
 class ScheduleResource extends Resource
@@ -58,72 +61,93 @@ class ScheduleResource extends Resource
                             Select::make('educational_group_id')->options(EducationalGroup::all()->pluck('title', 'id'))
                                 ->live()
                                 ->label('Выбрать группу')
-                                ->afterStateUpdated(function (string|null $state, Forms\Set $set, Get $get) {
-                                    if (!empty($state)) {
-                                        $set('title', EducationalGroup::query()->where('id', $get('educational_group_id'))->first()->title);
-                                    }
-                                })
                                 ->required(),
-                            TextInput::make('title')
-                                ->live()
+//                            TextInput::make('title')
+//                                ->live()
+//                                ->label('Заголовок')->required(),
 
-                                ->label('Заголовок')->required(),
-
-                            Select::make('type')->options([
-                                'schedule' => 'Обычное расписание',
-                                'interval' => 'Временное расписание',
-                                'exam' => 'Промежуточная аттестация',
-                            ])->label('Тип расписания')->required()->live(),
+//                            Select::make('type')->options([
+//                                'schedule' => 'Обычное расписание',
+//                                'interval' => 'Временное расписание',
+//                                'exam' => 'Промежуточная аттестация',
+//                            ])->label('Тип расписания')->required()->live(),
                             Forms\Components\Toggle::make('is_zaoch')->label('Очная|Заочная')->inline(false),
 
                         ]),
-                        Forms\Components\Repeater::make('days')->label('')->schema([
-                            Forms\Components\Repeater::make('form')->label('')->schema([
-                                Forms\Components\Repeater::make('weeks')->label('')->schema([
-                                    Forms\Components\Repeater::make('lesson_info')->label('')->schema([
-                                        TextInput::make('title')->label('Название-пары'),
-                                        TextInput::make('teacher')->label('Преподаватель'),
-                                        TextInput::make('studyRoom')->label('Кабинет')
-                                    ])->live()->maxItems(2)->collapsed()->addActionLabel('Добавить подгруппу')->columns(3)
-                                    ->itemLabel(function (Get $get, $state) {
-                                        static $count = 1;
-                                        if (count($get('lesson_info')) === 1) {
-                                            return "Общая группа";
-                                        } else {
-                                            $nmb = $count++ % 2 == 0 ? 2 : 1;
-                                            return "Подгруппа " . $nmb;                                        }
-                                    }),
-                                ])->maxItems(2)->addActionLabel('Добавить четную/нечетную неделю')
-                                    ->itemLabel(function (Get $get) {
-                                    static $position = 0;
-                                    if (count($get('weeks')) === 1) {
-                                        return "Общая неделя";
-                                    } else {
-                                        $nmb = $position++ % 2 == 0 ? 0 : 1;
-                                        return self::$typeWeek[$nmb] . " неделя";
-                                    }
+//                        Forms\Components\Repeater::make('days')->label('')->schema([
+//                            Forms\Components\Repeater::make('form')->label('')->schema([
+//                                Forms\Components\Repeater::make('weeks')->label('')->schema([
+//                                    Forms\Components\Repeater::make('lesson_info')->label('')->schema([
+//                                        TextInput::make('title')->label('Название-пары'),
+//                                        TextInput::make('teacher')->label('Преподаватель'),
+//                                        TextInput::make('studyRoom')->label('Кабинет')
+//                                    ])->live()->maxItems(2)->collapsed()->addActionLabel('Добавить подгруппу')->columns(3)
+//                                    ->itemLabel(function (Get $get, $state) {
+//                                        static $count = 1;
+//                                        if (count($get('lesson_info')) === 1) {
+//                                            return "Общая группа";
+//                                        } else {
+//                                            $nmb = $count++ % 2 == 0 ? 2 : 1;
+//                                            return "Подгруппа " . $nmb;                                        }
+//                                    }),
+//                                ])->maxItems(2)->addActionLabel('Добавить четную/нечетную неделю')
+//                                    ->itemLabel(function (Get $get) {
+//                                    static $position = 0;
+//                                    if (count($get('weeks')) === 1) {
+//                                        return "Общая неделя";
+//                                    } else {
+//                                        $nmb = $position++ % 2 == 0 ? 0 : 1;
+//                                        return self::$typeWeek[$nmb] . " неделя";
+//                                    }
+//                                })
+//                                ->collapsed()
+//                            ])
+//                                ->maxItems(5)
+//                                ->itemLabel(function (Get $get) {
+//                                    static $count = 0;
+//                                    $maxCount = count($get('form'));
+//                                    $count = ($count++ <= $maxCount) ? $count : 1;
+//                                    return "Пара #" . $count;
+//                                })
+//                                ->addActionLabel('Добавить пару'),
+//                        ])->maxItems(6)->minItems(1)->itemLabel(function ($state) {
+//                            static $position = 0;
+//                            return self::$weekDays[$position++];
+//                        })->addActionLabel('Добавить день недели')->collapsed()->defaultItems(6)->hidden(function (callable $get) {
+//                            if ($get('type') === 'schedule' || $get('type') === 'interval') {
+//                                return false;
+//                            } else {
+//                                return true;
+//                            }
+//                        }),
+            ]),
+                Section::make()
+                    ->schema([
+                        Forms\Components\Repeater::make('file')->schema([
+
+                            TextInput::make('title')
+                                ->required()
+                                ->maxLength(255)
+                                ->autofocus(),
+                            FileUpload::make('path')
+                                ->required()
+                                ->getUploadedFileNameForStorageUsing(
+                                    fn (TemporaryUploadedFile $file): string =>
+                                    str(Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '-' . Carbon::now()->timestamp ) . '.' . $file->getClientOriginalExtension())
+                                )
+                                ->acceptedFileTypes([
+                                    'application/pdf',
+                                ])
+                                ->maxSize(512000)
+                                ->disk('public')
+                                ->directory('files')
+                                ->downloadable()
+                                ->afterStateUpdated(function ($set, $state) {
+                                    $set('title', pathinfo($state?->getClientOriginalName(), PATHINFO_FILENAME));
                                 })
-                                ->collapsed()
-                            ])
-                                ->maxItems(5)
-                                ->itemLabel(function (Get $get) {
-                                    static $count = 0;
-                                    $maxCount = count($get('form'));
-                                    $count = ($count++ <= $maxCount) ? $count : 1;
-                                    return "Пара #" . $count;
-                                })
-                                ->addActionLabel('Добавить пару'),
-                        ])->maxItems(6)->minItems(1)->itemLabel(function ($state) {
-                            static $position = 0;
-                            return self::$weekDays[$position++];
-                        })->addActionLabel('Добавить день недели')->collapsed()->defaultItems(6)->hidden(function (callable $get) {
-                            if ($get('type') === 'schedule' || $get('type') === 'interval') {
-                                return false;
-                            } else {
-                                return true;
-                            }
-                        }),
-            ])
+                                ->visibility('public')
+                        ]),
+                    ])
             ]);
     }
 

@@ -39,8 +39,18 @@ class AdmissionCampaignResource extends Resource
                 Forms\Components\Section::make()->schema([
                     Forms\Components\Repeater::make('info')->schema([
                         Forms\Components\Select::make('edu_name')->options(LevelEducational::class),
+                        Forms\Components\Grid::make(2)->schema([
+                            Forms\Components\Section::make()->schema([
+                                TextInput::make('total_programs')->label('Количество программ по набору')->integer()->required(),
+                            ]),
+                            Forms\Components\Section::make('Места')->schema([
+                                TextInput::make('och_count')->label('Количество мест (Очная форма)')->integer()->required(),
+                                TextInput::make('zaoch_count')->label('Количество мест (Заочная форма)')->integer()->required(),
+                                TextInput::make('budget_places')->label('Количество бюджетных мест')->integer()->required(),
+                                TextInput::make('non_budget_places')->label('Количество платных мест')->integer()->required(),
+                            ]),
+                        ]),
                     ])->columnSpanFull(),
-                    
                 ]),
             ]);
     }

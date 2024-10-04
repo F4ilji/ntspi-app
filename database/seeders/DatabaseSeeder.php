@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Failj',
             'email' => 'Failj@bk.ru',
-            'password' => Hash::make('2288'),
+            'password' => "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
         ]);
         User::factory()->count(50)->has(UserDetail::factory())->create();
         EventCategory::factory()->count(10)->create();

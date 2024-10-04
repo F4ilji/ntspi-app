@@ -18,6 +18,11 @@ class Page extends Model
         return $this->belongsTo(SubSection::class, 'sub_section_id');
     }
 
+    public function seo()
+    {
+        return $this->morphOne(Seo::class, 'seoable');
+    }
+
     protected $casts = [
         'content' => 'array',
     ];

@@ -3,29 +3,23 @@
 		<title>{{ page.data.title }}</title>
 		<meta name="description" content="Your page description">
 	</Head>
-	<MainNavbar class="border-b" :sections="$page.props.navigation"/>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="w-full h-[67px] fixed" id="visor"></div>
-
-
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
-
 				<PageSubSectionLinks :sub-section-pages="subSectionPages" :current-section="page.data.section"/>
 				<PageNavigateLinks :header-navs="this.headerNavs"/>
-				<article class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
+				<div class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
 					<div class="space-y-5 md:space-y-5">
 						<PageBreadcrumbs :breadcrumbs="breadcrumbs" :page-title="page.data.title"/>
 						<PageTitle :header="page.data.title"/>
 						<div id="page-area" class="space-y-4">
 							<PageBuilder :blocks="this.page.data.content"/>
-
 						</div>
 					</div>
-
-
-				</article>
+				</div>
 			</div>
 		</main>
 		<ClientFooterDown/>
@@ -52,6 +46,7 @@ import PageBreadcrumbs from "@/Components/BuilderUi/Pages/PageBreadcrumbs.vue";
 import PageTitle from "@/Components/BuilderUi/Pages/PageTitle.vue";
 import PageNavigateLinks from "@/Components/BuilderUi/Pages/PageNavigateLinks.vue";
 import PageSubSectionLinks from "@/Components/BuilderUi/Pages/PageSubSectionLinks.vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 
 export default {
@@ -64,8 +59,6 @@ export default {
 			}))
 		}
 	},
-
-
 	props: {
 		navigation: {
 			type: Object,
@@ -81,6 +74,7 @@ export default {
 		},
 	},
 	components: {
+		MainPageNavBar,
 		PageSubSectionLinks,
 		PageNavigateLinks,
 		PageTitle,

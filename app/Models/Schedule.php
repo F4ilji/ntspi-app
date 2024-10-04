@@ -12,7 +12,7 @@ class Schedule extends Model
     protected $guarded = false;
 
     protected $casts = [
-        'days' => 'array',
+        'file' => 'array',
     ];
 
     public function subSchedules()

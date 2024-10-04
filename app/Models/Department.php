@@ -15,6 +15,11 @@ class Department extends Model
         'content' => 'array',
     ];
 
+    public function seo()
+    {
+        return $this->morphOne(Seo::class, 'seoable');
+    }
+
     public function faculty()
     {
         return $this->belongsTo(Faculty::class);

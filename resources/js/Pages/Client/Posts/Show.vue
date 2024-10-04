@@ -16,12 +16,12 @@ import ClientPostFilter from "@/Components/ClientPostFilter.vue";
 import ClientPostSearch from "@/Components/ClientPostSearch.vue";
 import ClientPost from "@/Components/ClientPost.vue";
 import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
-
-
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 export default {
 	name: "Show",
 	components: {
+		MainPageNavBar,
 		AdminIndexHeader, ClientPost, ClientPostSearch, ClientPostFilter, PostBadge,
 		PostGallery,
 		PostBuilder,
@@ -49,11 +49,16 @@ export default {
 		navigation: {
 			type: Object,
 		},
+		searchMatch: {
+			type: String,
+			default: ''
+		}
 	},
-
-}
+	mounted() {
+	},
+	methods: {
+	}}
 </script>
-
 <template>
 	<Head>
 		<title>{{ post.data.title }}</title>
@@ -61,7 +66,7 @@ export default {
 	</Head>
 	<ClientScrollTimeline/>
 
-	<MainNavbar :sections="$page.props.navigation"></MainNavbar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">

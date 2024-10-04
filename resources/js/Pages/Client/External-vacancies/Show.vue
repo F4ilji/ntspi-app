@@ -9,11 +9,13 @@ import ClientPostFilter from "@/Components/ClientPostFilter.vue";
 import ClientPostSearch from "@/Components/ClientPostSearch.vue";
 import ClientPost from "@/Components/ClientPost.vue";
 import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 
 export default {
   name: "Show",
   components: {
+		MainPageNavBar,
 		AdminIndexHeader,
 		ClientPost,
 		ClientPostSearch,
@@ -59,7 +61,7 @@ export default {
     <title>{{ post.data.title }}</title>
     <meta name="description" content="Your page description">
   </Head>
-	<MainNavbar :sections="$page.props.navigation"></MainNavbar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">

@@ -5,36 +5,23 @@ namespace App\Filament\Resources\PageResource\Pages;
 use App\Filament\Resources\PageResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Str;
 
 class EditPage extends EditRecord
 {
     protected static string $resource = PageResource::class;
 
+    protected array $seoData;
+
+
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        $this->seoData = $this->generateSeo($data);
 
-        $result = "";
-        foreach ($data['content'] as $block) {
-            $result .= $this->getDataFromBlocks($block);
-        }
-
-        // Удаляем лишние пробелы и переносы строк
-        $result = preg_replace('/\s+/', ' ', $result);
-        $result = trim($result);
-
-
-        // Приводим текст к нижнему регистру
-        $data['search_data'] = strtolower($result);
+        $data['search_data'] = $this->generateSearchData($data['content']);
 
         return $data;
-    }
-
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
     }
 
     protected function afterSave(): void
@@ -49,6 +36,52 @@ class EditPage extends EditRecord
             }
         }
 
+        $this->record->seo()->create($this->seoData);
+
+    }
+
+
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\DeleteAction::make(),
+        ];
+    }
+
+
+    private function generateSeo(array $data) : array
+    {
+        $title = $data['title'];
+        $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
+        $description = strip_tags($rowData['data']['content']);
+
+        return [
+            'title' => $title,
+            'description' => Str::limit($description, 160),
+        ];
+    }
+    private function getFirstBlockByName(string $name, array $content) : array|null
+    {
+        $data = null;
+        foreach ($content as $block) {
+            $data = ($block['type'] === $name) ? $block : null;
+            break;
+        }
+        return $data;
+    }
+
+    private function generateSearchData(array $data) : string
+    {
+        $result = "";
+        foreach ($data as $block) {
+            $result .= $this->getDataFromBlocks($block);
+        }
+        // Удаляем лишние пробелы и переносы строк
+        $result = preg_replace('/\s+/', ' ', $result);
+        $result = trim($result);
+
+        return strtolower($result);
     }
 
     private function getDataFromBlocks($block) : string
@@ -87,7 +120,6 @@ class EditPage extends EditRecord
         }
         return $data;
     }
-
     public function hasCombinedRelationManagerTabsWithContent(): bool
     {
         return true;

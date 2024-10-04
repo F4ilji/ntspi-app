@@ -20,7 +20,7 @@ class ClientWidgetPostController extends Controller
                     $query->where('category_id', $category_id);
                 })
                 ->with('category')
-                ->orderBy('created_at', 'desc')
+                ->orderBy('publish_at', 'desc')
                 ->take(request()->input('count', 5))
                 ->get());
     }

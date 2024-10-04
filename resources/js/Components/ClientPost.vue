@@ -54,9 +54,7 @@
                             >
                               <a
                                   :href="route('client.post.show', post.slug)"
-                              >It is a cliche philosophical question, but it touches on
-                                something fundamental about how humans relate to the world
-                                around them.
+                              >{{ post.preview_text }}
                               </a>
                             </p>
                           </div>

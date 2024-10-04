@@ -10,11 +10,13 @@ import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
 import ClientPostSearch from "@/Components/ClientPostSearch.vue";
 import ClientProgramFilter from "@/Components/ClientProgramFilter.vue";
 import LevelEduFilter from "@/Components/BuilderUi/Programs/Filters/LevelEduFilter.vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 
 export default {
   name: "Show",
   components: {
+		MainPageNavBar,
 		LevelEduFilter, ClientProgramFilter,
 		ClientPostSearch,
 		AdminIndexHeader,
@@ -63,7 +65,7 @@ export default {
     <title>Образовательная программа</title>
     <meta name="description" content="Your page description">
   </Head>
-  <MainNavbar class="border-b" :sections="$page.props.navigation"></MainNavbar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">

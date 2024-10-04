@@ -1,5 +1,4 @@
 <script>
-import MainNavbar from "@/Navbars/MainNavbar.vue";
 import {Head, Link} from "@inertiajs/vue3";
 import FsLightbox from "fslightbox-vue/v3";
 import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
@@ -12,10 +11,12 @@ import ClientPostFilter from '@/Components/ClientPostFilter.vue';
 import ClientPost from '@/Components/ClientPost.vue';
 import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import ClientImageSlider from "@/Components/ClientImageSlider.vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 export default {
   name: "Index",
   components: {
+		MainPageNavBar,
 		ClientImageSlider,
     AdminIndexHeaderTitle, AdminIndexHeader,
     AdminIndexFilter, AdminIndexSearch,
@@ -23,7 +24,6 @@ export default {
     ClientScrollTimeline,
     ClientPostFilter,
     Link,
-    MainNavbar,
     FsLightbox,
     Head,
     ClientPost,
@@ -76,7 +76,7 @@ export default {
     <title>Дополнительное образование</title>
     <meta name="description" content="Your page description"/>
   </Head>
-  <MainNavbar class="border-b" :sections="$page.props.navigation"></MainNavbar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 
 	<div class="flex flex-col h-screen">

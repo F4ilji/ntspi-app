@@ -14,7 +14,7 @@ class CustomFormResponseObserver
      */
     public function created(CustomFormResponse $customFormResponse): void
     {
-        dispatch(new SendFormResponseMail($customFormResponse));
+        !empty($customFormResponse->form->mail_settings) ? dispatch(new SendFormResponseMail($customFormResponse)) : null;
     }
 
     /**

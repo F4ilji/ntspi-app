@@ -3,6 +3,7 @@ import MainNavbar from "@/Navbars/MainNavbar.vue";
 import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import {debounce} from "lodash/function.js";
 import {Link} from "@inertiajs/vue3";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 
 export default {
@@ -14,7 +15,7 @@ export default {
 			timeSchedules: ['09:00 - 10:35', '10:55 - 12:30', '13:00 - 14:35', '14:45 - 16:20', '16:30 - 18:00']
 		}
 	},
-	components: {ClientFooterDown, MainNavbar, Link},
+	components: {MainPageNavBar, ClientFooterDown, MainNavbar, Link},
 	props: [
 		'schedule',
 		'searchRequest',
@@ -79,7 +80,7 @@ export default {
 </script>
 
 <template>
-	<MainNavbar class="border-b" :sections="$page.props.navigation"></MainNavbar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 
 

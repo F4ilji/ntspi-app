@@ -1,5 +1,4 @@
 <script>
-import MainNavbar from "@/Navbars/MainNavbar.vue";
 import {Head, Link} from "@inertiajs/vue3";
 import FsLightbox from "fslightbox-vue/v3";
 import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
@@ -11,17 +10,18 @@ import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
 import ClientPostFilter from '@/Components/ClientPostFilter.vue';
 import ClientPost from '@/Components/ClientPost.vue';
 import ClientPostSearch from '@/Components/ClientPostSearch.vue';
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 export default {
   name: "Index",
   components: {
+		MainPageNavBar,
     AdminIndexHeaderTitle, AdminIndexHeader,
     AdminIndexFilter, AdminIndexSearch,
     ClientFooterDown,
     ClientScrollTimeline,
     ClientPostFilter,
     Link,
-    MainNavbar,
     FsLightbox,
     Head,
     ClientPost,
@@ -51,7 +51,7 @@ export default {
     <title>Научные периодические издания НТГСПИ</title>
     <meta name="description" content="Your page description"/>
   </Head>
-  <MainNavbar class="border-b" :sections="$page.props.navigation"></MainNavbar>
+  <MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
@@ -72,7 +72,7 @@ export default {
 									<!-- Grid -->
 									<div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-6">
 										<template v-for="journal in journals.data">
-											<Link :href="route('client.academicJournals.show', journal.slug)" class="group flex items-center bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition" >
+											<Link :href="route('client.academicJournals.show', 'aliqua-dolor-vel')" class="group flex items-center bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition" >
 												<div class="p-4 md:p-5 w-full">
 													<div class="flex justify-between items-center gap-x-3">
 														<div class="grow">

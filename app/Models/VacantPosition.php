@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class VacantPosition extends Model
 {
     use HasFactory;
+
+
 }

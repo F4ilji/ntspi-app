@@ -2,7 +2,11 @@
 
 namespace App\Filament\Resources\PostResource\Pages;
 
+use App\Enums\PostStatus;
 use App\Filament\Resources\PostResource;
+use App\Models\Post;
+use App\Models\User;
+use Carbon\Carbon;
 use Closure;
 use Filament\Actions;
 use Filament\Notifications\Actions\Action;
@@ -10,33 +14,94 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Support\Str;
 use PhpParser\Node\Expr\AssignOp\Mod;
 
 class CreatePost extends CreateRecord
 {
     protected static string $resource = PostResource::class;
 
+    protected array $seoData;
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        $this->seoData = $this->generateSeo($data);
+        $data['preview_text'] = $this->setPreviewText($data);
+        $data['publish_at'] = $this->setPublishDateTime($data['status']);
+        $data['search_data'] = $this->generateSearchData($data['content']);
+        $data['reading_time'] = $this->calculateReadingTime($data['search_data']);
+
+        return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        $this->record->seo()->create($this->seoData);
+        $this->sendNotify($this->record, auth()->user());
+    }
+
+    private function generateSeo(array $data) : array
+    {
+        $title = $data['title'];
+        $rowData = $this->getBlockBySeoActiveState('paragraph', $data['content']);
+        $description = strip_tags($rowData['data']['content']);
+        $image = ($data['preview'] !== null) ? $data['preview'] : null;
+
+        return [
+            'title' => $title,
+            'description' => Str::limit($description, 160),
+            'image' => $image,
+        ];
+    }
+
+    private function setPreviewText(array $data) : string
+    {
+        $rowData = $this->getBlockBySeoActiveState('paragraph', $data['content']);
+        $preview_text = strip_tags($rowData['data']['content']);
+        return Str::limit($preview_text, 160);
+    }
+
+    private function generateSearchData(array $data) : string
+    {
         $result = "";
-        foreach ($data['content'] as $block) {
+        foreach ($data as $block) {
             $result .= $this->getDataFromBlocks($block);
         }
-
         // Удаляем лишние пробелы и переносы строк
         $result = preg_replace('/\s+/', ' ', $result);
         $result = trim($result);
 
-
-        // Приводим текст к нижнему регистру
-        $data['search_data'] = strtolower($result);
-
+        return strtolower($result);
+    }
+    private function getFirstBlockByName(string $name, array $content) : array|null
+    {
+        $data = null;
+        foreach ($content as $block) {
+            $data = ($block['type'] === $name) ? $block : null;
+            break;
+        }
         return $data;
     }
-    protected function afterCreate(): void
-    {
-        $recipient = auth()->user();
 
+    private function getBlockBySeoActiveState(string $name, array $content) : array|null
+    {
+        $data = [];
+        foreach ($content as $block) {
+            if ($block['type'] === $name) {
+                $data[] = $block;
+            }
+        }
+        $block = null;
+        foreach ($data as $item) {
+            if ($item['data']['seo_active'] === true) {
+                $block = $item;
+            }
+        }
+        return $block;
+    }
+
+    private function sendNotify($post, $recipient) : void
+    {
         Notification::make()
             ->title('Новость на проверку')
             ->body('Новая запись была создана!')
@@ -45,13 +110,17 @@ class CreatePost extends CreateRecord
                     ->label('Проверить')
                     ->button()
                     ->markAsRead()
-                    ->url(PostResource::getUrl('edit', ['record' => $this->record])),
+                    ->url(PostResource::getUrl('edit', ['record' => $post])),
 
-            ])
-
-            ->sendToDatabase($recipient);
+            ])->sendToDatabase($recipient);
     }
-
+    private function setPublishDateTime(PostStatus $status) : Carbon|null
+    {
+        if ($status !== PostStatus::PUBLISHED) {
+            return null;
+        }
+        return Carbon::now();
+    }
     private function calculateReadingTime(string $text): int
     {
 
@@ -73,7 +142,6 @@ class CreatePost extends CreateRecord
 
         return $readingTime;
     }
-
     protected function convertDataToHtml($blocks) {
         $convertedHtml = "";
         foreach ($blocks as $block) {
@@ -126,7 +194,6 @@ class CreatePost extends CreateRecord
         }
         return $convertedHtml;
     }
-
     private function getDataFromBlocks($block) : string
     {
         $data = "";

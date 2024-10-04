@@ -15,15 +15,19 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
+            $table->text('preview_text')->nullable();
             $table->text('content');
             $table->string('status');
             $table->text('authors');
             $table->text('images')->nullable();
-            $table->unsignedBigInteger('category_id')->nullable();
-            $table->foreign('category_id')->references('id')->on('categories');
             $table->string('preview')->nullable();
             $table->text('search_data')->nullable();
             $table->text('reading_time')->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->foreign('category_id')->references('id')->on('categories');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate()->nullOnDelete();;
+            $table->dateTime('publish_at')->nullable();
             $table->timestamps();
         });
     }

@@ -19,10 +19,12 @@ import PostBackButton from "@/Components/BuilderUi/Posts/PostBackButton.vue";
 import PostTitle from "@/Components/BuilderUi/Posts/PostTitle.vue";
 import PostBuilder from "@/Components/BuilderUi/Posts/PostBuilder.vue";
 import PostGallery from "@/Components/BuilderUi/Posts/PostGallery.vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 export default {
   name: "Index",
   components: {
+		MainPageNavBar,
 		PostGallery, PostBuilder, PostTitle, PostBackButton, PostTimeRead, PostAuthorsList,
 		ClientProgramFilter,
 		LevelEduFilter,
@@ -98,7 +100,7 @@ export default {
   </Head>
 
 
-	<MainNavbar class="border-b" :sections="$page.props.navigation"></MainNavbar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">

@@ -152,6 +152,13 @@ import SearchModal from "@/Components/Modals/SearchModal.vue";
 
 export default {
 	name: 'MainPageNavBar',
+	components: {
+		SearchModal,
+		MobileNavbar,
+		BaseIcon,
+		ClientGlobalSearch,
+		Link,
+	},
 	props: {
 		sections: {
 			type: Object,
@@ -169,13 +176,7 @@ export default {
 			bvi: null
 		}
 	},
-	components: {
-		SearchModal,
-		MobileNavbar,
-		BaseIcon,
-		ClientGlobalSearch,
-		Link,
-	},
+
 	methods: {
 		isSameRoute(route) {
 			if (route === this.$page.props.ziggy.location) {
@@ -186,7 +187,6 @@ export default {
 			const currentUrl = this.$page.props.ziggy.url + '/' + route;
 
 			if (currentLocation === currentUrl) {
-				console.log(route);
 				return true;
 			}
 
@@ -221,6 +221,8 @@ export default {
 				this.underSliderHeader = mainSlider.getBoundingClientRect().bottom < 50
 				this.scrollPosition = window.pageYOffset
 				this.headerFilter = this.scrollPosition > 90
+			} else {
+				this.headerFilter = true
 			}
 		},
 		getCookie(name) {
@@ -236,11 +238,9 @@ export default {
 
 
 	},
-
 	mounted() {
 		window.addEventListener('scroll', this.handleScroll)
 		window.addEventListener('scroll', this.checkSlider)
-		console.log(this.getCookie('bvi_panelActive') === null)
 		if (this.getCookie('bvi_panelActive') === null) {
 			this.bvi = new isvek.Bvi({
 				target: '.className',

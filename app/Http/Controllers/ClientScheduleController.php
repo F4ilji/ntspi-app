@@ -19,16 +19,13 @@ class ClientScheduleController extends Controller
         if (request()->filled('search')) {
             $educationalGroups = ClientEducationalGroupResource::collection(EducationalGroup::query()
                 ->has('schedules')
-                ->whereHas('schedules', function ($q) {
-                    $q->when(request()->input('search'), function ($query, $search) {
-                        $query->whereRaw('LOWER(title) like ?', ["%".strtolower($search)."%"]);
-                    });
+                ->when(request()->input('search'), function ($query, $search) {
+                    $query->whereRaw('LOWER(title) like ?', ["%".strtolower($search)."%"]);
                 })
                 ->with('schedules')
                 ->orderBy('title')
                 ->get());
         }
-
         $searchRequest = request()->input('search');
 
         return Inertia::render('Client/Schedules/Index', compact('educationalGroups', 'searchRequest'));

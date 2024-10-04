@@ -1,6 +1,4 @@
 <template>
-
-
 	<div v-if="success" class="bg-teal-50 border-t-2 border-teal-500 rounded-lg p-4 dark:bg-teal-800/30" role="alert" tabindex="-1" aria-labelledby="hs-bordered-success-style-label">
 		<div class="flex">
 			<div class="shrink-0">
@@ -34,7 +32,7 @@
 				</h2>
 			</div>
 			<!-- Card -->
-			<div class="mt-5 p-4 relative z-10 bg-white border rounded-xl sm:mt-10 md:p-10">
+			<div class="mt-5 p-4 relative z-1000 bg-white border rounded-xl sm:mt-10 md:p-10">
 				<form @submit="submitForm">
 					<component
 							v-for="(block, index) in blocks.data.columns"
@@ -50,28 +48,23 @@
 		</div>
 	</div>
 
+	<transition name="fade">
+		<SuccessNotification v-if="success" :text="message" />
+	</transition>
+
 </template>
 
 <script>
-import TextBlock from "@/Components/BuilderUi/Pages/FormBlocks/TextBlock.vue";
-import PhoneBlock from "@/Components/BuilderUi/Pages/FormBlocks/PhoneBlock.vue";
-import EmailBlock from "@/Components/BuilderUi/Pages/FormBlocks/EmailBlock.vue";
 import SubmitBlock from "@/Components/BuilderUi/Pages/FormBlocks/SubmitBlock.vue";
 import axios from "axios";
-import TextAreaBlock from "@/Components/BuilderUi/Pages/FormBlocks/TextAreaBlock.vue";
-import MultipleChoiceBlock from "@/Components/BuilderUi/Pages/FormBlocks/MultipleChoiceBlock.vue";
-import SingleChoiceBlock from "@/Components/BuilderUi/Pages/FormBlocks/SingleChoiceBlock.vue";
+import SuccessNotification from "@/Components/Notifications/SuccessNotification.vue";
+import {defineAsyncComponent} from "vue";
 
 export default {
 	name: "FormBuilder",
 	components: {
+		SuccessNotification,
 		SubmitBlock,
-		TextBlock,
-		PhoneBlock,
-		EmailBlock,
-		TextAreaBlock,
-		MultipleChoiceBlock,
-		SingleChoiceBlock
 	},
 	data() {
 		return {
@@ -81,57 +74,79 @@ export default {
 			message: null,
 		};
 	},
+
 	methods: {
 		getComponent(type) {
 			const componentMap = {
-				text: 'TextBlock',
-				phone: 'PhoneBlock',
-				email: 'EmailBlock',
-				textarea: 'TextAreaBlock',
-				multiple_choice: 'MultipleChoiceBlock',
-				single_choice: 'SingleChoiceBlock',
-
+				text: () => import('@/Components/BuilderUi/Pages/FormBlocks/TextBlock.vue'),
+				phone: () => import('@/Components/BuilderUi/Pages/FormBlocks/PhoneBlock.vue'),
+				email: () => import('@/Components/BuilderUi/Pages/FormBlocks/EmailBlock.vue'),
+				textarea: () => import('@/Components/BuilderUi/Pages/FormBlocks/TextAreaBlock.vue'),
+				multiple_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/MultipleChoiceBlock.vue'),
+				single_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/SingleChoiceBlock.vue'),
+				date: () => import('@/Components/BuilderUi/Pages/FormBlocks/DateBlock.vue')
 			};
-			return componentMap[type] || null;
+			return defineAsyncComponent(componentMap[type] || null);
 		},
 		submitForm(event) {
 			event.preventDefault();
+			this.formData = this.getFormData(event.target.elements);
+			this.sendDataToServer();
+		},
 
-			const formElements = event.target.elements;
-			this.formData = {};
+		getFormData(formElements) {
+			const formData = {};
 			for (let i = 0; i < formElements.length; i++) {
 				const element = formElements[i];
-				if (element.tagName === 'INPUT') {
-					// Убираем квадратные скобки из имени поля
-					const fieldName = element.name.endsWith('[]') ? element.name.slice(0, -2) : element.name;
+				if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+					const fieldName = this.normalizeFieldName(element.name);
 
-					if (element.type === 'checkbox') {
-						if (!this.formData[fieldName]) {
-							this.formData[fieldName] = [];
+					if (element.tagName === 'INPUT') {
+						if (element.type === 'checkbox') {
+							this.handleCheckbox(formData, fieldName, element);
+						} else if (fieldName && fieldName !== 'choices') {
+							formData[fieldName] = element.value;
 						}
-						if (element.checked) {
-							this.formData[fieldName].push(element.value);
-						}
-					} else if (fieldName && fieldName !== 'choices') {
-						this.formData[fieldName] = element.value;
+					} else if (element.tagName === 'TEXTAREA') {
+						formData[fieldName] = element.value;
 					}
 				}
 			}
+			return formData;
+		},
 
-			// Отправляем данные на сервер
+		normalizeFieldName(name) {
+			return name.endsWith('[]') ? name.slice(0, -2) : name;
+		},
+
+		handleCheckbox(formData, fieldName, element) {
+			if (!formData[fieldName]) {
+				formData[fieldName] = [];
+			}
+			if (element.checked) {
+				formData[fieldName].push(element.value);
+			}
+		},
+
+		sendDataToServer() {
 			axios.post(route('client.widget.form.submit', this.blocks.data.id), this.formData)
-					.then(response => {
-						if (response.data.status === 'ok') {
-							this.success = true;
-							this.message = response.data.message;
-							this.errors = null; // Сбрасываем ошибки при успешной отправке
-						}
-					})
-					.catch(error => {
-						this.errors = error.response.data || ['Неизвестная ошибка']; // Обработка ошибок
-						this.success = false; // Сбрасываем успешное состояние
-					});
-		}	},
+					.then(this.handleResponse)
+					.catch(this.handleError);
+		},
+
+		handleResponse(response) {
+			if (response.data.status === 'ok') {
+				this.success = true;
+				this.message = response.data.message;
+				this.errors = null; // Сбрасываем ошибки при успешной отправке
+			}
+		},
+
+		handleError(error) {
+			this.errors = error.response.data || ['Неизвестная ошибка']; // Обработка ошибок
+			this.success = false; // Сбрасываем успешное состояние
+		}
+	},
 	props: {
 		blocks: {
 			type: Object,
@@ -139,3 +154,16 @@ export default {
 	},
 }
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+	transition: all 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
+	transform: translateY(30px);
+}
+</style>

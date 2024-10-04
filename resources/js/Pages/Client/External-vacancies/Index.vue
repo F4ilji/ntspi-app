@@ -14,10 +14,12 @@ import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import TitleEvent from "@/Components/BuilderUi/Events/TitleEvent.vue";
 import EventBackButton from "@/Components/BuilderUi/Events/EventBackButton.vue";
 import EventBuilder from "@/Components/BuilderUi/Events/EventBuilder.vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 export default {
   name: "Index",
   components: {
+		MainPageNavBar,
 		EventBuilder, EventBackButton, TitleEvent,
     AdminIndexHeaderTitle, AdminIndexHeader,
     AdminIndexFilter, AdminIndexSearch,
@@ -64,7 +66,7 @@ export default {
     <title>Новости</title>
     <meta name="description" content="Your page description"/>
   </Head>
-  <MainNavbar class="border-b" :sections="$page.props.navigation"></MainNavbar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">

@@ -52,7 +52,8 @@ class ClientPostController extends Controller
                 $slugsArray = explode(',', $slugs);
                 return $query->withAnyTags($slugsArray);
             })
-            ->orderBy('id', request()->input('sort', 'desc'))
+            ->orderBy('publish_at', request()->input('sort', 'desc'))
+
             ->paginate(6)
             ->withQueryString());
 
@@ -100,7 +101,8 @@ class ClientPostController extends Controller
 
         return Inertia::render('Client/Posts/Index', compact('filters', 'posts', 'categories', 'tags'));
     }
-    public function show($slug)
+
+    public function show(Request $request, $slug)
     {
         $post = new PostResource(Post::where('slug', $slug)->firstOrFail());
         return Inertia::render('Client/Posts/Show', compact('post'));

@@ -30,7 +30,7 @@ class PostController extends Controller
             ->when(request()->input('search'), function ($query, $search) {
                 $query->where('title', 'like', "%{$search}%");
             })
-            ->orderBy('id', 'desc')
+            ->orderBy('publish_at', 'desc')
             ->paginate(request()->input('perPage', 9))
             ->withQueryString());
         $filters = [

@@ -22,5 +22,10 @@ class AdditionalEducation extends Model
         return $this->belongsTo(AdditionalEducationCategory::class, 'category_id', 'id');
     }
 
+    public function seo()
+    {
+        return $this->morphOne(Seo::class, 'seoable');
+    }
+
 
 }

@@ -4,7 +4,7 @@
 		<meta name="description" content="Your page description">
 	</Head>
 
-	<MainNavbar :sections="$page.props.navigation" />
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 
 
@@ -48,7 +48,12 @@ import FsLightbox from "fslightbox-vue/v3";
 import MainNavbar from "@/Navbars/MainNavbar.vue";
 import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import { Head } from '@inertiajs/vue3'
+import {defineComponent} from "vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
+export default defineComponent({
+	components: {MainPageNavBar}
+})
 
 
 </script>

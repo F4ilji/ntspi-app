@@ -15,6 +15,11 @@ class Faculty extends Model
         'content' => 'array',
     ];
 
+    public function seo()
+    {
+        return $this->morphOne(Seo::class, 'seoable');
+    }
+
     public function departments()
     {
         return $this->hasMany(Department::class);

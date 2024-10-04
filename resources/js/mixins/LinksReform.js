@@ -1,7 +1,7 @@
 export const linksReform = {
     data() {
         return {
-            excludedPaths: ['/sveden/', '/storage']
+            excludedPaths: ['/sveden/', '/storage/']
         }
     },
     methods: {
@@ -30,12 +30,11 @@ export const linksReform = {
         const defaultLinks = Array.from(this.getDefaultLinks());
 
         const reactiveLinks = this.createReactiveLinks(defaultLinks, hostname);
-        // const staticLinks = this.createStaticLinks(defaultLinks, hostname);
 
         reactiveLinks.forEach(link => {
             link.addEventListener('click', (event) => {
                 event.preventDefault();
-                this.clearBodyStyles(); // Очищаем стили перед переходом
+                this.clearBodyStyles();
                 const url = link.getAttribute('href');
                 this.$inertia.visit(url, {
                     preserveScroll: false,

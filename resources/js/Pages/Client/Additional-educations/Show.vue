@@ -1,5 +1,4 @@
 <script>
-import MainNavbar from "@/Navbars/MainNavbar.vue";
 import {Head, Link} from "@inertiajs/vue3";
 import FsLightbox from "fslightbox-vue/v3";
 import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
@@ -8,16 +7,18 @@ import ClientPostFilter from "@/Components/ClientPostFilter.vue";
 import ClientPost from "@/Components/ClientPost.vue";
 import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
 import ClientPostSearch from "@/Components/ClientPostSearch.vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 
 export default {
   name: "Show",
   components: {
+		MainPageNavBar,
 		ClientPostSearch,
 		AdminIndexHeader,
 		ClientPost,
 		ClientPostFilter,
-		ClientFooterDown, ClientScrollTimeline, Link, MainNavbar, FsLightbox, Head},
+		ClientFooterDown, ClientScrollTimeline, Link, FsLightbox, Head},
   data() {
     return {
 
@@ -49,7 +50,7 @@ export default {
     <title>Образовательная программа</title>
     <meta name="description" content="Your page description">
   </Head>
-  <MainNavbar class="border-b" :sections="$page.props.navigation"></MainNavbar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">

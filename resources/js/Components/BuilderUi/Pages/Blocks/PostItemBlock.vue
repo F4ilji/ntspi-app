@@ -26,7 +26,6 @@
 
 		</div>
 
-
 		<div v-else class="grid lg:grid-cols-1 lg:gap-y-16 gap-10">
 				<Link class="group block rounded-xl overflow-hidden focus:outline-none" :href="route('client.post.show', post.data.slug)">
 					<div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">

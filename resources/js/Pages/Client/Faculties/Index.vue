@@ -11,10 +11,12 @@ import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
 import ClientPostFilter from '@/Components/ClientPostFilter.vue';
 import ClientPost from '@/Components/ClientPost.vue';
 import ClientPostSearch from '@/Components/ClientPostSearch.vue';
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 export default {
   name: "Index",
   components: {
+		MainPageNavBar,
     AdminIndexHeaderTitle, AdminIndexHeader,
     AdminIndexFilter, AdminIndexSearch,
     ClientFooterDown,
@@ -51,7 +53,7 @@ export default {
     <title>Факультеты</title>
     <meta name="description" content="Your page description"/>
   </Head>
-  <MainNavbar class="border-b" :sections="$page.props.navigation"></MainNavbar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">

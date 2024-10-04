@@ -36,7 +36,6 @@
     html {
         scroll-behavior: smooth;
         scroll-padding: 6rem;
-        overflow-x: hidden;
     }
 
 

@@ -1,8 +1,8 @@
 <template>
 
 	<div :id="open_id" class="hs-overlay hidden [--overlay-backdrop:false] size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none" role="dialog" tabindex="-1" :aria-labelledby="open_id + '-label'">
-		<div class="hs-overlay-open:mt-0 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-10 opacity-0 transition-all max-w-full max-h-full h-full md:hs-overlay-open:mt-10 md:mt-0 md:max-w-lg md:max-h-none md:h-auto md:mx-auto">
-			<div class="flex flex-col bg-white pointer-events-auto max-w-full max-h-full h-full md:max-w-lg md:max-h-none md:h-auto md:border md:rounded-xl md:shadow-sm dark:bg-neutral-800 md:dark:border-neutral-700">
+		<div class="hs-overlay-open:mt-0 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-10 opacity-0 transition-all max-w-full max-h-full h-full md:mt-0 md:mx-auto">
+			<div class="flex flex-col bg-white pointer-events-auto max-w-full max-h-full h-full md:max-h-full">
 				<ClientGlobalSearch :open_id="open_id" ></ClientGlobalSearch>
 			</div>
 		</div>

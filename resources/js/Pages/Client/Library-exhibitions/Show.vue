@@ -5,11 +5,14 @@ import FsLightbox from "fslightbox-vue/v3";
 import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
 import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import ClientImageSlider from "@/Components/ClientImageSlider.vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 
 export default {
 	name: "Show",
-	components: {ClientImageSlider, ClientFooterDown, ClientScrollTimeline, Link, MainNavbar, FsLightbox, Head},
+	components: {
+		MainPageNavBar,
+		ClientImageSlider, ClientFooterDown, ClientScrollTimeline, Link, MainNavbar, FsLightbox, Head},
 	data() {
 		return {
 			blocks: this.exhibition.data.content,
@@ -42,7 +45,7 @@ export default {
 		<title>{{ exhibition.data.title }}</title>
 		<meta name="description" content="Your page description">
 	</Head>
-	<MainNavbar :sections="$page.props.navigation"></MainNavbar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
 		<div class="max-w-4xl px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
 			<div>

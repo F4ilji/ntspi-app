@@ -16,8 +16,9 @@ use App\Models\EducationalProgram;
 use App\Models\Event;
 use App\Models\Page;
 use App\Models\Post;
-use Filament\Notifications\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
@@ -33,9 +34,11 @@ class SearchController extends Controller
                 'searchRes' => null,
             ]);
         }
+
+
         $results = Search::new()
             ->add(Post::where('status', '=', 'published'), ['title', 'search_data'])
-            ->add(Page::where('searchable', '=', true), ['title', 'search_data'])
+            ->add(Page::with('section')->where('searchable', '=', true), ['title', 'search_data'])
             ->add(Event::where('event_date_start', '>', Date::now()), 'title')
             ->add(AdditionalEducation::where('is_active', '=', true), 'title')
             ->add(EducationalGroup::with('schedules'), 'title')
@@ -46,6 +49,7 @@ class SearchController extends Controller
             ->ignoreCase(true)
             ->search($req);
 
+        // Преобразуем результаты в коллекцию и мапируем их
         $resources = collect($results)->map(function ($result) {
             if ($result instanceof Post) {
                 return new PostSearchResource($result);
@@ -67,13 +71,30 @@ class SearchController extends Controller
             }
         });
 
-        $limitedRes = $resources->take(10);
+        $result_type = $this->getCategoriesSearchResult($resources);
+
+
+        if ($request->query('category')) {
+            $resources = $this->sortResourcesByCategory($resources, $request->query('category'));
+        }
+
+        $paginate_data = $this->createPaginate($resources, $request, 10);
+
+        $sortedData = $this->sortByType($paginate_data['paginator'], $req);
 
         return response()->json([
-            'searchRes' => $this->sortByType($limitedRes, $req),
+            'searchRes' => $sortedData,
+            'result_type' => $result_type,
+            'selectedCategory' => ($request->query('category') !== null) ? $request->query('category') : null,
+            'paginate' => [
+                'current_page' => $paginate_data['paginator']->currentPage(),
+                'last_page' => $paginate_data['paginator']->lastPage(),
+                'total' => $paginate_data['paginator']->total(),
+                'next_page' => $paginate_data['next_page'],
+                'prev_page' => $paginate_data['prev_page'],
+            ]
         ]);
     }
-
     private function sortByType(object $data, string $searchRequest): array
     {
         $sortedData = [];
@@ -105,5 +126,41 @@ class SearchController extends Controller
         return $matches;
     }
 
+    private function sortResourcesByCategory(Collection $resources, string $category) : Collection
+    {
+        if ($category === "All") {
+            $data = $resources;
+        } else {
+            $data = $resources->where('type', $category);
+        }
+        return $data;
+    }
 
+    private function getCategoriesSearchResult(Collection $resources)
+    {
+        return $resources->pluck('type')->unique()->values()->all();
+    }
+
+    private function createPaginate($resources, $request, $perPage = 10) : array
+    {
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+
+        // Отрезаем нужные элементы для текущей страницы
+        $currentItems = $resources->slice(($currentPage - 1) * $perPage, $perPage)->all();
+
+        // Создаем экземпляр LengthAwarePaginator
+        $paginator = new LengthAwarePaginator($currentItems, count($resources), $perPage, $currentPage, [
+            'path' => $request->url(),
+            'query' => $request->query,
+        ]);
+
+        $nextPage = $paginator->hasMorePages() ? $paginator->currentPage() + 1 : null;
+        $prevPage = $paginator->onFirstPage() ? null : $paginator->currentPage() - 1;
+
+        return [
+            'paginator' => $paginator,
+            'next_page' => $nextPage,
+            'prev_page' => $prevPage
+        ];
+    }
 }

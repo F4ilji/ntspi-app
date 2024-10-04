@@ -14,4 +14,9 @@ class VirtualExhibition extends Model
     protected $casts = [
         'content' => 'array'
     ];
+
+    public function seo()
+    {
+        return $this->morphOne(Seo::class, 'seoable');
+    }
 }

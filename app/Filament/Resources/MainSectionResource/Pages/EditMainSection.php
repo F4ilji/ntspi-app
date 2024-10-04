@@ -22,7 +22,6 @@ class EditMainSection extends EditRecord
 //
 //    protected function mutateFormDataBeforeSave(array $data): array
 //    {
-//        $this->subSection_ids = $data['subSection_ids'];
 //        unset($data['subSection_ids']);
 //
 //        return $data;
@@ -30,6 +29,7 @@ class EditMainSection extends EditRecord
 
     protected function afterSave(): void
     {
+        $this->subSection_ids = SubSection::query()->where('main_section_id', '=', $this->record->id)->pluck('id')->toArray();
         SubSection::query()->where('main_section_id', '=', $this->record->id)->update(['main_section_id' => NULL]);
         SubSection::whereIn('id', $this->subSection_ids)->update(['main_section_id' => $this->record->id]);
         $subSections = SubSection::query()->where('main_section_id', '=', $this->record->id)->get();

@@ -35,4 +35,9 @@ class EducationalProgram extends Model
     {
         return $this->hasMany(AdmissionPlan::class, 'educational_programs_id', 'id');
     }
+
+    public function seo()
+    {
+        return $this->morphOne(Seo::class, 'seoable');
+    }
 }

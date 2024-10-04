@@ -8,7 +8,7 @@
 
 
 	<div class="flex flex-col h-screen justify-between">
-		<MainNavbar class="border-b" :sections="$page.props.navigation"/>
+		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 		<div class="relative mx-auto mb-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
 
@@ -175,6 +175,7 @@ import PageTitle from "@/Components/BuilderUi/Pages/PageTitle.vue";
 import ClientFacultyWorkerCard from "@/Components/PersonCards/ClientFacultyWorkerCard.vue";
 import PostBuilder from "@/Components/BuilderUi/Posts/PostBuilder.vue";
 import FacultyBuilder from "@/Components/BuilderUi/Faculties/FacultyBuilder.vue";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 
 export default {
@@ -196,6 +197,7 @@ export default {
 	},
 
 	components: {
+		MainPageNavBar,
 		FacultyBuilder,
 		PostBuilder,
 		ClientFacultyWorkerCard,

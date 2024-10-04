@@ -9,7 +9,7 @@
 
 
 	<div class="flex flex-col h-screen">
-		<MainNavbar class="border-b" :sections="$page.props.navigation" />
+		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 		<main class="flex-grow">
 			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
@@ -338,6 +338,7 @@ import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import { Head } from '@inertiajs/vue3'
 import slugify from "slugify";
 import axios from "axios";
+import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
 
 export default {
@@ -356,6 +357,7 @@ export default {
 	},
 
 	components: {
+		MainPageNavBar,
 		ClientFooterDown,
 		MainNavbar,
 		Link,

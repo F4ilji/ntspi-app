@@ -18,6 +18,7 @@ class ClientPostListResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
+            'preview_text' => $this->preview_text,
             'content' => $this->content,
             'category' => $this->category,
             'authors' => $this->authors,
