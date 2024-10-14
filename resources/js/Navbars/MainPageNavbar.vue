@@ -39,11 +39,13 @@
 				</div>
 				<div>
 					<DesktopNavBar :sections="sections" :under-slider-header="underSliderHeader" />
-					<MobileNavbar :sections="sections" />
+
 				</div>
 			</div>
 		</nav>
 	</header>
+
+	<MobileNavbar :sections="sections" />
 
 
 	<SearchModal open_id="open-search-modal" />
@@ -156,7 +158,6 @@ export default {
 
 	},
 	mounted() {
-		console.log()
 		window.addEventListener('scroll', this.handleScroll)
 		window.addEventListener('scroll', this.checkSlider)
 		if (this.getCookie('bvi_panelActive') === null) {
