@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\api\NavigateController;
+use App\Http\Controllers\ClientWidgetAdditionalEducationalProgramController;
+use App\Http\Controllers\ClientWidgetEducationalProgramController;
 use App\Http\Controllers\ClientWidgetFormController;
 use App\Http\Controllers\ClientWidgetPageController;
 use App\Http\Controllers\ClientWidgetPostController;
@@ -23,10 +25,15 @@ Route::get('/widget/get-posts', [ClientWidgetPostController::class, 'index'])->n
 
 Route::get('/widget/get-posts/{id}', [ClientWidgetPostController::class, 'single'])->name('client.widget.post.single');
 
+Route::get('/widget/get-additional-programs', [ClientWidgetAdditionalEducationalProgramController::class, 'index'])->name('client.widget.additional.program.index');
+
+Route::get('/widget/get-educational-programs', [ClientWidgetEducationalProgramController::class, 'index'])->name('client.widget.educational.program.index');
+
+
 Route::get('/widget/get-page/{id}', [ClientWidgetPageController::class, 'single'])->name('client.widget.page.single');
 
 Route::get('/widget/get-form/{id}', [ClientWidgetFormController::class, 'single'])->middleware('rate.limited.check')->name('client.widget.form.single');
 
 Route::post('/widget/get-form/{id}/submit', [ClientWidgetFormController::class, 'submit'])->middleware(['rate.limited.counter', 'rate.limited.check'])->name('client.widget.form.submit');
 
-Route::get('/filament/get-icons/', [IconController::class, 'index'])->name('get.icons');
+//Route::get('/filament/get-icons/', [IconController::class, 'index'])->name('get.icons');

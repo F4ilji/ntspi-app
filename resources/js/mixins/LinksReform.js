@@ -25,7 +25,7 @@ export const linksReform = {
             }
         },
     },
-    mounted() {
+    updated() {
         const hostname = window.location.hostname;
         const defaultLinks = Array.from(this.getDefaultLinks());
 

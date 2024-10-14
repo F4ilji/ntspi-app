@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('direction_additional_education', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->unique();
+            $table->string('slug')->unique();
             $table->boolean('is_active');
             $table->timestamps();
         });

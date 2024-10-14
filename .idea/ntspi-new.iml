@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/app" isTestSource="false" packagePrefix="App\" />
       <sourceFolder url="file://$MODULE_DIR$/database/factories" isTestSource="false" packagePrefix="Database\Factories\" />
       <sourceFolder url="file://$MODULE_DIR$/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
+      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" packagePrefix="Tests\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/brick/math" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/carbonphp/carbon-doctrine-types" />
@@ -173,6 +174,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/joshembling/image-optimizer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bezhansalleh/filament-shield" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-permission" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/vkcom/vk-php-sdk" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

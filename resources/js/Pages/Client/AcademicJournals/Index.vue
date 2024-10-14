@@ -72,7 +72,7 @@ export default {
 									<!-- Grid -->
 									<div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-6">
 										<template v-for="journal in journals.data">
-											<Link :href="route('client.academicJournals.show', 'aliqua-dolor-vel')" class="group flex items-center bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition" >
+											<Link :href="route('client.academicJournals.show', journal.slug)" class="group flex items-center bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition" >
 												<div class="p-4 md:p-5 w-full">
 													<div class="flex justify-between items-center gap-x-3">
 														<div class="grow">

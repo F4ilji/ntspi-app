@@ -5,7 +5,7 @@
 	</Head>
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
-	<div class="w-full h-[67px] fixed" id="visor"></div>
+	<div class="w-full h-[67px] fixed pointer-events-none" id="visor"></div>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">

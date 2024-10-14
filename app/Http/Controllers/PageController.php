@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Page\StoreRequest;
 use App\Http\Requests\Page\UpdateRequest;
+use App\Http\Resources\ClientBreadcrumbPage;
+use App\Http\Resources\ClientBreadcrumbSection;
+use App\Http\Resources\ClientBreadcrumbSubSection;
 use App\Http\Resources\ClientNavigationResource;
 use App\Http\Resources\MainSectionResource;
 use App\Http\Resources\PageResource;
@@ -45,9 +48,9 @@ class PageController extends Controller
         if (isset($page->section)) {
             $subSectionPages = PageResource::collection($page->section->pages);
             $breadcrumbs = [
-                'mainSection' => $page->section->mainSection->title,
-                'subSection' => $page->section->title,
-                'page' => $page->title,
+                'mainSection' => new ClientBreadcrumbSection($page->section->mainSection),
+                'subSection' => new ClientBreadcrumbSubSection($page->section),
+                'page' => new ClientBreadcrumbPage($page),
             ];
         } else {
             $subSectionPages = null;

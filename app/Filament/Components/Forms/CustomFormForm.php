@@ -46,7 +46,7 @@ class CustomFormForm
                                             TextInput::make('title')->label('Заголовок')->required()
                                                 ->live(onBlur: true)
                                                 ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
-                                                    $set('form_id', Str::slug($state));
+                                                    $set('form_id', Str::slug($state) . Carbon::now()->timestamp);
                                                 }),
                                             TextInput::make('form_id')->label('ID формы')->unique(ignoreRecord: true)->required(),
                                         ]),
@@ -77,7 +77,8 @@ class CustomFormForm
                                                     ]),
                                                     Builder\Block::make('answers')->schema([]),
                                                 ])->required(),
-                                            ])->collapsed(),
+                                            ])
+                                            ->collapsed(),
                                     ]),
                             ]),
                     ])

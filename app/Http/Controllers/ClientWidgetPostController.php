@@ -12,7 +12,6 @@ class ClientWidgetPostController extends Controller
 {
     public function index()
     {
-
         return PostThumbnailResource::collection(
             Post::query()
                 ->where('status', PostStatus::PUBLISHED)

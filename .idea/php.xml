@@ -184,6 +184,7 @@
       <path value="$PROJECT_DIR$/vendor/joshembling/image-optimizer" />
       <path value="$PROJECT_DIR$/vendor/bezhansalleh/filament-shield" />
       <path value="$PROJECT_DIR$/vendor/spatie/laravel-permission" />
+      <path value="$PROJECT_DIR$/vendor/vkcom/vk-php-sdk" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

@@ -1,0 +1,1 @@
+import{_ as r}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{o as t,c as o,x as s}from"./app-lWrE2aWG.js";const n={name:"AdminIndexHeader"},a={class:"px-4 py-4 gap-3 flex justify-center md:items-center border-gray-200"};function c(e,d,p,i,m,_){return t(),o("div",a,[s(e.$slots,"default")])}const x=r(n,[["render",c]]);export{x as A};

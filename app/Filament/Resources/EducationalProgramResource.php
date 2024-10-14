@@ -34,7 +34,6 @@ class EducationalProgramResource extends Resource
 
     protected static ?string $navigationGroup = 'Образование';
 
-
     protected static ?string $pluralLabel = 'Образовательные программы';
 
     protected static ?string $navigationParentItem = 'Приемная-компания';
@@ -242,7 +241,7 @@ class EducationalProgramResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')->sortable(),
                 Tables\Columns\TextColumn::make('code_napr'),
                 Tables\Columns\TextColumn::make('directionStudy.lvl_edu')->limit(30),
             ])

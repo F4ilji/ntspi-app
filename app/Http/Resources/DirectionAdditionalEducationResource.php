@@ -17,6 +17,7 @@ class DirectionAdditionalEducationResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'slug' => $this->slug,
         ];
     }
 }

@@ -54,7 +54,11 @@ class EditPage extends EditRecord
     {
         $title = $data['title'];
         $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
-        $description = strip_tags($rowData['data']['content']);
+        if ($rowData !== null) {
+            $description = strip_tags($rowData['data']['content']);
+        } else {
+            $description = null;
+        }
 
         return [
             'title' => $title,

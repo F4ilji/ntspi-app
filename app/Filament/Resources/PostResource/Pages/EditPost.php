@@ -35,6 +35,9 @@ class EditPost extends EditRecord
     private function setPreviewText(array $data) : string
     {
         $rowData = $this->getBlockBySeoActiveState('paragraph', $data['content']);
+        if ($rowData === null) {
+            $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
+        }
         $preview_text = strip_tags($rowData['data']['content']);
         return Str::limit($preview_text, 160);
     }
@@ -61,7 +64,10 @@ class EditPost extends EditRecord
     private function generateSeo(array $data) : array
     {
         $title = $data['title'];
-        $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
+        $rowData = $this->getBlockBySeoActiveState('paragraph', $data['content']);
+        if ($rowData === null) {
+            $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
+        }
         $description = strip_tags($rowData['data']['content']);
         $image = ($this->record->preview !== null) ? $this->record->preview : null;
 

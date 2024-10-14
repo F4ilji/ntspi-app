@@ -111,9 +111,9 @@ class ClientProgramController extends Controller
             ));
     }
 
-    public function show($id)
+    public function show(string $slug)
     {
-        $program = new EducationalProgramFullResource(EducationalProgram::query()->where('id', $id)->with(['admission_plans', 'directionStudy'])->first());
+        $program = new EducationalProgramFullResource(EducationalProgram::query()->where('slug', $slug)->with(['admission_plans', 'directionStudy'])->first());
         $formsEducational = BudgetEducation::cases();
         $formsEducational = collect($formsEducational);
         $formsEdu = $formsEducational->mapWithKeys(function ($formEducational) {

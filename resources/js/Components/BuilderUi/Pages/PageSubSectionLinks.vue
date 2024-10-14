@@ -12,7 +12,8 @@
 							 class="relative duration-300 flex gap-x-1 w-full rounded-md cursor-pointer items-center px-2 py-1 text-left text-sm">
 							{{
 								page.title
-							}}</a>
+							}}
+						</a>
 					</li>
 				</ul>
 			</div>

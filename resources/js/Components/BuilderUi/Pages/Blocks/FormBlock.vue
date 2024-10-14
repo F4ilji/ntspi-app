@@ -1,18 +1,8 @@
 <template>
 	<div v-if="loading" class="flex flex-col space-y-4">
-		<div class="flex animate-pulse">
-			<div class="shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-44">
-				<div class="bg-gray-200 group-focus:scale-105 transition-transform duration-500 ease-in-out size-full absolute top-0 start-0 object-cover rounded-xl" />
-			</div>
-			<div class="ms-4 mt-2 w-full">
-				<p class="h-4 bg-gray-200 rounded-full" style="width: 40%;"></p>
-				<ul class="mt-5 space-y-3 flex flex-col">
-					<li class="w-full h-4 bg-gray-200 rounded-full"></li>
-					<li class="w-full h-4 bg-gray-200 rounded-full"></li>
-					<li class="w-full h-4 bg-gray-200 rounded-full"></li>
-					<li class="w-full h-4 bg-gray-200 rounded-full"></li>
-					<li class="w-20 h-4 bg-gray-200 rounded-full"></li>
-				</ul>
+		<div class="flex-col animate-pulse mt-10">
+			<div class="w-[25rem] mx-auto h-8 bg-gray-200 rounded-full"></div>
+			<div class="mt-5 mx-auto w-[40rem] h-60 relative z-1000 border rounded-xl sm:mt-10 md:p-10 bg-gray-200">
 			</div>
 		</div>
 	</div>
@@ -50,12 +40,17 @@ export default {
 		}
 	},
 	mounted() {
-		this.getForm(this.block.data.form);
+		const id = this.block?.data.form || this.formId
+		this.getForm(id);
 	},
 	props: {
 		block: {
 			type: Object,
 		},
+		formId: {
+			type: String,
+			default: null,
+		}
 	},
 }
 </script>

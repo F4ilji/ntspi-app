@@ -6,7 +6,7 @@
 					<ol v-if="breadcrumbs" class="flex items-center whitespace-normal min-w-0 flex-wrap gap-y-2"
 							aria-label="Breadcrumb">
 						<li class="text-sm">
-										<span class="flex items-center text-gray-500 hover:text-primaryBlue">
+										<Link :href="route('index')" class="flex items-center text-gray-500 hover:text-primaryBlue">
 											Главная
 											<svg class="flex-shrink-0 mx-3 overflow-visible h-2.5 w-2.5 text-gray-400"
 													 width="16" height="16"
@@ -14,11 +14,11 @@
 												<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
 															stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 											</svg>
-										</span>
+										</Link>
 						</li>
 						<li class="text-sm">
-										<span class="flex items-center text-gray-500 hover:text-primaryBlue" @click.prevent>
-											{{ textLimit(this.breadcrumbs.mainSection, 25) }}
+										<span class="flex items-center text-gray-500 hover:text-primaryBlue cursor-pointer" @click.prevent="handleSectionClick(this.breadcrumbs.mainSection)">
+											{{ textLimit(this.breadcrumbs.mainSection.data.title, 25) }}
 											<svg class="flex-shrink-0 mx-3 overflow-visible h-2.5 w-2.5 text-gray-400"
 													 width="16" height="16"
 													 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -28,8 +28,8 @@
 										</span>
 						</li>
 						<li class="text-sm">
-										<span class="flex items-center text-gray-500 hover:text-primaryBlue" @click.prevent>
-											{{ textLimit(this.breadcrumbs.subSection, 25) }}
+										<span class="flex items-center text-gray-500 hover:text-primaryBlue cursor-pointer" @click.prevent="handleSubSectionClick(this.breadcrumbs.mainSection, this.breadcrumbs.subSection)">
+											{{ textLimit(this.breadcrumbs.subSection.data.title, 25) }}
 											<svg class="flex-shrink-0 mx-3 overflow-visible h-2.5 w-2.5 text-gray-400"
 													 width="16" height="16"
 													 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -39,9 +39,9 @@
 										</span>
 						</li>
 						<li class="text-sm">
-										<span class="flex items-center text-gray-500 hover:text-primaryBlue" @click.prevent>
-											{{ textLimit(this.breadcrumbs.page, 25) }}
-										</span>
+										<Link :href="route('page.view', this.breadcrumbs.page.data.path)" class="flex items-center text-gray-500 hover:text-primaryBlue">
+											{{ textLimit(this.breadcrumbs.page.data.title, 25) }}
+										</Link>
 						</li>
 					</ol>
 					<ol v-if="!breadcrumbs" class="flex items-center whitespace-nowrap min-w-0 flex-wrap"
@@ -92,6 +92,78 @@ export default {
 			}
 			return text
 		},
+		isMobileDevice() {
+			return window.innerWidth < 1024; // Задайте порог для мобильных устройств
+		},
+		handleSectionClick(breadcrumb) {
+			if (this.isMobileDevice()) {
+				this.toggleMobileNavSection(breadcrumb)
+			} else {
+				this.toggleDesktopNavSection(breadcrumb)
+			}
+		},
+		handleSubSectionClick(mainSectionBreadcrumb, breadcrumb) {
+			if (this.isMobileDevice()) {
+				this.toggleMobileNavSubSection(mainSectionBreadcrumb, breadcrumb)
+			} else {
+				this.toggleDesktopNavSubSection(mainSectionBreadcrumb, breadcrumb)
+			}
+		},
+		highlightNavItem(item) {
+			item.classList.add('animate-pulse');
+
+			setTimeout(() => {
+				item.classList.remove('animate-pulse');
+			}, 4000);
+		},
+		openMobileNavMenu() {
+			const openMobileNavBtn = document.getElementById('open-mobile-btn');
+			openMobileNavBtn.click();
+		},
+		toggleMobileNavSubSection(mainSectionBreadcrumb, breadcrumb) {
+			this.openMobileNavMenu()
+			const mobileNavElement = document.getElementById('open-mobile-nav');
+			const sectionNavBlock = mobileNavElement.querySelector('#nav-section-accordion-' + mainSectionBreadcrumb.data.slug);
+			const sectionNavBlockBtn = mobileNavElement.querySelector('#nav-section-accordion-btn-' + mainSectionBreadcrumb.data.slug);
+			if (!sectionNavBlock.classList.contains('active')) {
+				sectionNavBlockBtn.click()
+			}
+			const subSectionNavBlock = mobileNavElement.querySelector('#nav-sub-section-accordion-' + breadcrumb.data.slug);
+			const subSectionNavBlockBtn = mobileNavElement.querySelector('#nav-sub-section-accordion-btn-' + breadcrumb.data.slug);
+			if (subSectionNavBlock.classList.contains('active')) {
+				subSectionNavBlockBtn.click()
+			}
+
+			this.highlightNavItem(subSectionNavBlock)
+		},
+		toggleMobileNavSection(breadcrumb) {
+			const mobileNavElement = document.getElementById('open-mobile-nav');
+			const sectionNavBlock = mobileNavElement.querySelector('#nav-section-accordion-' + breadcrumb.data.slug);
+			const sectionNavBlockBtn = mobileNavElement.querySelector('#nav-section-accordion-btn-' + breadcrumb.data.slug);
+			if (sectionNavBlock.classList.contains('active')) {
+				sectionNavBlockBtn.click()
+			}
+			this.openMobileNavMenu()
+
+			this.highlightNavItem(sectionNavBlock)
+
+		},
+		toggleDesktopNavSubSection(mainSectionBreadcrumb, breadcrumb) {
+			const desktopNavElement = document.getElementById('desktop-nav');
+			const sectionNavTitle = desktopNavElement.querySelector('#nav-sub-section-title-' + breadcrumb.data.slug);
+			const sectionNavBlockBtn = desktopNavElement.querySelector('#nav-section-btn-' + mainSectionBreadcrumb.data.slug);
+			sectionNavBlockBtn.click()
+			this.highlightNavItem(sectionNavTitle)
+		},
+		toggleDesktopNavSection(breadcrumb) {
+			const desktopNavElement = document.getElementById('desktop-nav');
+			const sectionNavBlock = desktopNavElement.querySelector('#nav-section-menu-' + breadcrumb.data.slug);
+			const sectionNavBlockBtn = desktopNavElement.querySelector('#nav-section-btn-' + breadcrumb.data.slug);
+			sectionNavBlockBtn.click()
+			// this.highlightNavItem(sectionNavBlock)
+		},
+
+
 	},
 
 	props: {

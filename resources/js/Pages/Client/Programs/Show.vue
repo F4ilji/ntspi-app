@@ -11,11 +11,13 @@ import ClientPostSearch from "@/Components/ClientPostSearch.vue";
 import ClientProgramFilter from "@/Components/ClientProgramFilter.vue";
 import LevelEduFilter from "@/Components/BuilderUi/Programs/Filters/LevelEduFilter.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import FormBlock from "@/Components/BuilderUi/Pages/Blocks/FormBlock.vue";
 
 
 export default {
   name: "Show",
   components: {
+		FormBlock,
 		MainPageNavBar,
 		LevelEduFilter, ClientProgramFilter,
 		ClientPostSearch,

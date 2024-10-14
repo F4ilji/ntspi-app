@@ -11,7 +11,7 @@
 
 		<main class="flex-grow">
 			<div class="relative  mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
-				<div class="w-full h-[67px] fixed" id="visor"></div>
+				<div class="w-full h-[67px] fixed pointer-events-none" id="visor"></div>
 
 				<div class="sticky top-[110px] hidden h-[calc(100vh-110px)] max-w-[20%] md:flex md:shrink-0 md:flex-col md:justify-between">
 					<nav v-if="this.divisions"
@@ -41,6 +41,12 @@
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#persons">Состав</a>
 							</li>
+							<li v-if="division.data.description.length > 0" class="anchor-li">
+								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'description' }"
+									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
+									 href="#description">Описание</a>
+							</li>
+
 							<transition name="fade">
 								<li class="anchor-li flex items-center py-2 border-t" v-if="scrollTop" @click.prevent="scrollToTop">
 									<button class="bg-transperant text-gray-600 cursor-pointer hover:text-gray-900 duration-300 block px-2 leading-[1.6] rounded-md">К началу</button>
@@ -53,7 +59,7 @@
 					</div>
 				</nav>
 
-				<article class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
+				<main class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
 					<div class="space-y-5 md:space-y-5">
 						<div class="flex justify-between items-center mb-6">
 							<div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
@@ -125,134 +131,25 @@
 								</div>
 							</template>
 
-							<!-- FAQ -->
-
-							<!-- End FAQ -->
 
 
-							<!-- Card Section -->
-							<!-- Grid -->
+							<h2 v-if="division.data.description.length > 0" id="description" class="font-bold text-xl">Описание</h2>
 
-							<!-- End Grid -->
-							<!-- End Card Section -->
+							<DivisionBuilder :blocks="division.data.description" />
 
-							<!--										<template v-for="block in this.blocks" :key="block.id">-->
-							<!--						<div v-if="block.type === 'image'">-->
-							<!--							<figure :class="block.data.withBackground ? 'bg-gray-100 rounded-lg' : ''">-->
-							<!--								<img loading="lazy" @click="openEditorImagesOnSlide(block.slideNumber)"-->
-							<!--									 :src="block.data.file.url"-->
-							<!--									 :class="block.data.withBackground ? 'rounded-none' : 'w-full'"-->
-							<!--									 class="mx-auto max-h-[350px] object-cover rounded-lg hover:opacity-95 hover:duration-200 transition"-->
-							<!--									 :alt="block.data.caption">-->
-							<!--								<figcaption class="mt-3 text-sm text-center text-gray-500">-->
-							<!--									{{ block.data.caption }}-->
-							<!--								</figcaption>-->
-							<!--							</figure>-->
-							<!--						</div>-->
-							<!--						<div v-if="block.type === 'heading'">-->
-							<!--							<h2 :id="generateSlug(block.data.content)" class="font-bold text-xl">{{ block.data.content }}</h2>-->
-							<!--						</div>-->
-							<!--						<div v-if="block.type === 'image'">-->
-							<!--							<template v-for="img in block.data.url">-->
-							<!--								<img loading="lazy" class="mx-auto object-cover rounded-sm hover:opacity-95 hover:duration-200 transition" :src="'/storage/' + img" alt="">-->
-							<!--							</template>-->
-							<!--						</div>-->
-							<!--						<div class="text-[16px] text-[#374151] dark:text-gray-200 leading-8 font-light" v-html="block.data.content" v-if="block.type === 'paragraph'"></div>-->
-							<!--						<div v-if="block.type === 'attaches'">-->
-							<!--							<div class="flex border rounded-lg px-4 py-2 items-center justify-between">-->
-							<!--								<div class="flex items-center">-->
-							<!--									<div class="w-[35px] h-[35px] bg-black flex justify-center items-center rounded-xl mr-2">-->
-							<!--										<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"-->
-							<!--											 stroke-width="1.5"-->
-							<!--											 stroke="currentColor" class="w-6 h-6">-->
-							<!--											<path stroke-linecap="round" stroke-linejoin="round"-->
-							<!--												  d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"-->
-							<!--												  stroke="white"/>-->
-							<!--										</svg>-->
-							<!--									</div>-->
-							<!--									<div>{{ block.data.title }}</div>-->
-							<!--								</div>-->
 
-							<!--								<a :href="block.data.file.url" download type="button"-->
-							<!--								   class="w-[35px] h-[35px] flex bg-gray-100 rounded-lg justify-center items-center hover:bg-gray-200 duration-200">-->
-							<!--									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"-->
-							<!--										 stroke-width="1.5"-->
-							<!--										 stroke="currentColor" class="w-6 h-6">-->
-							<!--										<path stroke-linecap="round" stroke-linejoin="round"-->
-							<!--											  d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>-->
-							<!--									</svg>-->
-							<!--								</a>-->
-							<!--							</div>-->
-							<!--						</div>-->
-							<!--						<div v-if="block.type === 'linkTool'">-->
-							<!--							<div v-if="block.data.meta.type === 'post'" class="w-full mx-auto">-->
-							<!--								<a class="group relative block rounded-xl dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" :href="block.data.link">-->
-							<!--										<div class="flex-shrink-0 relative w-full rounded-xl overflow-hidden w-full h-[350px] before:absolute before:inset-x-0 before:w-full before:h-full before:bg-gradient-to-t before:from-gray-900/[.7] before:z-[1]">-->
-							<!--										</div>-->
 
-							<!--										<div class="absolute top-0 inset-x-0 z-10">-->
-							<!--											<div class="p-4 flex flex-col h-full sm:p-6">-->
-							<!--												&lt;!&ndash; Avatar &ndash;&gt;-->
-							<!--												<div class="flex items-center">-->
-							<!--													<div class="ms-2.5 sm:ms-4">-->
-							<!--														<h4 class="font-semibold text-white">-->
-							<!--															{{ block.data.meta.data.authors[0].name }}-->
-							<!--														</h4>-->
-							<!--														<p class="text-xs text-white/[.8]">-->
-							<!--															{{ block.data.meta.data.created_post }}-->
-							<!--														</p>-->
-							<!--													</div>-->
-							<!--												</div>-->
-							<!--												&lt;!&ndash; End Avatar &ndash;&gt;-->
-							<!--											</div>-->
-							<!--										</div>-->
 
-							<!--										<div class="absolute bottom-0 inset-x-0 z-10">-->
-							<!--											<div class="flex flex-col h-full p-4 sm:p-6">-->
-							<!--												<h3 class="text-lg sm:text-3xl font-semibold text-white group-hover:text-white/[.8]">-->
-							<!--													{{ block.data.meta.data.title }}-->
-							<!--												</h3>-->
-							<!--												<p class="mt-2 text-white/[.8]">-->
-							<!--													{{ textLimit(block.data.meta.description, 200) }}-->
-							<!--												</p>-->
-							<!--											</div>-->
-							<!--										</div>-->
-							<!--									</a>-->
-							<!--							</div>-->
-							<!--							&lt;!&ndash; End Card Blog &ndash;&gt;-->
-							<!--							<div v-if="block.data.meta.type === 'student'" class="flex flex-col rounded-xl p-4 md:p-6 bg-white border border-gray-200 dark:bg-slate-900 dark:border-gray-700">-->
-							<!--								<div class="flex items-center gap-x-4">-->
-							<!--									<img loading="lazy" class="rounded-xl w-[150px]" :src="block.data.meta.data.photo" alt="Image Description">-->
-							<!--									<div class="grow">-->
-							<!--										<Link :href="block.data.link" class="font-medium text-gray-800 hover:text-gray-500 underline">-->
-							<!--											{{ block.data.meta.title }}-->
-							<!--										</Link>-->
-							<!--										<p class="text-xs text-gray-500 mt-2">-->
-							<!--											{{ block.data.meta.data.position }}-->
-							<!--										</p>-->
-							<!--										<p class="text-xs text-gray-500 mt-2">-->
-							<!--											{{ block.data.meta.data.contactEmail }} / <a :href="block.data.meta.data.vk_link">Вконтакте</a>-->
-							<!--										</p>-->
-							<!--									</div>-->
-							<!--								</div>-->
-
-							<!--								&lt;!&ndash; Social Brands &ndash;&gt;-->
-							<!--								&lt;!&ndash; End Social Brands &ndash;&gt;-->
-							<!--							</div>-->
-							<!--						</div>-->
-
-							<!--					</template>-->
 						</div>
 
 
 					</div>
-				</article>
+				</main>
 			</div>
 		</main>
 		<ClientFooterDown/>
 	</div>
 
-	<FsLightbox class="z-1000" :slide="slide" :toggler="toggler" :sources="editorImages"/>
 
 
 </template>
@@ -268,6 +165,7 @@ import { Head } from '@inertiajs/vue3'
 import slugify from "slugify";
 import axios from "axios";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import DivisionBuilder from "@/Components/BuilderUi/Divisions/DivisionBuilder.vue";
 
 
 export default {
@@ -289,6 +187,7 @@ export default {
 	},
 
 	components: {
+		DivisionBuilder,
 		MainPageNavBar,
 		ClientFooterDown,
 		Link,
@@ -337,8 +236,6 @@ export default {
 	mounted() {
 		window.addEventListener("scroll", this.onScroll)
 
-		// this.editorImages = this.blocksWithSlideNumber.filter(block => block.type === 'image').map(block => block.data.file.url);
-
 		window.addEventListener("scroll", () => {
 			const headings = document.querySelectorAll('h2');
 			const visor = document.querySelector('#visor');
@@ -382,6 +279,10 @@ export default {
 </script>
 
 <style>
+
+.styled-scrollbar {
+	overflow: hidden;
+}
 
 
 .paragraph-container a {

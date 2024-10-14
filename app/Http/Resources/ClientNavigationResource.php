@@ -17,6 +17,7 @@ class ClientNavigationResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'slug' => $this->slug,
             'subSections' => ClientSubSectionNavigateResource::collection($this->whenLoaded('subSections')->sortBy('sort')),
         ];
     }

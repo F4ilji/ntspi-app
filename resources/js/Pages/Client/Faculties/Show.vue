@@ -48,6 +48,12 @@
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#department">Кафедры факультета</a>
 						</li>
+						<li class="anchor-li">
+							<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'description' }"
+								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
+								 href="#description">Описание</a>
+						</li>
+
 						<transition name="fade">
 							<li class="anchor-li flex items-center py-2 border-t" v-if="scrollTop" @click.prevent="scrollToTop">
 								<button class="bg-transperant text-gray-600 cursor-pointer hover:text-gray-900 duration-300 block px-2 leading-[1.6] rounded-md">К началу</button>
@@ -138,6 +144,9 @@
 							</template>
 
 						</div>
+
+						<h2 id="description" class="font-bold text-xl">Описание</h2>
+
 
 						<div class="space-y-3 md:space-y-4">
 							<FacultyBuilder :blocks="this.faculty.data.content "/>
@@ -295,6 +304,10 @@ export default {
 </script>
 
 <style>
+
+.styled-scrollbar {
+	overflow: hidden;
+}
 
 
 .paragraph-container a {

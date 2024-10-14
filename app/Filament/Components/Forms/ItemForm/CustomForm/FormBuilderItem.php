@@ -197,9 +197,51 @@ class FormBuilderItem
                                 RuleRequiredComponent::getComponent(),
                            ]),
                     ]),
+                Builder\Block::make('additional_education_choice')
+                    ->label('Выбрать дополнительное образование')
+                    ->schema([
+                        TextInput::make('title_field')
+                            ->label('Заголовок поля')
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set) {
+                                $set('name_field', Str::slug($state) . Carbon::now()->timestamp );
+                            }),
+                        Forms\Components\Hidden::make('name_field')->required(),
+                        Forms\Components\Textarea::make('description')->label('Описание поля (опционально)'),
+
+                        Section::make('Настройка')
+                            ->statePath('rules')
+                            ->schema([
+//                                RuleRequiredComponent::getComponent(),
+//                                RuleLengthLimitComponent::getComponent(),
+                            ]),
+                    ])
+                    ->maxItems(1),
+                Builder\Block::make('educational_program_choice')
+                    ->label('Выбрать Образовательную программу')
+                    ->schema([
+                        TextInput::make('title_field')
+                            ->label('Заголовок поля')
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set) {
+                                $set('name_field', Str::slug($state) . Carbon::now()->timestamp );
+                            }),
+                        Forms\Components\Hidden::make('name_field')->required(),
+                        Forms\Components\Textarea::make('description')->label('Описание поля (опционально)'),
+
+                        Section::make('Настройка')
+                            ->statePath('rules')
+                            ->schema([
+                                RuleRequiredComponent::getComponent(),
+                                RuleLengthLimitComponent::getComponent(),
+                            ]),
+                    ])
+                    ->maxItems(1),
             ])
             ->label('')
             ->addActionLabel('Добавить поле')
+            ->blockPickerColumns(3)
+            ->blockPickerWidth('2xl')
             ->collapsed();
 
     }

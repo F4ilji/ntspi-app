@@ -35,7 +35,11 @@ class PostForm
     private static function findSeoActive(array $data) : bool
     {
         $bool = false;
+
         foreach ($data as $item) {
+            if ($item['type'] !== 'paragraph') {
+                continue;
+            }
             if ($item['data']['seo_active'] === true) {
                 $bool = true;
                 break;
@@ -92,6 +96,7 @@ class PostForm
                                                 ->schema([
                                                     Toggle::make('seo_active')->label('Использовать блок как seo')
                                                         ->live(onBlur: true)
+                                                        ->required()
                                                         ->disabled(function ($state, Forms\Get $get) {
                                                             $data = $get('../../');
                                                             return self::findSeoActive($data) && !$state;
@@ -112,15 +117,21 @@ class PostForm
                                                         ])
                                                         ->label(''),
                                                 ])->live(onBlur: true),
-                                            Builder\Block::make('files')->label('Файлы')
+                                            Builder\Block::make('files')
                                                 ->schema([
                                                     Forms\Components\Repeater::make('file')->schema([
+                                                        Hidden::make('expansion')->required(),
+                                                        Hidden::make('size')->required(),
                                                         TextInput::make('title')
                                                             ->required()
                                                             ->maxLength(255)
                                                             ->autofocus(),
                                                         FileUpload::make('path')
                                                             ->required()
+                                                            ->getUploadedFileNameForStorageUsing(
+                                                                fn (TemporaryUploadedFile $file): string =>
+                                                                str(Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '-' . Carbon::now()->timestamp ) . '.' . $file->getClientOriginalExtension())
+                                                            )
                                                             ->acceptedFileTypes([
                                                                 'application/pdf',
                                                                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -132,10 +143,14 @@ class PostForm
                                                             ->disk('public')
                                                             ->directory('files')
                                                             ->downloadable()
+                                                            ->afterStateUpdated(function ($set, $state) {
+                                                                $set('expansion', $state?->getClientOriginalExtension());
+                                                                $set('size', ByteConverter::bytesToHuman($state?->getSize()));
+                                                            })
                                                             ->visibility('public')
                                                     ]),
                                                 ]),
-                                            Builder\Block::make('person')->label('Персона')
+                                            Builder\Block::make('person')
                                                 ->schema([
                                                     TextInput::make('name')
                                                         ->label('Имя')
@@ -158,7 +173,7 @@ class PostForm
                                                         ]),
                                                     ])->minItems(1),
                                                 ]),
-                                            Builder\Block::make('stepper')->label('Этапы')
+                                            Builder\Block::make('stepper')
                                                 ->schema([
                                                     TextInput::make('step_name')
                                                         ->label('Название шага')
@@ -167,18 +182,11 @@ class PostForm
                                                     Forms\Components\Repeater::make('steps')->schema([
                                                         TextInput::make('title')
                                                             ->required()
-                                                            ->live()
                                                             ->maxLength(255)->columnSpanFull(),
                                                         RichEditor::make('content')->required(),
-                                                    ])
-                                                        ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
-                                                        ->minItems(1)
-                                                        ->collapsible()
-                                                        ->collapsed()
-
-
+                                                    ])->minItems(1),
                                                 ]),
-                                            Builder\Block::make('tabs')->label('Вкладки')
+                                            Builder\Block::make('tabs')
                                                 ->schema([
                                                     Forms\Components\Repeater::make('tab')->schema([
                                                         TextInput::make('title')
@@ -344,24 +352,7 @@ class PostForm
                                                             ->addActionLabel('Добавить новый блок'),
                                                     ])->minItems(1),
                                                 ]),
-                                            Builder\Block::make('images')->label('Слайдер изображений')
-                                                ->schema([
-                                                    FileUpload::make('url')
-                                                        ->label('Изображение(-я)')
-                                                        ->image()
-                                                        ->multiple()
-                                                        ->reorderable()
-                                                        ->maxFiles(5)
-                                                        ->disk('public')
-
-                                                        ->directory('images')
-                                                        ->imageEditor()
-                                                        ->required(),
-                                                    TextInput::make('alt')
-                                                        ->label('Описание')
-                                                        ->placeholder('Необязяательно')
-                                                ]),
-                                            Builder\Block::make('image')->label('Изображение')
+                                            Builder\Block::make('images')
                                                 ->schema([
                                                     FileUpload::make('url')
                                                         ->label('Изображение(-я)')
@@ -376,8 +367,24 @@ class PostForm
                                                     TextInput::make('alt')
                                                         ->label('Описание')
                                                         ->placeholder('Необязяательно')
-                                                ]),
-                                            Builder\Block::make('video')->label('Видео')
+                                                ])->label('Слайдер изображений'),
+                                            Builder\Block::make('image')
+                                                ->schema([
+                                                    FileUpload::make('url')
+                                                        ->label('Изображение(-я)')
+                                                        ->image()
+                                                        ->multiple()
+                                                        ->reorderable()
+                                                        ->maxFiles(5)
+                                                        ->disk('public')
+                                                        ->directory('images')
+                                                        ->imageEditor()
+                                                        ->required(),
+                                                    TextInput::make('alt')
+                                                        ->label('Описание')
+                                                        ->placeholder('Необязяательно')
+                                                ])->label('Изображение'),
+                                            Builder\Block::make('video')
                                                 ->schema([
                                                     TextInput::make('mime')->readOnly(),
                                                     TextInput::make('title')
@@ -402,7 +409,7 @@ class PostForm
                                                         ->directory('videos')
                                                         ->afterStateUpdated(fn (callable $set, $state) => $set('mime', $state?->getMimeType())),
                                                 ]),
-                                            Builder\Block::make('postsList')->label('Список новостей')
+                                            Builder\Block::make('postsList')
                                                 ->schema([
                                                     Forms\Components\Grid::make(2)->schema([
                                                         TextInput::make('count')
@@ -411,21 +418,28 @@ class PostForm
                                                         Select::make('category')
                                                             ->options(Category::all()->pluck('title', 'id'))
                                                     ]),
-                                                ]),
-                                            Builder\Block::make('postItem')->label('Новость')
+                                                ])->label('Список новостей'),
+                                            Builder\Block::make('postItem')
                                                 ->schema([
                                                     Select::make('post')
                                                         ->options(Post::query()->where('status', PostStatus::PUBLISHED)->pluck('title', 'id'))
                                                         ->searchable()
                                                         ->required(),
-                                                ]),
-                                            Builder\Block::make('pageItem')->label('Страница')
+                                                ])->label('Новость'),
+                                            Builder\Block::make('pageItem')
                                                 ->schema([
                                                     Select::make('page')
                                                         ->options(Page::query()->where('title', '!=' , null)->where('is_visible', true)->pluck('title', 'id'))
                                                         ->searchable()
                                                         ->required(),
-                                                ]),
+                                                ])->label('Страница'),
+                                            Builder\Block::make('customForm')
+                                                ->schema([
+                                                    Select::make('form')
+                                                        ->options(CustomForm::query()->where('status', CustomFormStatus::PUBLISHED)->pluck('title', 'form_id'))
+                                                        ->searchable()
+                                                        ->required(),
+                                                ])->label('Форма'),
                                         ])
                                             ->collapsed()
                                             ->blockNumbers(false)

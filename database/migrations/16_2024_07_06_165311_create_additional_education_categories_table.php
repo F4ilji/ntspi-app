@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('additional_education_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->unique();
+            $table->string('slug')->unique();
             $table->boolean('is_active');
             $table->unsignedBigInteger('dir_addit_educat_id')->nullable();
             $table->foreign('dir_addit_educat_id')->references('id')->on('direction_additional_education');

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
-
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
@@ -14,7 +13,6 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico">
     <link rel="stylesheet" href="/css/bvi.min.css">
-
 
     <!-- Scripts -->
     @routes

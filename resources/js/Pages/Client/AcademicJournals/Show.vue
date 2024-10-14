@@ -12,10 +12,14 @@ import ClientPost from '@/Components/ClientPost.vue';
 import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import ClientImageSlider from "@/Components/ClientImageSlider.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import AcademicJournalsBuilder from "@/Components/BuilderUi/AcademicJournals/AcademicJournalsBuilder.vue";
+import AcademicJournalsTitle from "@/Components/BuilderUi/AcademicJournals/AcademicJournalsTitle.vue";
 
 export default {
   name: "Show",
   components: {
+		AcademicJournalsTitle,
+		AcademicJournalsBuilder,
 		MainPageNavBar,
 		ClientImageSlider,
     AdminIndexHeaderTitle, AdminIndexHeader,
@@ -76,13 +80,11 @@ export default {
 						<!-- Avatar Media -->
 						<!-- End Avatar Media -->
 						<!-- Content -->
-						<div class="space-y-10 md:space-y-8">
-							<h1 class="text-brand-primary text-center mb-3 mt-2 text-3xl font-semibold tracking-tight dark:text-white lg:text-[40px] lg:leading-tight">
-								{{ journal.data.title }}
-							</h1>
+						<div class="space-y-5 md:space-y-8">
+							<AcademicJournalsTitle class="text-center" :header="journal.data.title" />
 							<div>
-								<nav class="-mb-0.5 flex justify-center gap-x-6" aria-label="Tabs" role="tablist" aria-orientation="horizontal">
-									<button type="button" 					class="hs-tab-active:bg-gray-100 rounded-md hs-tab-active:text-gray-700 py-1.5 px-3 inline-flex items-center gap-x-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 focus:outline-none disabled:opacity-50 disabled:pointer-events-none active"
+								<nav class="flex flex-col md:flex-row justify-center gap-x-6" aria-label="Tabs" role="tablist" aria-orientation="horizontal">
+									<button type="button" class="hs-tab-active:bg-gray-100 rounded-md hs-tab-active:text-gray-700 py-1.5 px-3 inline-flex items-center gap-x-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 focus:outline-none disabled:opacity-50 disabled:pointer-events-none active"
 													id="horizontal-alignment-item-1" aria-selected="true" data-hs-tab="#horizontal-alignment-1" aria-controls="horizontal-alignment-1" role="tab">
 										Основная информация журнала
 									</button>
@@ -90,52 +92,20 @@ export default {
 													id="horizontal-alignment-item-2" aria-selected="false" data-hs-tab="#horizontal-alignment-2" aria-controls="horizontal-alignment-2" role="tab">
 										Редакция
 									</button>
-									<button type="button" 					class="hs-tab-active:bg-gray-100 rounded-md hs-tab-active:text-gray-700 py-1.5 px-3 inline-flex items-center gap-x-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
+									<button type="button" class="hs-tab-active:bg-gray-100 rounded-md hs-tab-active:text-gray-700 py-1.5 px-3 inline-flex items-center gap-x-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
 													id="horizontal-alignment-item-3" aria-selected="false" data-hs-tab="#horizontal-alignment-3" aria-controls="horizontal-alignment-3" role="tab">
 										Информация для авторов
 									</button>
-									<button type="button" 					class="hs-tab-active:bg-gray-100 rounded-md hs-tab-active:text-gray-700 py-1.5 px-3 inline-flex items-center gap-x-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
+									<button type="button" class="hs-tab-active:bg-gray-100 rounded-md hs-tab-active:text-gray-700 py-1.5 px-3 inline-flex items-center gap-x-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
 													id="horizontal-alignment-item-3" aria-selected="false" data-hs-tab="#horizontal-alignment-4" aria-controls="horizontal-alignment-4" role="tab">
 										Архив
 									</button>
 
 								</nav>
 							</div>
-							<div class="container px-8 xl:px-5 py-3 lg:py-4 w-4/5 mx-auto">
+							<div class="container max-w-4xl px-2 xl:px-5 lg:py-4 md:w-4/5 mx-auto">
 								<div id="horizontal-alignment-1" role="tabpanel" aria-labelledby="horizontal-alignment-item-1">
-									<template v-for="block in journal.data.main_info" :key="block.id">
-										<div v-if="block.type === 'heading'">
-											<h2 class="font-bold text-xl">{{ block.data.content }}</h2>
-										</div>
-										<div class="text-[15px] text-[#374151] paragraph-container leading-8 font-light" v-html="block.data.content" v-if="block.type === 'paragraph'"></div>
-										<div v-if="block.type === 'image'">
-											<ClientImageSlider :images="block.data.url" />
-										</div>
-										<div v-if="block.type === 'files'">
-											<div class="flex border rounded-lg px-4 py-2 items-center justify-between">
-												<div class="flex items-center">
-													<div class="w-[35px] h-[35px] bg-black flex justify-center items-center rounded-xl mr-2">
-														<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-																 stroke="currentColor" class="w-6 h-6">
-															<path stroke-linecap="round" stroke-linejoin="round"
-																		d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"
-																		stroke="white"/>
-														</svg>
-													</div>
-													<div>{{ block.data.title }}</div>
-												</div>
-
-												<a :href="'/storage/'+ block.data.path" download type="button"
-													 class="w-[35px] h-[35px] flex bg-gray-100 rounded-lg justify-center items-center hover:bg-gray-200 duration-200">
-													<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-															 stroke="currentColor" class="w-6 h-6">
-														<path stroke-linecap="round" stroke-linejoin="round"
-																	d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
-													</svg>
-												</a>
-											</div>
-										</div>
-									</template>
+									<AcademicJournalsBuilder :blocks="journal.data.main_info" />
 								</div>
 								<div id="horizontal-alignment-2" class="hidden w-full" role="tabpanel" aria-labelledby="horizontal-alignment-item-2">
 									<template v-for="block in journal.data.chief_editor" :key="block.id">
@@ -186,45 +156,10 @@ export default {
 											<!-- Social Brands -->
 											<!-- End Social Brands -->
 										</div>
-
 									</template>
-
-
 								</div>
 								<div id="horizontal-alignment-3" class="hidden" role="tabpanel" aria-labelledby="horizontal-alignment-item-3">
-									<template v-for="block in journal.data.for_authors" :key="block.id">
-										<div v-if="block.type === 'heading'">
-											<h2 class="font-bold text-xl">{{ block.data.content }}</h2>
-										</div>
-										<div class="text-[16px] text-[#374151] paragraph-container leading-8 font-light" v-html="block.data.content" v-if="block.type === 'paragraph'"></div>
-										<div v-if="block.type === 'image'">
-											<ClientImageSlider :images="block.data.url" />
-										</div>
-										<div v-if="block.type === 'files'">
-											<div class="flex border rounded-lg px-4 py-2 items-center justify-between">
-												<div class="flex items-center">
-													<div class="w-[35px] h-[35px] bg-black flex justify-center items-center rounded-xl mr-2">
-														<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-																 stroke="currentColor" class="w-6 h-6">
-															<path stroke-linecap="round" stroke-linejoin="round"
-																		d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"
-																		stroke="white"/>
-														</svg>
-													</div>
-													<div>{{ block.data.title }}</div>
-												</div>
-
-												<a :href="'/storage/'+ block.data.path" download type="button"
-													 class="w-[35px] h-[35px] flex bg-gray-100 rounded-lg justify-center items-center hover:bg-gray-200 duration-200">
-													<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-															 stroke="currentColor" class="w-6 h-6">
-														<path stroke-linecap="round" stroke-linejoin="round"
-																	d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
-													</svg>
-												</a>
-											</div>
-										</div>
-									</template>
+									<AcademicJournalsBuilder :blocks="journal.data.for_authors" />
 								</div>
 								<div id="horizontal-alignment-4" class="hidden" role="tabpanel" aria-labelledby="horizontal-alignment-item-4">
 									<!-- List -->

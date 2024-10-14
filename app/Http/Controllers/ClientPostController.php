@@ -58,6 +58,7 @@ class ClientPostController extends Controller
             ->withQueryString());
 
         $categories = CategoryResource::collection(Category::has('posts')->get());
+
         $categoriesContent = [];
         if (request()->input('category')) {
             foreach (request()->input('category') as $item) {

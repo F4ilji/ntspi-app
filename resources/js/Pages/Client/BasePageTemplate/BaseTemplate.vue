@@ -19,7 +19,6 @@
 						<PageBuilder :blocks="this.page.data.content"/>
 					</div>
 				</div>
-
 			</div>
 		</div>
 

@@ -16,6 +16,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Support\Str;
 use PhpParser\Node\Expr\AssignOp\Mod;
+use VK\Client\VKApiClient;
+use VK\OAuth\Scopes\VKOAuthGroupScope;
+use VK\OAuth\Scopes\VKOAuthUserScope;
+use VK\OAuth\VKOAuth;
+use VK\OAuth\VKOAuthDisplay;
+use VK\OAuth\VKOAuthResponseType;
 
 class CreatePost extends CreateRecord
 {
@@ -30,7 +36,6 @@ class CreatePost extends CreateRecord
         $data['publish_at'] = $this->setPublishDateTime($data['status']);
         $data['search_data'] = $this->generateSearchData($data['content']);
         $data['reading_time'] = $this->calculateReadingTime($data['search_data']);
-
         return $data;
     }
 
@@ -44,6 +49,9 @@ class CreatePost extends CreateRecord
     {
         $title = $data['title'];
         $rowData = $this->getBlockBySeoActiveState('paragraph', $data['content']);
+        if ($rowData === null) {
+            $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
+        }
         $description = strip_tags($rowData['data']['content']);
         $image = ($data['preview'] !== null) ? $data['preview'] : null;
 
@@ -54,9 +62,13 @@ class CreatePost extends CreateRecord
         ];
     }
 
+
     private function setPreviewText(array $data) : string
     {
         $rowData = $this->getBlockBySeoActiveState('paragraph', $data['content']);
+        if ($rowData === null) {
+            $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
+        }
         $preview_text = strip_tags($rowData['data']['content']);
         return Str::limit($preview_text, 160);
     }

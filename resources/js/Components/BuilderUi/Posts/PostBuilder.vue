@@ -29,6 +29,7 @@ export default {
 				postsList: () => import('@/Components/BuilderUi/Posts/Blocks/PostListBlock.vue'),
 				postItem: () => import('@/Components/BuilderUi/Posts/Blocks/PageItemBlock.vue'),
 				pageItem: () => import('@/Components/BuilderUi/Posts/Blocks/PostItemBlock.vue'),
+				customForm: () => import('@/Components/BuilderUi/Pages/Blocks/FormBlock.vue')
 			};
 			return defineAsyncComponent(componentMap[type] || null);
 		},

@@ -17,6 +17,7 @@ class ClientSubSectionNavigateResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'slug' => $this->slug,
             'pages' => ClientPageNavigateResource::collection($this->whenLoaded('pages')),
         ];
     }

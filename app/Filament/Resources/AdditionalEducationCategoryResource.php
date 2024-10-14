@@ -7,12 +7,14 @@ use App\Filament\Resources\AdditionalEducationCategoryResource\RelationManagers;
 use App\Models\AdditionalEducationCategory;
 use App\Models\DirectionAdditionalEducation;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class AdditionalEducationCategoryResource extends Resource
 {
@@ -31,7 +33,13 @@ class AdditionalEducationCategoryResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Grid::make('2')->schema([
-                    Forms\Components\TextInput::make('title')->required(),
+                    TextInput::make('title')->label('Заголовок')->required()
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
+                            $set('slug', Str::slug($state));
+                            $set('seo.title', $state);
+                        }),
+                    TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
                     Forms\Components\Select::make('dir_addit_educat_id')->required()
                         ->options(DirectionAdditionalEducation::where('is_active', true)->pluck('title', 'id'))
                 ]),

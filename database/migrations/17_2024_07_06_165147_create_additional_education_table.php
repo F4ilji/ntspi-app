@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('additional_education', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug')->unique();
             $table->text('content');
             $table->unsignedBigInteger('category_id')->nullable();
             $table->foreign('category_id')->references('id')->on('additional_education_categories');

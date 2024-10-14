@@ -84,10 +84,13 @@ export default {
 				textarea: () => import('@/Components/BuilderUi/Pages/FormBlocks/TextAreaBlock.vue'),
 				multiple_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/MultipleChoiceBlock.vue'),
 				single_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/SingleChoiceBlock.vue'),
-				date: () => import('@/Components/BuilderUi/Pages/FormBlocks/DateBlock.vue')
+				date: () => import('@/Components/BuilderUi/Pages/FormBlocks/DateBlock.vue'),
+				additional_education_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/AdditionalEducationalChoiceBlock.vue'),
+				educational_program_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/EducationalChoiceBlock.vue')
 			};
 			return defineAsyncComponent(componentMap[type] || null);
 		},
+
 		submitForm(event) {
 			event.preventDefault();
 			this.formData = this.getFormData(event.target.elements);
@@ -98,7 +101,7 @@ export default {
 			const formData = {};
 			for (let i = 0; i < formElements.length; i++) {
 				const element = formElements[i];
-				if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+				if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
 					const fieldName = this.normalizeFieldName(element.name);
 
 					if (element.tagName === 'INPUT') {
@@ -109,12 +112,13 @@ export default {
 						}
 					} else if (element.tagName === 'TEXTAREA') {
 						formData[fieldName] = element.value;
+					} else if (element.tagName === 'SELECT') {
+						formData[fieldName] = element.value;
 					}
 				}
 			}
 			return formData;
 		},
-
 		normalizeFieldName(name) {
 			return name.endsWith('[]') ? name.slice(0, -2) : name;
 		},

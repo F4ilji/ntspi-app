@@ -2,14 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\MainChapter;
-use App\Models\MainSection;
+
 use App\Models\Page;
-use App\Models\RegisteredRoute;
-use App\Models\SubChapter;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 
 class AccessCheck
@@ -21,6 +17,7 @@ class AccessCheck
      */
     public function handle(Request $request, Closure $next): Response
     {
+
         // Проверяем, существует ли запись для текущего маршрута
         $registeredRoute = Page::where('path', '=', $request->route()->uri)
             ->where('is_registered', '=', true)
