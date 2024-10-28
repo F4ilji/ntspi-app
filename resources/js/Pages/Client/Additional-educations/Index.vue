@@ -17,10 +17,13 @@ import ClientAdditionalProgramFilter
 	from "@/Components/BuilderUi/AdditionalEducationPrograms/ClientAdditionalProgramFilter.vue";
 import PostBadge from "@/Components/BuilderUi/Events/EventBadgeBuilder.vue";
 import ProgramBadge from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramBadge.vue";
+import AdditionalEducationProgramListBreadcrumbs
+	from "@/Components/BuilderUi/AdditionalEducationPrograms/AdditionalEducationProgramListBreadcrumbs.vue";
 
 export default {
   name: "Index",
   components: {
+		AdditionalEducationProgramListBreadcrumbs,
 		ProgramBadge,
 		PostBadge,
 		ClientAdditionalProgramFilter,
@@ -57,6 +60,9 @@ export default {
 			type: Object
 		},
 		categories: {
+			type: Object
+		},
+		breadcrumbs: {
 			type: Object
 		}
   },
@@ -107,14 +113,17 @@ export default {
 							<div class="space-y-5 md:space-y-4 mx-auto max-w-3xl">
 								<div>
 									<div class="">
-										<div class="my-10 flex items-center w-full gap-x-2">
-											<LevelEduFilter :directions="directionAdditionalEducations" :direction_filter="filters.direction_filter" />
-											<ClientAdditionalProgramFilter
-													:forms_educational="forms_education"
-													:form_education_filter="filters.form_education_filter"
-													:category_filter="filters.category_filter"
-													:categories="categories"
-											/>
+										<div class="my-10 w-full">
+											<AdditionalEducationProgramListBreadcrumbs :breadcrumbs="breadcrumbs" />
+											<div class="flex items-center gap-x-2">
+												<LevelEduFilter :directions="directionAdditionalEducations" :direction_filter="filters.direction_filter" />
+												<ClientAdditionalProgramFilter
+														:forms_educational="forms_education"
+														:form_education_filter="filters.form_education_filter"
+														:category_filter="filters.category_filter"
+														:categories="categories"
+												/>
+											</div>
 										</div>
 										<div class="px-2 mx-auto">
 											<div class="flex-wrap flex gap-3 md:items-center">

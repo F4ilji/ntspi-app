@@ -169,6 +169,10 @@
 				</div>
 				<!-- End Grid -->
 			</div>
+
+
+			<PageResourceList resource-id="glavnaia-stranica-resurs" />
+
 			<!-- End Card Blog -->
 		</section>
 
@@ -244,6 +248,7 @@ import ClientPost from "@/Components/ClientPost.vue";
 import { ref } from 'vue';
 import LevelEducational from "../Enum/LevelEducational.js";
 import BaseMetaHead from "@/Components/BaseComponents/BaseMetaHead.vue";
+import PageResourceList from "@/Components/BuilderUi/Pages/Blocks/PageResourceList.vue";
 
 
 
@@ -279,6 +284,7 @@ export default {
 	},
 
 	components: {
+		PageResourceList,
 		BaseMetaHead,
 		ClientPost,
 		MainPageNavBar,

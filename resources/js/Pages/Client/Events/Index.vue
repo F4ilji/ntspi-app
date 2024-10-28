@@ -14,10 +14,12 @@ import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import ClientEventSelectDate from "@/Components/ClientEventSelectDate.vue";
 import ClientEventFilter from "@/Components/ClientEventFilter.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import EventListBreadcrumbs from "@/Components/BuilderUi/Events/EventListBreadcrumbs.vue";
 
 export default {
 	name: "Index",
 	components: {
+		EventListBreadcrumbs,
 		MainPageNavBar,
 		ClientEventFilter,
 		ClientEventSelectDate,
@@ -51,6 +53,9 @@ export default {
 		},
 		categories: {
 			type: Array,
+		},
+		breadcrumbs: {
+			type: Object
 		}
 	},
 	methods: {},
@@ -72,6 +77,7 @@ export default {
 						<!--          <ClientPostSearch />-->
 						<!--          <ClientPostFilter :items="categories"/>-->
 						<!--        </AdminIndexHeader>-->
+						<EventListBreadcrumbs :breadcrumbs="breadcrumbs" />
 						<div class="space-y-5 md:space-y-4">
 							<div class="flex items-center w-full justify-center">
 								<h1 class="block text-brand-primary text-center mb-3 mt-2 mr-4 text-3xl font-semibold tracking-tight dark:text-white lg:text-[40px] lg:leading-tight">

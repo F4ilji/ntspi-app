@@ -103,7 +103,8 @@ class PostResource extends Resource implements HasShieldPermissions
             'update',
             'delete',
             'delete_any',
-            'publish'
+            'publish',
+            'view_only_own_records'
         ];
     }
 

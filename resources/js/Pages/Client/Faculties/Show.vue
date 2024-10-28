@@ -72,32 +72,7 @@
 						<div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
 							<div class="grow">
 								<div class="grid sm:flex sm:justify-between sm:items-center gap-2">
-									<ol class="flex items-center whitespace-normal min-w-0"
-											aria-label="Breadcrumb">
-										<li class="text-sm">
-										<span class="flex items-center text-gray-500 hover:text-blue-600">
-											Главная
-											<svg class="flex-shrink-0 mx-3 overflow-visible h-2.5 w-2.5 text-gray-400"
-													 width="16" height="16"
-													 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-												<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
-															stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-											</svg>
-										</span>
-										</li>
-										<li class="text-sm">
-										<span class="flex items-center text-gray-500 hover:text-blue-600" @click.prevent>
-											Факультеты
-											<svg class="flex-shrink-0 mx-3 overflow-visible h-2.5 w-2.5 text-gray-400"
-													 width="16" height="16"
-													 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-												<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
-															stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-											</svg>
-										</span>
-										</li>
-
-									</ol>
+									<FacultyItemBreadcrumbs :faculty-title="faculty.data.title" />
 								</div>
 							</div>
 						</div>
@@ -185,6 +160,7 @@ import ClientFacultyWorkerCard from "@/Components/PersonCards/ClientFacultyWorke
 import PostBuilder from "@/Components/BuilderUi/Posts/PostBuilder.vue";
 import FacultyBuilder from "@/Components/BuilderUi/Faculties/FacultyBuilder.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import FacultyItemBreadcrumbs from "@/Components/BuilderUi/Faculties/FacultyItemBreadcrumbs.vue";
 
 
 export default {
@@ -206,6 +182,7 @@ export default {
 	},
 
 	components: {
+		FacultyItemBreadcrumbs,
 		MainPageNavBar,
 		FacultyBuilder,
 		PostBuilder,

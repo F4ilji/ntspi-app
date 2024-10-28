@@ -133,6 +133,7 @@ export default {
 	},
 	mounted() {
 		this.getPosts();
+
 	},
 	props: {
 		block: {

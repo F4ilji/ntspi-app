@@ -9,21 +9,26 @@ use Filament\Actions;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ListPosts extends ListRecords
 {
-    public \Illuminate\Support\Collection $postsByStatuses;
+    protected static string $resource = PostResource::class;
 
-    public function __construct()
+    public function getPostsByStatuses(): \Illuminate\Support\Collection
     {
-        $this->postsByStatuses = Post::select('status', DB::raw('count(*) as post_count'))
+        return Post::select('status', DB::raw('count(*) as post_count'))
             ->groupBy('status')
+            ->when($this->canViewOnlyOwnRecords(), function (Builder $query) {
+                $query->where('user_id', auth()->id());
+            })
             ->pluck('post_count', 'status');
     }
 
-    protected static string $resource = PostResource::class;
+    protected function canViewOnlyOwnRecords(): bool
+    {
+        return auth()->user()->can('view_only_own_records_post');
+    }
 
     protected function getHeaderActions(): array
     {
@@ -34,11 +39,21 @@ class ListPosts extends ListRecords
 
     public function getTabs(): array
     {
+        $postsByStatuses = $this->getPostsByStatuses();
+
         return [
             'status' => Tab::make('Новости на рассмотрении')->modifyQueryUsing(function (Builder $query) {
                 $query->where('status', '=', PostStatus::VERIFICATION->value);
-            })->badge($this->postsByStatuses[PostStatus::VERIFICATION->value] ?? 0),
-            'All' => Tab::make('Все новости'),
+                if ($this->canViewOnlyOwnRecords()) {
+                    $query->where('user_id', auth()->id());
+                }
+            })->badge($postsByStatuses[PostStatus::VERIFICATION->value] ?? 0),
+
+            'All' => Tab::make('Все новости')->modifyQueryUsing(function (Builder $query) {
+                if ($this->canViewOnlyOwnRecords()) {
+                    $query->where('user_id', auth()->id());
+                }
+            }),
         ];
     }
 }

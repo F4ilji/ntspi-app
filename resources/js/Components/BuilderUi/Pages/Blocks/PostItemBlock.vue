@@ -88,6 +88,7 @@ export default {
 	},
 	mounted() {
 		this.getPost(this.block.data.post);
+
 	},
 	props: {
 		block: {

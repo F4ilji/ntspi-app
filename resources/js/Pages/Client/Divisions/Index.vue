@@ -12,10 +12,12 @@ import ClientPostFilter from '@/Components/ClientPostFilter.vue';
 import ClientPost from '@/Components/ClientPost.vue';
 import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import DivisionListBreadcrumbs from "@/Components/BuilderUi/Divisions/DivisionListBreadcrumbs.vue";
 
 export default {
   name: "Index",
   components: {
+		DivisionListBreadcrumbs,
 		MainPageNavBar,
     AdminIndexHeaderTitle, AdminIndexHeader,
     AdminIndexFilter, AdminIndexSearch,
@@ -68,6 +70,8 @@ export default {
 								<div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
 
 									<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
+										<DivisionListBreadcrumbs />
+
 										<h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Подразделения института</h2>
 										<p class="mt-1 text-gray-600 dark:text-neutral-400">We've helped some great companies brand, design and get to market.</p>
 									</div>

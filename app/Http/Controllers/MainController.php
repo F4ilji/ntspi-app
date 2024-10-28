@@ -22,6 +22,8 @@ use App\Models\MainSection;
 use App\Models\MainSlider;
 use App\Models\Post;
 use App\Services\Filament\Icon\ArrayToCollectionService;
+use App\Services\Vicon\EducationalProgram\EducationalProgramService;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -63,6 +65,7 @@ class MainController extends Controller
         $posts = PostThumbnailResource::collection(Post::query()
             ->select('title', 'slug', 'authors', 'preview_text', 'category_id', 'preview', 'search_data', 'created_at')
             ->with('category')
+            ->where('publish_at', '<', Carbon::now())
             ->where('status', '=', PostStatus::PUBLISHED)
             ->orderBy('publish_at', 'desc')->limit(3)
             ->get());

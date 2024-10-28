@@ -8,6 +8,7 @@ use App\Helpers\ByteConverter;
 use App\Models\Category;
 use App\Models\CustomForm;
 use App\Models\Page;
+use App\Models\PageReferenceList;
 use App\Models\Post;
 use Filament\Forms;
 use Filament\Forms\Components\Builder;
@@ -379,6 +380,13 @@ class ContentBuilderItem
                             ->searchable()
                             ->required(),
                     ])->label('Форма'),
+                Builder\Block::make('pageResourceList')
+                    ->schema([
+                        Select::make('resource')
+                            ->options(PageReferenceList::query()->where('is_active', true)->pluck('title', 'slug'))
+                            ->searchable()
+                            ->required(),
+                    ])->label('Ресурсы'),
             ])
                 ->collapsed()
                 ->blockNumbers(false)

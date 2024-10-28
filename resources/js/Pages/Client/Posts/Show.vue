@@ -17,10 +17,12 @@ import ClientPostSearch from "@/Components/ClientPostSearch.vue";
 import ClientPost from "@/Components/ClientPost.vue";
 import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import PostBreadcrumbs from "@/Components/BuilderUi/Posts/PostBreadcrumbs.vue";
 
 export default {
 	name: "Show",
 	components: {
+		PostBreadcrumbs,
 		MainPageNavBar,
 		AdminIndexHeader, ClientPost, ClientPostSearch, ClientPostFilter, PostBadge,
 		PostGallery,
@@ -52,6 +54,9 @@ export default {
 		searchMatch: {
 			type: String,
 			default: ''
+		},
+		breadcrumbs: {
+			type: Object
 		}
 	},
 	mounted() {
@@ -75,7 +80,8 @@ export default {
 
 						<div class="space-y-5 md:space-y-10">
 							<div class="space-y-3">
-								<PostBackButton :title="'Назад'"/>
+								<PostBreadcrumbs :breadcrumbs="breadcrumbs" :post-title="post.data.title" />
+								<PostBackButton link="client.post.index" title="Все новости"/>
 								<PostTitle :header="post.data.title"/>
 							</div>
 
@@ -89,9 +95,7 @@ export default {
 									</div>
 								</div>
 							</div>
-							<div class="space-y-3 md:space-y-4">
-								<PostBuilder :blocks="this.blocks"/>
-							</div>
+							<PostBuilder :blocks="this.blocks"/>
 							<div>
 								<PostGallery :title="post.data.title" :images="post.data.gallery"/>
 							</div>

@@ -9,10 +9,13 @@ use App\Helpers\ByteConverter;
 use App\Models\Category;
 use App\Models\CustomForm;
 use App\Models\Page;
+use App\Models\PageReferenceList;
 use App\Models\Post;
 use Filament\Forms;
 use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
@@ -23,6 +26,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Components\Tab;
+use Filament\Resources\Pages\CreateRecord;
+use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -79,6 +84,30 @@ class PostForm
                                         SpatieTagsInput::make('tags')->label('Тэги'),
                                         Forms\Components\TagsInput::make('authors')
                                             ->label('Авторы')->placeholder('Добавить автора'),
+                                        Section::make('Отложенная публикация')->schema([
+                                            Grid::make(2)->schema([
+                                                Toggle::make('publish_setting.publish_after')
+                                                    ->label('Включить')
+                                                    ->inline(false)
+                                                    ->default(false)
+                                                    ->live(),
+                                                DateTimePicker::make('publish_setting.publish_at')
+                                                    ->label('Дата публикации')
+                                                    ->native()
+                                                    ->displayFormat('d/m/Y')
+
+                                                    ->required(fn (Forms\Get $get) => $get('publish_setting.publish_after'))
+                                                    ->disabled(fn (Forms\Get $get) => !$get('publish_setting.publish_after'))
+                                                    ->minDate(Carbon::now()->subWeek())
+                                                    ->maxDate(Carbon::now()->addMonth()),
+                                            ]),
+                                        ]),
+                                        Section::make('Публикация в сервисах')->schema([
+                                            Forms\Components\Grid::make()->schema([
+                                                Toggle::make('publication.vk')->label('Публикация в VK')->default(true),
+                                                Toggle::make('publication.telegram')->label('Публикация в Telegram')->default(true),
+                                            ]),
+                                        ]),
                                     ]),
                                 Tabs\Tab::make('Содержание новости')
                                     ->schema([
@@ -89,7 +118,7 @@ class PostForm
                                                     TextInput::make('content')
                                                         ->label('')
                                                         ->live(onBlur: true)
-                                                        ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set, $get) {
+                                                        ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set, $get) {
                                                         }),
                                                 ]),
                                             Builder\Block::make('paragraph')->label('Текст')
@@ -440,8 +469,16 @@ class PostForm
                                                         ->searchable()
                                                         ->required(),
                                                 ])->label('Форма'),
+                                            Builder\Block::make('PageResourceList')
+                                                ->schema([
+                                                    Select::make('resource')
+                                                        ->options(PageReferenceList::query()->where('is_active', true)->pluck('title', 'slug'))
+                                                        ->searchable()
+                                                        ->required(),
+                                                ])->label('Ресурсы'),
                                         ])
                                             ->collapsed()
+                                            ->required()
                                             ->blockNumbers(false)
                                             ->collapsible()
                                             ->blockPickerColumns(3)
@@ -468,7 +505,6 @@ class PostForm
                                             ->directory('images'),
                                     ]),
                             ]),
-
                     ])
             ]);
     }

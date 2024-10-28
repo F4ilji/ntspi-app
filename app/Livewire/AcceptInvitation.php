@@ -76,6 +76,9 @@ class AcceptInvitation extends SimplePage
                 'email' => $this->invitationModel->email,
             ]);
 
+            $user->assignRole(config('filament-shield.invited_user.name', 'invited_user'));
+
+
             AcceptedInvitation::create([
                 'sender_id' => $this->invitationModel->user_id,
                 'receiver_id' => $user->id,

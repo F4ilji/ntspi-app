@@ -15,11 +15,14 @@ import PostTitle from "@/Components/BuilderUi/Posts/PostTitle.vue";
 import PostBackButton from "@/Components/BuilderUi/Posts/PostBackButton.vue";
 import ProgramTitle from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramTitle.vue";
 import ProgramBuilder from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramBuilder.vue";
+import AdditionalEducationProgramItemBreadcrumbs
+	from "@/Components/BuilderUi/AdditionalEducationPrograms/AdditionalEducationProgramItemBreadcrumbs.vue";
 
 
 export default {
   name: "Show",
   components: {
+		AdditionalEducationProgramItemBreadcrumbs,
 		ProgramBuilder,
 		ProgramTitle,
 		PostBackButton, PostTitle,
@@ -41,6 +44,9 @@ export default {
 		additionalEducation: {
       type: Object,
     },
+		breadcrumbs: {
+			type: Object
+		}
   },
   methods: {
 		getFormOfStudy(contests) {
@@ -70,9 +76,7 @@ export default {
 			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
 				<div class="px-0 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
 					<div>
-						<!-- Avatar Media -->
-						<!-- End Avatar Media -->
-						<!-- Content -->
+
 						<div class="space-y-5 md:space-y-4">
 							<div class="space-y-5 md:space-y-4">
 
@@ -80,6 +84,7 @@ export default {
 									<div class="container mx-auto xl:px-5 max-w-screen-lg py-5 lg:py-8">
 										<div class="space-y-3">
 											<ProgramBackButton title="Назад" />
+											<AdditionalEducationProgramItemBreadcrumbs :breadcrumbs="breadcrumbs" :additional-education-title="additionalEducation.data.title" />
 											<ProgramTitle :header="additionalEducation.data.title" class="text-center" />
 										</div>
 

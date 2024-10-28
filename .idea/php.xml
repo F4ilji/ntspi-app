@@ -171,8 +171,6 @@
       <path value="$PROJECT_DIR$/vendor/protonemedia/laravel-cross-eloquent-search" />
       <path value="$PROJECT_DIR$/vendor/mohamedsabil83/filament-forms-tinyeditor" />
       <path value="$PROJECT_DIR$/vendor/xvladqt/faker-lorem-flickr" />
-      <path value="$PROJECT_DIR$/vendor/maximebf/debugbar" />
-      <path value="$PROJECT_DIR$/vendor/barryvdh/laravel-debugbar" />
       <path value="$PROJECT_DIR$/vendor/phpoffice/phpspreadsheet" />
       <path value="$PROJECT_DIR$/vendor/maennchen/zipstream-php" />
       <path value="$PROJECT_DIR$/vendor/maatwebsite/excel" />

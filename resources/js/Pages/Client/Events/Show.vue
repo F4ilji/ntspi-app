@@ -13,11 +13,13 @@ import EventtBuilder from "@/Components/BuilderUi/Events/EventBuilder.vue";
 import ClientEventSelectDate from "@/Components/ClientEventSelectDate.vue";
 import ClientEventFilter from "@/Components/ClientEventFilter.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import EventItemBreadcrumbs from "@/Components/BuilderUi/Events/EventItemBreadcrumbs.vue";
 
 
 export default {
 	name: "Show",
 	components: {
+		EventItemBreadcrumbs,
 		MainPageNavBar,
 		ClientEventFilter, ClientEventSelectDate,
 		EventtBuilder,
@@ -40,6 +42,9 @@ export default {
 		navigation: {
 			type: Array,
 		},
+		breadcrumbs: {
+			type: Object
+		}
 	},
 	methods: {
 		textLimit(text, symbols) {
@@ -70,7 +75,8 @@ export default {
 					<div>
 						<div class="space-y-5 md:space-y-10">
 							<div class="space-y-3">
-								<EventBackButton title="Назад" />
+								<EventItemBreadcrumbs :breadcrumbs="breadcrumbs" :event-title="event.data.title" />
+								<EventBackButton link="client.event.index" title="Все мероприятия" />
 								<TitleEvent :header="event.data.title" />
 							</div>
 

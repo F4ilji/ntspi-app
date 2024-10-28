@@ -42,6 +42,7 @@ export default {
 	mounted() {
 		const id = this.block?.data.form || this.formId
 		this.getForm(id);
+
 	},
 	props: {
 		block: {

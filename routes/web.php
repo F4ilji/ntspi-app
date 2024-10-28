@@ -23,6 +23,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UpdateEduDataApiController;
 use App\Http\Controllers\UpdateViconDataApi;
+use App\Http\Controllers\VkAuthController;
 use App\Http\Controllers\VkPostController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -97,9 +98,6 @@ Route::middleware('access-check')->group(function () {
     Route::get('/divisions/{slug}', [ClientDivisionController::class, 'show'])->name('client.division.show');
 
     Route::get('/get-data', [UpdateEduDataApiController::class, 'index']);
-
-    Route::get('/vk-handle', [VkPostController::class, 'index']);
-    Route::get('/vk-handle/wall', [VkPostController::class, 'wall']);
 
 
     Route::get('{path}', [PageController::class, 'render'])->where('path', '[0-9,a-z,/,-]+')->name('page.view');

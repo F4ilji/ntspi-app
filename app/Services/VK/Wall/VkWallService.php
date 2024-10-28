@@ -2,6 +2,10 @@
 
 namespace App\Services\VK\Wall;
 
+use App\Services\VK\VkAuthService;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use VK\Client\VKApiClient;
 
@@ -19,6 +23,8 @@ class VkWallService
         $this->serviceToken = env('SERVICE_ACCESS_VK_KEY');
         $this->publicId = env('PUBLIC_ID');
         $this->publicDomain = env('PUBLIC_DOMAIN');
+        $this->vkAuthService = new VkAuthService();
+
     }
 
     public function getPosts(int $count)
@@ -30,21 +36,100 @@ class VkWallService
         ));
     }
 
-    public function createPost(string $message, int $from_group, string $attachments = '')
+    public function getPostById(int $id)
     {
+        $post = $this->vk->wall()->getById($this->serviceToken, array(
+            'posts' => '-'. $this->publicId . '_' . $id,
+        ));
+        return $post[0];
+    }
+
+
+
+    public function createPost(string $message, int $from_group, string $attachments = '', int $publish_date)
+    {
+        $params = [
+            'owner_id' => '-' . $this->publicId,
+            'from_group' => $from_group,
+            'message' => $message,
+            'attachments' => $attachments,
+            'access_token' => $this->wallToken,
+            'publish_date' => $publish_date,
+            'v' => '5.131',
+        ];
+
         try {
-            return $this->vk->wall()->post($this->wallToken, array(
-                'owner_id' => '-' . $this->publicId,
-                'from_group' => $from_group,
-                'message' => $message,
-                'attachments' => $attachments
-            ));
+            $response = Http::asForm()->post('https://api.vk.com/method/wall.post', $params);
+
+            if ($response->successful() && isset($response['response'])) {
+                return [
+                    'success' => true,
+                    'post_id' => $response['response']['post_id'],
+                ];
+            } else {
+                throw new \Exception('Ошибка API: ' . json_encode($response->json()));
+            }
+
         } catch (\Exception $e) {
             Log::error('Ошибка при создании поста: ' . $e->getMessage());
             return [
                 'success' => false,
                 'message' => 'Не удалось создать пост: ' . $e->getMessage(),
             ];
+        }
+    }
+
+    public function updatePost(int $post_id, string $message = '', int $from_group = 1, string $attachments = '', int $publish_date)
+    {
+        if (empty($message) && empty($attachments)) {
+            return [
+                'success' => false,
+                'message' => 'Необходимо указать либо сообщение, либо вложения.',
+            ];
+        }
+
+
+        $params = [
+            'owner_id' => '-' . $this->publicId,
+            'post_id' => $post_id,
+            'message' => $message,
+            'attachments' => $attachments,
+            'access_token' => $this->wallToken,
+            'v' => '5.131',
+        ];
+
+
+
+
+        try {
+            return $this->vk->wall()->edit(
+                $this->vkAuthService->getToken()->access_token,
+                array(
+                    'owner_id' => '-' . $this->publicId,
+                    'post_id' => $post_id,
+                    'message' => $message,
+                    'attachments' => $attachments,
+                    'publish_date' => $publish_date,
+                ),
+            );
+        } catch (\Exception $e) {
+            Log::error('Ошибка при обновлении новости SDK: ' . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Не удалось обновить новость SDK: ' . $e->getMessage(),
+            ];
+        }
+    }
+    public function generateAttachmentsParams(string $attachmentType, int $attachmentId)
+    {
+        $pubic_id = env('PUBLIC_ID');
+        switch ($attachmentType) {
+            case 'album': {
+                return "album-{$pubic_id}_{$attachmentId}";
+            }
+            case 'doc': {
+
+            }
         }
     }
 }

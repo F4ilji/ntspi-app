@@ -106,7 +106,9 @@ class User extends Authenticatable implements FilamentUser
             case "admin":
                 return $this->hasRole(Utils::getSuperAdminName());
             case "dashboard":
-                return $this->hasRole(config('filament-shield.dashboard_user.name', 'dashboard_user')) || $this->hasRole(Utils::getSuperAdminName());
+                return $this->hasRole(config('filament-shield.dashboard_user.name', 'dashboard_user'))
+                    || $this->hasRole(Utils::getSuperAdminName())
+                    || $this->hasRole(config('filament-shield.invited_user.name', 'invited_user'));
             default:
                 return false;
         }

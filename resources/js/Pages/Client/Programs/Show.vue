@@ -12,11 +12,19 @@ import ClientProgramFilter from "@/Components/ClientProgramFilter.vue";
 import LevelEduFilter from "@/Components/BuilderUi/Programs/Filters/LevelEduFilter.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import FormBlock from "@/Components/BuilderUi/Pages/Blocks/FormBlock.vue";
+import ProgramItemBreadcrumbs from "@/Components/BuilderUi/Programs/ProgramItemBreadcrumbs.vue";
+import AdditionalEducationProgramItemBreadcrumbs
+	from "@/Components/BuilderUi/AdditionalEducationPrograms/AdditionalEducationProgramItemBreadcrumbs.vue";
+import ProgramTitle from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramTitle.vue";
+import ProgramBuilder from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramBuilder.vue";
+import ProgramBackButton from "@/Components/BuilderUi/Programs/ProgramBackButton.vue";
 
 
 export default {
   name: "Show",
   components: {
+		ProgramBackButton, ProgramBuilder, ProgramTitle, AdditionalEducationProgramItemBreadcrumbs,
+		ProgramItemBreadcrumbs,
 		FormBlock,
 		MainPageNavBar,
 		LevelEduFilter, ClientProgramFilter,
@@ -68,29 +76,26 @@ export default {
     <meta name="description" content="Your page description">
   </Head>
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+
+
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
-			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
-				<div class="pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
+			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
+				<div class="px-0 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
 					<div>
 
-
-						<!-- Avatar Media -->
-						<!-- End Avatar Media -->
-						<!-- Content -->
 						<div class="space-y-5 md:space-y-4">
 							<div class="space-y-5 md:space-y-4">
 
 								<div>
 									<div class="container mx-auto xl:px-5 max-w-screen-lg py-5 lg:py-8">
-										<a onclick="history.back()" class="inline-flex items-center gap-x-1.5 text-sm text-gray-600 decoration-2 hover:underline dark:text-blue-500" href="#">
-											<svg class="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-											Назад
-										</a>
-										<div class="space-y-3 flex flex-col items-center justify-center">
-											<div class="inline-flex mx-auto items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium border border-gray-200 bg-white text-gray-800 shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:text-white">{{ program.data.lvl_edu }}</div>
-											<h1 class="text-2xl text-center font-bold md:text-4xl">{{ program.data.name }}</h1>
+										<div class="space-y-3">
+											<ProgramBackButton link="client.program.index" title="Все программы" />
+											<ProgramItemBreadcrumbs :program-title="program.data.name" />
+											<ProgramTitle :header="program.data.name" />
+
 										</div>
+
 										<!-- Icon Blocks -->
 										<div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
 											<div class="grid sm:grid-cols-2 lg:grid-cols-3 items-start gap-12">
@@ -155,11 +160,6 @@ export default {
 												</div>
 												<!-- End Icon Block -->
 											</div>
-										</div>
-
-										<div>
-
-
 										</div>
 
 										<div>
@@ -452,6 +452,7 @@ export default {
 		</main>
 		<ClientFooterDown/>
 	</div>
+
 </template>
 
 <style>

@@ -4,8 +4,10 @@ namespace App\Filament\Resources\PostResource\Pages;
 
 use App\Enums\PostStatus;
 use App\Filament\Resources\PostResource;
+use App\Jobs\CreateVkPost;
 use App\Models\Post;
 use App\Models\User;
+use App\Services\VK\VkService;
 use Carbon\Carbon;
 use Closure;
 use Filament\Actions;
@@ -14,6 +16,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use PhpParser\Node\Expr\AssignOp\Mod;
 use VK\Client\VKApiClient;
@@ -28,12 +31,17 @@ class CreatePost extends CreateRecord
     protected static string $resource = PostResource::class;
 
     protected array $seoData;
+    protected array $publicationAgreements;
+
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        $this->publicationAgreements = $data['publication'];
+        unset($data['publication']);
         $this->seoData = $this->generateSeo($data);
         $data['preview_text'] = $this->setPreviewText($data);
-        $data['publish_at'] = $this->setPublishDateTime($data['status']);
+        $data['publish_at'] = $this->setPublishDateTime($data['publish_setting']);
+        unset($data['publish_setting']);
         $data['search_data'] = $this->generateSearchData($data['content']);
         $data['reading_time'] = $this->calculateReadingTime($data['search_data']);
         return $data;
@@ -43,6 +51,7 @@ class CreatePost extends CreateRecord
     {
         $this->record->seo()->create($this->seoData);
         $this->sendNotify($this->record, auth()->user());
+        $this->postToSocialMedia($this->publicationAgreements, $this->record->content, $this->record->title, Carbon::parse($this->record->publish_at)->timestamp);
     }
 
     private function generateSeo(array $data) : array
@@ -61,7 +70,6 @@ class CreatePost extends CreateRecord
             'image' => $image,
         ];
     }
-
 
     private function setPreviewText(array $data) : string
     {
@@ -126,10 +134,10 @@ class CreatePost extends CreateRecord
 
             ])->sendToDatabase($recipient);
     }
-    private function setPublishDateTime(PostStatus $status) : Carbon|null
+    private function setPublishDateTime(array $data) : Carbon|null
     {
-        if ($status !== PostStatus::PUBLISHED) {
-            return null;
+        if ($data['publish_after'] === true) {
+            return Carbon::parse($data['publish_at']);
         }
         return Carbon::now();
     }
@@ -242,6 +250,58 @@ class CreatePost extends CreateRecord
         }
         return $data;
     }
+
+    private function postToSocialMedia($settings, $content, $title, $publish_date) : void
+    {
+        if ($this->record->status === PostStatus::PUBLISHED) {
+            if ($settings['vk']) {
+                $text = "";
+                foreach ($content as $block) {
+                    $text .= $this->generateContentToVK($block);
+                }
+
+                $images = $this->generateImageLinksToVK($this->record->images);
+
+                $post_id = $this->record->id;
+
+
+                dispatch(new CreateVkPost($title, $text, $images, $post_id, $publish_date));
+            }
+        }
+    }
+
+
+    private function generateContentToVK($block) : string
+    {
+        $data = "";
+
+        switch ($block['type']) {
+            case 'paragraph':
+                // Удаляем все HTML-теги и заменяем закрывающие теги p и h2 на двойной отступ
+                $content = preg_replace('/<\/(p|h2)>/', "\n\n", $block['data']['content']);
+                $data .= strip_tags($content);
+                break;
+
+            case 'heading':
+                // Удаляем теги заголовка и добавляем двойной отступ
+                $data .= $block['data']['content'] . "\n\n";
+                break;
+        }
+
+        return $data;
+    }
+    private function generateImageLinksToVK($images)
+    {
+
+        $imageUrls = array_map(function ($file) {
+            return url(Storage::url($file)); // Добавляем домен
+        }, $images);
+
+
+        return $imageUrls; // Возвращаем массив с полными URL изображений
+    }
+
+
 
 
 

@@ -4,9 +4,11 @@ namespace App\Filament\Resources\PostResource\Pages;
 
 use App\Enums\PostStatus;
 use App\Filament\Resources\PostResource;
+use App\Jobs\UpdateVkPost;
 use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class EditPost extends EditRecord
@@ -14,11 +16,14 @@ class EditPost extends EditRecord
     protected static string $resource = PostResource::class;
 
     protected array $seoData;
+    protected array $publicationAgreements;
 
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $this->seoData = $this->generateSeo($data);
+        $this->publicationAgreements = $data['publication'];
+        unset($data['publication']);
         $data['preview_text'] = $this->setPreviewText($data);
         $data['publish_at'] = $this->setPublishDateTime($data['status'], $this->record->publish_at);
         $data['search_data'] = $this->generateSearchData($data['content']);
@@ -30,6 +35,7 @@ class EditPost extends EditRecord
     protected function afterSave(): void
     {
         $this->record->seo()->update($this->seoData);
+        $this->postToSocialMedia($this->publicationAgreements, $this->record->content, $this->record->title, Carbon::parse($this->record->publish_at)->timestamp);
     }
 
     private function setPreviewText(array $data) : string
@@ -58,8 +64,6 @@ class EditPost extends EditRecord
         }
         return $block;
     }
-
-
 
     private function generateSeo(array $data) : array
     {
@@ -165,6 +169,59 @@ class EditPost extends EditRecord
         }
         return $data;
     }
+
+    private function generateContentToVK($block) : string
+    {
+        $data = "";
+
+        switch ($block['type']) {
+            case 'paragraph':
+                // Удаляем все HTML-теги и заменяем закрывающие теги p и h2 на двойной отступ
+                $content = preg_replace('/<\/(p|h2)>/', "\n\n", $block['data']['content']);
+                $data .= strip_tags($content);
+                break;
+
+            case 'heading':
+                // Удаляем теги заголовка и добавляем двойной отступ
+                $data .= $block['data']['content'] . "\n\n";
+                break;
+        }
+
+        return $data;
+    }
+
+
+    private function postToSocialMedia($settings, $content, $title, $publish_date) : void
+    {
+        if ($this->record->status === PostStatus::PUBLISHED) {
+            if ($settings['vk']) {
+                $text = "";
+                foreach ($content as $block) {
+                    $text .= $this->generateContentToVK($block);
+                }
+
+                $images = $this->generateImageLinksToVK($this->record->images);
+
+                $post_id = $this->record->id;
+
+
+                dispatch(new UpdateVkPost($title, $text, $images, $post_id, $publish_date));
+            }
+        }
+    }
+
+    private function generateImageLinksToVK($images)
+    {
+
+        $imageUrls = array_map(function ($file) {
+            return url(Storage::url($file)); // Добавляем домен
+        }, $images);
+
+
+        return $imageUrls; // Возвращаем массив с полными URL изображений
+    }
+
+
 
 
 

@@ -24,14 +24,15 @@ return [
         'intercept_gate' => 'before', // after
     ],
 
-    'panel_user' => [
-        'enabled' => false,
-        'name' => 'panel_user',
-    ],
-
     'dashboard_user' => [
         'enabled' => true,
         'name' => 'dashboard_user',
+    ],
+
+
+    'invited_user' => [
+        'enabled' => true,
+        'name' => 'invited_user',
     ],
 
     'permission_prefixes' => [

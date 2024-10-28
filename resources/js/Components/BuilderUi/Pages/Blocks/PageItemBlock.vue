@@ -91,6 +91,7 @@ export default {
 	},
 	mounted() {
 		this.getPage(this.block.data.page)
+
 	},
 	props: {
 		block: {

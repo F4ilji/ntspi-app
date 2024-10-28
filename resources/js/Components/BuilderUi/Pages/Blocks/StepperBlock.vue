@@ -47,6 +47,7 @@ export default {
 	},
 	mounted() {
 		this.domainPath = window.location.origin;
+
 	},
 	props: {
 		block: {

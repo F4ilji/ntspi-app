@@ -13,10 +13,12 @@ import ClientPost from '@/Components/ClientPost.vue';
 import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import PostBadge from "@/Components/BuilderUi/Events/EventBadgeBuilder.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import NewsBreadcrumbs from "@/Components/BuilderUi/Posts/NewsBreadcrumbs.vue";
 
 export default {
   name: "Index",
   components: {
+		NewsBreadcrumbs,
 		MainPageNavBar,
 		PostBadge,
     AdminIndexHeaderTitle, AdminIndexHeader,
@@ -52,6 +54,9 @@ export default {
 		navigation: {
 			type: Object,
 		},
+		breadcrumbs: {
+			type: Object,
+		}
   },
   methods: {
 
@@ -76,6 +81,7 @@ export default {
 						<h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Новости НТГСПИ</h2>
 						<p class="mt-1 text-gray-600 dark:text-neutral-400">Узнайте последние новости любимого вуза</p>
 					</div>
+					<NewsBreadcrumbs :breadcrumbs="breadcrumbs" class="px-5" />
 					<div>
 						<AdminIndexHeader>
 							<ClientPostSearch :search_filter="this.filters.search_filter" />

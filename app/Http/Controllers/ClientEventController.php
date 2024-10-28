@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ClientBreadcrumbPage;
+use App\Http\Resources\ClientBreadcrumbSection;
+use App\Http\Resources\ClientBreadcrumbSubSection;
 use App\Http\Resources\ClientEventCategoryResource;
 use App\Http\Resources\ClientEventFullResource;
 use App\Http\Resources\ClientEventResource;
 use App\Http\Resources\ClientNavigationResource;
 use App\Models\Event;
 use App\Models\EventCategory;
+use App\Models\Page;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
@@ -24,13 +28,44 @@ class ClientEventController extends Controller
         $events = $this->getEvents($currentDate);
         $categories = ClientEventCategoryResource::collection(EventCategory::has('events')->get());
 
-        return Inertia::render('Client/Events/Index', compact('eventDates', 'events', 'currentDate', 'filters', 'categories'));
+        $routeUrl = route('client.event.index');
+        $path = ltrim(parse_url($routeUrl, PHP_URL_PATH), '/');
+
+        $page = Page::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
+
+        if (isset($page->section)) {
+            $breadcrumbs = [
+                'mainSection' => new ClientBreadcrumbSection($page->section->mainSection),
+                'subSection' => new ClientBreadcrumbSubSection($page->section),
+                'page' => new ClientBreadcrumbPage($page),
+            ];
+        } else {
+            $breadcrumbs = null;
+        }
+
+        return Inertia::render('Client/Events/Index', compact('eventDates', 'events', 'currentDate', 'filters', 'categories', 'breadcrumbs'));
     }
 
     public function show(string $slug)
     {
         $event = new ClientEventFullResource(Event::where('slug', '=', $slug)->with('category')->first());
-        return Inertia::render('Client/Events/Show', compact('event'));
+
+        $routeUrl = route('client.event.index');
+        $path = ltrim(parse_url($routeUrl, PHP_URL_PATH), '/');
+
+        $page = Page::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
+
+        if (isset($page->section)) {
+            $breadcrumbs = [
+                'mainSection' => new ClientBreadcrumbSection($page->section->mainSection),
+                'subSection' => new ClientBreadcrumbSubSection($page->section),
+                'page' => new ClientBreadcrumbPage($page),
+            ];
+        } else {
+            $breadcrumbs = null;
+        }
+
+        return Inertia::render('Client/Events/Show', compact('event', 'breadcrumbs'));
     }
 
     private function getCurrentDate(Request $request): array

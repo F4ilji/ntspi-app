@@ -15,12 +15,11 @@ class Post extends Model
 
     protected $guarded = false;
 
-
-
     public function category() : BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
+
 
     public function seo()
     {

@@ -6,10 +6,14 @@ use App\Enums\FormEducation;
 use App\Http\Resources\AdditionalEducationCategoryPreviewResource;
 use App\Http\Resources\AdditionalEducationCategoryResource;
 use App\Http\Resources\AdditionalEducationResource;
+use App\Http\Resources\ClientBreadcrumbPage;
+use App\Http\Resources\ClientBreadcrumbSection;
+use App\Http\Resources\ClientBreadcrumbSubSection;
 use App\Http\Resources\DirectionAdditionalEducationResource;
 use App\Models\AdditionalEducation;
 use App\Models\AdditionalEducationCategory;
 use App\Models\DirectionAdditionalEducation;
+use App\Models\Page;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -85,19 +89,51 @@ class ClientAdditionalEducationController extends Controller
                 'content' => $categoriesContent,
             ],
         ];
+
+        $routeUrl = route('client.additionalEducation.index');
+        $path = ltrim(parse_url($routeUrl, PHP_URL_PATH), '/');
+
+        $page = Page::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
+
+        if (isset($page->section)) {
+            $breadcrumbs = [
+                'mainSection' => new ClientBreadcrumbSection($page->section->mainSection),
+                'subSection' => new ClientBreadcrumbSubSection($page->section),
+                'page' => new ClientBreadcrumbPage($page),
+            ];
+        } else {
+            $breadcrumbs = null;
+        }
+
         return Inertia::render('Client/Additional-educations/Index',
             compact(
                 'directionAdditionalEducations',
                 'additionalEducations',
                 'filters',
                 'forms_education',
-                'categories'
+                'categories',
+                'breadcrumbs'
             ));
     }
 
     public function show(string $slug)
     {
         $additionalEducation = new AdditionalEducationResource(AdditionalEducation::query()->with('category.direction')->where('slug', $slug)->first());
-        return Inertia::render('Client/Additional-educations/Show', compact('additionalEducation'));
+        $routeUrl = route('client.additionalEducation.index');
+        $path = ltrim(parse_url($routeUrl, PHP_URL_PATH), '/');
+
+        $page = Page::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
+
+        if (isset($page->section)) {
+            $breadcrumbs = [
+                'mainSection' => new ClientBreadcrumbSection($page->section->mainSection),
+                'subSection' => new ClientBreadcrumbSubSection($page->section),
+                'page' => new ClientBreadcrumbPage($page),
+            ];
+        } else {
+            $breadcrumbs = null;
+        }
+
+        return Inertia::render('Client/Additional-educations/Show', compact('additionalEducation', 'breadcrumbs'));
     }
 }

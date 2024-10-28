@@ -125,8 +125,6 @@ class MainSliderResource extends Resource
 
                     Toggle::make('is_active')->default(true)->label('Активный слайдер')->inline(false),
                 ]),
-
-
             ]);
     }
 
