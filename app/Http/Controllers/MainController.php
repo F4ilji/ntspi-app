@@ -63,7 +63,7 @@ class MainController extends Controller
         $event_date_start = $today->format('Y-m-d');
         $sliders = ClientMainSliderResource::collection(MainSlider::query()->where('is_active', true)->orderBy('sort', 'asc')->get());
         $posts = PostThumbnailResource::collection(Post::query()
-            ->select('title', 'slug', 'authors', 'preview_text', 'category_id', 'preview', 'search_data', 'created_at')
+            ->select('title', 'slug', 'authors', 'preview_text', 'category_id', 'preview', 'search_data', 'publish_at', 'created_at')
             ->with('category')
             ->where('publish_at', '<', Carbon::now())
             ->where('status', '=', PostStatus::PUBLISHED)

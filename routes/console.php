@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -17,3 +18,9 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+if ('production' === App::environment()) {
+    Artisan::comman('migrate:fresh', function () {
+        $this->comment('You are not allowed to do this in production.');
+    })->describe('Override default command in production.');
+}

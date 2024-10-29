@@ -33,6 +33,9 @@ class UrlLinkResource extends Resource
 
     protected static ?string $navigationParentItem = 'Страницы';
 
+    protected static ?string $navigationGroup = 'Структура приложения';
+
+
     public static function form(Form $form): Form
     {
         return $form
