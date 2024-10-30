@@ -20,7 +20,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 if ('production' === App::environment()) {
-    Artisan::comman('migrate:fresh', function () {
+    Artisan::command('migrate:fresh', function () {
         $this->comment('You are not allowed to do this in production.');
     })->describe('Override default command in production.');
 }
