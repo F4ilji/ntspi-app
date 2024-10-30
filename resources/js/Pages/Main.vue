@@ -9,7 +9,6 @@
 	</Head>
 	<MainPageNavBar :sections="$page.props.navigation" :slider-ref="sliderRef" />
 	<ClientMainSlider @slider-mounted="setSliderRef" :slidersCarousel="sliders" />
-	<PageResourceList resource-id="glavnaia-stranica-resurs" />
 	<section class="max-w-screen-xl w-full mx-auto px-4 py-3 pb-10">
 			<h2 class="text-brand-primary my-6 md:mb-[50px] md:mt-[80px] text-2xl font-semibold tracking-tight text-black lg:text-[32px] lg:leading-tight">Последние новости</h2>
 			<div class="grid gap-10 pb-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
@@ -175,6 +174,7 @@
 
 			<!-- End Card Blog -->
 		</section>
+	<PageResourceList resource-id="glavnaia-stranica-resurs" />
 	<section class="bg-[#F5F5F5] w-full py-10">
 			<div class="max-w-screen-xl md:flex justify-around w-full mx-auto px-4 py-[50px] flex-wrap">
 				<div class="mb-[50px] space-y-3">
