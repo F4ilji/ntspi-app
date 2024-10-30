@@ -26,7 +26,6 @@
 
 <script>
 import {Link} from "@inertiajs/vue3";
-import slugify from "slugify";
 
 export default {
 	name: "PageSubSectionLinks",
@@ -71,5 +70,9 @@ export default {
 
 
 <style scoped>
+
+.styled-scrollbar {
+	overflow: hidden;
+}
 
 </style>
