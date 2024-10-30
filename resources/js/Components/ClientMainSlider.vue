@@ -6,16 +6,15 @@
 					loading="eager"
 					decoding="async"
 					data-nimg="fill"
-					class="object-cover brightness-[0.7] transition-opacity duration-1000"
+					class="object-cover brightness-[0.7] transition-opacity duration-1000 absolute inset-0 h-full w-full"
 					sizes="100vw"
 					v-for="(slider, index) in slidersCarousel.data"
 					:key="index"
 					:src="'/storage/' + slider.image"
 					:class="{ 'opacity-1': currentIndex === index, 'opacity-0': currentIndex !== index }"
-					style="position: absolute; height: 100%; width: 100%; inset: 0px; color: transparent;"
 			/>
 		</div>
-		<div :class="{ 'block': currentIndex === index, 'hidden': currentIndex !== index }" v-for="(item, index) in slidersCarousel.data" :key="index" class="mx-auto max-w-screen-md px-5 pt-[150px] pb-0">
+		<div v-show="currentIndex === index" v-for="(item, index) in slidersCarousel.data" :key="index" class="mx-auto max-w-screen-md px-5 pt-[150px] pb-0">
 			<h1 class="text-brand-primary mb-3 mt-2 text-3xl font-semibold tracking-tight text-white lg:text-5xl lg:leading-tight">
 				{{ item.title }}
 			</h1>
@@ -31,7 +30,7 @@
 			</a>
 		</div>
 		<div v-if="slidersCarousel.data.length >= 2" class="mx-auto max-w-screen-md px-5">
-			<div class="mt-8 text-gray-500 text-white absolute bottom-[100px]">
+			<div class="mt-8 text-gray-500 absolute bottom-[100px]">
 				<div class="">
 					<div class="flex space-x-3 items-center justify-between">
 						<button @click="prev" class="bg-gray-200 w-8 h-8 hover:bg-gray-300 text-gray-800 font-bold rounded-full">
@@ -39,8 +38,6 @@
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
 							</svg>
 						</button>
-
-
 
 						<div class="flex space-x-3 w-[100px] items-center font-semibold text-xl">
 							<span>{{ this.currentIndex + 1 }}</span>
@@ -50,7 +47,6 @@
 							<span> {{ slidersCarousel.data.length }}</span>
 						</div>
 
-
 						<button @click="next" class="bg-gray-200 w-8 h-8 hover:bg-gray-300 text-gray-800 font-bold rounded-full">
 							<svg class="w-4 h-4 mx-auto my-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19l7-7-7-7"></path>
@@ -58,24 +54,14 @@
 						</button>
 					</div>
 				</div>
-				<!-- Progress -->
-				<!-- End Progress -->
 			</div>
-
-
 		</div>
 	</div>
-
-
 </template>
 
-
 <script>
-import {Link} from "@inertiajs/vue3";
-
 export default {
 	name: 'slider',
-	components: {Link},
 	props: {
 		slidersCarousel: {
 			type: Object,
@@ -86,48 +72,52 @@ export default {
 			currentIndex: 0,
 			percentage: 0,
 			intervalId: null,
+			slideDuration: 5000 // Продолжительность слайда в миллисекундах
 		}
+	},
+	computed: {
+		totalSlides() {
+			return this.slidersCarousel.data.length;
+		},
 	},
 	methods: {
 		next() {
-			this.currentIndex = (this.currentIndex + 1) % this.slidersCarousel.data.length
-			this.resetTimer()
+			this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
+			this.resetTimer();
 		},
 		prev() {
-			this.currentIndex = (this.currentIndex - 1 + this.slidersCarousel.data.length) % this.slidersCarousel.data.length
-			this.resetTimer()
+			this.currentIndex = (this.currentIndex - 1 + this.totalSlides) % this.totalSlides;
+			this.resetTimer();
 		},
 		progressStatus() {
 			if (this.percentage >= 100) {
-				this.resetTimer()
-				this.next()
+				this.resetTimer();
+				this.next();
 			} else {
-				this.percentage++
+				this.percentage += (100 / (this.slideDuration / 60)); // Увеличиваем процент равномерно
 			}
 		},
 		startTimer() {
-			this.intervalId = setInterval(this.progressStatus, 60)
+			this.stopTimer(); // Останавливаем предыдущий таймер, если он есть
+			this.percentage = 0; // Сбрасываем процент
+			this.intervalId = setInterval(this.progressStatus, 60); // Запускаем новый таймер
 		},
 		stopTimer() {
-			clearInterval(this.intervalId)
+			clearInterval(this.intervalId);
 		},
 		resetTimer() {
-			this.percentage = 0
-			this.stopTimer()
-			this.startTimer()
+			this.stopTimer();
+			this.startTimer();
 		}
-
-
 	},
 	mounted() {
 		this.$emit('slider-mounted', this.$refs.sliderRef);
-		this.startTimer()
+		this.startTimer();
 	},
 }
 </script>
 
 <style>
-
 .fade-enter-active,
 .fade-leave-active {
 	transition: all 0.5s ease;
@@ -142,5 +132,4 @@ export default {
 	opacity: 0;
 	transform: translateY(30px);
 }
-
 </style>
