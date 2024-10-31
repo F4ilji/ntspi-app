@@ -14,15 +14,15 @@
 
 import {Link} from "@inertiajs/vue3";
 import axios from "axios";
-import ClientGlobalSearch from "@/Components/ClientGlobalSearch.vue";
 import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
+import {defineAsyncComponent} from "vue";
 
 
 export default {
 	name: 'SearchModal',
 	props: {
 		open_id: {
-			type: Object,
+			type: String,
 		}
 
 	},
@@ -31,7 +31,9 @@ export default {
 	},
 	components: {
 		BaseIcon,
-		ClientGlobalSearch,
+		ClientGlobalSearch: defineAsyncComponent(() =>
+				import('@/Components/ClientGlobalSearch.vue')
+		),
 		Link,
 	},
 	methods: {

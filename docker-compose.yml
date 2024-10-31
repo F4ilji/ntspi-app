@@ -20,6 +20,7 @@ services:
     container_name: ntspi-php
     ports:
       - '5173'
+    command: ["/usr/bin/supervisord"]
 
   db:
     image: mysql:8.0

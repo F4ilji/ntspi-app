@@ -2,7 +2,7 @@
 	<div class="min-w-[12rem] py-1 space-y-3">
 		<h3 class="font-medium text-gray-900 text-sm mb-2">Сортировать по</h3>
 		<div>
-			<select @change="filter" v-model="sortOrder" class="py-2 px-3 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+			<select @change="filter()" v-model="sortOrder" class="py-2 px-3 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
 				<option value="desc">Дате (Сначала новые)</option>
 				<option value="asc">Дате (Сначала старые)</option>
 			</select>
@@ -17,7 +17,7 @@ import slugify from "slugify";
 import SearchBadge from "@/Components/BuilderUi/Events/Badges/SearchBadge.vue";
 import CategoryBadge from "@/Components/BuilderUi/Events/Badges/CategoryBadge.vue";
 import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
-import {debounce} from "lodash/function.js";
+import {debounce} from "lodash";
 export default {
 	name: "SortingByFilter",
 	components: {

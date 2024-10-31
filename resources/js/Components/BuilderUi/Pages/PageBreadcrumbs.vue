@@ -11,36 +11,36 @@
 							</Link>
 						</li>
 						<li v-if="breadcrumbs.mainSection" class="text-sm">
-							<span class="flex items-center text-gray-500 hover:text-primaryBlue cursor-pointer" @click.prevent="handleSectionClick(this.breadcrumbs.mainSection)">
+							<span class="flex items-center text-gray-500 hover:text-primaryBlue cursor-pointer" @click.prevent="handleSectionClick(breadcrumbs.mainSection)">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
 										 width="16" height="16"
 										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
 											stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 							</svg>
-								{{ textLimit(this.breadcrumbs.mainSection.data.title, 25) }}
+								{{ textLimit(breadcrumbs.mainSection.data.title, 25) }}
 							</span>
 						</li>
 						<li v-if="breadcrumbs.subSection" class="text-sm">
-							<span class="flex items-center text-gray-500 hover:text-primaryBlue cursor-pointer" @click.prevent="handleSubSectionClick(this.breadcrumbs.mainSection, this.breadcrumbs.subSection)">
+							<span class="flex items-center text-gray-500 hover:text-primaryBlue cursor-pointer" @click.prevent="handleSubSectionClick(breadcrumbs.mainSection, breadcrumbs.subSection)">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
 										 width="16" height="16"
 										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
 												stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 								</svg>
-								{{ textLimit(this.breadcrumbs.subSection.data.title, 25) }}
+								{{ textLimit(breadcrumbs.subSection.data.title, 25) }}
 							</span>
 						</li>
 						<li class="text-sm">
-							<Link :href="route('page.view', this.breadcrumbs.page.data.path)" class="flex items-center text-gray-500 hover:text-primaryBlue">
+							<Link :href="route('page.view', breadcrumbs.page.data.path)" class="flex items-center text-gray-500 hover:text-primaryBlue">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
 										 width="16" height="16"
 										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
 												stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 								</svg>
-								{{ textLimit(this.breadcrumbs.page.data.title, 25) }}
+								{{ textLimit(breadcrumbs.page.data.title, 25) }}
 							</Link>
 						</li>
 					</ol>
@@ -52,14 +52,14 @@
 							</Link>
 						</li>
 						<li class="text-sm">
-							<Link :href="route('page.view', this.breadcrumbs.page.data.path)" class="flex items-center text-gray-500 hover:text-primaryBlue">
+							<Link :href="route('page.view', breadcrumbs.page.data.path)" class="flex items-center text-gray-500 hover:text-primaryBlue">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
 										 width="16" height="16"
 										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
 												stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 								</svg>
-								{{ textLimit(this.breadcrumbs.page.data.title, 25) }}
+								{{ textLimit(breadcrumbs.page.data.title, 25) }}
 							</Link>
 						</li>
 					</ol>
@@ -93,7 +93,10 @@ export default {
 			return text
 		},
 		isMobileDevice() {
-			return window.innerWidth < 1024; // Задайте порог для мобильных устройств
+			if (typeof window !== 'undefined') {
+				return window.innerWidth < 1024; // Проверка на мобильные устройства
+			}
+			return false; // По умолчанию возвращаем false, когда не в браузере
 		},
 		handleSectionClick(breadcrumb) {
 			if (this.isMobileDevice()) {

@@ -127,13 +127,13 @@ export default {
 										</div>
 										<div class="px-2 mx-auto">
 											<div class="flex-wrap flex gap-3 md:items-center">
-												<ProgramBadge :filters="this.filters" />
+												<ProgramBadge :filters="filters" />
 											</div>
 										</div>
 									</div>
 									<div class="container py-5 lg:py-4">
 										<div class="w-full mx-auto flex flex-wrap lg:justify-between">
-											<template v-for="educations in transformToColumns(this.additionalEducations.data)">
+											<template v-for="educations in transformToColumns(additionalEducations.data)">
 												<div class="flex flex-col">
 													<template v-for="education in educations">
 														<div style="height: max-content" class="px-2">

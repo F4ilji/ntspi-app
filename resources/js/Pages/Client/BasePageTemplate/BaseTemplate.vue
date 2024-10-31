@@ -10,13 +10,13 @@
 
 		<div class="relative mx-auto mb-auto mt-[67px] max-w-screen-xl w-full px-4 py-10 md:flex md:flex-row md:py-10">
 			<PageSubSectionLinks :sub-section-pages="subSectionPages" :current-section="page.data.section"/>
-			<PageNavigateLinks :header-navs="this.headerNavs"/>
+			<PageNavigateLinks :header-navs="headerNavs"/>
 			<div class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
 				<div class="space-y-5 md:space-y-5">
 					<PageBreadcrumbs :breadcrumbs="breadcrumbs" :page-title="page.data.title"/>
 					<PageTitle :header="page.data.title"/>
 					<div id="page-area" class="space-y-4">
-						<PageBuilder :blocks="this.page.data.content"/>
+						<PageBuilder :blocks="page.data.content"/>
 					</div>
 				</div>
 			</div>

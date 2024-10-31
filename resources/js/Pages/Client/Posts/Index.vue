@@ -43,7 +43,7 @@ export default {
         type: Object,
     },
     filters: {
-        type: Object,
+        type: Array,
     },
     categories: {
         type: Object,
@@ -84,15 +84,15 @@ export default {
 					<NewsBreadcrumbs :breadcrumbs="breadcrumbs" class="px-5" />
 					<div>
 						<AdminIndexHeader>
-							<ClientPostSearch :search_filter="this.filters.search_filter" />
-							<ClientPostFilter :sorting-by_filter="this.filters.sortingBy_filter" :category_filter="this.filters.category_filter" :tag_filter="this.filters.tag_filter" :tags="tags" :items="categories"/>
+							<ClientPostSearch :search_filter="filters.search_filter" />
+							<ClientPostFilter :sorting-by_filter="filters.sortingBy_filter" :category_filter="filters.category_filter" :tag_filter="filters.tag_filter" :tags="tags" :items="categories"/>
 						</AdminIndexHeader>
 
 
 						<div class="px-6">
 							<h3 v-if="filters.category_filter.value || filters.tag_filter.value || filters.search_filter.value" class="text-sm text-gray-500 mb-4">Найдено новостей: {{ posts.meta.total }}</h3>
 							<div class="flex-wrap flex gap-3 md:items-center">
-								<PostBadge :filters="this.filters" />
+								<PostBadge v-if="filters.length > 0" :filters="filters" />
 							</div>
 						</div>
 

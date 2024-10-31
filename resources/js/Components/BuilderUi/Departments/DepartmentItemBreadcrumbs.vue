@@ -137,7 +137,10 @@ export default {
 			return text
 		},
 		isMobileDevice() {
-			return window.innerWidth < 1024; // Задайте порог для мобильных устройств
+			if (typeof window !== 'undefined') {
+				return window.innerWidth < 1024; // Проверка на мобильные устройства
+			}
+			return false; // По умолчанию возвращаем false, когда не в браузере
 		},
 		handleSectionClick(breadcrumb) {
 			if (this.isMobileDevice()) {

@@ -10,7 +10,8 @@ import slugify from "slugify";
 import SearchBadge from "@/Components/BuilderUi/Events/Badges/SearchBadge.vue";
 import CategoryBadge from "@/Components/BuilderUi/Events/Badges/CategoryBadge.vue";
 import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
-import {debounce} from "lodash/function.js";
+import {debounce} from "lodash";
+
 export default {
 	name: "LevelEduFilter",
 	components: {

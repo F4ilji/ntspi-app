@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { debounce } from "lodash/function.js";
+import { debounce } from "lodash";
 
 export default {
 	name: "AdminIndexSearch",

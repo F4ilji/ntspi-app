@@ -11,12 +11,12 @@
 			<div class="w-full h-[67px] pointer-events-none fixed" id="visor"></div>
 
 			<div class="sticky top-[110px] hidden h-[calc(100vh-110px)] max-w-[20%] md:flex md:shrink-0 md:flex-col md:justify-between">
-				<nav v-if="this.departments"
+				<nav v-if="departments"
 						 class="styled-scrollbar flex h-[calc(100vh-200px)] flex-col overflow-y-scroll pr-2 pb-4">
 					<div class="text-gray-1000 mb-2 text-md font-medium">Кафедры факультета - {{ department.data.faculty.abbreviation }}</div>
 					<div class="flex gap-x-1">
 						<ul class="px-0.5 last-of-type:mb-0 mb-8">
-							<li v-for="depart in this.departments.data" :key="department.id" class="my-1.5 flex">
+							<li v-for="depart in departments.data" :key="department.id" class="my-1.5 flex">
 								<a :class="{'text-white hover:text-gray-200 font-semibold bg-[#135aae]': isSameRoute(route('client.department.show', { facultySlug: department.data.faculty.slug, departmentSlug: depart.slug })), 'text-gray-600 hover:text-[#2C6288]': !isSameRoute(route('client.department.show', { facultySlug: department.data.faculty.slug, departmentSlug: depart.slug })) }"
 									 :href="route('client.department.show', { facultySlug: department.data.faculty.slug, departmentSlug: depart.slug }) + '/'"
 									 class="relative duration-300 flex w-full rounded-md cursor-pointer items-center px-2 py-1 text-left text-sm">{{
@@ -34,27 +34,27 @@
 					<div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
 					<ul class="styled-scrollbar max-h-[70vh] space-y-1.5 overflow-y-auto py-2 text-sm">
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'workers', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'workers' }"
+							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'workers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'workers' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#workers">Сотрудники кафедры</a>
 						</li>
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'teachers', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'teachers' }"
+							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'teachers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'teachers' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#teachers">Преподаватели кафедры</a>
 						</li>
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'external-teachers', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'external-teachers' }"
+							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'external-teachers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'external-teachers' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#external-teachers">Внешние совместители</a>
 						</li>
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'programs', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'programs' }"
+							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'programs', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'programs' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#programs">Программы</a>
 						</li>
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'description' }"
+							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'description' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#description">Описание</a>
 						</li>
@@ -126,7 +126,7 @@
 
 
 						<div class="space-y-3 md:space-y-4">
-							<DepartmentBuilder :blocks="this.department.data.content "/>
+							<DepartmentBuilder :blocks="department.data.content "/>
 						</div>
 					</div>
 

@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import {debounce} from "lodash/function.js";
+import {debounce} from "lodash";
 import {Link} from "@inertiajs/vue3";
 import {Inertia} from "@inertiajs/inertia";
 import ResultList from "@/Components/Search/ResultList.vue";

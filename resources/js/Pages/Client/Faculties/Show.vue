@@ -16,12 +16,12 @@
 
 
 			<div class="sticky top-[110px] hidden h-[calc(100vh-110px)] max-w-[20%] md:flex md:shrink-0 md:flex-col md:justify-between">
-				<nav v-if="this.faculties"
+				<nav v-if="faculties"
 						 class="styled-scrollbar flex h-[calc(100vh-200px)] flex-col overflow-y-scroll pr-2 pb-4">
 					<div class="text-gray-1000 mb-2 text-md font-medium">Факультеты</div>
 					<div class="flex gap-x-1">
 						<ul class="px-0.5 last-of-type:mb-0 mb-8">
-							<li v-for="faculty in this.faculties.data" :key="faculty.id" class="my-1.5 flex">
+							<li v-for="faculty in faculties.data" :key="faculty.id" class="my-1.5 flex">
 								<a :class="{'text-white hover:text-gray-200 font-semibold bg-[#135aae]': isSameRoute(route('client.faculty.show', faculty.slug)), 'text-gray-600 hover:text-[#2C6288]': !isSameRoute(route('client.faculty.show', faculty.id)) }"
 									 :href="route('client.faculty.show', faculty.slug) + '/'"
 									 class="relative duration-300 flex w-full rounded-md cursor-pointer items-center px-2 py-1 text-left text-sm">{{
@@ -39,17 +39,17 @@
 					<div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
 					<ul class="styled-scrollbar max-h-[70vh] space-y-1.5 overflow-y-auto py-2 text-sm">
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'persons', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'persons' }"
+							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'persons', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'persons' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#persons">Состав</a>
 						</li>
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'department', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'department' }"
+							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'department', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'department' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#department">Кафедры факультета</a>
 						</li>
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'description' }"
+							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'description' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#description">Описание</a>
 						</li>
@@ -124,7 +124,7 @@
 
 
 						<div class="space-y-3 md:space-y-4">
-							<FacultyBuilder :blocks="this.faculty.data.content "/>
+							<FacultyBuilder :blocks="faculty.data.content "/>
 						</div>
 
 					</div>

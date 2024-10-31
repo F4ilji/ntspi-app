@@ -44,7 +44,7 @@
 							</Link>
 						</li>
 						<li class="text-sm">
-							<Link :href="this.$inertia.page.props.ziggy.location" class="flex items-center text-gray-500 hover:text-blue-600">
+							<Link :href="$page.props.ziggy.location" class="flex items-center text-gray-500 hover:text-blue-600">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
 										 width="16" height="16"
 										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -74,7 +74,7 @@
 							</Link>
 						</li>
 						<li class="text-sm">
-							<Link :href="this.$inertia.page.props.ziggy.location" class="flex items-center text-gray-500 hover:text-blue-600">
+							<Link :href="$page.props.ziggy.location" class="flex items-center text-gray-500 hover:text-blue-600">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
 										 width="16" height="16"
 										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -115,7 +115,10 @@ export default {
 			return text
 		},
 		isMobileDevice() {
-			return window.innerWidth < 1024; // Задайте порог для мобильных устройств
+			if (typeof window !== 'undefined') {
+				return window.innerWidth < 1024; // Проверка на мобильные устройства
+			}
+			return false; // По умолчанию возвращаем false, когда не в браузере
 		},
 		handleSectionClick(breadcrumb) {
 			if (this.isMobileDevice()) {

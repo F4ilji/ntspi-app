@@ -140,7 +140,6 @@ class ClientPostController extends Controller
                 'page' => new ClientBreadcrumbPage($page),
             ];
         } else {
-            $subSectionPages = null;
             $breadcrumbs = null;
         }
         return Inertia::render('Client/Posts/Show', compact('post', 'breadcrumbs'));

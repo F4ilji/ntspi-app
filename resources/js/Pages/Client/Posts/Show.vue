@@ -56,7 +56,7 @@ export default {
 			default: ''
 		},
 		breadcrumbs: {
-			type: Object
+			type: Object,
 		}
 	},
 	mounted() {
@@ -95,9 +95,9 @@ export default {
 									</div>
 								</div>
 							</div>
-							<PostBuilder :blocks="this.blocks"/>
+							<PostBuilder :blocks="blocks"/>
 							<div>
-								<PostGallery :title="post.data.title" :images="post.data.gallery"/>
+								<PostGallery v-if="post.data.gallery.length > 1" :title="post.data.title" :images="post.data.gallery"/>
 							</div>
 							<div>
 								<a :href="route('client.post.index', { 'tag[]': tag.slug })" v-for="tag in post.data.tags" class="m-1 inline-flex items-center gap-1.5 py-2 px-3 rounded-full text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" href="#">

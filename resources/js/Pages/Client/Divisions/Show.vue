@@ -14,12 +14,12 @@
 				<div class="w-full h-[67px] fixed pointer-events-none" id="visor"></div>
 
 				<div class="sticky top-[110px] hidden h-[calc(100vh-110px)] max-w-[20%] md:flex md:shrink-0 md:flex-col md:justify-between">
-					<nav v-if="this.divisions"
+					<nav v-if="divisions"
 							 class="styled-scrollbar flex h-[calc(100vh-200px)] flex-col overflow-y-scroll pr-2 pb-4">
 						<div class="text-gray-1000 mb-2 text-md font-medium">Подразделения</div>
 						<div class="flex gap-x-1">
 							<ul class="px-0.5 last-of-type:mb-0 mb-8">
-								<li v-for="division in this.divisions.data" :key="division.id" class="my-1.5 flex">
+								<li v-for="division in divisions.data" :key="division.id" class="my-1.5 flex">
 									<a :class="{'text-white hover:text-gray-200 font-semibold bg-[#135aae]': isSameRoute(route('client.division.show', division.slug)), 'text-gray-600 hover:text-[#2C6288]': !isSameRoute(route('client.division.show', division.id)) }"
 										 :href="route('client.division.show', division.slug) + '/'"
 										 class="relative duration-300 flex w-full rounded-md cursor-pointer items-center px-2 py-1 text-left text-sm">{{
@@ -37,12 +37,12 @@
 						<div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
 						<ul class="styled-scrollbar max-h-[70vh] space-y-1.5 overflow-y-auto py-2 text-sm">
 							<li v-if="division.data.workers.length > 0" class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'persons', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'persons' }"
+								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'persons', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'persons' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#persons">Состав</a>
 							</li>
 							<li v-if="division.data.description.length > 0" class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'description' }"
+								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'description' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#description">Описание</a>
 							</li>

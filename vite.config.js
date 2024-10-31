@@ -9,8 +9,10 @@ export default defineConfig({
     plugins: [
         laravel({
             input: 'resources/js/app.js',
+            ssr: 'resources/js/ssr.js',
             refresh: true,
         }),
+
         vue({
             template: {
                 transformAssetUrls: {
@@ -31,6 +33,9 @@ export default defineConfig({
         watch: {
             usePolling: true
         }
-    }
+    },
+    ssr: {
+        noExternal: ['lodash', 'bvi', 'preline'],
+    },
 });
 

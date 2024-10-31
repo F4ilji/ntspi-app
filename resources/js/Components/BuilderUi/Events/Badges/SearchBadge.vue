@@ -1,5 +1,5 @@
 <template>
-	<span v-if="this.filter.value !== null" class="inline-flex items-center gap-x-1.5 py-1.5 ps-3 pe-2 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+	<span v-if="filter.value !== null" class="inline-flex items-center gap-x-1.5 py-1.5 ps-3 pe-2 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
   	Поиск: {{ filter.value }}
   	<button @click.prevent="clearFilter" type="button" class="shrink-0 size-4 inline-flex items-center justify-center rounded-full hover:bg-blue-200 focus:outline-none focus:bg-blue-200 focus:text-blue-500">
     	<span class="sr-only">Remove badge</span>

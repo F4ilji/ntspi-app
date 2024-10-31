@@ -50,6 +50,7 @@ class ClientEventController extends Controller
     {
         $event = new ClientEventFullResource(Event::where('slug', '=', $slug)->with('category')->first());
 
+
         $routeUrl = route('client.event.index');
         $path = ltrim(parse_url($routeUrl, PHP_URL_PATH), '/');
 

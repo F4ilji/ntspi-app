@@ -1,5 +1,6 @@
 FROM php:8.2-fpm
 
+# Установка необходимых пакетов
 RUN apt-get update && apt-get install -y \
           apt-utils \
           libpq-dev \
@@ -9,7 +10,6 @@ RUN apt-get update && apt-get install -y \
           libjpeg62-turbo-dev \
           libmcrypt-dev \
           libgd-dev \
-          libpng-dev \
           libwebp-dev \
           libzip-dev \
           zip \
@@ -23,23 +23,23 @@ RUN apt-get update && apt-get install -y \
           apt-get clean && \
           rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-#RUN apt-get update && \
-#    apt-get install -y libmagickwand-dev
-#
-#RUN pecl install imagick
-#
-#RUN docker-php-ext-enable imagick
-
+# Установка дополнительных библиотек
 RUN apt-get update && apt-get install -y zlib1g-dev libicu-dev g++
 RUN docker-php-ext-configure intl
 RUN docker-php-ext-install intl
 
+# Установка Supervisor
+RUN apt-get update && apt-get install -y supervisor
 
+# Копирование конфигурационного файла PHP
 COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 
 # Установка Node.js
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs npm
+
+# Копирование конфигурации Supervisor
+COPY ./_docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 6001
 EXPOSE 5173

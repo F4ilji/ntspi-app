@@ -1,7 +1,6 @@
 <script>
 import MainNavbar from "@/Navbars/MainNavbar.vue";
 import {Head, Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
 import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
 import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import ClientImageSlider from "@/Components/ClientImageSlider.vue";
@@ -9,7 +8,6 @@ import EventBackButton from "@/Components/BuilderUi/Events/EventBackButton.vue";
 import TitleEvent from "@/Components/BuilderUi/Events/TitleEvent.vue";
 import PostBuilder from "@/Components/BuilderUi/Posts/PostBuilder.vue";
 import EventBuilder from "@/Components/BuilderUi/Events/EventBuilder.vue";
-import EventtBuilder from "@/Components/BuilderUi/Events/EventBuilder.vue";
 import ClientEventSelectDate from "@/Components/ClientEventSelectDate.vue";
 import ClientEventFilter from "@/Components/ClientEventFilter.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
@@ -22,25 +20,22 @@ export default {
 		EventItemBreadcrumbs,
 		MainPageNavBar,
 		ClientEventFilter, ClientEventSelectDate,
-		EventtBuilder,
 		EventBuilder,
 		PostBuilder,
 		TitleEvent,
 		EventBackButton,
-		ClientImageSlider, ClientFooterDown, ClientScrollTimeline, Link, MainNavbar, FsLightbox, Head},
+		ClientImageSlider, ClientFooterDown, ClientScrollTimeline, Link, MainNavbar, Head},
 	data() {
 		return {
-			blocks: this.event.data.content,
-
 		}
 	},
 
 	props: {
 		event: {
-			type: Array,
+			type: Object,
 		},
 		navigation: {
-			type: Array,
+			type: Object,
 		},
 		breadcrumbs: {
 			type: Object
@@ -101,7 +96,7 @@ export default {
 							</div>
 
 							<div class="space-y-3 md:space-y-4">
-								<EventBuilder :blocks="this.blocks"/>
+								<EventBuilder :blocks="event.data.content"/>
 							</div>
 
 

@@ -84,7 +84,7 @@ export default {
 							</div>
 
 
-							<template v-for="block in this.blocks" :key="block.id">
+							<template v-for="block in blocks" :key="block.id">
 								<div v-if="block.type === 'heading'">
 									<h2 class="font-bold text-xl">{{ block.data.content }}</h2>
 								</div>

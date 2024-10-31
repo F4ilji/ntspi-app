@@ -77,7 +77,7 @@
 </template>
 
 <script>
-import {debounce} from "lodash/function.js";
+import {debounce} from "lodash";
 import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
 import CategoryFilter from "@/Components/BuilderUi/Events/Filters/CategoryFilter.vue";
 import TagFilter from "@/Components/BuilderUi/Events/Filters/TagFilter.vue";

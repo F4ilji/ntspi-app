@@ -4,10 +4,6 @@
 		<meta name="description" content="Your page description">
 	</Head>
 
-
-
-
-
 	<div class="flex flex-col h-screen">
 		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
@@ -22,60 +18,60 @@
 						<div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
 						<ul class="styled-scrollbar max-h-[70vh] space-y-1.5 overflow-y-auto py-2 text-sm">
 							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'education', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'education' }"
+								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'education', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'education' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#education">Образование
 								</a>
 							</li>
 							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'awards', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'awards' }"
+								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'awards', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'awards' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#awards">Награды</a>
 							</li>
 							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'professionalRetraining', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'professionalRetraining' }"
+								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'professionalRetraining', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'professionalRetraining' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#professionalRetraining">Профессиональная переподготовка
 								</a>
 							</li>
 							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'professionalDevelopment', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'professionalDevelopment' }"
+								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'professionalDevelopment', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'professionalDevelopment' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#professionalDevelopment">Повышение квалификации
 								</a>
 							</li>
 							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'professDisciplines', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'professDisciplines' }"
+								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'professDisciplines', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'professDisciplines' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#professDisciplines">Преподаваемые дисциплины
 								</a>
 							</li>
 							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'workExperience', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'workExperience' }"
+								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'workExperience', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'workExperience' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#workExperience">Стаж работы
 								</a>
 							</li>
 							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'attendedConferences', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'attendedConferences' }"
+								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'attendedConferences', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'attendedConferences' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#attendedConferences">Участие в конференциях
 								</a>
 							</li>
 							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'participationScienceProjects', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'participationScienceProjects' }"
+								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'participationScienceProjects', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'participationScienceProjects' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#participationScienceProjects">Участие в научных проектах
 								</a>
 							</li>
 							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'publications', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'publications' }"
+								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'publications', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'publications' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#publications">Публикации
 								</a>
 							</li>
 							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : this.currentNavSection  === 'other', 'bg-transperant text-gray-600 hover:text-gray-900' : this.currentNavSection !== 'other' }"
+								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'other', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'other' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#other">Другое
 								</a>

@@ -37,7 +37,7 @@ export default {
 	},
 	props: {
 		events: {
-			type: Array,
+			type: Object,
 		},
 		currentDate: {
 			type: String,
@@ -46,7 +46,7 @@ export default {
 			type: Array,
 		},
 		navigation: {
-			type: Array,
+			type: Object,
 		},
 		filters: {
 			type: Array,
@@ -83,7 +83,7 @@ export default {
 								<h1 class="block text-brand-primary text-center mb-3 mt-2 mr-4 text-3xl font-semibold tracking-tight dark:text-white lg:text-[40px] lg:leading-tight">
 									Мероприятия НТГСПИ
 								</h1>
-								<ClientEventFilter :is_online_filter="filters.is_online_filter" :categories="this.categories" :category_filter="filters.category_filter" :sorting-by_filter="filters.sortingBy_filter" />
+								<ClientEventFilter :is_online_filter="filters.is_online_filter" :categories="categories" :category_filter="filters.category_filter" :sorting-by_filter="filters.sortingBy_filter" />
 
 							</div>
 

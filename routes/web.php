@@ -68,7 +68,7 @@ Route::middleware('access-check')->group(function () {
 
     // События
     Route::get('/events', [ClientEventController::class, 'index'])->name('client.event.index'); // Доделать builder
-    Route::get('/events/{id}', [ClientEventController::class, 'show'])->name('client.event.show');
+    Route::get('/events/{slug}', [ClientEventController::class, 'show'])->name('client.event.show');
 
     // Заметки библиотеки
     Route::get('/library/news', [ClientLibraryNewsController::class, 'index'])->name('client.library.news.index'); // Доделать builder

@@ -152,7 +152,7 @@ export default {
 															<template v-for="contest in admissionPlan.contests">
 																<div class="border rounded my-2 py-1">
 																	<span class="text-gray-500 text-[14px]">{{ (contest.form_education === '1') ? 'Очная форма обучения' : 'Заочная форма обучения' }}</span>
-																	<p v-for="place in contest.places" class="mt-1 text-gray-600">{{ place.count }} мест <span class="text-gray-400 text-[12px]">{{ this.formsEdu[place.form_budget] }}</span></p>
+																	<p v-for="place in contest.places" class="mt-1 text-gray-600">{{ place.count }} мест <span class="text-gray-400 text-[12px]">{{ formsEdu[place.form_budget] }}</span></p>
 																</div>
 															</template>
 														</template>
@@ -201,7 +201,7 @@ export default {
 													</button>
 													<div id="hs-basic-bordered-collapse-two" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-bordered-heading-two">
 														<div class="pb-4 px-5">
-															<template v-for="block in this.program.data.about_program" :key="block.id">
+															<template v-for="block in program.data.about_program" :key="block.id">
 																<!--						<div v-if="block.type === 'image'">-->
 																<!--							<figure :class="block.data.withBackground ? 'bg-gray-100 rounded-lg' : ''">-->
 																<!--								<img loading="lazy" @click="openEditorImagesOnSlide(block.slideNumber)"-->
@@ -326,7 +326,7 @@ export default {
 													</button>
 													<div id="hs-basic-bordered-collapse-three" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-bordered-heading-three">
 														<div class="pb-4 px-5">
-															<template v-for="block in this.program.data.program_features" :key="block.id">
+															<template v-for="block in program.data.program_features" :key="block.id">
 																<!--						<div v-if="block.type === 'image'">-->
 																<!--							<figure :class="block.data.withBackground ? 'bg-gray-100 rounded-lg' : ''">-->
 																<!--								<img loading="lazy" @click="openEditorImagesOnSlide(block.slideNumber)"-->

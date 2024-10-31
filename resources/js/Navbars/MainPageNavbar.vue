@@ -38,14 +38,13 @@
 					</div>
 				</div>
 				<div>
-					<DesktopNavBar :sections="sections" :under-slider-header="underSliderHeader" />
-
+					<DesktopNavBar v-if="sections" :sections="sections" :under-slider-header="underSliderHeader" />
 				</div>
 			</div>
 		</nav>
 	</header>
 
-	<MobileNavbar :sections="sections" />
+	<MobileNavbar v-if="sections" :sections="sections" />
 
 
 	<SearchModal open_id="open-search-modal" />
@@ -57,7 +56,7 @@
 import {Link} from "@inertiajs/vue3";
 import axios from "axios";
 import ClientGlobalSearch from "@/Components/ClientGlobalSearch.vue";
-import * as isvek from "bvi"
+// import * as isvek from "bvi"
 import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
 import MobileNavbar from "@/Navbars/MobileNavbar.vue";
 import SearchModal from "@/Components/Modals/SearchModal.vue";
@@ -79,7 +78,6 @@ export default {
 			type: Object,
 		},
 		sliderRef: {
-			type: HTMLDivElement,
 			default: true
 		},
 	},
@@ -123,15 +121,6 @@ export default {
 				return section.subSections.some(subSection => this.hasActivePage(subSection));
 			}
 
-
-
-			// // Проверяем наличие активной страницы в подсекциях
-			// const hasActiveInSubSections = section.subSections && section.subSections.some(subSection => this.hasActivePage(subSection));
-			//
-			// console.log(hasActiveInSubSections)
-			//
-			//
-			// return hasActiveInPages || hasActiveInSubSections;
 		},
 
 		handleScroll() {
@@ -159,21 +148,19 @@ export default {
 	},
 	mounted() {
 		window.addEventListener('scroll', this.handleScroll)
-		window.addEventListener('scroll', this.checkSlider)
-		if (this.getCookie('bvi_panelActive') === null) {
-			this.bvi = new isvek.Bvi({
-				target: '.className',
-				fontSize: 24,
-				theme: 'black',
-				speech: false,
-				reload: true,
-				//...etc
-			});
-		}
+		// if (this.getCookie('bvi_panelActive') === null) {
+		// 	this.bvi = new isvek.Bvi({
+		// 		target: '.className',
+		// 		fontSize: 24,
+		// 		theme: 'black',
+		// 		speech: false,
+		// 		reload: true,
+		// 		//...etc
+		// 	});
+		// }
 	},
 	beforeDestroy() {
 		window.removeEventListener('scroll', this.handleScroll)
-		window.removeEventListener('scroll', this.checkSlider)
 	},
 	computed: {
 		currentLogo() {

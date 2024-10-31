@@ -2,9 +2,8 @@ import './bootstrap';
 import '../css/app.css';
 import 'preline';
 
-import { createApp, h } from 'vue';
+import { createSSRApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import {linksReform} from "@/mixins/LinksReform.js";
 
@@ -18,14 +17,15 @@ createInertiaApp({
         // resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue'))
     },
     setup({ el, App, props, plugin }) {
-        return createApp({ render: () => h(App, props) })
+        return createSSRApp({ render: () => h(App, props) })
             .use(plugin)
             .mixin(linksReform)
-            .use(ZiggyVue, Ziggy)
+            .use(ZiggyVue)
             .mount(el);
     },
     progress: {
         color: '#1E57A3',
+        delay: 250,
     },
 });
 

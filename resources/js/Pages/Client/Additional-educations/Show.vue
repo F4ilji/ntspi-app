@@ -164,7 +164,7 @@ export default {
 										<div>
 											<h2 class="text-xl font-bold md:text-2xl">О программе</h2>
 											<div class="py-4 px-5">
-												<ProgramBuilder :blocks="this.additionalEducation.data.content" />
+												<ProgramBuilder :blocks="additionalEducation.data.content" />
 											</div>
 										</div>
 										<!-- End Icon Blocks -->

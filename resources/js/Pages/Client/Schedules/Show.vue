@@ -1,7 +1,7 @@
 <script>
 import MainNavbar from "@/Navbars/MainNavbar.vue";
 import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import {debounce} from "lodash/function.js";
+import {debounce} from "lodash";
 import {Link} from "@inertiajs/vue3";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 
@@ -134,7 +134,7 @@ export default {
 								<template v-for="(lesson, index) in getDayOfWeek.scheduleDay.form">
 									<tr>
 										<td class="border text-center">{{ index + 1 }}</td>
-										<td class="border text-center">{{ this.timeSchedules[index] }}</td>
+										<td class="border text-center">{{ timeSchedules[index] }}</td>
 										<td class="text-center border">
 											<template v-for="lesson_info in lesson">
 												<div class="flex items-stretch justify-center">
@@ -176,7 +176,7 @@ export default {
 								<table class="border-collapse border w-full mb-4">
 									<tbody>
 									<tr>
-										<td class="text-center" rowspan="9" width="30px">{{ this.weekday[index] }}</td>
+										<td class="text-center" rowspan="9" width="30px">{{ weekday[index] }}</td>
 									</tr>
 									<tr>
 										<td class="text-center border  px-3">#</td>
@@ -186,7 +186,7 @@ export default {
 									<template v-for="(lesson, index) in day.form">
 										<tr>
 											<td class="border text-center">{{ index + 1 }}</td>
-											<td class="border text-center">{{ this.timeSchedules[index] }}</td>
+											<td class="border text-center">{{ timeSchedules[index] }}</td>
 											<td class="text-center border">
 												<template v-for="lesson_info in lesson">
 													<div class="flex items-stretch justify-center">

@@ -40,11 +40,11 @@
 						</button>
 
 						<div class="flex space-x-3 w-[100px] items-center font-semibold text-xl">
-							<span>{{ this.currentIndex + 1 }}</span>
-							<div class="flex w-full h-1 bg-gray-200 rounded-full overflow-hidden dark:bg-neutral-700 " role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+							<span>{{ currentIndex + 1 }}</span>
+							<div class="flex w-full h-1 bg-gray-200 rounded-full overflow-hidden dark:bg-neutral-700" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
 								<div class="flex flex-col justify-center rounded-full overflow-hidden bg-blue-600 text-xs text-white text-center whitespace-nowrap transition duration-500 dark:bg-blue-500 my-slider-progress-bar" :style="{ 'width': `${percentage}%` }"></div>
 							</div>
-							<span> {{ slidersCarousel.data.length }}</span>
+							<span>{{ slidersCarousel.data.length }}</span>
 						</div>
 
 						<button @click="next" class="bg-gray-200 w-8 h-8 hover:bg-gray-300 text-gray-800 font-bold rounded-full">
@@ -65,6 +65,7 @@ export default {
 	props: {
 		slidersCarousel: {
 			type: Object,
+			required: true, // Убедитесь, что пропс передан
 		},
 	},
 	data() {
@@ -77,17 +78,21 @@ export default {
 	},
 	computed: {
 		totalSlides() {
-			return this.slidersCarousel.data.length;
+			return this.slidersCarousel && this.slidersCarousel.data ? this.slidersCarousel.data.length : 0;
 		},
 	},
 	methods: {
 		next() {
-			this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
-			this.resetTimer();
+			if (this.totalSlides > 0) {
+				this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
+				this.resetTimer();
+			}
 		},
 		prev() {
-			this.currentIndex = (this.currentIndex - 1 + this.totalSlides) % this.totalSlides;
-			this.resetTimer();
+			if (this.totalSlides > 0) {
+				this.currentIndex = (this.currentIndex - 1 + this.totalSlides) % this.totalSlides;
+				this.resetTimer();
+			}
 		},
 		progressStatus() {
 			if (this.percentage >= 100) {
@@ -133,3 +138,5 @@ export default {
 	transform: translateY(30px);
 }
 </style>
+
+Найти еще

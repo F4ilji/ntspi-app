@@ -123,10 +123,10 @@
 
 import {Link} from "@inertiajs/vue3";
 import axios from "axios";
-import ClientGlobalSearch from "@/Components/ClientGlobalSearch.vue";
 import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
 import MobileNavbar from "@/Navbars/MobileNavbar.vue";
 import SearchModal from "@/Components/Modals/SearchModal.vue";
+import {defineAsyncComponent} from "vue";
 
 
 export default {
@@ -144,7 +144,9 @@ export default {
 		SearchModal,
 		MobileNavbar,
 		BaseIcon,
-		ClientGlobalSearch,
+		ClientGlobalSearch: defineAsyncComponent(() =>
+				import('@/Components/ClientGlobalSearch.vue')
+		),
 		Link,
 	},
 	methods: {

@@ -5,56 +5,60 @@
 				class="overflow-hidden overflow-y-auto max-h-[75vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
 			<div
 					class="flex flex-col gap-x-0 mt-5 md:flex-row md:items-center md:justify-end md:gap-x-7 md:mt-0 md:ps-7 md:divide-y-0 md:divide-solid">
-				<template v-for="section in this.sections.data" :key="section.id">
-					<div
-							:id="'nav-section-' + section.slug"
-							class="hs-dropdown [--strategy:static] md:[--strategy:absolute] [--adaptive:none] md:[--trigger:hover] py-3 md:py-6">
-						<button
-								:id="'nav-section-btn-' + section.slug"
-								type="button" :class="!underSliderHeader ? 'text-white' : 'text-black'"
-								class="duration-300 flex items-center w-full hover:text-primaryBlue font-medium hs-dropdown-open:mb-4 md:hs-dropdown-open:mb-0">
-							{{ section.title }}
-							<svg class="flex-shrink-0 ms-2 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-									 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-									 stroke-linejoin="round">
-								<path d="m6 9 6 6 6-6"/>
-							</svg>
-						</button>
+				<template v-if="sections && sections.data">
+					<template v-for="section in sections.data" :key="section.id">
 						<div
-								:id="'nav-section-menu-' + section.slug"
-								class="hs-dropdown-menu transition-opacity duration-150 md:duration-500 hs-dropdown-open:opacity-100 opacity-0 w-full hidden z-10 top-full start-0 min-w-[15rem] bg-white md:shadow-2xl rounded-lg py-2 md:p-4 before:absolute before:-top-5 before:start-0 before:w-full before:h-5">
-							<div class="grid px-5 grid-cols-1 md:grid-cols-10">
+								:id="'nav-section-' + section.slug"
+								class="hs-dropdown [--strategy:static] md:[--strategy:absolute] [--adaptive:none] md:[--trigger:hover] py-3 md:py-6">
+							<button
+									:id="'nav-section-btn-' + section.slug"
+									type="button"
+									:class="!underSliderHeader ? 'text-white' : 'text-black'"
+									class="duration-300 flex items-center w-full hover:text-primaryBlue font-medium hs-dropdown-open:mb-4 md:hs-dropdown-open:mb-0">
+								{{ section.title }}
+								<svg class="flex-shrink-0 ms-2 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+										 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										 stroke-linejoin="round">
+									<path d="m6 9 6 6 6-6"/>
+								</svg>
+							</button>
+							<div
+									:id="'nav-section-menu-' + section.slug"
+									class="hs-dropdown-menu transition-opacity duration-150 md:duration-500 hs-dropdown-open:opacity-100 opacity-0 w-full hidden z-10 top-full start-0 min-w-[15rem] bg-white md:shadow-2xl rounded-lg py-2 md:p-4 before:absolute before:-top-5 before:start-0 before:w-full before:h-5">
+								<div class="grid px-5 grid-cols-1 md:grid-cols-10">
 
-								<template v-for="subsection in section.subSections" :key="subsection.id">
-									<div :id="'nav-sub-section-block-' + subsection.slug" class="md:col-span-3">
-										<div class="flex flex-col py-4 px-3 md:px-6">
-											<div class="space-y-4">
-												<div class="flex items-center mb-2 gap-x-2">
-													<span
-															:id="'nav-sub-section-title-' + subsection.slug"
-															class="text-xs font-bold uppercase text-gray-800 dark:text-gray-200">
-														{{ subsection.title }}
-													</span>
+									<template v-for="subsection in section.subSections" :key="subsection.id">
+										<div :id="'nav-sub-section-block-' + subsection.slug" class="md:col-span-3">
+											<div class="flex flex-col py-4 px-3 md:px-6">
+												<div class="space-y-4">
+													<div class="flex items-center mb-2 gap-x-2">
+                                                        <span
+																														:id="'nav-sub-section-title-' + subsection.slug"
+																														class="text-xs font-bold uppercase text-gray-800 dark:text-gray-200">
+                                                            {{ subsection.title }}
+                                                        </span>
+													</div>
+													<template v-for="page in subsection.pages" :key="page.id">
+														<a
+																:class="{ 'text-[#135aae] hover:text-gray-800 font-semibold': isSameRoute(page.path), 'text-gray-800 hover:text-[#2C6288]': !isSameRoute(page.path) }"
+																class="flex items-center gap-x-2"
+																:href="(page.is_url) ? page.path : route('page.view', page.path) + '/'">
+															<div class="grow">
+																<p>{{ page.title }}</p>
+															</div>
+														</a>
+													</template>
 												</div>
-												<template v-for="page in subsection.pages" :key="page.id">
-													<a :class="{'text-[#135aae] hover:text-gray-800 font-semibold ' : isSameRoute(page.path), 'text-gray-800 hover:text-[#2C6288]' : !isSameRoute(page.path) }"
-														 class="flex items-center gap-x-2"
-														 :href="(page.is_url) ? page.path : route('page.view', page.path) + '/'">
-														<div class="grow">
-															<p>{{ page.title }}</p>
-														</div>
-													</a>
-												</template>
 											</div>
 										</div>
-									</div>
-								</template>
+									</template>
+
+								</div>
 							</div>
+
 						</div>
-
-					</div>
+					</template>
 				</template>
-
 
 
 
@@ -111,7 +115,6 @@ export default {
 			type: Object,
 		},
 		underSliderHeader: {
-			type: HTMLDivElement,
 		}
 
 	},
