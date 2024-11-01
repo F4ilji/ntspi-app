@@ -1,4 +1,5 @@
 .env
+deploy.sh
 /node_modules
 /vendor
 /sourcefiles
