@@ -20,10 +20,18 @@ services:
     container_name: ntspi-php
     ports:
       - '5173'
-    depends_on:
-      - db
     command: >
       sh -c "php artisan inertia:start-ssr & php-fpm"
+
+  php-queue:
+    restart: always
+    build:
+      context: .
+      dockerfile: _docker/app/Dockerfile
+    volumes:
+      - ./:/var/www
+    container_name: ntspi-php-queue
+    command: php artisan queue:work --tries=3 --timeout=90 # Настройте параметры по необходимости
 
   db:
     image: mysql:8.0
@@ -38,4 +46,3 @@ services:
       - MYSQL_PASSWORD=secret
     ports:
       - "3306:3306"
-
