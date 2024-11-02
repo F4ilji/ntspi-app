@@ -61,8 +61,11 @@ class CreatePost extends CreateRecord
         if ($rowData === null) {
             $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
         }
-        $description = strip_tags($rowData['data']['content']);
-        $image = ($data['preview'] !== null) ? $data['preview'] : null;
+        if ($rowData !== null) {
+            $description = strip_tags($rowData['data']['content']);
+        } else {
+            $description = null;
+        }        $image = ($data['preview'] !== null) ? $data['preview'] : null;
 
         return [
             'title' => $title,

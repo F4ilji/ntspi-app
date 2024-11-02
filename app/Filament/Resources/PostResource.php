@@ -60,10 +60,11 @@ class PostResource extends Resource implements HasShieldPermissions
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('title')->label('Заголовок')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status')->label('Статус')->badge()
-            ])->defaultSort('created_at', 'desc')
+                Tables\Columns\TextColumn::make('title')->label('Заголовок')->searchable(),
+                Tables\Columns\TextColumn::make('status')->label('Статус')->badge(),
+                Tables\Columns\TextColumn::make('publish_at')->sortable(),
+
+            ])->defaultSort('publish_at', 'desc')
             ->filters([
                 //
             ])

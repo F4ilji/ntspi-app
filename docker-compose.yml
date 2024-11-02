@@ -20,7 +20,10 @@ services:
     container_name: ntspi-php
     ports:
       - '5173'
-    command: ["/usr/bin/supervisord"]
+    depends_on:
+      - db
+    command: >
+      sh -c "php artisan inertia:start-ssr & php-fpm"
 
   db:
     image: mysql:8.0
@@ -35,3 +38,4 @@ services:
       - MYSQL_PASSWORD=secret
     ports:
       - "3306:3306"
+

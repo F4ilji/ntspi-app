@@ -58,7 +58,7 @@ class PostFactory extends Factory
             'reading_time' => $reading_time,
             'category_id' => $category_id,
             'user_id' => $user_id,
-            'publish_at' => ($status == PostStatus::PUBLISHED) ? now() : null,
+            'publish_at' => ($status === PostStatus::PUBLISHED) ? now() : null,
             'created_at' => now(),
             'updated_at' => now(),
         ];

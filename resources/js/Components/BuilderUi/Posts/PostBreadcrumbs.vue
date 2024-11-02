@@ -81,7 +81,7 @@
 							</Link>
 						</li>
 						<li class="text-sm">
-							<Link :href="$inertia.page.props.ziggy.location" class="flex items-center text-gray-500 hover:text-blue-600">
+							<Link :href="$page.props.ziggy.location" class="flex items-center text-gray-500 hover:text-blue-600">
 								{{ postTitle }}
 							</Link>
 						</li>

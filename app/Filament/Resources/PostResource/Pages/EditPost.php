@@ -24,6 +24,7 @@ class EditPost extends EditRecord
         $this->seoData = $this->generateSeo($data);
         $this->publicationAgreements = $data['publication'];
         unset($data['publication']);
+        unset($data['publish_setting']);
         $data['preview_text'] = $this->setPreviewText($data);
         $data['publish_at'] = $this->setPublishDateTime($data['status'], $this->record->publish_at);
         $data['search_data'] = $this->generateSearchData($data['content']);
@@ -38,14 +39,19 @@ class EditPost extends EditRecord
         $this->postToSocialMedia($this->publicationAgreements, $this->record->content, $this->record->title, Carbon::parse($this->record->publish_at)->timestamp);
     }
 
-    private function setPreviewText(array $data) : string
+    private function setPreviewText(array $data) : string|null
     {
         $rowData = $this->getBlockBySeoActiveState('paragraph', $data['content']);
         if ($rowData === null) {
             $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
         }
-        $preview_text = strip_tags($rowData['data']['content']);
-        return Str::limit($preview_text, 160);
+        if ($rowData !== null) {
+            $preview_text = strip_tags($rowData['data']['content']);
+            return Str::limit($preview_text, 160);
+        } else {
+            $preview_text  = null;
+            return $preview_text;
+        }
     }
 
     private function getBlockBySeoActiveState(string $name, array $content) : array|null
@@ -72,7 +78,11 @@ class EditPost extends EditRecord
         if ($rowData === null) {
             $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
         }
-        $description = strip_tags($rowData['data']['content']);
+        if ($rowData !== null) {
+            $description = strip_tags($rowData['data']['content']);
+        } else {
+            $description = null;
+        }
         $image = ($this->record->preview !== null) ? $this->record->preview : null;
 
         return [

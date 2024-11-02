@@ -28,9 +28,6 @@ RUN apt-get update && apt-get install -y zlib1g-dev libicu-dev g++
 RUN docker-php-ext-configure intl
 RUN docker-php-ext-install intl
 
-# Установка Supervisor
-RUN apt-get update && apt-get install -y supervisor
-
 # Копирование конфигурационного файла PHP
 COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 
@@ -38,8 +35,6 @@ COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs npm
 
-# Копирование конфигурации Supervisor
-COPY ./_docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 6001
 EXPOSE 5173
@@ -50,3 +45,4 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --install-dir=/usr/local/bin
 
 WORKDIR /var/www
+
