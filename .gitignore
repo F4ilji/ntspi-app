@@ -4,3 +4,4 @@ deploy.sh
 /vendor
 /sourcefiles
 /storage
+_deploy
