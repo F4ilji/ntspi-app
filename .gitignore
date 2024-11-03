@@ -5,3 +5,4 @@ deploy.sh
 /sourcefiles
 /storage
 _deploy
+/public/build
