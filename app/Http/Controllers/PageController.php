@@ -21,23 +21,6 @@ use Inertia\Inertia;
 
 class PageController extends Controller
 {
-    public function getRegisteredPages()
-    {
-        $pages = PageResource::collection(Page::query()
-            ->when(request()->input('search'), function ($query, $search) {
-                $query->where('title', 'like', "%{$search}%");
-            })
-            ->where('is_registered', true)
-            ->where('is_visible', true)
-            ->orderBy('id', 'desc')
-            ->paginate(request()->input('perPage', 9))
-            ->withQueryString());
-        $filters = [
-            'search' => request()->input('search'),
-        ];
-        return Inertia::render('AdminPanel/Pages/Registered', compact('pages', 'filters'));
-    }
-
     public function render($path)
     {
         $page = Page::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
@@ -57,10 +40,10 @@ class PageController extends Controller
             $breadcrumbs = null;
         }
 
+        $seo = $page->seo;
+
 
         $page = new PageResource($page);
-
-
 
         $error = $page->code;
 
@@ -70,8 +53,26 @@ class PageController extends Controller
             abort($error);
         }
 
-        return Inertia::render($page->template, compact('page', 'subSectionPages', 'breadcrumbs'));
+        return Inertia::render($page->template, compact('page', 'subSectionPages', 'breadcrumbs', 'seo'));
     }
+
+    public function getRegisteredPages()
+    {
+        $pages = PageResource::collection(Page::query()
+            ->when(request()->input('search'), function ($query, $search) {
+                $query->where('title', 'like', "%{$search}%");
+            })
+            ->where('is_registered', true)
+            ->where('is_visible', true)
+            ->orderBy('id', 'desc')
+            ->paginate(request()->input('perPage', 9))
+            ->withQueryString());
+        $filters = [
+            'search' => request()->input('search'),
+        ];
+        return Inertia::render('AdminPanel/Pages/Registered', compact('pages', 'filters'));
+    }
+
 
 
     public function index()

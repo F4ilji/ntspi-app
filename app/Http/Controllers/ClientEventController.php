@@ -66,7 +66,9 @@ class ClientEventController extends Controller
             $breadcrumbs = null;
         }
 
-        return Inertia::render('Client/Events/Show', compact('event', 'breadcrumbs'));
+        $seo = $event->seo;
+
+        return Inertia::render('Client/Events/Show', compact('event', 'breadcrumbs', 'seo'));
     }
 
     private function getCurrentDate(Request $request): array

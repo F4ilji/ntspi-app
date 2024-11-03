@@ -36,7 +36,7 @@ class EditPage extends EditRecord
             }
         }
 
-        $this->record->seo()->create($this->seoData);
+        $this->record->seo()->update($this->seoData);
 
     }
 
@@ -62,7 +62,7 @@ class EditPage extends EditRecord
 
         return [
             'title' => $title,
-            'description' => Str::limit($description, 160),
+            'description' => Str::limit(htmlspecialchars($description, ENT_QUOTES, 'UTF-8'), 160),
         ];
     }
     private function getFirstBlockByName(string $name, array $content) : array|null

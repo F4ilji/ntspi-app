@@ -87,7 +87,7 @@ class EditPost extends EditRecord
 
         return [
             'title' => $title,
-            'description' => Str::limit($description, 160),
+            'description' => Str::limit(htmlspecialchars($description, ENT_QUOTES, 'UTF-8'), 160),
             'image' => $image,
         ];
     }
@@ -199,7 +199,6 @@ class EditPost extends EditRecord
 
         return $data;
     }
-
 
     private function postToSocialMedia($settings, $content, $title, $publish_date) : void
     {

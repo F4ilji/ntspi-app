@@ -20,6 +20,7 @@ use App\Models\EducationalProgram;
 use App\Models\Event;
 use App\Models\MainSection;
 use App\Models\MainSlider;
+use App\Models\Page;
 use App\Models\Post;
 use App\Services\Filament\Icon\ArrayToCollectionService;
 use App\Services\Vicon\EducationalProgram\EducationalProgramService;
@@ -32,12 +33,26 @@ use Inertia\Inertia;
 
 class MainController extends Controller
 {
-
     public function index()
     {
-        $info = AdmissionCampaign::get()->first()->info ?? [];
+        $admissionCampaign = $this->getAdmissionCampaign();
+        $educations = $this->getEducationsData();
+        $sliders = $this->getActiveSliders();
+        $posts = $this->getRecentPosts();
+        $events = $this->getUpcomingEvents();
 
-        $admissionCampaign = collect($info)->reduce(function ($carry, $a) {
+        $path = route('index', null, false);
+        $page = Page::where('path', $path)->first();
+        $seo = $page->seo;
+
+        return Inertia::render('Main', compact('posts', 'events', 'sliders', 'educations', 'seo'));
+    }
+
+    private function getAdmissionCampaign()
+    {
+        $info = AdmissionCampaign::first()->info ?? [];
+
+        return collect($info)->reduce(function ($carry, $a) {
             $lvl = LevelEducational::from((int)$a['edu_name'])->name;
             $carry[$lvl] = [
                 'total_programs' => $a['total_programs'],
@@ -50,29 +65,51 @@ class MainController extends Controller
             ];
             return $carry;
         }, []);
+    }
 
-        $educations = [
-            'admission_campaign' => $admissionCampaign,
+    private function getEducationsData()
+    {
+        return [
+            'admission_campaign' => $this->getAdmissionCampaign(),
             'additional_education' => [
                 'educations_count' => AdditionalEducation::where('is_active', true)->count(),
-                'categories_count' => AdditionalEducationCategory::where('is_active', true)->count()
+                'categories_count' => AdditionalEducationCategory::where('is_active', true)->count(),
             ],
-
         ];
-        $today = new DateTime();
-        $event_date_start = $today->format('Y-m-d');
-        $sliders = ClientMainSliderResource::collection(MainSlider::query()->where('is_active', true)->orderBy('sort', 'asc')->get());
-        $posts = PostThumbnailResource::collection(Post::query()
-            ->select('title', 'slug', 'authors', 'preview_text', 'category_id', 'preview', 'search_data', 'publish_at', 'created_at')
-            ->with('category')
-            ->where('publish_at', '<', Carbon::now())
-            ->where('status', '=', PostStatus::PUBLISHED)
-            ->orderBy('publish_at', 'desc')->limit(3)
-            ->get());
-        $events = EventThumbnailResource::collection(Event::query()
-            ->select('title', 'slug', 'event_date_start', 'address', 'is_online', 'category_id')
-            ->where('event_date_start', '>=', $event_date_start)
-            ->orderBy('event_date_start', 'asc')->limit(3)->get());
-        return Inertia::render('Main', compact('posts', 'events', 'sliders', 'educations'));
+    }
+
+    private function getActiveSliders()
+    {
+        return ClientMainSliderResource::collection(
+            MainSlider::where('is_active', true)
+                ->orderBy('sort', 'asc')
+                ->get()
+        );
+    }
+
+    private function getRecentPosts()
+    {
+        return PostThumbnailResource::collection(
+            Post::select('title', 'slug', 'authors', 'preview_text', 'category_id', 'preview', 'search_data', 'publish_at', 'created_at')
+                ->with('category')
+                ->where('publish_at', '<', Carbon::now())
+                ->where('status', '=', PostStatus::PUBLISHED)
+                ->orderBy('publish_at', 'desc')
+                ->limit(3)
+                ->get()
+        );
+    }
+
+    private function getUpcomingEvents()
+    {
+        $event_date_start = (new DateTime())->format('Y-m-d');
+
+        return EventThumbnailResource::collection(
+            Event::select('title', 'slug', 'event_date_start', 'address', 'is_online', 'category_id')
+                ->where('event_date_start', '>=', $event_date_start)
+                ->orderBy('event_date_start', 'asc')
+                ->limit(3)
+                ->get()
+        );
     }
 }

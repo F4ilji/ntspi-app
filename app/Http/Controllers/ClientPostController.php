@@ -142,7 +142,10 @@ class ClientPostController extends Controller
         } else {
             $breadcrumbs = null;
         }
-        return Inertia::render('Client/Posts/Show', compact('post', 'breadcrumbs'));
+
+        $seo = $post->seo;
+
+        return Inertia::render('Client/Posts/Show', compact('post', 'breadcrumbs', 'seo'));
     }
 
 

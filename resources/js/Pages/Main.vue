@@ -1,12 +1,8 @@
 <template>
-	<Head>
-		<title>Главная</title>
-		<meta name="description" content="Your page description">
-		<meta name="robots" content="index, follow">
-		<meta property="og:title" content="Заголовок страницы">
-		<meta property="og:description" content="Описание страницы">
-		<meta property="og:image" content="URL_изображения">
-	</Head>
+	<AppHead
+		:title="seo.title"
+		:description="seo.description"
+	/>
 	<MainPageNavBar :sections="$page.props.navigation" :slider-ref="sliderRef" />
 	<ClientMainSlider @slider-mounted="setSliderRef" :slidersCarousel="sliders" />
 	<section class="max-w-screen-xl w-full mx-auto px-4 py-3 pb-10">
@@ -243,6 +239,7 @@ import ClientPost from "@/Components/ClientPost.vue";
 import LevelEducational from "../Enum/LevelEducational.js";
 import BaseMetaHead from "@/Components/BaseComponents/BaseMetaHead.vue";
 import PageResourceList from "@/Components/BuilderUi/Pages/Blocks/PageResourceList.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 
 
@@ -274,10 +271,14 @@ export default {
 		},
 		icons: {
 			type: String,
+		},
+		seo: {
+			type: Object,
 		}
 	},
 
 	components: {
+		AppHead,
 		PageResourceList,
 		BaseMetaHead,
 		ClientPost,

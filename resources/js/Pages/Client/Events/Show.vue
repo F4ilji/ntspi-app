@@ -12,11 +12,13 @@ import ClientEventSelectDate from "@/Components/ClientEventSelectDate.vue";
 import ClientEventFilter from "@/Components/ClientEventFilter.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import EventItemBreadcrumbs from "@/Components/BuilderUi/Events/EventItemBreadcrumbs.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 
 export default {
 	name: "Show",
 	components: {
+		AppHead,
 		EventItemBreadcrumbs,
 		MainPageNavBar,
 		ClientEventFilter, ClientEventSelectDate,
@@ -39,6 +41,9 @@ export default {
 		},
 		breadcrumbs: {
 			type: Object
+		},
+		seo: {
+			type: Object,
 		}
 	},
 	methods: {
@@ -57,10 +62,10 @@ export default {
 </script>
 
 <template>
-	<Head>
-		<title>{{ event.data.title }}</title>
-		<meta name="description" content="Your page description">
-	</Head>
+	<AppHead
+			:title="seo.title"
+			:description="seo.description"
+	/>
 
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">

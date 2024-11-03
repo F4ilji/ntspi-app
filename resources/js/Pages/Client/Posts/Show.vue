@@ -18,10 +18,12 @@ import ClientPost from "@/Components/ClientPost.vue";
 import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import PostBreadcrumbs from "@/Components/BuilderUi/Posts/PostBreadcrumbs.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 export default {
 	name: "Show",
 	components: {
+		AppHead,
 		PostBreadcrumbs,
 		MainPageNavBar,
 		AdminIndexHeader, ClientPost, ClientPostSearch, ClientPostFilter, PostBadge,
@@ -57,6 +59,9 @@ export default {
 		},
 		breadcrumbs: {
 			type: Object,
+		},
+		seo: {
+			type: Object,
 		}
 	},
 	mounted() {
@@ -65,10 +70,11 @@ export default {
 	}}
 </script>
 <template>
-	<Head>
-		<title>{{ post.data.title }}</title>
-		<meta name="description" content="Your page description">
-	</Head>
+	<AppHead
+			:title="seo.title"
+			:description="seo.description"
+	/>
+
 	<ClientScrollTimeline/>
 
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>

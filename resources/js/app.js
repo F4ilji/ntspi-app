@@ -7,10 +7,9 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import {linksReform} from "@/mixins/LinksReform.js";
 
-const appName = import.meta.env.VITE_APP_NAME || 'НТГСПИ';
+// const appName = import.meta.env.VITE_APP_NAME || 'НТГСПИ';
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
     resolve: name => {
         const pages = import.meta.glob('./Pages/**/*.vue')
         return pages[`./Pages/${name}.vue`]()

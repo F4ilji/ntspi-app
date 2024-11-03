@@ -1,8 +1,8 @@
 <template>
-	<Head>
-		<title>{{ page.data.title }}</title>
-		<meta name="description" content="Your page description">
-	</Head>
+	<AppHead
+			:title="seo.title"
+			:description="seo.description"
+	/>
 
 
 	<div class="flex flex-col h-screen justify-between">
@@ -41,6 +41,7 @@ import PageTitle from "@/Components/BuilderUi/Pages/PageTitle.vue";
 import PageNavigateLinks from "@/Components/BuilderUi/Pages/PageNavigateLinks.vue";
 import PageSubSectionLinks from "@/Components/BuilderUi/Pages/PageSubSectionLinks.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 
 export default {
@@ -68,8 +69,12 @@ export default {
 		breadcrumbs: {
 			type: Object,
 		},
+		seo: {
+			type: Object,
+		}
 	},
 	components: {
+		AppHead,
 		MainPageNavBar,
 		PageSubSectionLinks,
 		PageNavigateLinks,
