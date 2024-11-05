@@ -33,20 +33,15 @@ class CreateEducationalProgram extends CreateRecord
     private function generateSeo(array $data) : array
     {
         $title = $data['title'];
-        $rowData = $this->getBlockBySeoActiveState('paragraph', $data['content']);
-        if ($rowData === null) {
-            $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
-        }
+        $rowData = $this->getFirstBlockByName('paragraph', $data['about_program']);
         if ($rowData !== null) {
             $description = strip_tags($rowData['data']['content']);
         } else {
             $description = null;
-        }        $image = ($data['preview'] !== null) ? $data['preview'] : null;
-
+        }
         return [
             'title' => $title,
             'description' => Str::limit(htmlspecialchars($description, ENT_QUOTES, 'UTF-8'), 160),
-            'image' => $image,
         ];
     }
 
@@ -70,23 +65,6 @@ class CreateEducationalProgram extends CreateRecord
             break;
         }
         return $data;
-    }
-
-    private function getBlockBySeoActiveState(string $name, array $content) : array|null
-    {
-        $data = [];
-        foreach ($content as $block) {
-            if ($block['type'] === $name) {
-                $data[] = $block;
-            }
-        }
-        $block = null;
-        foreach ($data as $item) {
-            if ($item['data']['seo_active'] === true) {
-                $block = $item;
-            }
-        }
-        return $block;
     }
 
     private function getDataFromBlocks($block) : string

@@ -27,7 +27,9 @@ class ClientDepartmentController extends Controller
             ->with(['faculty', 'workers.userDetail', 'teachers.userDetail', 'programs.directionStudy'])
             ->first());
         $directions = $this->groupProgramsByDirection($department->programs);
-        return Inertia::render('Client/Departments/Show', compact('department', 'departments', 'directions'));
+
+        $seo = $department->seo;
+        return Inertia::render('Client/Departments/Show', compact('department', 'departments', 'directions', 'seo'));
     }
 
 

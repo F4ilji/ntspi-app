@@ -1,10 +1,8 @@
 <template>
-	<Head>
-		<title>{{ division.data.title }}</title>
-		<meta name="description" content="Your page description">
-	</Head>
-
-
+	<AppHead
+			:title="seo.title"
+			:description="seo.description"
+	/>
 
 	<div class="flex flex-col h-screen">
 		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
@@ -142,6 +140,7 @@ import axios from "axios";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import DivisionBuilder from "@/Components/BuilderUi/Divisions/DivisionBuilder.vue";
 import DivisionItemBreadcrumbs from "@/Components/BuilderUi/Divisions/DivisionItemBreadcrumbs.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 
 export default {
@@ -160,9 +159,13 @@ export default {
 		divisions: {
 			type: Object
 		},
+		seo: {
+			type: Object,
+		}
 	},
 
 	components: {
+		AppHead,
 		DivisionItemBreadcrumbs,
 		DivisionBuilder,
 		MainPageNavBar,

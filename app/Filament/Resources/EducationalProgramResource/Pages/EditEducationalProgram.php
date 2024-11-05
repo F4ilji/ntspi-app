@@ -13,9 +13,7 @@ class EditEducationalProgram extends EditRecord
 {
     protected static string $resource = EducationalProgramResource::class;
 
-
     protected array $seoData;
-
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
@@ -30,42 +28,18 @@ class EditEducationalProgram extends EditRecord
         $this->record->seo()->update($this->seoData);
     }
 
-
-    private function getBlockBySeoActiveState(string $name, array $content) : array|null
-    {
-        $data = [];
-        foreach ($content as $block) {
-            if ($block['type'] === $name) {
-                $data[] = $block;
-            }
-        }
-        $block = null;
-        foreach ($data as $item) {
-            if ($item['data']['seo_active'] === true) {
-                $block = $item;
-            }
-        }
-        return $block;
-    }
-
     private function generateSeo(array $data) : array
     {
         $title = $data['title'];
-        $rowData = $this->getBlockBySeoActiveState('paragraph', $data['content']);
-        if ($rowData === null) {
-            $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
-        }
+        $rowData = $this->getFirstBlockByName('paragraph', $data['about_program']);
         if ($rowData !== null) {
             $description = strip_tags($rowData['data']['content']);
         } else {
             $description = null;
         }
-        $image = ($this->record->preview !== null) ? $this->record->preview : null;
-
         return [
             'title' => $title,
             'description' => Str::limit(htmlspecialchars($description, ENT_QUOTES, 'UTF-8'), 160),
-            'image' => $image,
         ];
     }
 

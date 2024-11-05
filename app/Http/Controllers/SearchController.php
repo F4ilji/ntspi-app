@@ -14,8 +14,10 @@ use App\Models\AdditionalEducation;
 use App\Models\EducationalGroup;
 use App\Models\EducationalProgram;
 use App\Models\Event;
+use App\Models\Faculty;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -43,6 +45,8 @@ class SearchController extends Controller
             ->add(AdditionalEducation::where('is_active', '=', true), 'title')
             ->add(EducationalGroup::with('schedules'), 'title')
             ->add(EducationalProgram::where('status', '=', true)->whereHas('admission_plans'), 'name')
+            ->add(Faculty::where('is_active', '=', true), 'title')
+            ->add(User::whereHas('userDetail'), ['name', 'userDetail.education', 'userDetail.awards', 'userDetail.publications',])
             ->beginWithWildcard()
             ->orderByRelevance()
             ->includeModelType()

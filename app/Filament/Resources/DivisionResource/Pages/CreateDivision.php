@@ -29,20 +29,15 @@ class CreateDivision extends CreateRecord
     private function generateSeo(array $data) : array
     {
         $title = $data['title'];
-        $rowData = $this->getBlockBySeoActiveState('paragraph', $data['description']);
-        if ($rowData === null) {
-            $rowData = $this->getFirstBlockByName('paragraph', $data['description']);
-        }
+        $rowData = $this->getFirstBlockByName('paragraph', $data['description']);
         if ($rowData !== null) {
             $description = strip_tags($rowData['data']['content']);
         } else {
             $description = null;
-        }        $image = ($data['preview'] !== null) ? $data['preview'] : null;
-
+        }
         return [
             'title' => $title,
             'description' => Str::limit(htmlspecialchars($description, ENT_QUOTES, 'UTF-8'), 160),
-            'image' => $image,
         ];
     }
 

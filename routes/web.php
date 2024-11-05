@@ -15,6 +15,7 @@ use App\Http\Controllers\ClientVacantPositionController;
 use App\Http\Controllers\ClientVirtualExhibitionController;
 use App\Http\Controllers\ClientWidgetFormController;
 use App\Http\Controllers\EducationalProgramController;
+use App\Http\Controllers\GenerateSitemapController;
 use App\Http\Controllers\LinkToolController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\PageController;
@@ -25,18 +26,20 @@ use App\Http\Controllers\UpdateEduDataApiController;
 use App\Http\Controllers\UpdateViconDataApi;
 use App\Http\Controllers\VkAuthController;
 use App\Http\Controllers\VkPostController;
+use App\Models\Post;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Spatie\Sitemap\Sitemap;
+use Spatie\Sitemap\SitemapGenerator;
+use Spatie\Sitemap\Tags\Url;
 
 
 Route::middleware('signed')->get('invitation/{invitation}/accept', \App\Livewire\AcceptInvitation::class)
     ->name('invitation.accept');
 
-Route::middleware('access-check')->group(function () {
+Route::get('/generate-sitemap', [GenerateSitemapController::class, 'index']);
 
-//    Route::get('/dashboard/schedule/create', function () {
-//        return Inertia::render('Dashboard/CreateSchedule');
-//    });
+Route::middleware('access-check')->group(function () {
 
     // Главная страница
     Route::get('/', [MainController::class, 'index'])->name('index');

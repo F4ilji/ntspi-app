@@ -1,11 +1,8 @@
 <template>
-	<Head>
-		<title>{{ faculty.data.title }}</title>
-		<meta name="description" content="Your page description">
-	</Head>
-
-
-
+	<AppHead
+			:title="seo.title"
+			:description="seo.description"
+	/>
 
 	<div class="flex flex-col h-screen justify-between">
 		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
@@ -161,6 +158,7 @@ import PostBuilder from "@/Components/BuilderUi/Posts/PostBuilder.vue";
 import FacultyBuilder from "@/Components/BuilderUi/Faculties/FacultyBuilder.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import FacultyItemBreadcrumbs from "@/Components/BuilderUi/Faculties/FacultyItemBreadcrumbs.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 
 export default {
@@ -179,9 +177,13 @@ export default {
 		faculties: {
 			type: Object
 		},
+		seo: {
+			type: Object,
+		}
 	},
 
 	components: {
+		AppHead,
 		FacultyItemBreadcrumbs,
 		MainPageNavBar,
 		FacultyBuilder,

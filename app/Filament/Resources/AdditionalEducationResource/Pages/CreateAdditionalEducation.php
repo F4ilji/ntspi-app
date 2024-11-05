@@ -11,9 +11,13 @@ class CreateAdditionalEducation extends CreateRecord
 {
     protected static string $resource = AdditionalEducationResource::class;
 
+    protected array $seoData;
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $this->seoData = $this->generateSeo($data);
+
+        $data['search_data'] = $this->generateSearchData($data['content']);
 
         return $data;
     }
@@ -27,17 +31,16 @@ class CreateAdditionalEducation extends CreateRecord
     {
         $title = $data['title'];
         $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
-        $description = strip_tags($rowData['data']['content']);
-//        $image = ($data['preview'] !== null) ? $data['preview'] : null;
-
+        if ($rowData !== null) {
+            $description = strip_tags($rowData['data']['content']);
+        } else {
+            $description = null;
+        }
         return [
             'title' => $title,
-            'description' => Str::limit($description, 160),
-            'image' => "",
+            'description' => Str::limit(htmlspecialchars($description, ENT_QUOTES, 'UTF-8'), 160),
         ];
     }
-
-
     private function getFirstBlockByName(string $name, array $content) : array|null
     {
         $data = null;
@@ -48,21 +51,17 @@ class CreateAdditionalEducation extends CreateRecord
         return $data;
     }
 
-    private function getBlockBySeoActiveState(string $name, array $content) : array|null
+    private function generateSearchData(array $data) : string
     {
-        $data = [];
-        foreach ($content as $block) {
-            if ($block['type'] === $name) {
-                $data[] = $block;
-            }
+        $result = "";
+        foreach ($data as $block) {
+            $result .= $this->getDataFromBlocks($block);
         }
-        $block = null;
-        foreach ($data as $item) {
-            if ($item['data']['seo_active'] === true) {
-                $block = $item;
-            }
-        }
-        return $block;
+        // Удаляем лишние пробелы и переносы строк
+        $result = preg_replace('/\s+/', ' ', $result);
+        $result = trim($result);
+
+        return strtolower($result);
     }
 
     private function getDataFromBlocks($block) : string

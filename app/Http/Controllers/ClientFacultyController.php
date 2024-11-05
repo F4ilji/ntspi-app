@@ -16,10 +16,12 @@ class ClientFacultyController extends Controller
         return Inertia::render('Client/Faculties/Index', compact('faculties'));
     }
 
+
     public function show(string $slug)
     {
         $faculties = FacultyResource::collection(Faculty::query()->where('is_active', true)->get());
         $faculty = new FullFacultyResource(Faculty::where('slug', $slug)->where('is_active', true)->with(['departments.faculty', 'workers.userDetail'])->first());
-        return Inertia::render('Client/Faculties/Show', compact('faculty', 'faculties'));
+        $seo = $faculty->seo;
+        return Inertia::render('Client/Faculties/Show', compact('faculty', 'faculties', 'seo'));
     }
 }

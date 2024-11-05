@@ -19,11 +19,13 @@ import ProgramTitle from "@/Components/BuilderUi/AdditionalEducationPrograms/Pro
 import ProgramBuilder from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramBuilder.vue";
 import ProgramBackButton from "@/Components/BuilderUi/Programs/ProgramBackButton.vue";
 import BaseBuilder from "@/Components/BaseComponents/BaseBuilderUi/BaseBuilder.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 
 export default {
   name: "Show",
   components: {
+		AppHead,
 		BaseBuilder,
 		ProgramBackButton, ProgramBuilder, ProgramTitle, AdditionalEducationProgramItemBreadcrumbs,
 		ProgramItemBreadcrumbs,
@@ -53,6 +55,9 @@ export default {
     },
 		formsEdu: {
 			type: Array
+		},
+		seo: {
+			type: Object,
 		}
 
   },
@@ -73,10 +78,10 @@ export default {
 </script>
 
 <template>
-  <Head>
-    <title>Образовательная программа</title>
-    <meta name="description" content="Your page description">
-  </Head>
+	<AppHead
+			:title="seo.title"
+			:description="seo.description"
+	/>
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 

@@ -1,9 +1,12 @@
 <template>
-	<Head>
-		<title>{{ department.data.title }}</title>
-		<meta name="description" content="Your page description">
-	</Head>
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+
+	<AppHead
+		:title="seo.title"
+		:description="seo.description"
+	/>
+
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
+
 
 	<div class="flex flex-col h-screen justify-between">
 		<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
@@ -166,6 +169,7 @@ import DepartmentBuilder from "@/Components/BuilderUi/Departments/DepartmentBuil
 import DepartmentBackButton from "@/Components/BuilderUi/Departments/DepartmentBackButton.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import DepartmentItemBreadcrumbs from "@/Components/BuilderUi/Departments/DepartmentItemBreadcrumbs.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 
 export default {
@@ -187,9 +191,13 @@ export default {
 		directions: {
 			type: Object
 		},
+		seo: {
+			type: Object
+		}
 	},
 
 	components: {
+		AppHead,
 		DepartmentItemBreadcrumbs,
 		MainPageNavBar,
 		DepartmentBackButton,

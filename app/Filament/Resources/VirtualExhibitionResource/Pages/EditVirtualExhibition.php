@@ -48,21 +48,15 @@ class EditVirtualExhibition extends EditRecord
     private function generateSeo(array $data) : array
     {
         $title = $data['title'];
-        $rowData = $this->getBlockBySeoActiveState('paragraph', $data['content']);
-        if ($rowData === null) {
-            $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
-        }
+        $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
         if ($rowData !== null) {
             $description = strip_tags($rowData['data']['content']);
         } else {
             $description = null;
         }
-        $image = ($this->record->preview !== null) ? $this->record->preview : null;
-
         return [
             'title' => $title,
             'description' => Str::limit(htmlspecialchars($description, ENT_QUOTES, 'UTF-8'), 160),
-            'image' => $image,
         ];
     }
 

@@ -70,6 +70,7 @@ export default {
 	}}
 </script>
 <template>
+
 	<AppHead
 			:title="seo.title"
 			:description="seo.description"

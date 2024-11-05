@@ -17,11 +17,13 @@ import ProgramTitle from "@/Components/BuilderUi/AdditionalEducationPrograms/Pro
 import ProgramBuilder from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramBuilder.vue";
 import AdditionalEducationProgramItemBreadcrumbs
 	from "@/Components/BuilderUi/AdditionalEducationPrograms/AdditionalEducationProgramItemBreadcrumbs.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 
 export default {
   name: "Show",
   components: {
+		AppHead,
 		AdditionalEducationProgramItemBreadcrumbs,
 		ProgramBuilder,
 		ProgramTitle,
@@ -34,7 +36,7 @@ export default {
 		AdminIndexHeader,
 		ClientPost,
 		ClientPostFilter,
-		ClientFooterDown, ClientScrollTimeline, Link, FsLightbox, Head},
+		ClientFooterDown, ClientScrollTimeline, Link, Head},
   data() {
     return {
 
@@ -45,7 +47,10 @@ export default {
       type: Object,
     },
 		breadcrumbs: {
-			type: Object
+			type: Object,
+		},
+		seo: {
+			type: Object,
 		}
   },
   methods: {
@@ -65,10 +70,10 @@ export default {
 </script>
 
 <template>
-  <Head>
-    <title>Образовательная программа</title>
-    <meta name="description" content="Your page description">
-  </Head>
+	<AppHead
+			:title="seo.title"
+			:description="seo.description"
+	/>
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="flex flex-col h-screen">

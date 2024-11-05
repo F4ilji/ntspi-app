@@ -134,6 +134,8 @@ class ClientAdditionalEducationController extends Controller
             $breadcrumbs = null;
         }
 
-        return Inertia::render('Client/Additional-educations/Show', compact('additionalEducation', 'breadcrumbs'));
+        $seo = $additionalEducation->seo;
+
+        return Inertia::render('Client/Additional-educations/Show', compact('additionalEducation', 'breadcrumbs', 'seo'));
     }
 }

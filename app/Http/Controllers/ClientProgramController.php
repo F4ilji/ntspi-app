@@ -119,7 +119,9 @@ class ClientProgramController extends Controller
         $formsEdu = $formsEducational->mapWithKeys(function ($formEducational) {
             return [$formEducational->value => $formEducational->getLabel()];
         });
-        return Inertia::render('Client/Programs/Show', compact('program', 'formsEdu'));
+
+        $seo = $this->seo;
+        return Inertia::render('Client/Programs/Show', compact('program', 'formsEdu', 'seo'));
     }
 
     private function getAdmissionCampaignName() : string

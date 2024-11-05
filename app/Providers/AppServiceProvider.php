@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
         setlocale(LC_TIME, 'ru_RU.UTF-8');
         Carbon::setLocale(config('app.locale'));
         Model::preventLazyLoading(!app()->isProduction());
-        URL::forceScheme('https');
+//        URL::forceScheme('https');
         self::registerFilamentNavigationGroups();
     }
 
