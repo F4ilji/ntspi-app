@@ -79,8 +79,8 @@ export default {
 
 <template>
 	<AppHead
-			:title="seo.title"
-			:description="seo.description"
+			:title="seo?.title"
+			:description="seo?.description"
 	/>
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 

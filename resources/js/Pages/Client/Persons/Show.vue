@@ -1,8 +1,8 @@
 <template>
-	<Head>
-		<title>{{ person.data.name }}</title>
-		<meta name="description" content="Your page description">
-	</Head>
+	<AppHead
+			:title="seo?.title"
+			:description="seo?.description"
+	/>
 
 	<div class="flex flex-col h-screen">
 		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
@@ -89,13 +89,13 @@
 					</div>
 				</nav>
 
-				<article class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
+				<section class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
 					<div class="w-full mx-auto sm:px-6 lg:px-8">
+
+						<PersonBreadcrumbs class="mb-4" :person-name="person.data.name" />
 						<!-- Profile -->
 						<div class="flex items-center gap-x-10 gap-y-4 flex-wrap">
-							<div class="">
-								<img class="shrink-0 w-full md:w-[200px] md:h-[300px] rounded-xl object-cover" :src="'/storage/' + person.data.details.photo" alt="Avatar">						{{ }}
-							</div>
+							<PersonAvatarBlock :photo="person.data.details.photo" />
 							<div class="grow">
 								<h1 class="text-2xl font-medium text-gray-800 dark:text-neutral-200">
 									{{ person.data.name }}
@@ -312,7 +312,7 @@
 						<!-- Subscribe -->
 						<!-- End Subscribe -->
 					</div>
-				</article>
+				</section>
 			</div>
 		</main>
 		<ClientFooterDown/>
@@ -335,6 +335,9 @@ import { Head } from '@inertiajs/vue3'
 import slugify from "slugify";
 import axios from "axios";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import AppHead from "@/Components/AppHead.vue";
+import PersonBreadcrumbs from "@/Components/BuilderUi/Persons/PersonBreadcrumbs.vue";
+import PersonAvatarBlock from "@/Components/BuilderUi/Persons/PersonAvatarBlock.vue";
 
 
 export default {
@@ -353,6 +356,9 @@ export default {
 	},
 
 	components: {
+		PersonAvatarBlock,
+		PersonBreadcrumbs,
+		AppHead,
 		MainPageNavBar,
 		ClientFooterDown,
 		MainNavbar,

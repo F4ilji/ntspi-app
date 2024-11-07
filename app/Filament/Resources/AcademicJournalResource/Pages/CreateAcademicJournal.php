@@ -17,7 +17,7 @@ class CreateAcademicJournal extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $this->seoData = $this->generateSeo($data);
-        $data['search_data'] = $this->generateSearchData($data['about_program']);
+        $data['search_data'] = $this->generateSearchData($data['main_info']);
         return $data;
     }
 

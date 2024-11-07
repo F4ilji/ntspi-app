@@ -18,9 +18,9 @@ class ClientLibraryNewsController extends Controller
         return Inertia::render('Client/Library-news/Index', compact('posts'));
     }
 
-    public function show(string $id)
+    public function show(string $slug)
     {
-        $post = new ClientLibraryPostListResource(LibraryNews::query()->find($id));
+        $post = new ClientLibraryPostListResource(LibraryNews::query()->where('slug', $slug)->firstOrFail());
         return Inertia::render('Client/Library-news/Show', compact('post'));
     }
 }

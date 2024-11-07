@@ -24,9 +24,9 @@ class PersonController extends Controller
         return Inertia::render('Client/Persons/Index', compact('persons', 'filters'));
     }
 
-    public function show(string $id)
+    public function show(string $slug)
     {
-        $person = new ClientFullInfoPersonResource(User::query()->with(['userDetail', 'departments_work.faculty', 'departments_teach.faculty', 'divisions', 'faculties'])->where('id', $id)->firstOrFail());
+        $person = new ClientFullInfoPersonResource(User::query()->with(['userDetail', 'departments_work.faculty', 'departments_teach.faculty', 'divisions', 'faculties'])->where('slug', $slug)->firstOrFail());
         return Inertia::render('Client/Persons/Show', compact('person'));
     }
 }

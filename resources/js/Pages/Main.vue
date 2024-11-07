@@ -1,7 +1,7 @@
 <template>
 	<AppHead
-		:title="seo.title"
-		:description="seo.description"
+		:title="seo?.title"
+		:description="seo?.description"
 	/>
 	<MainPageNavBar :sections="$page.props.navigation" :slider-ref="sliderRef" />
 	<ClientMainSlider @slider-mounted="setSliderRef" :slidersCarousel="sliders" />

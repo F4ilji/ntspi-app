@@ -4,7 +4,7 @@
 		<div class="flex items-center gap-y-4 gap-x-4 flex-wrap">
 			<img @click="toggler = !toggler" loading="lazy" class="rounded-xl md:w-[150px]" :src="'/storage/' + worker.photo" alt="Image Description">
 			<div class="grow">
-				<Link :href="route('client.person.show', worker.id)" class="font-medium text-gray-800 hover:text-gray-500 underline">
+				<Link :href="route('client.person.show', worker.slug)" class="font-medium text-gray-800 hover:text-gray-500 underline">
 					{{ worker.position }}: {{ worker.name }}
 				</Link>
 				<p v-if="worker.academicTitle !== null" class="text-xs text-gray-500 mt-2">

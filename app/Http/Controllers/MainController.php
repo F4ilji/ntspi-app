@@ -43,7 +43,7 @@ class MainController extends Controller
 
         $path = route('index', null, false);
         $page = Page::where('path', $path)->first();
-        $seo = $page->seo;
+        $seo = $page->seo ?? null;
 
         return Inertia::render('Main', compact('posts', 'events', 'sliders', 'educations', 'seo'));
     }

@@ -48,7 +48,7 @@ Route::middleware('access-check')->group(function () {
     Route::get('/schedule', [ClientScheduleController::class, 'index'])->name('client.schedule');
     Route::get('/schedule/{id}', [ClientScheduleController::class, 'show'])->name('client.schedule.show');
 
-    Route::get('/persons/{id}', [PersonController::class, 'show'])->name('client.person.show');
+    Route::get('/persons/{slug}', [PersonController::class, 'show'])->name('client.person.show');
 //    Route::get('/students/{student}', [StudentController::class, 'show'])->name('client.student.show')->middleware('auth');
 
     // Новости
@@ -56,14 +56,10 @@ Route::middleware('access-check')->group(function () {
     Route::get('/news/{slug}', [ClientPostController::class, 'show'])->name('client.post.show');
 
     // Образовательные программы
-//    Route::get('/programs/{slug}', [ClientProgramController::class, 'index'])->name('client.program.index');
 
     Route::get('/programs/', [ClientProgramController::class, 'index'])->name('client.program.index');
     Route::get('/program/{slug}', [ClientProgramController::class, 'show'])->name('client.program.show');
 
-//    Route::get('/programs/bakalavriat/', [ClientProgramController::class, 'bakalavriat'])->name('client.program.bakalavriat');
-//    Route::get('/programs/spo/', [ClientProgramController::class, 'spo'])->name('client.program.spo');
-//    Route::get('/programs/magistratura/', [ClientProgramController::class, 'magistratura'])->name('client.program.magistratura');
 
     // Образовательные программы
     Route::get('/additional-education/', [ClientAdditionalEducationController::class, 'index'])->name('client.additionalEducation.index');
@@ -75,11 +71,11 @@ Route::middleware('access-check')->group(function () {
 
     // Заметки библиотеки
     Route::get('/library/news', [ClientLibraryNewsController::class, 'index'])->name('client.library.news.index'); // Доделать builder
-    Route::get('/library/news/{id}', [ClientLibraryNewsController::class, 'show'])->name('client.library.news.show');
+    Route::get('/library/news/{slug}', [ClientLibraryNewsController::class, 'show'])->name('client.library.news.show');
 
     // Виртуальные выставки библиотеки
     Route::get('/library/exhibition', [ClientVirtualExhibitionController::class, 'index'])->name('client.library.exhibition.index'); // Доделать builder
-    Route::get('/library/exhibition/{id}', [ClientVirtualExhibitionController::class, 'show'])->name('client.library.exhibition.show');
+    Route::get('/library/exhibition/{slug}', [ClientVirtualExhibitionController::class, 'show'])->name('client.library.exhibition.show');
 
     // Вакансии вуза
     Route::get('/vacant/', [ClientVacantPositionController::class, 'index'])->name('client.vacant.index');

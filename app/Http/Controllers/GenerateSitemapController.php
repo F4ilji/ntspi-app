@@ -12,12 +12,8 @@ class GenerateSitemapController extends Controller
 {
     public function index()
     {
-        $sitemap = Sitemap::create();
 
-        $this->generatePages($sitemap);
-        $this->generatePosts($sitemap);
 
-        $sitemap->writeToFile(public_path('sitemap.xml'));
     }
 
     protected function generatePages(Sitemap $sitemap)

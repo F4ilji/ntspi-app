@@ -81,7 +81,7 @@
 									<div class="flex items-center gap-x-4">
 										<img loading="lazy" class="rounded-xl w-[150px]" :src="'/storage/' + worker.details.photo" alt="Image Description">
 										<div class="grow">
-											<Link :href="route('client.person.show', worker.id)" class="font-medium text-gray-800 hover:text-gray-500 underline">
+											<Link :href="route('client.person.show', worker.slug)" class="font-medium text-gray-800 hover:text-gray-500 underline">
 												{{ worker.administrativePosition }}: {{ worker.name }}
 											</Link>
 											<p v-if="worker.details.academicTitle" class="text-xs text-gray-500 mt-2">

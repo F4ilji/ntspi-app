@@ -18,9 +18,9 @@ class ClientVirtualExhibitionController extends Controller
         return Inertia::render('Client/Library-exhibitions/Index', compact('exhibitions'));
     }
 
-    public function show(string $id)
+    public function show(string $slug)
     {
-        $exhibition = new ClientVirtualExhibitionListResource(VirtualExhibition::query()->find($id));
+        $exhibition = new ClientVirtualExhibitionListResource(VirtualExhibition::query()->where('slug', $slug)->firstOrFail());
         return Inertia::render('Client/Library-exhibitions/Show', compact('exhibition'));
     }
 }

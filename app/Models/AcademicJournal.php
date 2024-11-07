@@ -22,4 +22,9 @@ class AcademicJournal extends Model
     {
         return $this->hasMany(JournalIssue::class);
     }
+
+    public function seo()
+    {
+        return $this->morphOne(Seo::class, 'seoable');
+    }
 }

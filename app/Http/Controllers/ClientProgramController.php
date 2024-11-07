@@ -113,14 +113,15 @@ class ClientProgramController extends Controller
 
     public function show(string $slug)
     {
-        $program = new EducationalProgramFullResource(EducationalProgram::query()->where('slug', $slug)->with(['admission_plans', 'directionStudy'])->first());
+        $program = new EducationalProgramFullResource(EducationalProgram::query()->where('slug', $slug)->with(['admission_plans', 'directionStudy'])->firstOrFail());
         $formsEducational = BudgetEducation::cases();
         $formsEducational = collect($formsEducational);
         $formsEdu = $formsEducational->mapWithKeys(function ($formEducational) {
             return [$formEducational->value => $formEducational->getLabel()];
         });
 
-        $seo = $this->seo;
+        dd($program);
+        $seo = $program->seo;
         return Inertia::render('Client/Programs/Show', compact('program', 'formsEdu', 'seo'));
     }
 
@@ -158,41 +159,5 @@ class ClientProgramController extends Controller
                 });
             }]);
     }
-//    public function bakalavriat()
-//    {
-//        $naprs = DirectionStudyResource::collection(
-//            DirectionStudy::forBachelorLevel()
-//                ->withActiveAdmissionCampaign()
-//                ->withActivePrograms()
-//                ->get()
-//        );
-//        $campaignName = $this->getAdmissionCampaignName();
-//        return Inertia::render('Client/Programs/Index', compact('naprs', 'campaignName'));
-//    }
-//
-//    public function spo()
-//    {
-//        $naprs = DirectionStudyResource::collection(
-//            DirectionStudy::forMiddleLevel()
-//                ->withActiveAdmissionCampaign()
-//                ->withActivePrograms()
-//                ->get()
-//        );
-//        $campaignName = $this->getAdmissionCampaignName();
-//        return Inertia::render('Client/Programs/Index', compact('naprs', 'campaignName'));
-//
-//    }
-//
-//    public function magistratura()
-//    {
-//        $naprs = DirectionStudyResource::collection(
-//            DirectionStudy::forMasterLevel()
-//                ->withActiveAdmissionCampaign()
-//                ->withActivePrograms()
-//                ->get()
-//        );
-//        $campaignName = $this->getAdmissionCampaignName();
-//        return Inertia::render('Client/Programs/Index', compact('naprs', 'campaignName'));
-//
-//    }
+
 }

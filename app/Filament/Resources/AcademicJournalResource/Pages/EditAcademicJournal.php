@@ -17,7 +17,7 @@ class EditAcademicJournal extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $this->seoData = $this->generateSeo($data);
-        $data['search_data'] = $this->generateSearchData($data['about_program']);
+        $data['search_data'] = $this->generateSearchData($data['main_info']);
 
         return $data;
     }
