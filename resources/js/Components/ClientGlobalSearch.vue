@@ -17,7 +17,9 @@
   									'border-blue-300': selectedCategory === category,
   									'animate-pulse': loading === true
 									}"
-									class="hover:bg-gray-50 duration-150 border border-[#EAEAEA] rounded font-light text-[13px] px-1 mr-2" type="button">{{ ruCategories[category] }}</button>
+									class="hover:bg-gray-50 duration-150 border border-[#EAEAEA] rounded font-light text-[13px] px-1 mr-2" type="button">
+						{{ruCategories()[category] }}
+					</button>
 				</template>
 			</div>
 			<div class="relative px-1 py-2 flex justify-between items-center">
@@ -56,10 +58,10 @@
 <script>
 import {debounce} from "lodash";
 import {Link} from "@inertiajs/vue3";
-import {Inertia} from "@inertiajs/inertia";
 import ResultList from "@/Components/Search/ResultList.vue";
 import CategoryList from "@/Components/Search/CategorySearchList.vue";
 import CategorySearchList from "@/Components/Search/CategorySearchList.vue";
+import {ruCategories} from "./other/ruCategories.js";
 export default {
 	name: "ClientGlobalSearch",
 	data() {
@@ -69,7 +71,6 @@ export default {
 			paginate: null,
 			selectedCategory: null,
 			categories: null,
-			ruCategories: { Post: "Новости", Page: "Страницы", Event: "Мероприятия" },
 			loading: false,
 		}
 	},
@@ -80,6 +81,9 @@ export default {
 		Link,
 	},
 	methods: {
+		ruCategories() {
+			return ruCategories
+		},
 		categorySort: debounce(function(category) {
 			this.toggleLoadingState(true);
 			axios({
@@ -90,7 +94,6 @@ export default {
 					category: category
 				}
 			}).then((response) => {
-				console.log(response.data.searchRes);
 				this.paginate = response.data.paginate;
 				this.result = response.data.searchRes;
 				this.categories = response.data.result_type;
@@ -109,7 +112,6 @@ export default {
 					search: this.searchInput.toLowerCase(),
 				}
 			}).then((response) => {
-				console.log(response.data.searchRes)
 				this.paginate = response.data.paginate
 				this.result = response.data.searchRes;
 				this.categories = response.data.result_type

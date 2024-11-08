@@ -24,7 +24,6 @@ export default {
 	methods: {
 		clearFilter() {
 			let url = new URL(window.location.href);
-
 			// Создаем массив для хранения всех ключей, которые нужно удалить
 			const keysToDelete = [];
 
@@ -34,7 +33,6 @@ export default {
 					keysToDelete.push(key);
 				}
 			}
-
 			// Удаляем все ключи из массива
 			keysToDelete.forEach(key => url.searchParams.delete(key));
 

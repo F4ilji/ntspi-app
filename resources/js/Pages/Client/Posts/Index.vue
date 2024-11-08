@@ -11,10 +11,10 @@ import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
 import ClientPostFilter from '@/Components/ClientPostFilter.vue';
 import ClientPost from '@/Components/ClientPost.vue';
 import ClientPostSearch from '@/Components/ClientPostSearch.vue';
-import PostBadge from "@/Components/BuilderUi/Events/EventBadgeBuilder.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import NewsBreadcrumbs from "@/Components/BuilderUi/Posts/NewsBreadcrumbs.vue";
 import AppHead from "@/Components/AppHead.vue";
+import PostBadge from "@/Components/BuilderUi/Posts/PostBadge.vue";
 
 export default {
   name: "Index",
@@ -92,10 +92,12 @@ export default {
 						</AdminIndexHeader>
 
 
-						<div class="px-6">
-							<h3 v-if="filters.category_filter.value || filters.tag_filter.value || filters.search_filter.value" class="text-sm text-gray-500 mb-4">Найдено новостей: {{ posts.meta.total }}</h3>
+
+
+						<div v-if="filters.category_filter.value || filters.tag_filter.value || filters.search_filter.value" class="px-6">
+							<h3 class="text-sm text-gray-500 mb-4">Найдено новостей: {{ posts.meta.total }}</h3>
 							<div class="flex-wrap flex gap-3 md:items-center">
-								<PostBadge v-if="filters.length > 0" :filters="filters" />
+								<PostBadge :filters="filters" />
 							</div>
 						</div>
 

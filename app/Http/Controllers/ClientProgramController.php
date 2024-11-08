@@ -120,7 +120,6 @@ class ClientProgramController extends Controller
             return [$formEducational->value => $formEducational->getLabel()];
         });
 
-        dd($program);
         $seo = $program->seo;
         return Inertia::render('Client/Programs/Show', compact('program', 'formsEdu', 'seo'));
     }

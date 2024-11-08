@@ -1,4 +1,5 @@
 <template>
+
 	<component
 			v-for="(filter, index) in filters"
 			:key="index"

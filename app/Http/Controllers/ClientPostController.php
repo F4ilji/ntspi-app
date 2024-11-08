@@ -122,6 +122,7 @@ class ClientPostController extends Controller
             $breadcrumbs = null;
         }
 
+
         return Inertia::render('Client/Posts/Index', compact('filters', 'posts', 'categories', 'tags', 'breadcrumbs'));
     }
 

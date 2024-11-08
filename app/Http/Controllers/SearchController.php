@@ -6,10 +6,12 @@ use App\Http\Resources\AdditionalEducationSearchResource;
 use App\Http\Resources\EducationalProgramSearchResource;
 use App\Http\Resources\EducationGroupSearchResource;
 use App\Http\Resources\EventSearchResource;
+use App\Http\Resources\FacultySearchResource;
 use App\Http\Resources\PageResource;
 use App\Http\Resources\PageSearchResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\PostSearchResource;
+use App\Http\Resources\UserSearchResource;
 use App\Models\AdditionalEducation;
 use App\Models\EducationalGroup;
 use App\Models\EducationalProgram;
@@ -28,6 +30,16 @@ use ProtoneMedia\LaravelCrossEloquentSearch\Search;
 
 class SearchController extends Controller
 {
+    private array $resourceMap = [
+        Post::class => PostSearchResource::class,
+        Page::class => PageSearchResource::class,
+        EducationalGroup::class => EducationGroupSearchResource::class,
+        EducationalProgram::class => EducationalProgramSearchResource::class,
+        Event::class => EventSearchResource::class,
+        AdditionalEducation::class => AdditionalEducationSearchResource::class,
+        User::class => UserSearchResource::class,
+        Faculty::class => FacultySearchResource::class,
+    ];
     public function index(Request $request)
     {
         $req = Str::lower($request->query('search'));
@@ -42,37 +54,21 @@ class SearchController extends Controller
             ->add(Post::where('status', '=', 'published'), ['title', 'search_data'])
             ->add(Page::with('section')->where('searchable', '=', true), ['title', 'search_data'])
             ->add(Event::where('event_date_start', '>', Date::now()), 'title')
-//            ->add(AdditionalEducation::where('is_active', '=', true), 'title')
-//            ->add(EducationalGroup::with('schedules'), 'title')
-//            ->add(EducationalProgram::where('status', '=', true)->whereHas('admission_plans'), 'name')
-//            ->add(Faculty::where('is_active', '=', true), 'title')
-//            ->add(User::whereHas('userDetail'), ['name', 'userDetail.education', 'userDetail.awards', 'userDetail.publications'])
+            ->add(AdditionalEducation::where('is_active', '=', true), 'title')
+            ->add(EducationalGroup::with('schedules'), 'title')
+            ->add(EducationalProgram::where('status', '=', true)->whereHas('admission_plans'), 'name')
+            ->add(Faculty::where('is_active', '=', true), 'title')
+            ->add(User::whereHas('userDetail'), 'name')
             ->beginWithWildcard()
             ->orderByRelevance()
             ->includeModelType()
             ->ignoreCase(true)
             ->search($req);
 
-        // Преобразуем результаты в коллекцию и мапируем их
-        $resources = collect($results)->map(function ($result) {
-            if ($result instanceof Post) {
-                return new PostSearchResource($result);
-            }
-            if ($result instanceof Page) {
-                return new PageSearchResource($result);
-            }
-            if ($result instanceof EducationalGroup) {
-                return new EducationGroupSearchResource($result);
-            }
-            if ($result instanceof EducationalProgram) {
-                return new EducationalProgramSearchResource($result);
-            }
-            if ($result instanceof Event) {
-                return new EventSearchResource($result);
-            }
-            if ($result instanceof AdditionalEducation) {
-                return new AdditionalEducationSearchResource($result);
-            }
+        $resourceMap = $this->resourceMap;
+        $resources = collect($results)->map(function ($result) use ($resourceMap) {
+            $resourceClass = $resourceMap[get_class($result)] ?? null;
+            return $resourceClass ? new $resourceClass($result) : null;
         });
 
         $result_type = $this->getCategoriesSearchResult($resources);

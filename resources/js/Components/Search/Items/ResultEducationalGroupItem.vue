@@ -11,7 +11,7 @@
 	<template v-for="schedule in item.data.schedules">
 		<div class="mb-2">
 			<div class="flex gap-3 px-2 items-center hover:bg-[#F2F2F2] rounded-lg">
-				<Link :href="rou"
+				<Link href="/"
 							class="ml-[8px] flex h-12 w-full items-center gap-2 overflow-hidden border-l border-gray-200 px-4 pl-[22px] text-sm text-gray-900 md:h-10">
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
 							 stroke="currentColor" class="w-5 h-5 flex-shrink-0">

@@ -24,13 +24,22 @@ import ResultEducationalProgramItem from "@/Components/Search/Items/ResultEducat
 import ResultEventItem from "@/Components/Search/Items/ResultEventItem.vue";
 import ResultAdditionalEducationItem from "@/Components/Search/Items/ResultAdditionalEducationalItem.vue";
 import ResultEducationalGroupItem from "@/Components/Search/Items/ResultEducationalGroupItem.vue";
+import ResultPersonItem from "@/Components/Search/Items/ResultPersonItem.vue";
+import ResultFacultyItem from "@/Components/Search/Items/ResultFacultyItem.vue";
 
 export default {
 	name: "ResultList",
 	components: {
 		ResultEducationalGroupItem,
 		ResultAdditionalEducationItem,
-		ResultEventItem, ResultEducationalProgramItem, ResultPageItem, ResultPostItem, PreSearchLinkList, Link},
+		ResultEventItem,
+		ResultEducationalProgramItem,
+		ResultPageItem,
+		ResultPostItem,
+		PreSearchLinkList,
+		ResultPersonItem,
+		ResultFacultyItem,
+		Link},
 	data() {
 		return {
 		}
@@ -44,6 +53,8 @@ export default {
 				EducationalProgram: 'ResultEducationalProgramItem',
 				AdditionalEducational: 'ResultAdditionalEducationItem',
 				EducationalGroup: 'ResultEducationalGroupItem',
+				User: 'ResultPersonItem',
+				Faculty: 'ResultFacultyItem'
 			};
 			return componentMap[type] || null;
 		},

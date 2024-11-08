@@ -46,21 +46,41 @@ export default {
 	methods: {
 		filter: debounce(function () {
 			let url = new URL(window.location.href);
+			// Создаем массив для хранения всех ключей, которые нужно удалить
+			const keysToDelete = [];
+
+			// Перебираем все параметры и добавляем ключи, начинающиеся с 'category', в массив
+			for (const [key] of url.searchParams) {
+				if (key.startsWith('tag')) {
+					keysToDelete.push(key);
+				}
+			}
+			// Удаляем все ключи из массива
+			keysToDelete.forEach(key => url.searchParams.delete(key));
 			url.searchParams.delete('page');
-			url.searchParams.delete('tag[]');
 			let newUrl = url.toString();
 			this.$inertia.visit(newUrl, {
 				method: 'get',
 				preserveState: true,
 				data: {
-					tag: this.tag_slug,
+					category: this.category_slug,
 				},
 			});
 		}, 500),
 		clearFilter() {
 			let url = new URL(window.location.href);
-			url.searchParams.delete('tag[]');
-			this.tag_slug = [];
+			// Создаем массив для хранения всех ключей, которые нужно удалить
+			const keysToDelete = [];
+
+			// Перебираем все параметры и добавляем ключи, начинающиеся с 'category', в массив
+			for (const [key] of url.searchParams) {
+				if (key.startsWith('tag')) {
+					keysToDelete.push(key);
+				}
+			}
+			// Удаляем все ключи из массива
+			keysToDelete.forEach(key => url.searchParams.delete(key));
+			this.category_slug = [];
 			this.searchTerm = ''; // Сбросить поле поиска
 			let newUrl = url.toString();
 			this.$inertia.visit(newUrl, {
