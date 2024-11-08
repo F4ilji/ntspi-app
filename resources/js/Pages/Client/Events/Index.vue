@@ -15,10 +15,12 @@ import ClientEventSelectDate from "@/Components/ClientEventSelectDate.vue";
 import ClientEventFilter from "@/Components/ClientEventFilter.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import EventListBreadcrumbs from "@/Components/BuilderUi/Events/EventListBreadcrumbs.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 export default {
 	name: "Index",
 	components: {
+		AppHead,
 		EventListBreadcrumbs,
 		MainPageNavBar,
 		ClientEventFilter,
@@ -56,6 +58,9 @@ export default {
 		},
 		breadcrumbs: {
 			type: Object
+		},
+		seo: {
+			type: Object,
 		}
 	},
 	methods: {},
@@ -63,10 +68,8 @@ export default {
 </script>
 
 <template>
-	<Head>
-		<title>Мероприятия</title>
-		<meta name="description" content="Your page description"/>
-	</Head>
+	<AppHead :seo="seo" />
+
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">

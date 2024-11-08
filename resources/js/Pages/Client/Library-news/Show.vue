@@ -9,11 +9,13 @@ import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import BaseBackButton from "@/Components/BaseComponents/BaseBuilderUi/BaseBackButton.vue";
 import BaseTitle from "@/Components/BaseComponents/BaseBuilderUi/BaseTitle.vue";
 import BaseBuilder from "@/Components/BaseComponents/BaseBuilderUi/BaseBuilder.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 
 export default {
 	name: "Show",
 	components: {
+		AppHead,
 		BaseBuilder,
 		BaseTitle, BaseBackButton,
 		MainPageNavBar,
@@ -29,6 +31,9 @@ export default {
 		post: {
 			type: Array,
 		},
+		seo: {
+			type: Object,
+		}
 	},
 	methods: {
 		textLimit(text, symbols) {
@@ -46,10 +51,8 @@ export default {
 </script>
 
 <template>
-	<Head>
-		<title>{{ post.data.title }}</title>
-		<meta name="description" content="Your page description">
-	</Head>
+	<AppHead :seo="seo" />
+
 	<ClientScrollTimeline/>
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">

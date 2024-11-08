@@ -26,10 +26,12 @@ import ClientAdditionalProgramFilter
 import ProgramBadge from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramBadge.vue";
 import AdditionalEducationProgramListBreadcrumbs
 	from "@/Components/BuilderUi/AdditionalEducationPrograms/AdditionalEducationProgramListBreadcrumbs.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 export default {
   name: "Index",
   components: {
+		AppHead,
 		AdditionalEducationProgramListBreadcrumbs, ProgramBadge, ClientAdditionalProgramFilter,
 		ProgramListBreadcrumbs,
 		MainPageNavBar,
@@ -75,6 +77,9 @@ export default {
 		direction_studies: {
 			type: Array,
 		},
+		seo: {
+			type: Object,
+		}
   },
   methods: {
 		transformToColumns(originalArray) {
@@ -102,11 +107,7 @@ export default {
 </script>
 
 <template>
-  <Head>
-    <title>Приемная компания</title>
-    <meta name="description" content="Your page description"/>
-  </Head>
-
+	<AppHead :seo="seo" />
 
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 

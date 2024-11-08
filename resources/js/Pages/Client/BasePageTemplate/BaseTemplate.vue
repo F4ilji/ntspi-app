@@ -1,8 +1,6 @@
 <template>
-	<AppHead
-			:title="seo.title"
-			:description="seo.description"
-	/>
+	<AppHead :seo="seo" />
+
 
 
 	<div class="flex flex-col h-screen justify-between">

@@ -14,10 +14,12 @@ import ClientImageSlider from "@/Components/ClientImageSlider.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import AcademicJournalsBuilder from "@/Components/BuilderUi/AcademicJournals/AcademicJournalsBuilder.vue";
 import AcademicJournalsTitle from "@/Components/BuilderUi/AcademicJournals/AcademicJournalsTitle.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 export default {
   name: "Show",
   components: {
+		AppHead,
 		AcademicJournalsTitle,
 		AcademicJournalsBuilder,
 		MainPageNavBar,
@@ -48,6 +50,9 @@ export default {
 		years: {
 			type: Object
 		},
+		seo: {
+			type: Object,
+		}
   },
   methods: {
 		textLimit(text, symbols) {
@@ -66,10 +71,8 @@ export default {
 </script>
 
 <template>
-  <Head>
-    <title>Журнал</title>
-    <meta name="description" content="Your page description"/>
-  </Head>
+	<AppHead :seo="seo" />
+
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="flex flex-col h-screen">

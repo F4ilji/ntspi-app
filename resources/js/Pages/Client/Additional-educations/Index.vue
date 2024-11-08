@@ -19,10 +19,12 @@ import PostBadge from "@/Components/BuilderUi/Events/EventBadgeBuilder.vue";
 import ProgramBadge from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramBadge.vue";
 import AdditionalEducationProgramListBreadcrumbs
 	from "@/Components/BuilderUi/AdditionalEducationPrograms/AdditionalEducationProgramListBreadcrumbs.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 export default {
   name: "Index",
   components: {
+		AppHead,
 		AdditionalEducationProgramListBreadcrumbs,
 		ProgramBadge,
 		PostBadge,
@@ -64,6 +66,9 @@ export default {
 		},
 		breadcrumbs: {
 			type: Object
+		},
+		seo: {
+			type: Object,
 		}
   },
   methods: {
@@ -93,10 +98,9 @@ export default {
 </script>
 
 <template>
-  <Head>
-    <title>Дополнительное образование</title>
-    <meta name="description" content="Your page description"/>
-  </Head>
+
+	<AppHead :seo="seo" />
+
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 

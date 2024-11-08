@@ -13,10 +13,12 @@ import ClientPost from '@/Components/ClientPost.vue';
 import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import DivisionListBreadcrumbs from "@/Components/BuilderUi/Divisions/DivisionListBreadcrumbs.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 export default {
   name: "Index",
   components: {
+		AppHead,
 		DivisionListBreadcrumbs,
 		MainPageNavBar,
     AdminIndexHeaderTitle, AdminIndexHeader,
@@ -39,6 +41,9 @@ export default {
 		divisions: {
         type: Array,
     },
+		seo: {
+			type: Object,
+		}
   },
   methods: {
 
@@ -50,10 +55,8 @@ export default {
 </script>
 
 <template>
-  <Head>
-    <title>Подразделения института</title>
-    <meta name="description" content="Your page description"/>
-  </Head>
+	<AppHead :seo="seo" />
+
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="flex flex-col h-screen">

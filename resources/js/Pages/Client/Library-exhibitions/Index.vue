@@ -10,10 +10,12 @@ import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
 import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
 import ClientEventSelectDate from "@/Components/ClientEventSelectDate.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 export default {
 	name: "Index",
 	components: {
+		AppHead,
 		MainPageNavBar,
 		ClientEventSelectDate,
 		AdminIndexHeaderTitle, AdminIndexHeader,
@@ -30,6 +32,9 @@ export default {
 		exhibitions: {
 			type: Array,
 		},
+		seo: {
+			type: Object,
+		}
 	},
 	methods: {},
 
@@ -39,10 +44,8 @@ export default {
 </script>
 
 <template>
-	<Head>
-		<title>Виртуальные выставки</title>
-		<meta name="description" content="Your page description"/>
-	</Head>
+	<AppHead :seo="seo" />
+
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">

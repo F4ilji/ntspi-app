@@ -78,12 +78,9 @@ export default {
 </script>
 
 <template>
-	<AppHead
-			:title="seo?.title"
-			:description="seo?.description"
-	/>
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+	<AppHead :seo="seo" />
 
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">

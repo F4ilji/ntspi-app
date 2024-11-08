@@ -14,6 +14,7 @@ use App\Models\Faculty;
 use App\Models\LibraryNews;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\User;
 use App\Models\VirtualExhibition;
 use Illuminate\Console\Command;
 use Spatie\Sitemap\Sitemap;
@@ -226,6 +227,23 @@ class GenerateSitemap extends Command
             ];
         });
     }
+
+    protected function generatePersons(Sitemap $sitemap)
+    {
+        $posts = User::query()
+            ->whereHas('userDetail')
+            ->with('userDetail')
+            ->get();
+
+        $this->addUrlsToSitemap($sitemap, $posts, function($user) {
+            return [
+                'path' => route('client.person.show', $user->slug, false),
+                'lastModificationDate' => $user->userDetail->updated_at,
+                'priority' => 0.5,
+            ];
+        });
+    }
+
 
 
 

@@ -11,10 +11,12 @@ import ClientPostFilter from '@/Components/ClientPostFilter.vue';
 import ClientPost from '@/Components/ClientPost.vue';
 import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 export default {
   name: "Index",
   components: {
+		AppHead,
 		MainPageNavBar,
     AdminIndexHeaderTitle, AdminIndexHeader,
     AdminIndexFilter, AdminIndexSearch,
@@ -36,6 +38,9 @@ export default {
 		journals: {
         type: Array,
     },
+		seo: {
+			type: Object,
+		}
   },
   methods: {
 
@@ -47,11 +52,10 @@ export default {
 </script>
 
 <template>
-  <Head>
-    <title>Научные периодические издания НТГСПИ</title>
-    <meta name="description" content="Your page description"/>
-  </Head>
-  <MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+	<AppHead :seo="seo" />
+
+
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">

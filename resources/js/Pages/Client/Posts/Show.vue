@@ -71,10 +71,7 @@ export default {
 </script>
 <template>
 
-	<AppHead
-			:title="seo.title"
-			:description="seo.description"
-	/>
+	<AppHead :seo="seo" />
 
 	<ClientScrollTimeline/>
 

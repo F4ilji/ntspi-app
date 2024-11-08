@@ -13,10 +13,12 @@ import ClientPost from '@/Components/ClientPost.vue';
 import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import ClientEventSelectDate from "@/Components/ClientEventSelectDate.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 export default {
 	name: "Index",
 	components: {
+		AppHead,
 		MainPageNavBar,
 		ClientEventSelectDate,
 		AdminIndexHeaderTitle, AdminIndexHeader,
@@ -35,6 +37,9 @@ export default {
 		posts: {
 			type: Array,
 		},
+		seo: {
+			type: Object,
+		}
 	},
 	methods: {},
 
@@ -44,10 +49,8 @@ export default {
 </script>
 
 <template>
-	<Head>
-		<title>Мероприятия</title>
-		<meta name="description" content="Your page description"/>
-	</Head>
+	<AppHead :seo="seo" />
+
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">

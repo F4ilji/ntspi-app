@@ -13,10 +13,12 @@ import ClientPost from '@/Components/ClientPost.vue';
 import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import FacultyListBreadcrumbs from "@/Components/BuilderUi/Faculties/FacultyListBreadcrumbs.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 export default {
   name: "Index",
   components: {
+		AppHead,
 		FacultyListBreadcrumbs,
 		MainPageNavBar,
     AdminIndexHeaderTitle, AdminIndexHeader,
@@ -40,6 +42,9 @@ export default {
 		faculties: {
         type: Array,
     },
+		seo: {
+			type: Object,
+		}
   },
   methods: {
 
@@ -51,10 +56,8 @@ export default {
 </script>
 
 <template>
-  <Head>
-    <title>Факультеты</title>
-    <meta name="description" content="Your page description"/>
-  </Head>
+	<AppHead :seo="seo" />
+
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="flex flex-col h-screen">

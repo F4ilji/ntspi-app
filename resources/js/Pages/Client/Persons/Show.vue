@@ -1,8 +1,6 @@
 <template>
-	<AppHead
-			:title="seo?.title"
-			:description="seo?.description"
-	/>
+	<AppHead :seo="seo" />
+
 
 	<div class="flex flex-col h-screen">
 		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
@@ -353,6 +351,9 @@ export default {
 		person: {
 			type: Object,
 		},
+		seo: {
+			type: Object,
+		}
 	},
 
 	components: {

@@ -14,10 +14,12 @@ import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import PostBadge from "@/Components/BuilderUi/Events/EventBadgeBuilder.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import NewsBreadcrumbs from "@/Components/BuilderUi/Posts/NewsBreadcrumbs.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 export default {
   name: "Index",
   components: {
+		AppHead,
 		NewsBreadcrumbs,
 		MainPageNavBar,
 		PostBadge,
@@ -56,6 +58,9 @@ export default {
 		},
 		breadcrumbs: {
 			type: Object,
+		},
+		seo: {
+			type: Object,
 		}
   },
   methods: {
@@ -68,10 +73,8 @@ export default {
 </script>
 
 <template>
-  <Head>
-    <title>Новости</title>
-    <meta name="description" content="Your page description"/>
-  </Head>
+	<AppHead :seo="seo" />
+
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
