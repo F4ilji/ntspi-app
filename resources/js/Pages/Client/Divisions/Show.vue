@@ -74,7 +74,7 @@
 
 							<h2 v-if="division.data.workers.length > 0" id="persons" class="font-bold text-xl">Состав</h2>
 							<template v-for="worker in division.data.workers">
-								<ClientFacultyWorkerCard :worker="worker" />
+								<ClientDivisionWorkerCard :worker="worker" />
 							</template>
 
 
@@ -114,6 +114,7 @@ import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import DivisionBuilder from "@/Components/BuilderUi/Divisions/DivisionBuilder.vue";
 import DivisionItemBreadcrumbs from "@/Components/BuilderUi/Divisions/DivisionItemBreadcrumbs.vue";
 import AppHead from "@/Components/AppHead.vue";
+import ClientDivisionWorkerCard from "@/Components/PersonCards/ClientDivisionWorkerCard.vue";
 
 
 export default {
@@ -138,6 +139,7 @@ export default {
 	},
 
 	components: {
+		ClientDivisionWorkerCard,
 		ClientFacultyWorkerCard,
 		AppHead,
 		DivisionItemBreadcrumbs,
