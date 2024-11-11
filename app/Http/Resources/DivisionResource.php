@@ -18,7 +18,7 @@ class DivisionResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
-            'workers' => UserResource::collection($this->whenLoaded('workers')),
+            'workers' => ClientPersonDivisionPreviewResource::collection($this->whenLoaded('workers')),
             'description' => $this->description,
         ];
     }
