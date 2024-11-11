@@ -140,7 +140,6 @@ export default {
 
 	components: {
 		ClientDivisionWorkerCard,
-		ClientFacultyWorkerCard,
 		AppHead,
 		DivisionItemBreadcrumbs,
 		DivisionBuilder,
