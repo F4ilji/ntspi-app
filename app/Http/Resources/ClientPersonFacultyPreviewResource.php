@@ -17,6 +17,7 @@ class ClientPersonFacultyPreviewResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'slug' => $this->slug,
             'academicTitle' => $this->userDetail->academicTitle,
             'contactPhone' => $this->userDetail->contactPhone,
             'contactEmail' => $this->userDetail->contactEmail,

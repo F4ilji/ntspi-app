@@ -45,7 +45,7 @@ export default {
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
 				<article class="w-full min-w-0 mt-4 px-1 md:px-6">
 					<div class="relative overflow-hidden">
-						<div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:pb-12 sm:py-5">
+						<div class="max-w-[85rem] mx-auto sm:px-6 lg:px-8 py-10 sm:pb-12 sm:py-5">
 							<div class="text-center">
 								<h1 class="text-2xl sm:text-4xl font-bold text-gray-800 dark:text-gray-200">
 									Расписание занятий

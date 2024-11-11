@@ -65,6 +65,7 @@ class FacultyResource extends Resource
                                         $set('seo.title', $state);
                                     }),
                                 TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
+                                TextInput::make('abbreviation')->label('Аббревиатура')->required(),
                                 Toggle::make('is_active')->default(true)->label('Активный факультет')->inline(false),
                             ]),
                         Tabs\Tab::make('Описание факультета')

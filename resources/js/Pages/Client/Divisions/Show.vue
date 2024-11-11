@@ -74,31 +74,7 @@
 
 							<h2 v-if="division.data.workers.length > 0" id="persons" class="font-bold text-xl">Состав</h2>
 							<template v-for="worker in division.data.workers">
-								<div class="flex flex-col rounded-xl p-4 md:p-6 bg-white border border-gray-200 dark:bg-slate-900 dark:border-gray-700">
-									<div class="flex items-center gap-x-4">
-										<img loading="lazy" class="rounded-xl w-[150px]" :src="'/storage/' + worker.details.photo" alt="Image Description">
-										<div class="grow">
-											<Link :href="route('client.person.show', worker.slug)" class="font-medium text-gray-800 hover:text-gray-500 underline">
-												{{ worker.administrativePosition }}: {{ worker.name }}
-											</Link>
-											<p v-if="worker.details.academicTitle" class="text-xs text-gray-500 mt-2">
-												Ученая степень: {{ worker.details.academicTitle }}
-											</p>
-											<p class="text-xs text-gray-500 mt-2">
-												Контактный телефон: {{ worker.details.contactPhone }}
-											</p>
-											<p class="text-xs text-gray-500 mt-2">
-												Электронная почта: {{ worker.details.contactEmail }}
-											</p>
-											<p class="text-xs text-gray-500 mt-2">
-												Кабинет: 207В
-											</p>
-										</div>
-									</div>
-
-									<!-- Social Brands -->
-									<!-- End Social Brands -->
-								</div>
+								<ClientFacultyWorkerCard :worker="worker" />
 							</template>
 
 
@@ -162,6 +138,7 @@ export default {
 	},
 
 	components: {
+		ClientFacultyWorkerCard,
 		AppHead,
 		DivisionItemBreadcrumbs,
 		DivisionBuilder,

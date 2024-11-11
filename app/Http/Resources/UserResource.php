@@ -17,6 +17,7 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'slug' => $this->slug,
             'administrativePosition' => $this->pivot->administrativePosition,
             'sort' => $this->pivot->sort,
             'details' => $this->userDetail,

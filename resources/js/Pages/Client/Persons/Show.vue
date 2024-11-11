@@ -121,8 +121,6 @@
 									</template>
 								</div>
 
-								{{ console.log(person) }}
-
 								<ul class="mt-5 flex flex-col gap-y-3">
 
 									<li class="flex items-center gap-x-2.5">
@@ -316,8 +314,6 @@
 		<ClientFooterDown/>
 	</div>
 
-	<FsLightbox class="z-1000" :slide="slide" :toggler="toggler" :sources="editorImages"/>
-
 
 </template>
 
@@ -364,7 +360,6 @@ export default {
 		ClientFooterDown,
 		MainNavbar,
 		Link,
-		FsLightbox,
 		Head
 	},
 	methods: {
@@ -400,18 +395,7 @@ export default {
 				this.scrollTop = false
 			}
 		},
-		scrollToTop() {
-			window.scrollTo(0, 0)
-		},
-
-
-	},
-	mounted() {
-		window.addEventListener("scroll", this.onScroll)
-
-		// this.editorImages = this.blocksWithSlideNumber.filter(block => block.type === 'image').map(block => block.data.file.url);
-
-		window.addEventListener("scroll", () => {
+		handleScroll(e) {
 			const headings = document.querySelectorAll('h2');
 			const visor = document.querySelector('#visor');
 			let lastVisibleHeading = null;
@@ -439,12 +423,23 @@ export default {
 					break; // Выходим из цикла, если нашли видимый заголовок
 				}
 			}
-		});
+		},
+		scrollToTop() {
+			window.scrollTo(0, 0)
+		},
+
+
+	},
+	mounted() {
+		window.addEventListener("scroll", this.onScroll)
+
+
+		window.addEventListener("scroll", this.handleScroll);
 
 
 	},
 	beforeDestroy() {
-		window.removeEventListener('scroll', this.handleScroll);
+		window.removeEventListener("scroll", this.handleScroll);
 		window.removeEventListener("scroll", this.onScroll)
 	},
 
