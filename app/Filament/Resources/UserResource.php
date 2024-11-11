@@ -7,12 +7,14 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class UserResource extends Resource implements HasShieldPermissions
 {
@@ -31,7 +33,22 @@ class UserResource extends Resource implements HasShieldPermissions
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
+                        $slug = Str::slug($state);
+                        $count = 1;
+                        $baseSlug = $slug;
+
+                        while (User::where('slug', $slug)->exists()) {
+                            // Если slug существует, добавляем суффикс
+                            $slug = $baseSlug . '-' . $count;
+                            $count++;
+                        }
+                        $set('slug', $slug);
+                    }
+                ),
+                TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()

@@ -74,7 +74,6 @@
 
 							<h2 v-if="division.data.workers.length > 0" id="persons" class="font-bold text-xl">Состав</h2>
 							<template v-for="worker in division.data.workers">
-								{{ worker }}
 								<ClientDivisionWorkerCard :worker="worker" />
 							</template>
 

@@ -14,8 +14,6 @@ class CreateUser extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['slug'] = $this->generateUniqueSlug($data['name']);
-        dd(1);
         return $data;
     }
 
