@@ -34,21 +34,7 @@ class UserResource extends Resource implements HasShieldPermissions
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255)
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
-                        $slug = Str::slug($state);
-                        $count = 1;
-                        $baseSlug = $slug;
-
-                        while (User::where('slug', $slug)->exists()) {
-                            // Если slug существует, добавляем суффикс
-                            $slug = $baseSlug . '-' . $count;
-                            $count++;
-                        }
-                        $set('slug', $slug);
-                    }
-                ),
-                TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
+                    ->live(onBlur: true),
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()

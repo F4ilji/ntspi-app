@@ -14,6 +14,8 @@ class EditUser extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        $data['slug'] = $this->generateUniqueSlug($data['name']);
+
         return $data;
     }
 
@@ -34,6 +36,7 @@ class EditUser extends EditRecord
 
         return $slug;
     }
+
 
 
 
