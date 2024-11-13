@@ -109,13 +109,13 @@ class UserDetailForm
                             ->schema([
                                 Forms\Components\Repeater::make('attendedConferences')->schema([
                                     Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Преподаваемые дисциплины'),
+                                ])->label('Участие в конференциях'),
                                 Forms\Components\Repeater::make('participationScienceProjects')->schema([
                                     Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Преподаваемые дисциплины'),
+                                ])->label('Участие в научных проектах'),
                                 Forms\Components\Repeater::make('publications')->schema([
                                     Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Преподаваемые дисциплины'),
+                                ])->label('Публикации'),
                             ]),
                         Tabs\Tab::make('Другое')
                             ->schema([
