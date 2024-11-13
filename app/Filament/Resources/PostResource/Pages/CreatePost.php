@@ -51,7 +51,8 @@ class CreatePost extends CreateRecord
     {
         $this->record->seo()->create($this->seoData);
         $this->sendNotify($this->record, auth()->user());
-        $this->postToSocialMedia($this->publicationAgreements, $this->record->content, $this->record->title, Carbon::parse($this->record->publish_at)->timestamp);
+        $publish_date = ($this->record->publish_at > now()) ? Carbon::parse($this->record->publish_at)->timestamp : null;
+        $this->postToSocialMedia($this->publicationAgreements, $this->record->content, $this->record->title, $publish_date);
     }
 
     private function generateSeo(array $data) : array
@@ -266,6 +267,7 @@ class CreatePost extends CreateRecord
                 $images = $this->generateImageLinksToVK($this->record->images);
 
                 $post_id = $this->record->id;
+
 
 
                 dispatch(new CreateVkPost($title, $text, $images, $post_id, $publish_date));

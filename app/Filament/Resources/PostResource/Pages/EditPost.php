@@ -36,7 +36,8 @@ class EditPost extends EditRecord
     protected function afterSave(): void
     {
         $this->record->seo()->update($this->seoData);
-        $this->postToSocialMedia($this->publicationAgreements, $this->record->content, $this->record->title, Carbon::parse($this->record->publish_at)->timestamp);
+        $publish_date = ($this->record->publish_at > now()) ? Carbon::parse($this->record->publish_at)->timestamp : null;
+        $this->postToSocialMedia($this->publicationAgreements, $this->record->content, $this->record->title, $publish_date);
     }
 
     private function setPreviewText(array $data) : string|null

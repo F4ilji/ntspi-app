@@ -46,7 +46,7 @@ class VkWallService
 
 
 
-    public function createPost(string $message, int $from_group, string $attachments = '', int $publish_date)
+    public function createPost(string $message, int $from_group, string $attachments = '', int|null $publish_date = null)
     {
         $params = [
             'owner_id' => '-' . $this->publicId,
@@ -79,7 +79,7 @@ class VkWallService
         }
     }
 
-    public function updatePost(int $post_id, string $message = '', int $from_group = 1, string $attachments = '', int $publish_date)
+    public function updatePost(int $post_id, string $message = '', int $from_group = 1, string $attachments = '', int|null $publish_date = null)
     {
         if (empty($message) && empty($attachments)) {
             return [
@@ -87,18 +87,6 @@ class VkWallService
                 'message' => 'Необходимо указать либо сообщение, либо вложения.',
             ];
         }
-
-
-        $params = [
-            'owner_id' => '-' . $this->publicId,
-            'post_id' => $post_id,
-            'message' => $message,
-            'attachments' => $attachments,
-            'access_token' => $this->wallToken,
-            'v' => '5.131',
-        ];
-
-
 
 
         try {

@@ -14,6 +14,8 @@ class UserDetail extends Model
     protected $casts = [
         'is_only_worker' => 'boolean',
         'awards' => 'array',
+        'education' => 'array',
+        'workExperience' => 'array',
         'professDisciplines' => 'array',
         'professionalRetraining' => 'array',
         'professionalDevelopment' => 'array',

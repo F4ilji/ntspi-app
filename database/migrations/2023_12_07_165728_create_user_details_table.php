@@ -19,12 +19,12 @@ return new class extends Migration
             $table->string('photo')->nullable(); // Фото
             $table->string('academicTitle')->nullable(); // Ученая степень
             $table->string('AcademicDegree')->nullable(); // Ученое звание
-            $table->string('education')->nullable(); // Образование
+            $table->text('education')->nullable(); // Образование
             $table->text('awards')->nullable(); // Награды
             $table->text('professDisciplines')->nullable(); // Преподаваемые программы
             $table->text('professionalRetraining')->nullable(); // Профессиональная переподготовка
             $table->text('professionalDevelopment')->nullable(); // Повышение квалификации
-            $table->integer('workExperience')->nullable(); // Стаж работы
+            $table->text('workExperience')->nullable(); // Стаж работы
             $table->text('attendedConferences')->nullable(); // Участие в конференциях
             $table->text('participationScienceProjects')->nullable(); // Участие в научных проектах
             $table->text('publications')->nullable(); // Публикации

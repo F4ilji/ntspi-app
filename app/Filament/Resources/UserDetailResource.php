@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Components\Forms\UserDetailForm;
 use App\Filament\Resources\UserDetailResource\Pages;
 use App\Filament\Resources\UserDetailResource\RelationManagers;
 use App\Models\UserDetail;
@@ -30,97 +31,7 @@ class UserDetailResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\Card::make()->schema([
-                    Forms\Components\Grid::make(2)->schema([
-                        Forms\Components\Select::make('user_id')
-                            ->relationship('user', 'email')
-                            ->searchable()
-                            ->required()
-                            ->preload()
-                            ->label('Пользователь'),
-                        Forms\Components\Toggle::make('is_only_worker')
-                            ->inline(false)
-                            ->label('Только сотрудник')
-                    ]),
-                ]),
-                Tabs::make('Tabs')
-                    ->tabs([
-                        Tabs\Tab::make('Основная информация')
-                            ->schema([
-                                Forms\Components\FileUpload::make('photo')
-                                    ->label('Фотография')
-                                    ->image()
-                                    ->optimize('jpg')
-                                    ->resize(30)
-                                    ->disk('public')
-                                    ->imageEditor()
-                                    ->directory('images')
-                                    ->imageEditor(),
-                                Forms\Components\Grid::make()->schema([
-                                    Forms\Components\TextInput::make('contactEmail')
-                                        ->label('Контактный Email')
-                                        ->maxLength(255),
-                                    Forms\Components\TextInput::make('contactPhone')
-                                        ->label('Контактный телефон')
-                                        ->maxLength(255),
-                                ]),
-                            ]),
-                        Tabs\Tab::make('Образование')
-                            ->schema([
-                                Forms\Components\Grid::make()->schema([
-                                    Forms\Components\TextInput::make('academicTitle')
-                                        ->label('Ученая степень')
-                                        ->maxLength(255),
-                                    Forms\Components\TextInput::make('AcademicDegree')
-                                        ->label('Ученое звание')
-                                        ->maxLength(255),
-                                ]),
-                                Forms\Components\TextInput::make('education')
-                                    ->label('Образование')
-                                    ->maxLength(255),
-                                Forms\Components\Repeater::make('professionalRetraining')->schema([
-                                    Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Профессиональная переподготовка'),
-                                Forms\Components\Repeater::make('professionalDevelopment')
-                                    ->schema([
-                                    Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Повышение квалификации'),
-                                Forms\Components\Repeater::make('awards')->schema([
-                                    Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Награды'),
-                            ]),
-                        Tabs\Tab::make('Преподавание')
-                            ->schema([
-                                Forms\Components\TextInput::make('workExperience')
-                                    ->label('Стаж работы')
-                                    ->numeric(),
-                                Forms\Components\Repeater::make('professDisciplines')->schema([
-                                    Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Преподаваемые дисциплины'),
-                            ]),
-                        Tabs\Tab::make('Научная деятельность')
-                            ->schema([
-                                Forms\Components\Repeater::make('attendedConferences')->schema([
-                                    Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Преподаваемые дисциплины'),
-                                Forms\Components\Repeater::make('participationScienceProjects')->schema([
-                                    Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Преподаваемые дисциплины'),
-                                Forms\Components\Repeater::make('publications')->schema([
-                                    Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Преподаваемые дисциплины'),
-                            ]),
-                        Tabs\Tab::make('Другое')
-                            ->schema([
-                                Forms\Components\Textarea::make('other')
-                                    ->columnSpanFull(),
-                            ]),
-
-
-                    ])->columnSpanFull(),
-            ]);
+        return UserDetailForm::getForm($form);
     }
 
     public static function table(Table $table): Table

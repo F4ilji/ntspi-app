@@ -28,7 +28,7 @@ class VkService
         return $this->wallService->getPostById($id);
     }
 
-    public function createPost(string $title, string $message, array $images = [], int $publish_date = null)
+    public function createPost(string $title, string $message, array $images = [], int|null $publish_date = null)
     {
         $from_group = 1;
         $album_attachment = '';
@@ -40,7 +40,7 @@ class VkService
         return $this->wallService->createPost($message, $from_group, $album_attachment, $publish_date);
     }
 
-    public function updatePost(int $id, string $title, string $message, array $images = [], int $publish_date = null)
+    public function updatePost(int $id, string $title, string $message, array $images = [], int|null $publish_date = null)
     {
         $from_group = 1;
         $vk_post = $this->wallService->getPostById($id);

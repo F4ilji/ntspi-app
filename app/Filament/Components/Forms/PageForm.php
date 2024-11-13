@@ -95,7 +95,7 @@ class PageForm
                                 TextInput::make('search_data')->hidden(),
                             ]),
                             Forms\Components\Tabs\Tab::make('Контент')->schema([
-                                ContentBuilderItem::getItem()
+                                ContentBuilderItem::getItem('content')
                             ]),
                             Forms\Components\Tabs\Tab::make('Настройки')->schema([
                                 Select::make('template')->options(self::getPageTemplates())->required(),

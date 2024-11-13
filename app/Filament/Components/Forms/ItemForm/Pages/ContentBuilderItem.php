@@ -27,10 +27,10 @@ use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class ContentBuilderItem
 {
-    public static function getItem()
+    public static function getItem(string $name)
     {
         return
-            Builder::make('content')->label('')->blocks([
+            Builder::make($name)->label('')->blocks([
                 Builder\Block::make('heading')->label('Заголовок')
                     ->schema([
                         TextInput::make('id')->hidden()->integer()->default(rand(2335235,324634264263426)),

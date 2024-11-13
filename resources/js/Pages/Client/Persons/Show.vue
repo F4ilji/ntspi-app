@@ -8,90 +8,13 @@
 		<main class="flex-grow">
 			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
 
-				<div class="w-full h-[67px] fixed pointer-events-none" id="visor"></div>
-
-
-				<nav class="order-last hidden w-56 shrink-0 lg:block">
-					<div class="sticky top-[110px] h-[calc(100vh-110px)]">
-						<div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
-						<ul class="styled-scrollbar max-h-[70vh] space-y-1.5 overflow-y-auto py-2 text-sm">
-							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'education', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'education' }"
-									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-									 href="#education">Образование
-								</a>
-							</li>
-							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'awards', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'awards' }"
-									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-									 href="#awards">Награды</a>
-							</li>
-							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'professionalRetraining', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'professionalRetraining' }"
-									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-									 href="#professionalRetraining">Профессиональная переподготовка
-								</a>
-							</li>
-							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'professionalDevelopment', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'professionalDevelopment' }"
-									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-									 href="#professionalDevelopment">Повышение квалификации
-								</a>
-							</li>
-							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'professDisciplines', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'professDisciplines' }"
-									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-									 href="#professDisciplines">Преподаваемые дисциплины
-								</a>
-							</li>
-							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'workExperience', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'workExperience' }"
-									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-									 href="#workExperience">Стаж работы
-								</a>
-							</li>
-							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'attendedConferences', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'attendedConferences' }"
-									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-									 href="#attendedConferences">Участие в конференциях
-								</a>
-							</li>
-							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'participationScienceProjects', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'participationScienceProjects' }"
-									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-									 href="#participationScienceProjects">Участие в научных проектах
-								</a>
-							</li>
-							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'publications', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'publications' }"
-									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-									 href="#publications">Публикации
-								</a>
-							</li>
-							<li class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'other', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'other' }"
-									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-									 href="#other">Другое
-								</a>
-							</li>
-
-							<transition name="fade">
-								<li class="anchor-li flex items-center py-2 border-t" v-if="scrollTop" @click.prevent="scrollToTop">
-									<button class="bg-transperant text-gray-600 cursor-pointer hover:text-gray-900 duration-300 block px-2 leading-[1.6] rounded-md">К началу</button>
-									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[17px] text-gray-600">
-										<path stroke-linecap="round" stroke-linejoin="round" d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-									</svg>
-								</li>
-							</transition>
-						</ul>
-					</div>
-				</nav>
+				<PageNavigateLinks :header-navs="headerNavs" />
 
 				<section class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
 					<div class="w-full mx-auto sm:px-6 lg:px-8">
 
 						<PersonBreadcrumbs class="mb-4" :person-name="person.data.name" />
-						<!-- Profile -->
+
 						<div class="flex items-center gap-x-10 gap-y-4 flex-wrap">
 							<PersonAvatarBlock :photo="person.data.details.photo" />
 							<div class="grow">
@@ -146,167 +69,46 @@
 
 							</div>
 						</div>
-						<!-- End Profile -->
 
 						<div class="mt-10 sm:mt-14">
-							<h2 id="education" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
-								Направление подготовки
-							</h2>
-
-							<div class="grid grid-cols-1 sm:grid-cols-1 gap-3">
-								<div class="p-4 border border-gray-200 rounded-lg dark:border-neutral-700">
-									<h3 class="mb-1 text-xs text-gray-600 dark:text-neutral-400">
-										2012 - 2013
-									</h3>
-
-									<p class="font-semibold text-sm text-gray-800 dark:text-neutral-200">
-										{{ person.data.details.education }}
-									</p>
-
-									<p class="mt-1 text-sm text-gray-600 dark:text-neutral-400">
-										The University of Manchester
-									</p>
-								</div>
-
-							</div>
-
+							<EducationBlock v-if="person.data.details.education.length > 0" title="Направление подготовки" :educations="person.data.details.education" />
 						</div>
 
 						<div class="mt-8">
-							<h2 id="awards" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
-								Награды
-							</h2>
-							<ul class="list-disc ms-6 mt-3 space-y-1.5">
-								<template v-for="award in person.data.details.awards">
-									<li class="ps-1 text-sm text-gray-600 dark:text-neutral-400">
-										{{ award.item }}
-									</li>
-								</template>
-							</ul>
+							<ListBlock v-if="person.data.details.awards.length > 0" name-list="Награды" :list="person.data.details.awards" />
 						</div>
 
 						<div class="mt-8">
-							<h2 id="professionalRetraining" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
-								Профессиональная переподготовка
-							</h2>
-							<ul class="list-disc ms-6 mt-3 space-y-1.5">
-								<template v-for="professionalRetraining in person.data.details.professionalRetraining">
-									<li class="ps-1 text-sm text-gray-600 dark:text-neutral-400">
-										{{ professionalRetraining.item }}
-									</li>
-								</template>
-							</ul>
+							<ListBlock v-if="person.data.details.professionalRetraining.length > 0" name-list="Профессиональная переподготовка" :list="person.data.details.professionalRetraining" />
 						</div>
 
 						<div class="mt-8">
-							<h2 id="professionalDevelopment" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
-								Повышение квалификации
-							</h2>
-							<ul class="list-disc ms-6 mt-3 space-y-1.5">
-								<template v-for="professionalDevelopment in person.data.details.professionalDevelopment">
-									<li class="ps-1 text-sm text-gray-600 dark:text-neutral-400">
-										{{ professionalDevelopment.item }}
-									</li>
-								</template>
-							</ul>
+							<ListBlock v-if="person.data.details.professionalDevelopment.length > 0" name-list="Повышение квалификации" :list="person.data.details.professionalDevelopment" />
 						</div>
 
 						<div class="mt-8">
-							<h2 id="professDisciplines" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
-								Преподаваемые дисциплины
-							</h2>
-							<ul class="list-disc ms-6 mt-3 space-y-1.5">
-								<template v-for="professDiscipline in person.data.details.professDisciplines">
-									<li class="ps-1 text-sm text-gray-600 dark:text-neutral-400">
-										{{ professDiscipline.item }}
-									</li>
-								</template>
-							</ul>
+							<ListBlock v-if="person.data.details.professDisciplines.length > 0" name-list="Преподаваемые дисциплины" :list="person.data.details.professDisciplines" />
 						</div>
 
 						<div class="mt-8">
-							<h2 id="workExperience" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
-								Стаж
-							</h2>
-
-							<div class="grid grid-cols-1 sm:grid-cols-1 gap-3">
-								<p class="mt-1 text-sm text-gray-600 dark:text-neutral-400">
-									Стаж работы: {{ person.data.details.workExperience }}
-								</p>
-								<p class="mt-1 text-sm text-gray-600 dark:text-neutral-400">
-									Стаж по специальности: {{ person.data.details.workExperience }}
-								</p>
-							</div>
-
+							<WorkExperienceBlock v-if="person.data.details.workExperience" title="Стаж" :work-exp-by-prof="person.data.details.workExperience.byProf" :work-exp-total="person.data.details.workExperience.total" />
 						</div>
 
 						<div class="mt-8">
-							<h2 id="attendedConferences" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
-								Участие в конференциях
-							</h2>
-							<ul class="list-disc ms-6 mt-3 space-y-1.5">
-								<template v-for="attendedConference in person.data.details.attendedConferences">
-									<li class="ps-1 text-sm text-gray-600 dark:text-neutral-400">
-										{{ attendedConference.item }}
-									</li>
-								</template>
-							</ul>
+							<ListBlock v-if="person.data.details.attendedConferences.length > 0" name-list="Участие в конференциях" :list="person.data.details.attendedConferences" />
 						</div>
 
 						<div class="mt-8">
-							<h2 id="participationScienceProjects" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
-								Участие в научных проектах
-							</h2>
-							<ul class="list-disc ms-6 mt-3 space-y-1.5">
-								<template v-for="participationScienceProject in person.data.details.participationScienceProjects">
-									<li class="ps-1 text-sm text-gray-600 dark:text-neutral-400">
-										{{ participationScienceProject.item }}
-									</li>
-								</template>
-							</ul>
+							<ListBlock v-if="person.data.details.participationScienceProjects.length > 0" name-list="Участие в научных проектах" :list="person.data.details.participationScienceProjects" />
 						</div>
 
 						<div class="mt-8">
-							<h2 id="publications" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
-								Публикации
-							</h2>
-							<ul class="list-disc ms-6 mt-3 space-y-1.5">
-								<template v-for="publication in person.data.details.publications">
-									<li class="ps-1 text-sm text-gray-600 dark:text-neutral-400">
-										{{ publication.item }}
-									</li>
-								</template>
-							</ul>
+							<ListBlock v-if="person.data.details.publications.length > 0" name-list="Публикации" :list="person.data.details.publications" />
 						</div>
 
-
-
-
-
-						<!-- About -->
-
-						<!-- End About -->
-
-						<!-- Projects -->
-						<!-- End Projects -->
-
-						<!-- Testimonials -->
-						<!-- End Testimonials -->
-
-						<!-- Skills -->
-						<!-- End Skills -->
-
-						<!-- Work Experience -->
-						<!-- End Work Experience -->
-
-						<!-- Education -->
-						<!-- End Education -->
-
-						<!-- Articles -->
-						<!-- End Articles -->
-
-						<!-- Subscribe -->
-						<!-- End Subscribe -->
+						<div class="mt-8">
+							<OtherBlock name-list="Другое" :blocks="person.data.details.other" />
+						</div>
 					</div>
 				</section>
 			</div>
@@ -332,6 +134,12 @@ import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import AppHead from "@/Components/AppHead.vue";
 import PersonBreadcrumbs from "@/Components/BuilderUi/Persons/PersonBreadcrumbs.vue";
 import PersonAvatarBlock from "@/Components/BuilderUi/Persons/PersonAvatarBlock.vue";
+import PersonNavLink from "@/Components/BuilderUi/Persons/PersonNavLink.vue";
+import PageNavigateLinks from "@/Components/BuilderUi/Pages/PageNavigateLinks.vue";
+import EducationBlock from "@/Components/BuilderUi/Persons/Blocks/EducationBlock.vue";
+import ListBlock from "@/Components/BuilderUi/Persons/Blocks/ListBlock.vue";
+import WorkExperienceBlock from "@/Components/BuilderUi/Persons/Blocks/WorkExperienceBlock.vue";
+import OtherBlock from "@/Components/BuilderUi/Persons/Blocks/OtherBlock.vue";
 
 
 export default {
@@ -340,6 +148,7 @@ export default {
 		return {
 			scrollTop: false,
 			currentNavSection: null,
+			headerNavs: []
 		}
 	},
 	
@@ -353,6 +162,12 @@ export default {
 	},
 
 	components: {
+		OtherBlock,
+		WorkExperienceBlock,
+		ListBlock,
+		EducationBlock,
+		PageNavigateLinks,
+		PersonNavLink,
 		PersonAvatarBlock,
 		PersonBreadcrumbs,
 		AppHead,
@@ -427,10 +242,20 @@ export default {
 		scrollToTop() {
 			window.scrollTo(0, 0)
 		},
+		extractH2Headers() {
+			const h2Elements = document.querySelectorAll('h2'); // выбираем все h2 на странице
+			this.headerNavs = Array.from(h2Elements).map(h2 => ({
+				id: h2.id,           // id заголовка
+				text: h2.textContent // содержимое заголовка
+			}));
+		}
+
 
 
 	},
 	mounted() {
+		this.extractH2Headers();
+
 		window.addEventListener("scroll", this.onScroll)
 
 

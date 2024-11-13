@@ -32,7 +32,7 @@ class UpdateVkPost implements ShouldQueue
         readonly private string $text,
         readonly private array $images = [],
         readonly private int $post_id,
-        readonly private int $publish_date,
+        readonly private int|null $publish_date = null,
         )
     {}
 
