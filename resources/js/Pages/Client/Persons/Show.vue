@@ -91,7 +91,7 @@
 						</div>
 
 						<div class="mt-8">
-							<WorkExperienceBlock v-if="person.data.details.workExperience" title="Стаж" :work-exp-by-prof="person.data.details.workExperience.byProf" :work-exp-total="person.data.details.workExperience.total" />
+							<WorkExperienceBlock v-if="person.data.details.workExperience.total" title="Стаж" :work-exp-by-prof="person.data.details.workExperience.byProf" :work-exp-total="person.data.details.workExperience.total" />
 						</div>
 
 						<div class="mt-8">
@@ -107,7 +107,7 @@
 						</div>
 
 						<div class="mt-8">
-							<OtherBlock name-list="Другое" :blocks="person.data.details.other" />
+							<OtherBlock v-if="person.data.details.other.length > 0" name-list="Другое" :blocks="person.data.details.other" />
 						</div>
 					</div>
 				</section>
