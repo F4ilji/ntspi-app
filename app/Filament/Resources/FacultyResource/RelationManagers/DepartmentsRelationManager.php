@@ -1,11 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\UserResource\RelationManagers;
+namespace App\Filament\Resources\FacultyResource\RelationManagers;
 
-use App\Filament\Components\Forms\UserDetailForm;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -13,30 +10,33 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class UserDetailRelationManager extends RelationManager
+class DepartmentsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'userDetail';
-
-    protected static ?string $inverseRelationship = 'user';
+    protected static string $relationship = 'departments';
 
     public function form(Form $form): Form
     {
-        return UserDetailForm::getForm($form);
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('title')
+                    ->required()
+                    ->maxLength(255),
+            ]);
     }
-
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('user_id')
+            ->recordTitleAttribute('title')
             ->columns([
+                Tables\Columns\TextColumn::make('title'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->visible(!$this->ownerRecord->userDetail()->exists()),
-                ])
+                Tables\Actions\CreateAction::make(),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
@@ -47,5 +47,4 @@ class UserDetailRelationManager extends RelationManager
                 ]),
             ]);
     }
-
 }

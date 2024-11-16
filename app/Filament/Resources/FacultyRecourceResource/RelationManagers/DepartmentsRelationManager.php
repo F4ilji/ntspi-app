@@ -24,6 +24,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
@@ -55,6 +56,10 @@ class DepartmentsRelationManager extends RelationManager
                                             }),
                                         TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
                                         Toggle::make('is_active')->default(true)->label('Активный факультет')->inline(false),
+                                        Forms\Components\Select::make('faculty_id')
+                                            ->options(Faculty::all()->pluck('title', 'id'))
+                                            ->label('Факультет')
+                                            ->required(),
                                     ]),
                                 Tabs\Tab::make('Описание факультета')
                                     ->schema([
@@ -434,8 +439,10 @@ class DepartmentsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('title')
             ->columns([
-                Tables\Columns\TextColumn::make('title')->label('Заголовок'),
-            ])
+                TextColumn::make('id')->label('ID')->sortable(),
+                TextColumn::make('title')->label('Название')->sortable()->searchable(),
+                TextColumn::make('created_at')->label('Дата создания')->sortable(),
+                Tables\Columns\ToggleColumn::make('is_active')->label('Активно')->sortable(),            ])
             ->filters([
                 //
             ])

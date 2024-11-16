@@ -23,6 +23,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
@@ -182,8 +183,10 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')
-                ->searchable(),
+                TextColumn::make('id')->label('ID')->sortable(),
+                TextColumn::make('title')->label('Название')->sortable()->searchable(),
+                TextColumn::make('event_date_start')->label('Начало мероприятия')->sortable(),
+                TextColumn::make('created_at')->label('Дата создания')->sortable(),
             ])
             ->filters([
                 //

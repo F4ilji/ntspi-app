@@ -27,6 +27,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
@@ -58,13 +59,15 @@ class DepartmentResource extends Resource
                             ->tabs([
                                 Tabs\Tab::make('Основная информация')
                                     ->schema([
-                                        TextInput::make('title')->label('Название факультета')->required()
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
-                                                $set('slug', Str::slug($state));
-                                                $set('seo.title', $state);
-                                            }),
-                                        TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
+                                        Forms\Components\Grid::make()->schema([
+                                            TextInput::make('title')->label('Название факультета')->required()
+                                                ->live(onBlur: true)
+                                                ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
+                                                    $set('slug', Str::slug($state));
+                                                    $set('seo.title', $state);
+                                                }),
+                                            TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
+                                        ]),
                                         Toggle::make('is_active')->default(true)->label('Активный факультет')->inline(false),
                                         Forms\Components\Select::make('faculty_id')
                                             ->options(Faculty::all()->pluck('title', 'id'))
@@ -452,8 +455,11 @@ class DepartmentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')->label('Название'),
-                Tables\Columns\TextColumn::make('faculty.title')->label('Факультет')->words(2)
+                TextColumn::make('id')->label('ID')->sortable(),
+                TextColumn::make('title')->label('Название')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('faculty.title')->label('Факультет')->words(2),
+                TextColumn::make('created_at')->label('Дата создания')->sortable(),
+                Tables\Columns\ToggleColumn::make('is_active')->label('Активно')->sortable(),
             ])
             ->filters([
                 //

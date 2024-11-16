@@ -54,9 +54,9 @@ class CustomFormResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title'),
-                Tables\Columns\TextColumn::make('form_id'),
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('title')->label('Название')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('form_id')->label('Индефикатор формы'),
+                Tables\Columns\TextColumn::make('status')->label('Статус')->sortable(),
             ])
             ->filters([
                 //

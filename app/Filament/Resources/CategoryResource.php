@@ -6,12 +6,16 @@ use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class CategoryResource extends Resource
 {
@@ -33,15 +37,28 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')->required()->label('Название'),
-            ]);
+                Forms\Components\Section::make()->schema([
+                    Forms\Components\Grid::make(2)->schema([
+                        TextInput::make('title')->label('Заголовок')->required()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
+                                $set('slug', Str::slug($state));
+                            }),
+                        TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
+                    ]),
+                    Toggle::make('is_active')->default(true)->label('Активно')->inline(false),
+                ]),
+                ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('id')->label('ID')->sortable(),
+                TextColumn::make('title')->label('Название')->sortable()->searchable(),
+                TextColumn::make('created_at')->label('Дата создания')->sortable(),
+                Tables\Columns\ToggleColumn::make('is_active')->label('Активно')->sortable(),
             ])
             ->filters([
                 //

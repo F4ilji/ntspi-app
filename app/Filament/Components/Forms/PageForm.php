@@ -66,11 +66,11 @@ class PageForm
                                 Forms\Components\Grid::make(2)->schema([
                                     TextInput::make('title')->label('Заголовок')->required()
                                         ->live(onBlur: true)
-                                        ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set) {
+                                        ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
                                             $set('slug', Str::slug($state));
                                             $set('path', Str::slug($state));
                                         }),
-                                    TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->required()
+                                    TextInput::make('slug')->label('Текстовый идентификатор страницы')->unique(ignoreRecord: true)->required()
                                         ->live(onBlur: true)
                                         ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set, $get) {
                                             $set('path', Str::slug($state));
@@ -98,7 +98,7 @@ class PageForm
                                 ContentBuilderItem::getItem('content')
                             ]),
                             Forms\Components\Tabs\Tab::make('Настройки')->schema([
-                                Select::make('template')->options(self::getPageTemplates())->required(),
+                                Select::make('template')->label('Шаблон')->options(self::getPageTemplates())->required(),
                             ]),
                         ]),
 

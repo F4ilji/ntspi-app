@@ -16,7 +16,7 @@
 						<PersonBreadcrumbs class="mb-4" :person-name="person.data.name" />
 
 						<div class="flex items-center gap-x-10 gap-y-4 flex-wrap">
-							<PersonAvatarBlock :photo="person.data.details.photo" />
+							<PersonAvatarBlock v-if="person.data.details.photo" :photo="person.data.details.photo" />
 							<div class="grow">
 								<h1 class="text-2xl font-medium text-gray-800 dark:text-neutral-200">
 									{{ person.data.name }}

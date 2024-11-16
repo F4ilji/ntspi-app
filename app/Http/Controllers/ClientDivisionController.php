@@ -18,7 +18,7 @@ class ClientDivisionController extends Controller
     public function show(string $slug)
     {
         $divisions = DivisionResource::collection(Division::query()->where('is_active', true)->get());
-        $division = new DivisionResource(Division::with('workers.userDetail')->where('is_active', true)->where('slug', $slug)->first());
+        $division = new DivisionResource(Division::with('workers.userDetail')->where('is_active', true)->where('slug', $slug)->firstOrFail());
         $seo = $division->seo;
         return Inertia::render('Client/Divisions/Show', compact('divisions', 'division', 'seo'));
     }

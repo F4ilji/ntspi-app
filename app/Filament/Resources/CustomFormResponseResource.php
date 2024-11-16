@@ -17,7 +17,7 @@ class CustomFormResponseResource extends Resource
 {
     public static ?string $label = 'Форма';
     protected static ?string $pluralLabel = 'Ответы на формы';
-    protected static ?string $navigationParentItem = 'Пользовательские Формы';
+    protected static ?string $navigationParentItem = 'nobody';
 
     protected static ?string $model = CustomFormResponse::class;
 

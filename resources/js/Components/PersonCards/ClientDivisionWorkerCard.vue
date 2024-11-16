@@ -2,7 +2,7 @@
 
 	<div class="flex flex-col rounded-xl p-4 md:p-6 bg-white border border-gray-200 dark:bg-slate-900 dark:border-gray-700">
 		<div class="flex items-center gap-y-4 gap-x-4 md:flex-nowrap">
-			<img @click="toggler = !toggler" loading="lazy" class="rounded-xl md:w-[150px]" :src="'/storage/' + worker.photo" alt="Image Description">
+			<img v-if="worker.photo" @click="toggler = !toggler" loading="lazy" class="rounded-xl md:w-[150px]" :src="'/storage/' + worker.photo" alt="Image Description">
 			<div class="grow">
 				<Link :href="route('client.person.show', worker.slug)" class="font-medium text-gray-800 hover:text-gray-500 underline">
 					{{ worker.administrativePosition }}: {{ worker.name }}

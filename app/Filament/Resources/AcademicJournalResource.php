@@ -423,15 +423,15 @@ class AcademicJournalResource extends Resource
                         Tabs\Tab::make('Редакция')
                             ->schema([
                                 Forms\Components\Section::make('Главный редактор')->schema([
-                                    Forms\Components\Repeater::make('chief_editor')->schema([
+                                    Forms\Components\Repeater::make('chief_editor')->label('')->schema([
                                         TextInput::make('name')->label('Имя'),
                                         TextInput::make('academicTitle')->label('Ученная степень'),
                                         TextInput::make('position')->label('Должность'),
                                         TextInput::make('institution')->label('Учереждение'),
-                                    ])->maxItems(1),
+                                    ])->maxItems(1)->reorderable(false),
                                 ]),
                                 Forms\Components\Section::make('Редакторы')->schema([
-                                    Forms\Components\Repeater::make('editors')->schema([
+                                    Forms\Components\Repeater::make('editors')->label('')->schema([
                                         TextInput::make('name')->label('Имя'),
                                         TextInput::make('academicTitle')->label('Ученная степень'),
                                         TextInput::make('position')->label('Должность'),

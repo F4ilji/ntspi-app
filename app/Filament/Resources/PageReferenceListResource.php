@@ -18,6 +18,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -26,6 +27,11 @@ use Illuminate\Support\Str;
 class PageReferenceListResource extends Resource
 {
     protected static ?string $model = PageReferenceList::class;
+
+    public static ?string $label = 'Список ресурсов';
+
+    protected static ?string $pluralLabel = 'Списки ресурсов';
+
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -49,9 +55,9 @@ class PageReferenceListResource extends Resource
                                         Toggle::make('is_active')->default(true)->label('Активный ресурс')->inline(false),
                                     ])
                                 ]),
-                            Tabs\Tab::make('Содержание новости')
+                            Tabs\Tab::make('Содержание ресурса')
                                 ->schema([
-                                    Repeater::make('content')->schema([
+                                    Repeater::make('content')->label('Ресурсы')->schema([
                                         Forms\Components\Section::make('Быстрая настройка ресурса')->schema([
                                             Forms\Components\Grid::make()->schema([
                                                 Forms\Components\Select::make('model_select')
@@ -114,9 +120,9 @@ class PageReferenceListResource extends Resource
                                                     }),
                                             ]),
                                         ]),
-                                        TextInput::make('title')->label('Title')->required(),
+                                        TextInput::make('title')->label('Заголовок ресурса')->required(),
                                         FileUpload::make('image')
-                                            ->label('Изображение')
+                                            ->label('Изображение предпросмотра')
                                             ->image()
                                             ->optimize('webp')
                                             ->resize(50)
@@ -144,7 +150,10 @@ class PageReferenceListResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('id')->label('ID')->sortable(),
+                TextColumn::make('title')->label('Название')->sortable()->searchable(),
+                TextColumn::make('created_at')->label('Дата создания')->sortable(),
+                Tables\Columns\ToggleColumn::make('is_active')->label('Активно')->sortable(),
             ])
             ->filters([
                 //

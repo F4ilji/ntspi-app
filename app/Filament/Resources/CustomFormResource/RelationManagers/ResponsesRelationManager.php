@@ -190,6 +190,7 @@ class ResponsesRelationManager extends RelationManager
         return [
             Tables\Columns\TextColumn::make('id')->sortable(),
             Tables\Columns\ToggleColumn::make('checked')->label('Просмотрено'),
+            Tables\Columns\TextColumn::make('created_at')->label('Врямя создания')->sortable(),
         ];
     }
 

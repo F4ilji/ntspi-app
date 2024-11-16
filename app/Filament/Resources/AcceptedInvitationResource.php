@@ -20,6 +20,11 @@ class AcceptedInvitationResource extends Resource implements HasShieldPermission
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+
+    public static ?string $label = 'Принятое приглашение';
+
+    protected static ?string $pluralLabel = 'Принятные приглашения';
+
     public static function form(Form $form): Form
     {
         return $form

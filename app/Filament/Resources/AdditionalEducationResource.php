@@ -30,6 +30,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
@@ -65,17 +66,17 @@ class AdditionalEducationResource extends Resource
                                             }),
                                         TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
 
-                                        Forms\Components\Select::make('category_id')->required()
+                                        Forms\Components\Select::make('category_id')->required()->label('Категория')
                                             ->options(AdditionalEducationCategory::where('is_active', true)->pluck('title', 'id'))
                                     ]),
-                                    Forms\Components\TextInput::make('target_group')->required()->columnSpanFull(),
-                                    Forms\Components\TextInput::make('qualification')->required()->columnSpanFull(),
+                                    Forms\Components\TextInput::make('target_group')->required()->columnSpanFull()->label('Целевая аудитория'),
+                                    Forms\Components\TextInput::make('qualification')->required()->columnSpanFull()->label('Присваиваемая квалификация'),
                                     Forms\Components\Grid::make('2')->schema([
-                                        Forms\Components\TextInput::make('price')->required()->integer(),
-                                        Forms\Components\TextInput::make('learning_time')->required()->integer(),
+                                        Forms\Components\TextInput::make('price')->required()->integer()->label('Стоимость'),
+                                        Forms\Components\TextInput::make('learning_time')->required()->integer()->label('Объем обучения'),
                                     ]),
-                                    Forms\Components\Select::make('form_education')->required()->options(FormEducation::class),
-                                    Forms\Components\Toggle::make('is_active')->columnSpanFull()->inline(false)->default(true),
+                                    Forms\Components\Select::make('form_education')->label('Форма обучения')->required()->options(FormEducation::class),
+                                    Forms\Components\Toggle::make('is_active')->label('Активно')->columnSpanFull()->inline(false)->default(true),
                                 ]),
                             Tabs\Tab::make('Контент')
                                 ->schema([
@@ -446,9 +447,11 @@ class AdditionalEducationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id'),
-                Tables\Columns\TextColumn::make('title')->searchable()->sortable(),
-                Tables\Columns\ToggleColumn::make('is_active'),
+                TextColumn::make('id')->label('ID')->sortable(),
+                TextColumn::make('title')->label('Название')->sortable()->searchable(),
+                TextColumn::make('created_at')->label('Дата создания')->sortable(),
+                Tables\Columns\BadgeColumn::make('category.title')->label('Категория')->sortable(),
+                Tables\Columns\ToggleColumn::make('is_active')->label('Активно')->sortable(),
             ])
             ->filters([
                 //

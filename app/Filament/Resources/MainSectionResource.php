@@ -25,6 +25,7 @@ class MainSectionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
     public static ?string $label = 'Главный раздел';
+
     public static ?string $pluralLabel = 'Главные разделы';
 
 
@@ -40,12 +41,16 @@ class MainSectionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')->label('Название раздела')->required()
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set) {
-                        $set('slug', Str::slug($state));
-                    }),
-                TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
+                Forms\Components\Section::make()->schema([
+                    Forms\Components\Grid::make()->schema([
+                        Forms\Components\TextInput::make('title')->label('Название раздела')->required()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
+                                $set('slug', Str::slug($state));
+                            }),
+                        TextInput::make('slug')->label('Текстовый идентификатор раздела')->unique(ignoreRecord: true)->readOnly()->required(),
+                    ]),
+                ]),
             ]);
     }
 

@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -28,10 +29,12 @@ class EducationalGroupResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Grid::make(2)->schema([
-                    Forms\Components\TextInput::make('title')->label('Название группы')->required(),
-                    Forms\Components\Select::make('faculty_id')->label('Факультет')->required()
-                    ->options(Faculty::all()->pluck('title', 'id'))
+                Forms\Components\Section::make()->schema([
+                    Forms\Components\Grid::make(2)->schema([
+                        Forms\Components\TextInput::make('title')->label('Название группы')->required(),
+                        Forms\Components\Select::make('faculty_id')->label('Факультет')->required()
+                            ->options(Faculty::all()->pluck('title', 'id'))
+                    ]),
                 ]),
             ]);
     }
@@ -40,9 +43,10 @@ class EducationalGroupResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->label('ID'),
-                Tables\Columns\TextColumn::make('title')->label('Название'),
-                Tables\Columns\TextColumn::make('faculty.title')->label('Факультет'),
+                TextColumn::make('id')->label('ID')->sortable(),
+                TextColumn::make('title')->label('Название')->sortable()->searchable(),
+                TextColumn::make('created_at')->label('Дата создания')->sortable(),
+                Tables\Columns\BadgeColumn::make('faculty.title')->label('Категория')->sortable(),
             ])
             ->filters([
                 //

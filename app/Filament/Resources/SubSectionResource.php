@@ -24,6 +24,8 @@ class SubSectionResource extends Resource
 
     protected static ?string $pluralLabel = 'Подразделы';
 
+    public static ?string $label = 'Подраздел';
+
     protected static ?string $navigationGroup = 'Структура приложения';
 
 
@@ -31,12 +33,17 @@ class SubSectionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')->label('Название подраздела')->required()
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set) {
-                        $set('slug', Str::slug($state));
-                    }),
-                TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
+
+                Forms\Components\Section::make()->schema([
+                    Forms\Components\Grid::make()->schema([
+                        Forms\Components\TextInput::make('title')->label('Название подраздела')->required()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set) {
+                                $set('slug', Str::slug($state));
+                            }),
+                        TextInput::make('slug')->label('Текстовый идентификатор подраздела')->unique(ignoreRecord: true)->readOnly()->required(),
+                    ]),
+                ]),
 
 //                Forms\Components\Select::make('page_ids')->options(
 //                    Page::query()->when(function ($query) {

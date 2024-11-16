@@ -6,12 +6,15 @@ use App\Filament\Resources\EventCategoryResource\Pages;
 use App\Filament\Resources\EventCategoryResource\RelationManagers;
 use App\Models\EventCategory;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class EventCategoryResource extends Resource
 {
@@ -29,7 +32,16 @@ class EventCategoryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')->required()->label('Название'),
+                Forms\Components\Section::make()->schema([
+                    Forms\Components\Grid::make()->schema([
+                        Forms\Components\TextInput::make('title')->label('Название категории')->required()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
+                                $set('slug', Str::slug($state));
+                            }),
+                        TextInput::make('slug')->label('Текстовый идентификатор категории')->unique(ignoreRecord: true)->readOnly()->required(),
+                    ]),
+                ]),
             ]);
     }
 
@@ -37,7 +49,9 @@ class EventCategoryResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('id')->label('ID')->sortable(),
+                TextColumn::make('title')->label('Название')->sortable()->searchable(),
+                TextColumn::make('created_at')->label('Дата создания')->sortable(),
             ])
             ->filters([
                 //

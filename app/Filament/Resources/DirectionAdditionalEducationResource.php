@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -31,14 +32,18 @@ class DirectionAdditionalEducationResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')->label('Заголовок')->required()
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
-                        $set('slug', Str::slug($state));
-                        $set('seo.title', $state);
-                    }),
-                TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
-                Forms\Components\Toggle::make('is_active')->columnSpanFull()->inline(false)->default(true),
+                Forms\Components\Section::make()->schema([
+                    Forms\Components\Grid::make()->schema([
+                        TextInput::make('title')->label('Заголовок')->required()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
+                                $set('slug', Str::slug($state));
+                                $set('seo.title', $state);
+                            }),
+                        TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
+                    ]),
+                    Forms\Components\Toggle::make('is_active')->label('Активно')->columnSpanFull()->inline(false)->default(true),
+                ]),
             ]);
     }
 
@@ -46,7 +51,10 @@ class DirectionAdditionalEducationResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('id')->label('ID')->sortable(),
+                TextColumn::make('title')->label('Название')->sortable()->searchable(),
+                TextColumn::make('created_at')->label('Дата создания')->sortable(),
+                Tables\Columns\ToggleColumn::make('is_active')->label('Активно')->sortable(),
             ])
             ->filters([
                 //
