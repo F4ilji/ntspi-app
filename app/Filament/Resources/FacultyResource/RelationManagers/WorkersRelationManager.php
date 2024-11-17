@@ -23,6 +23,9 @@ class WorkersRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('position')->label('Должность')->required(),
+                Forms\Components\TextInput::make('service_email')->label('Служебная почта'),
+                Forms\Components\TextInput::make('service_phone')->label('Служебный телефон'),
+                Forms\Components\TextInput::make('cabinet')->label('Кабинет'),
             ]);
     }
 
@@ -45,6 +48,9 @@ class WorkersRelationManager extends RelationManager
                     ->form(fn (AttachAction $action): array => [
                         $action->getRecordSelect()->preload(),
                         Forms\Components\TextInput::make('position')->label('Должность')->required(),
+                        Forms\Components\TextInput::make('service_email')->label('Служебная почта'),
+                        Forms\Components\TextInput::make('service_phone')->label('Служебный телефон'),
+                        Forms\Components\TextInput::make('cabinet')->label('Кабинет'),
                     ])
             ])
             ->actions([

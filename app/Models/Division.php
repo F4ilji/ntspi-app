@@ -22,6 +22,6 @@ class Division extends Model
 
     public function workers()
     {
-        return $this->belongsToMany(User::class, 'division_user')->withPivot(['administrativePosition', 'sort']);
+        return $this->belongsToMany(User::class, 'division_user')->withPivot(['administrativePosition', 'sort', 'service_email', 'service_phone', 'cabinet']);
     }
 }

@@ -79,17 +79,17 @@ class UserDetailForm
                                     Forms\Components\TextInput::make('year')->label('Года обучения')->string()->required(),
                                     Forms\Components\TextInput::make('content')->label('Общая информация')->string()->required(),
                                     Forms\Components\TextInput::make('institution')->label('Учебное заведение')->string()->required()
-                                ])->label('Образование'),
+                                ])->label('Образование')->defaultItems(0),
                                 Forms\Components\Repeater::make('professionalRetraining')->schema([
                                     Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Профессиональная переподготовка'),
+                                ])->label('Профессиональная переподготовка')->defaultItems(0),
                                 Forms\Components\Repeater::make('professionalDevelopment')
                                     ->schema([
                                         Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                    ])->label('Повышение квалификации'),
+                                    ])->label('Повышение квалификации')->defaultItems(0),
                                 Forms\Components\Repeater::make('awards')->schema([
                                     Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Награды'),
+                                ])->label('Награды')->defaultItems(0),
                             ]),
                         Tabs\Tab::make('Преподавание')
                             ->schema([
@@ -103,19 +103,19 @@ class UserDetailForm
                                 ]),
                                 Forms\Components\Repeater::make('professDisciplines')->schema([
                                     Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Преподаваемые дисциплины'),
+                                ])->label('Преподаваемые дисциплины')->defaultItems(0),
                             ]),
                         Tabs\Tab::make('Научная деятельность')
                             ->schema([
                                 Forms\Components\Repeater::make('attendedConferences')->schema([
                                     Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Участие в конференциях'),
+                                ])->label('Участие в конференциях')->defaultItems(0),
                                 Forms\Components\Repeater::make('participationScienceProjects')->schema([
                                     Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Участие в научных проектах'),
+                                ])->label('Участие в научных проектах')->defaultItems(0),
                                 Forms\Components\Repeater::make('publications')->schema([
                                     Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Публикации'),
+                                ])->label('Публикации')->defaultItems(0),
                             ]),
                         Tabs\Tab::make('Другое')
                             ->schema([

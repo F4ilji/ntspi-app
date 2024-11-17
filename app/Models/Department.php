@@ -27,7 +27,7 @@ class Department extends Model
 
     public function workers()
     {
-        return $this->belongsToMany(User::class, 'workers_departments')->withPivot(['position']);
+        return $this->belongsToMany(User::class, 'workers_departments')->withPivot(['position', 'sort', 'service_email', 'service_phone', 'cabinet']);
     }
 
     public function programs()
@@ -37,6 +37,6 @@ class Department extends Model
 
     public function teachers()
     {
-        return $this->belongsToMany(User::class, 'teachers_departments')->withPivot(['teaching_position']);
+        return $this->belongsToMany(User::class, 'teachers_departments')->withPivot(['teaching_position', 'sort', 'service_email', 'service_phone', 'cabinet']);
     }
 }

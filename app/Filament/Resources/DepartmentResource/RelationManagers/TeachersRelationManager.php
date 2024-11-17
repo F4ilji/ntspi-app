@@ -25,9 +25,10 @@ class TeachersRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('teaching_position')->label('Преподавательская должность')->required(),
+                Forms\Components\TextInput::make('service_email')->label('Служебная почта'),
+                Forms\Components\TextInput::make('service_phone')->label('Служебный телефон'),
+                Forms\Components\TextInput::make('cabinet')->label('Кабинет'),
             ]);
     }
 
@@ -46,6 +47,9 @@ class TeachersRelationManager extends RelationManager
                     ->form(fn (AttachAction $action): array => [
                         $action->getRecordSelect(),
                         Forms\Components\TextInput::make('teaching_position')->label('Преподавательская должность')->required(),
+                        Forms\Components\TextInput::make('service_email')->label('Служебная почта'),
+                        Forms\Components\TextInput::make('service_phone')->label('Служебный телефон'),
+                        Forms\Components\TextInput::make('cabinet')->label('Кабинет'),
                     ])
             ])
             ->actions([
