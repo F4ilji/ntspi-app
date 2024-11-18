@@ -19,8 +19,9 @@ class ClientPersonDepartmentTeachPreviewResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'academicTitle' => $this->userDetail->academicTitle,
-            'contactPhone' => $this->userDetail->contactPhone,
-            'contactEmail' => $this->userDetail->contactEmail,
+            'contactPhone' => $this->pivot->service_phone,
+            'contactEmail' => $this->pivot->service_email,
+            'cabinet' => $this->pivot->cabinet,
             'photo' => $this->userDetail->photo,
             'position' => $this->pivot->teaching_position,
         ];

@@ -10,14 +10,14 @@
 				<p v-if="worker.academicTitle !== null" class="text-xs text-gray-500 mt-2">
 					Ученая степень: {{ worker.academicTitle }}
 				</p>
-				<p class="text-xs text-gray-500 mt-2">
+				<p v-if="worker.contactPhone" class="text-xs text-gray-500 mt-2">
 					Контактный телефон: {{ worker.contactPhone }}
 				</p>
-				<p class="text-xs text-gray-500 mt-2">
+				<p v-if="worker.contactEmail" class="text-xs text-gray-500 mt-2">
 					Электронная почта: {{ worker.contactEmail }}
 				</p>
-				<p class="text-xs text-gray-500 mt-2">
-					Кабинет: 207В
+				<p v-if="worker.cabinet" class="text-xs text-gray-500 mt-2">
+					Кабинет: {{ worker.cabinet }}
 				</p>
 			</div>
 		</div>
