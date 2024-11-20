@@ -20,6 +20,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
+use Vormkracht10\TwoFactorAuth\TwoFactorAuthPlugin;
 
 class AdminPanelProvider extends PanelProvider
 
@@ -64,6 +65,7 @@ class AdminPanelProvider extends PanelProvider
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
                 FilamentSpatieLaravelBackupPlugin::make()->usingPage(Backups::class),
                 CheckpointPlugin::make(),
+                TwoFactorAuthPlugin::make()->forced(),
             ]);
     }
 }

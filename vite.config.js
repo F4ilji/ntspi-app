@@ -9,6 +9,9 @@ export default defineConfig({
     plugins: [
         laravel({
             input: 'resources/js/app.js',
+            content: [
+                "./vendor/vormkracht10/filament-2fa/resources/**.*.blade.php",
+            ],
             ssr: 'resources/js/ssr.js',
             refresh: true,
         }),
