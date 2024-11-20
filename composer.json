@@ -23,6 +23,7 @@
         "nesbot/carbon": "^2.71",
         "protonemedia/laravel-cross-eloquent-search": "^3.4",
         "pxlrbt/filament-excel": "^2.3",
+        "shuvroroy/filament-spatie-laravel-backup": "^2.2",
         "spatie/laravel-sitemap": "^7.2",
         "symfony/filesystem": "^6.3",
         "tightenco/ziggy": "^1.0",
