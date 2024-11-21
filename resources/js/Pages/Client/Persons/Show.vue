@@ -103,7 +103,7 @@
 						</div>
 
 						<div class="mt-8">
-							<ListBlock v-if="person.data.details.publications.length > 0" name-list="Публикации" :list="person.data.details.publications" />
+							<PublicationBlock v-if="person.data.details.publications.length > 0" name-list="Публикации" :list="person.data.details.publications" />
 						</div>
 
 						<div class="mt-8">
@@ -140,6 +140,7 @@ import EducationBlock from "@/Components/BuilderUi/Persons/Blocks/EducationBlock
 import ListBlock from "@/Components/BuilderUi/Persons/Blocks/ListBlock.vue";
 import WorkExperienceBlock from "@/Components/BuilderUi/Persons/Blocks/WorkExperienceBlock.vue";
 import OtherBlock from "@/Components/BuilderUi/Persons/Blocks/OtherBlock.vue";
+import PublicationBlock from "@/Components/BuilderUi/Persons/Blocks/PublicationBlock.vue";
 
 
 export default {
@@ -162,6 +163,7 @@ export default {
 	},
 
 	components: {
+		PublicationBlock,
 		OtherBlock,
 		WorkExperienceBlock,
 		ListBlock,

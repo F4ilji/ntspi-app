@@ -17,6 +17,9 @@ class UserDetailRelationManager extends RelationManager
 {
     protected static string $relationship = 'userDetail';
 
+    protected static ?string $title = 'Детальная информация';
+
+
     protected static ?string $inverseRelationship = 'user';
 
     public function form(Form $form): Form

@@ -114,7 +114,10 @@ class UserDetailForm
                                     Forms\Components\TextInput::make('item')->label('')->string()->required()
                                 ])->label('Участие в научных проектах')->defaultItems(0),
                                 Forms\Components\Repeater::make('publications')->schema([
-                                    Forms\Components\TextInput::make('item')->label('')->string()->required()
+                                    Forms\Components\TextInput::make('category_publication')->label('Категория публикаций')->string()->required(),
+                                    Forms\Components\Repeater::make('publication')->schema([
+                                        Forms\Components\TextInput::make('item')->label('')->string()->required()
+                                    ])->label('Публикации')->collapsed(),
                                 ])->label('Публикации')->defaultItems(0),
                             ]),
                         Tabs\Tab::make('Другое')
