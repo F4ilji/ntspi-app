@@ -8,7 +8,6 @@ services:
     ports:
       - "80:80"
     container_name: ntspi-nginx
-    restart: always
     depends_on:
       - app
 
@@ -23,17 +22,17 @@ services:
     ports:
       - '5173'
     command: >
-      sh -c "php artisan inertia:start-ssr & php-fpm & php artisan queue:work --tries=3 --timeout=90"
+      sh -c "php artisan inertia:start-ssr & php-fpm"
 
-#  php-queue:
-#    restart: always
-#    build:
-#      context: .
-#      dockerfile: _docker/app/Dockerfile
-#    volumes:
-#      - ./:/var/www
-#    container_name: ntspi-php-queue
-#    command: php artisan queue:work --tries=3 --timeout=90 # Настройте параметры по необходимости
+  php-queue:
+    restart: always
+    build:
+      context: .
+      dockerfile: _docker/app/Dockerfile
+    volumes:
+      - ./:/var/www
+    container_name: ntspi-php-queue
+    command: php artisan queue:work --tries=3 --timeout=90 # Настройте параметры по необходимости
 
   db:
     image: mysql:8.0
