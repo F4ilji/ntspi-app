@@ -17,7 +17,6 @@
         "inertiajs/inertia-laravel": "^1.3",
         "intervention/image": "^2.7",
         "joshembling/image-optimizer": "^1.4",
-        "laravel/fortify": "^1.24",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
@@ -30,8 +29,8 @@
         "symfony/filesystem": "^6.3",
         "tightenco/ziggy": "^1.0",
         "vkcom/vk-php-sdk": "^5.131",
-        "vormkracht10/filament-2fa": "^2.0",
-        "xvladqt/faker-lorem-flickr": "^1.0"
+        "xvladqt/faker-lorem-flickr": "^1.0",
+      "ext-zip": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

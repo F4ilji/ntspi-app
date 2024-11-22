@@ -65,7 +65,6 @@ class AdminPanelProvider extends PanelProvider
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
                 FilamentSpatieLaravelBackupPlugin::make()->usingPage(Backups::class),
                 CheckpointPlugin::make(),
-                TwoFactorAuthPlugin::make()->forced(),
             ]);
     }
 }
