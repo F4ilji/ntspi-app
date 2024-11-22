@@ -33,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         Model::preventLazyLoading(!app()->isProduction());
 //        URL::forceScheme('https');
         self::registerFilamentNavigationGroups();
+        $this->loadViewsFrom(__DIR__.'/path/to/views', 'checkpoint');
     }
 
 
