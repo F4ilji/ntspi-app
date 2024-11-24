@@ -63,7 +63,9 @@
                           >
                             <span>
                               <div class="flex items-center gap-3">
-                                <span v-if="post" class="truncate text-sm">{{ textLimit(post.authors[0], 20) }}</span>
+																<span v-if="post && post.authors && post.authors.length > 0" class="truncate text-sm">
+  																{{ textLimit(post.authors[0], 20) }}
+																</span>
                               </div>
                             </span>
                             <span class="text-xs text-gray-300 dark:text-gray-600"
