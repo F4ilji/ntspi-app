@@ -31,58 +31,77 @@ class ImportApiDataPost implements ShouldQueue
     public function handle()
     {
         try {
+            // Получаем первую страницу данных
             $response = Http::get('https://crawdad-fresh-bream.ngrok-free.app/api/posts')->object();
+            $last_page = $response->last_page;
+            Log::info('Last page: ' . $last_page);
 
-            foreach ($response as $item) {
-                try {
-                    $postResponse = Http::get('https://crawdad-fresh-bream.ngrok-free.app/api/posts/' . $item->ID)->object();
+            // Проходим по всем страницам
+            for ($page = 1; $page <= $last_page; $page++) {
+                $response = Http::get("https://crawdad-fresh-bream.ngrok-free.app/api/posts?page=$page")->object();
+                $results = $response->data;
 
-                    // Проверка на наличие данных
-                    if (!isset($postResponse->post)) {
-                        Log::error('Post data not found for ID: ' . $item->ID);
-                        continue;
-                    }
+                // Обрабатываем каждую запись
+                foreach ($results as $post) {
+                    Log::info('Processing post ID: ' . $post->ID);
 
-                    $postData = $postResponse->post;
-                    $images = $postResponse->images ?? []; // Обработка отсутствия изображений
+                    try {
+                        // Получаем массив изображений
+                        $images = $post->images ?? []; // Обработка отсутствия изображений
+                        $imagePaths = [];
 
-                    // Обработка изображения
-                    $imagePaths = [];
-                    foreach ($images as $image) {
-                        $imagePaths[] = 'upload/' . $image->SUBDIR . '/' . $image->FILE_NAME;
-                    }
+                        // Проверяем, есть ли изображения
+                        if (empty($images)) {
+                            Log::warning('No images found for post ID: ' . $post->ID);
+                        } else {
+                            // Проходимся по массиву изображений
+                            foreach ($images as $image) {
+                                // Проверяем наличие необходимых свойств
+                                if (isset($image->SUBDIR) && isset($image->FILE_NAME)) {
+                                    $imagePaths[] = 'upload/' . $image->SUBDIR . '/' . $image->FILE_NAME;
+                                } else {
+                                    Log::warning('Image data is incomplete for post ID: ' . $post->ID);
+                                }
+                            }
+                        }
 
-                    $content = strip_tags($postData->DETAIL_TEXT, '<a>');
-                    $contentData = [
-                        [
-                            'type' => 'paragraph',
-                            'data' => [
-                                'content' => $content,
+                        // Логируем пути к изображениям для отладки
+                        Log::info('Image paths for post ID ' . $post->ID . ': ' . json_encode($imagePaths));
+
+                        // Обработка контента поста
+                        $content = strip_tags($post->DETAIL_TEXT, '<a>');
+                        $contentData = [
+                            [
+                                'type' => 'paragraph',
+                                'data' => [
+                                    'content' => $content,
+                                ],
                             ],
-                        ],
-                    ];
+                        ];
 
-                    $slug = $this->generateSlug($postData->NAME);
+                        // Генерация уникального slug
+                        $slug = $this->generateSlug($post->NAME);
 
-                    // Создание нового поста
-                    Post::create([
-                        'id' => $postData->ID,
-                        'title' => $postData->NAME,
-                        'slug' => $slug,
-                        'preview_text' => strip_tags($postData->PREVIEW_TEXT),
-                        'authors' => array('Без автора'),
-                        'content' => $contentData, // Преобразуем в JSON
-                        'status' => 'published',
-                        'images' => $imagePaths,
-                        'search_data' => $content, // Преобразуем в JSON
-                        'reading_time' => 2,
-                        'user_id' => 1,
-                        'publish_at' => $postData->DATE_CREATE,
-                        'created_at' => $postData->DATE_CREATE,
-                        'updated_at' => $postData->DATE_CREATE,
-                    ]);
-                } catch (\Exception $e) {
-                    Log::error('Error importing post ID: ' . $item->ID . ' - ' . $e->getMessage());
+                        // Создание нового поста
+                        Post::create([
+                            'id' => $post->ID,
+                            'title' => $post->NAME,
+                            'slug' => $slug,
+                            'preview_text' => strip_tags($post->PREVIEW_TEXT),
+                            'authors' => ['Без автора'],
+                            'content' => $contentData, // Преобразуем в JSON
+                            'status' => 'published',
+                            'images' => $imagePaths, // Сохраняем пути к изображениям
+                            'search_data' => $content, // Преобразуем в JSON
+                            'reading_time' => 2,
+                            'user_id' => 1,
+                            'publish_at' => $post->DATE_CREATE,
+                            'created_at' => $post->DATE_CREATE,
+                            'updated_at' => $post->DATE_CREATE,
+                        ]);
+                    } catch (\Exception $e) {
+                        Log::error('Error importing post ID: ' . $post->ID . ' - ' . $e->getMessage());
+                    }
                 }
             }
         } catch (\Exception $e) {

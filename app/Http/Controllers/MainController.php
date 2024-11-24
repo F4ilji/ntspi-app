@@ -29,6 +29,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -36,6 +37,7 @@ class MainController extends Controller
 {
     public function index()
     {
+
         $admissionCampaign = $this->getAdmissionCampaign();
         $educations = $this->getEducationsData();
         $sliders = $this->getActiveSliders();
