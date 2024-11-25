@@ -31,10 +31,11 @@
         font-size: 20px;
     }
 
-    html {
-        scroll-behavior: smooth;
+    *, html {
         scroll-padding: 6rem;
+        scroll-behavior: smooth !important;
     }
+
 
 
 

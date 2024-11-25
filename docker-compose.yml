@@ -32,7 +32,7 @@ services:
     volumes:
       - ./:/var/www
     container_name: ntspi-php-queue
-    command: php artisan queue:work --tries=3 --timeout=90 --sleep=3 # Настройте параметры по необходимости
+    command: php artisan queue:work --tries=3 --timeout=90 --sleep=3
 
   db:
     image: mysql:8.0
