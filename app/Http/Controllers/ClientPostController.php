@@ -37,7 +37,7 @@ class ClientPostController extends Controller
         $tags = \Spatie\Tags\Tag::whereIn('id', $tagIds)->get();
         $posts = ClientPostListResource::collection(Post::query()
             ->with('category')
-            ->select('title', 'slug', 'authors', 'category_id', 'preview', 'search_data', 'created_at')
+            ->select('title', 'slug', 'authors', 'category_id', 'preview', 'search_data', 'publish_at')
             ->where('status', '=', 'published')
             ->where('publish_at', '<', Carbon::now())
             ->when(request()->input('search'), function ($query, $search) {

@@ -37,7 +37,7 @@ use Spatie\Sitemap\Tags\Url;
 Route::middleware('signed')->get('invitation/{invitation}/accept', \App\Livewire\AcceptInvitation::class)
     ->name('invitation.accept');
 
-Route::get('/generate-sitemap', [GenerateSitemapController::class, 'index']);
+Route::get('/generate-sitemap', [GenerateSitemapController::class, 'index'])->name('generate-sitemap');
 
 Route::middleware('access-check')->group(function () {
 

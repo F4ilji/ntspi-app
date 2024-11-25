@@ -45,13 +45,13 @@ Route::post('/widget/get-form/{id}/submit', [ClientWidgetFormController::class, 
 
 
 Route::get('/login/vk', [VkAuthService::class, 'redirectToProvider'])->name('vk.login');
-Route::get('/login/vk/callback', [VkAuthService::class, 'handleProviderCallback']);
-Route::get('/vk-get-token', [VkAuthService::class, 'getToken']);
-Route::get('/vk-refresh-token', [VkAuthService::class, 'refresh']);
-Route::get('/vk-logout', [VkAuthService::class, 'logout']);
+Route::get('/login/vk/callback', [VkAuthService::class, 'handleProviderCallback'])->name('vk.callback');
+Route::get('/vk-get-token', [VkAuthService::class, 'getToken'])->name('vk.getToken');
+Route::get('/vk-refresh-token', [VkAuthService::class, 'refresh'])->name('vk.refreshToken');
+Route::get('/vk-logout', [VkAuthService::class, 'logout'])->name('vk.logout');
 
 
 
-Route::get('/vk-handle', [VkPostController::class, 'index']);
-Route::get('/vk-handle/get-auth-token', [VkAuthController::class, 'getToken']);
-Route::get('/vk-handle/wall', [VkPostController::class, 'wall']);
+//Route::get('/vk-handle', [VkPostController::class, 'index']);
+//Route::get('/vk-handle/get-auth-token', [VkAuthController::class, 'getToken']);
+//Route::get('/vk-handle/wall', [VkPostController::class, 'wall']);
