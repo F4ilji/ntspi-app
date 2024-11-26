@@ -283,7 +283,8 @@ export default {
 <style>
 
 .styled-scrollbar {
-	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 

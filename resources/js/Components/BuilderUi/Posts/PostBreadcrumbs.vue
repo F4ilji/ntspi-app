@@ -52,7 +52,7 @@
 									<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
 												stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 								</svg>
-								{{ postTitle }}
+								{{ textLimit(postTitle, 60) }}
 							</Link>
 						</li>
 					</ol>
@@ -82,7 +82,7 @@
 						</li>
 						<li class="text-sm">
 							<Link :href="$page.props.ziggy.location" class="flex items-center text-gray-500 hover:text-blue-600">
-								{{ postTitle }}
+								{{ textLimit(postTitle, 60) }}
 							</Link>
 						</li>
 					</ol>

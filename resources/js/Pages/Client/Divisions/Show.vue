@@ -236,7 +236,8 @@ export default {
 <style>
 
 .styled-scrollbar {
-	overflow: hidden !important;
+	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 
