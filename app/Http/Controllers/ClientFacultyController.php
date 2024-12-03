@@ -20,8 +20,8 @@ class ClientFacultyController extends Controller
     public function show(string $slug)
     {
         $faculties = FacultyResource::collection(Faculty::query()->where('is_active', true)->get());
-        $faculty = new FullFacultyResource(Faculty::where('slug', $slug)->where('is_active', true)->with(['departments.faculty', 'workers.userDetail'])->first());
-        $seo = $faculty->seo;
+        $faculty = new FullFacultyResource(Faculty::where('slug', $slug)->where('is_active', true)->with(['departments.faculty', 'workers.userDetail'])->firstOrFail());
+        $seo = $faculty->seo ?? null;
         return Inertia::render('Client/Faculties/Show', compact('faculty', 'faculties', 'seo'));
     }
 }
