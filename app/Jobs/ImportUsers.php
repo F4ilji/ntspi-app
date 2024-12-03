@@ -11,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ImportUsers implements ShouldQueue
 {
@@ -39,11 +40,8 @@ class ImportUsers implements ShouldQueue
                     'slug' => $user->slug,
                     'email' => $user->email,
                     'email_verified_at' => $user->email_verified_at,
-                    'password' => $user->password,
-                    'two_factor_secret' => $user->two_factor_secret,
-                    'two_factor_recovery_codes' => $user->two_factor_recovery_codes,
-                    'two_factor_confirmed_at' => $user->two_factor_confirmed_at,
-                    'remember_token' => $user->remember_token,
+                    'password' => Md5(Str::random(15)),
+                    'remember_token' => null,
                     'created_at' => $user->created_at,
                     'updated_at' => $user->updated_at,
                 ]);
