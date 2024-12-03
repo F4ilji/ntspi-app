@@ -109,10 +109,7 @@ class UserDetailForm
                             ->schema([
                                 Forms\Components\Repeater::make('attendedConferences')->schema([
                                     Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Участие в конференциях')->defaultItems(0),
-                                Forms\Components\Repeater::make('participationScienceProjects')->schema([
-                                    Forms\Components\TextInput::make('item')->label('')->string()->required()
-                                ])->label('Участие в научных проектах')->defaultItems(0),
+                                ])->label('Участие в выставках, конференциях, проектах')->defaultItems(0),
                                 Forms\Components\Repeater::make('publications')->schema([
                                     Forms\Components\TextInput::make('category_publication')->label('Категория публикаций')->string()->required(),
                                     Forms\Components\Repeater::make('publication')->schema([

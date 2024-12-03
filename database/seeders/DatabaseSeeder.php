@@ -31,43 +31,43 @@ class DatabaseSeeder extends Seeder
             'slug' => 'failj',
             'password' => "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
         ]);
-        User::factory()->count(50)->has(UserDetail::factory())->create();
-        EventCategory::factory()->count(10)->create();
-        Category::factory()->count(80)->create();
-        Post::factory()->count(1000)->create();
-        Event::factory()->count(200)->create();
-        Faculty::factory()->count(6)->create();
-        Department::factory()->count(12)->create();
-
-        for ($i = 0; $i < 20; $i++) {
-            DB::table('workers_departments')->insert([
-                'user_id' => User::inRandomOrder()->first()->id,
-                'department_id' => Department::inRandomOrder()->first()->id,
-                'position' =>  $faker->word,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
-
-        for ($i = 0; $i < 20; $i++) {
-            DB::table('workers_faculties')->insert([
-                'user_id' => User::inRandomOrder()->first()->id,
-                'faculty_id' => Faculty::inRandomOrder()->first()->id,
-                'position' =>  $faker->word,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
-
-        for ($i = 0; $i < 30; $i++) {
-            DB::table('teachers_departments')->insert([
-                'user_id' => User::inRandomOrder()->first()->id,
-                'department_id' => Department::inRandomOrder()->first()->id,
-                'teaching_position' =>  $faker->word,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+//        User::factory()->count(50)->has(UserDetail::factory())->create();
+//        EventCategory::factory()->count(10)->create();
+//        Category::factory()->count(80)->create();
+//        Post::factory()->count(1000)->create();
+//        Event::factory()->count(200)->create();
+//        Faculty::factory()->count(6)->create();
+//        Department::factory()->count(12)->create();
+//
+//        for ($i = 0; $i < 20; $i++) {
+//            DB::table('workers_departments')->insert([
+//                'user_id' => User::inRandomOrder()->first()->id,
+//                'department_id' => Department::inRandomOrder()->first()->id,
+//                'position' =>  $faker->word,
+//                'created_at' => now(),
+//                'updated_at' => now(),
+//            ]);
+//        }
+//
+//        for ($i = 0; $i < 20; $i++) {
+//            DB::table('workers_faculties')->insert([
+//                'user_id' => User::inRandomOrder()->first()->id,
+//                'faculty_id' => Faculty::inRandomOrder()->first()->id,
+//                'position' =>  $faker->word,
+//                'created_at' => now(),
+//                'updated_at' => now(),
+//            ]);
+//        }
+//
+//        for ($i = 0; $i < 30; $i++) {
+//            DB::table('teachers_departments')->insert([
+//                'user_id' => User::inRandomOrder()->first()->id,
+//                'department_id' => Department::inRandomOrder()->first()->id,
+//                'teaching_position' =>  $faker->word,
+//                'created_at' => now(),
+//                'updated_at' => now(),
+//            ]);
+//        }
 //        $this->call([RolesSeeder::class]);
 //        $users = [
 //            [

@@ -1,9 +1,9 @@
 <!-- NavLink.vue -->
 <template>
-	<div :id="generateSlug(nameList)">
+	<div>
 
 		<template v-for="el in list">
-			<h3 class="my-4 font-medium text-gray-800">{{ el.category_publication }}</h3>
+			<h2 :id="generateSlug(nameList)" class="my-4 font-medium text-gray-800">{{ el.category_publication }}</h2>
 			<ul class="list-disc ms-6 mt-3 space-y-1.5">
 				<template v-for="el in el.publication">
 					<li class="ps-1 text-sm text-gray-600 dark:text-neutral-400">

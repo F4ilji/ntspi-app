@@ -10,6 +10,7 @@
 
 				<PageNavigateLinks :header-navs="headerNavs" />
 
+
 				<section class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
 					<div class="w-full mx-auto sm:px-6 lg:px-8">
 
@@ -46,16 +47,15 @@
 
 								<ul class="mt-5 flex flex-col gap-y-3">
 
-									<li class="flex items-center gap-x-2.5">
+									<li v-if="person.data.details.contactPhone" class="flex items-center gap-x-2.5">
 										<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="shrink-0 size-3.5">
 											<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
 										</svg>
-
 										<a class="text-[13px] text-gray-500 underline hover:text-gray-800 hover:decoration-2 focus:outline-none focus:decoration-2 dark:text-neutral-500 dark:hover:text-neutral-400" href="#">
 											{{ person.data.details.contactPhone }}
 										</a>
 									</li>
-									<li class="flex items-center gap-x-2.5">
+									<li v-if="person.data.details.contactEmail" class="flex items-center gap-x-2.5">
 										<svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 											<rect width="20" height="16" x="2" y="4" rx="2"></rect>
 											<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
@@ -70,7 +70,7 @@
 							</div>
 						</div>
 
-						<div class="mt-10 sm:mt-14">
+						<div class="mt-5 sm:mt-7">
 							<EducationBlock v-if="person.data.details.education.length > 0" title="Направление подготовки" :educations="person.data.details.education" />
 						</div>
 
