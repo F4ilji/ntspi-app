@@ -10,7 +10,7 @@
 
 				<div class="sticky top-[110px] hidden h-[calc(100vh-110px)] max-w-[20%] md:flex md:shrink-0 md:flex-col md:justify-between">
 					<nav v-if="divisions"
-							 class="styled-scrollbar flex h-[calc(100vh-200px)] flex-col overflow-y-scroll pr-2 pb-4">
+							 class="flex h-[calc(100vh-200px)] flex-col overflow-y-auto overflow-x-hidden pr-2 pb-4">
 						<div class="text-gray-1000 mb-2 text-md font-medium">Подразделения</div>
 						<div class="flex gap-x-1">
 							<ul class="px-0.5 last-of-type:mb-0 mb-8">
@@ -30,7 +30,7 @@
 				<nav class="order-last hidden w-56 shrink-0 lg:block">
 					<div class="sticky top-[110px] h-[calc(100vh-110px)]">
 						<div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
-						<ul class="styled-scrollbar max-h-[70vh] space-y-1.5 overflow-y-auto py-2 text-sm">
+						<ul class="max-h-[70vh] space-y-1.5 overflow-y-auto overflow-x-hidden py-2 text-sm">
 							<li v-if="division.data.workers.length > 0" class="anchor-li">
 								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'persons', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'persons' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
@@ -234,11 +234,6 @@ export default {
 </script>
 
 <style>
-
-.styled-scrollbar {
-	overflow-x: hidden;
-	overflow-y: hidden;
-}
 
 
 .paragraph-container a {

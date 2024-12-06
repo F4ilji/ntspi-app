@@ -67,7 +67,7 @@ class AdditionalEducationResource extends Resource
                                         TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
 
                                         Forms\Components\Select::make('category_id')->required()->label('Категория')
-                                            ->options(AdditionalEducationCategory::where('is_active', true)->pluck('title', 'id'))
+                                            ->options(AdditionalEducationCategory::where('is_active', true)->pluck('title', 'id'))->preload()->searchable()
                                     ]),
                                     Forms\Components\TextInput::make('target_group')->required()->columnSpanFull()->label('Целевая аудитория'),
                                     Forms\Components\TextInput::make('qualification')->required()->columnSpanFull()->label('Присваиваемая квалификация'),
