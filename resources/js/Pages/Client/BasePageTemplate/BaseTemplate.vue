@@ -13,7 +13,7 @@
 				<div class="space-y-5 md:space-y-5">
 					<PageBreadcrumbs :breadcrumbs="breadcrumbs" :page-title="page.data.title"/>
 					<PageTitle :header="page.data.title"/>
-					<div id="page-area" class="space-y-4">
+					<div id="page-area">
 						<PageBuilder :blocks="page.data.content"/>
 					</div>
 				</div>

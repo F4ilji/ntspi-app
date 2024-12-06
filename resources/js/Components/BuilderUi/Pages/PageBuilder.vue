@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<PageSkeleton v-if="loading" />
-		<div v-else>
+		<div class="space-y-6" v-else>
 			<component
 					v-for="(block, index) in blocks"
 					:key="index"
