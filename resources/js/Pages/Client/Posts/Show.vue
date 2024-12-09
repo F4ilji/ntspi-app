@@ -100,6 +100,8 @@ export default {
 								</div>
 							</div>
 							<PostBuilder :blocks="blocks"/>
+
+
 							<div>
 								<PostGallery v-if="post.data.gallery.length > 1" :title="post.data.title" :images="post.data.gallery"/>
 							</div>

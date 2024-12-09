@@ -81,6 +81,7 @@
 
 						<h2 id="persons" class="font-bold text-xl">Состав</h2>
 
+
 						<template v-for="worker in faculty.data.workers">
 							<ClientFacultyWorkerCard :worker="worker" />
 						</template>
