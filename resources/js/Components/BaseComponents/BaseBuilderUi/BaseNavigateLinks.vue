@@ -4,7 +4,7 @@
 	<nav class="order-last hidden w-56 shrink-0 lg:block">
 		<div v-if="headerNavs.length > 0" class="sticky top-[100px] h-[calc(100vh-121px)]">
 			<div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
-			<ul class="max-h-[70vh] space-y-1.5 overflow-y-auto overflow-x-hidden py-2 text-sm">
+			<ul class="max-h-[70vh] space-y-1.5 overflow-hidden py-2 text-sm">
 				<li class="anchor-li" v-for="pageNav in headerNavs" :key="pageNav.id">
 					<a :class="{ 'translate-x-2 text-primaryBlue' : currentNavSection === generateSlug(pageNav.text), 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== generateSlug(pageNav.text) }"
 						 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"

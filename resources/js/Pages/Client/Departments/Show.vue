@@ -13,7 +13,7 @@
 
 			<div class="sticky top-[110px] hidden h-[calc(100vh-110px)] max-w-[20%] md:flex md:shrink-0 md:flex-col md:justify-between">
 				<nav v-if="departments"
-						 class="flex h-[calc(100vh-200px)] flex-col overflow-y-auto overflow-x-hidden pr-2 pb-4">
+						 class="flex h-[calc(100vh-200px)] flex-col overflow-hidden pr-2 pb-4">
 					<div class="text-gray-1000 mb-2 text-md font-medium">Кафедры факультета - {{ department.data.faculty.abbreviation }}</div>
 					<div class="flex gap-x-1">
 						<ul class="px-0.5 last-of-type:mb-0 mb-8">
@@ -33,7 +33,7 @@
 			<nav class="order-last hidden w-56 shrink-0 lg:block">
 				<div class="sticky top-[110px] h-[calc(100vh-110px)]">
 					<div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
-					<ul class="max-h-[70vh] space-y-1.5 overflow-y-auto overflow-x-hidden py-2 text-sm">
+					<ul class="max-h-[70vh] space-y-1.5 overflow-hidden py-2 text-sm">
 						<li class="anchor-li">
 							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'workers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'workers' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"

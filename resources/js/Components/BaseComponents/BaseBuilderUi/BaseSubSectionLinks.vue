@@ -2,7 +2,7 @@
 
 	<div class="sticky top-[100px] hidden h-[calc(100vh-121px)] max-w-[20%] min-w-[20%] md:flex md:shrink-0 md:flex-col md:justify-between">
 		<nav v-if="subSectionPages"
-				 class="flex h-[calc(100vh-200px)] flex-col overflow-y-auto overflow-x-hidden pr-2 pb-4">
+				 class="flex h-[calc(100vh-200px)] flex-col overflow-hidden pr-2 pb-4">
 			<div class="text-gray-1000 mb-2 text-md font-medium">{{ currentSection }}</div>
 			<div class="flex gap-x-1">
 				<ul class="px-0.5 last-of-type:mb-0 mb-8">
