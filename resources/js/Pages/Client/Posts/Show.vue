@@ -81,7 +81,6 @@ export default {
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
 				<div class="max-w-3xl lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
 					<div>
-
 						<div class="space-y-5 md:space-y-10">
 							<div class="space-y-3">
 								<PostBreadcrumbs :breadcrumbs="breadcrumbs" :post-title="post.data.title" />

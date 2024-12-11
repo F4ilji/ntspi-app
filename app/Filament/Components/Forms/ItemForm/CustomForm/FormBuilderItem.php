@@ -237,6 +237,36 @@ class FormBuilderItem
                             ]),
                     ])
                     ->maxItems(1),
+                Builder\Block::make('captcha')
+                    ->label('reCaptcha')
+                    ->schema([
+                        Forms\Components\Hidden::make('name_field')->required()->default(Str::slug('reCaptcha') . Carbon::now()->timestamp),
+                        Section::make('Настройка')
+                            ->collapsed()
+                            ->statePath('rules')
+                            ->schema([
+                                RuleRequiredComponent::getComponent()->default(true),
+                            ]),
+                    ]),
+                Builder\Block::make('personal_data')
+                    ->label('Соглашение на обработку персональных данных')
+                    ->schema([
+                        TextInput::make('title_field')
+                            ->label('Заголовок поля')
+                            ->live(onBlur: true)
+                            ->default('Соглашение на обработку персональных данных')
+                            ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set) {
+                                $set('name_field', Str::slug($state) . Carbon::now()->timestamp );
+                            }),
+                        Forms\Components\Hidden::make('name_field')->required()->default(Str::slug('Соглашение на обработку персональных данных') . Carbon::now()->timestamp),
+
+                        Section::make('Настройка')
+                            ->collapsed()
+                            ->statePath('rules')
+                            ->schema([
+                                RuleRequiredComponent::getComponent()->default(true),
+                            ]),
+                    ]),
             ])
             ->label('')
             ->addActionLabel('Добавить поле')

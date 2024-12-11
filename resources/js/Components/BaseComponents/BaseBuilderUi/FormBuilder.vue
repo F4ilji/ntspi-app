@@ -78,15 +78,16 @@ export default {
 	methods: {
 		getComponent(type) {
 			const componentMap = {
-				text: () => import('@/Components/BuilderUi/Pages/FormBlocks/TextBlock.vue'),
-				phone: () => import('@/Components/BuilderUi/Pages/FormBlocks/PhoneBlock.vue'),
-				email: () => import('@/Components/BuilderUi/Pages/FormBlocks/EmailBlock.vue'),
-				textarea: () => import('@/Components/BuilderUi/Pages/FormBlocks/TextAreaBlock.vue'),
-				multiple_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/MultipleChoiceBlock.vue'),
-				single_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/SingleChoiceBlock.vue'),
-				date: () => import('@/Components/BuilderUi/Pages/FormBlocks/DateBlock.vue'),
-				additional_education_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/AdditionalEducationalChoiceBlock.vue'),
-				educational_program_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/EducationalChoiceBlock.vue')
+				text: () => import('@/Components/BaseComponents/BaseBuilderUi/FormBlocks/TextBlock.vue'),
+				phone: () => import('@/Components/BaseComponents/BaseBuilderUi/FormBlocks/PhoneBlock.vue'),
+				email: () => import('@/Components/BaseComponents/BaseBuilderUi/FormBlocks/EmailBlock.vue'),
+				textarea: () => import('@/Components/BaseComponents/BaseBuilderUi/FormBlocks/TextAreaBlock.vue'),
+				multiple_choice: () => import('@/Components/BaseComponents/BaseBuilderUi/FormBlocks/MultipleChoiceBlock.vue'),
+				single_choice: () => import('@/Components/BaseComponents/BaseBuilderUi/FormBlocks/SingleChoiceBlock.vue'),
+				date: () => import('@/Components/BaseComponents/BaseBuilderUi/FormBlocks/DateBlock.vue'),
+				additional_education_choice: () => import('@/Components/BaseComponents/BaseBuilderUi/FormBlocks/AdditionalEducationalChoiceBlock.vue'),
+				educational_program_choice: () => import('@/Components/BaseComponents/BaseBuilderUi/FormBlocks/EducationalChoiceBlock.vue'),
+				captcha: () => import('@/Components/BaseComponents/BaseBuilderUi/FormBlocks/CaptchaBlock.vue')
 			};
 			return defineAsyncComponent(componentMap[type] || null);
 		},

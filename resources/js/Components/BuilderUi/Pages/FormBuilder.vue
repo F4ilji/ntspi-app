@@ -86,7 +86,10 @@ export default {
 				single_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/SingleChoiceBlock.vue'),
 				date: () => import('@/Components/BuilderUi/Pages/FormBlocks/DateBlock.vue'),
 				additional_education_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/AdditionalEducationalChoiceBlock.vue'),
-				educational_program_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/EducationalChoiceBlock.vue')
+				educational_program_choice: () => import('@/Components/BuilderUi/Pages/FormBlocks/EducationalChoiceBlock.vue'),
+				captcha: () => import('@/Components/BaseComponents/BaseBuilderUi/FormBlocks/CaptchaBlock.vue'),
+				personal_data: () => import('@/Components/BaseComponents/BaseBuilderUi/FormBlocks/PersonalDataBlock.vue'),
+
 			};
 			return defineAsyncComponent(componentMap[type] || null);
 		},

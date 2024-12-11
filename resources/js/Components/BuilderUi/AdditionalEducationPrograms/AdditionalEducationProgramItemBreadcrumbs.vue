@@ -3,8 +3,7 @@
 		<div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
 			<div class="grow">
 				<div class="grid sm:flex sm:justify-between sm:items-center gap-2">
-					<ol v-if="breadcrumbs" class="flex items-center whitespace-normal min-w-0 flex-wrap gap-y-2"
-							aria-label="Breadcrumb">
+					<BreadcrumbsWrapper v-if="breadcrumbs">
 						<li class="text-sm">
 							<Link :href="route('index')" class="flex items-center text-gray-500 hover:text-blue-600" href="/">
 								<BaseIcon class="size-5" name="home" />
@@ -13,8 +12,8 @@
 						<li v-if="breadcrumbs.mainSection" class="text-sm">
 							<span class="flex items-center text-gray-500 hover:text-primaryBlue cursor-pointer" @click.prevent="handleSectionClick(this.breadcrumbs.mainSection)">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
-																	 width="16" height="16"
-																	 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+										 width="16" height="16"
+										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
 											stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 							</svg>
@@ -24,8 +23,8 @@
 						<li v-if="breadcrumbs.subSection" class="text-sm">
 							<span class="flex items-center text-gray-500 hover:text-primaryBlue cursor-pointer" @click.prevent="handleSubSectionClick(this.breadcrumbs.mainSection, this.breadcrumbs.subSection)">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
-																		 width="16" height="16"
-																		 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+										 width="16" height="16"
+										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
 												stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 								</svg>
@@ -54,9 +53,8 @@
 								{{ additionalEducationTitle }}
 							</Link>
 						</li>
-					</ol>
-					<ol v-if="!breadcrumbs" class="flex items-center whitespace-nowrap min-w-0 flex-wrap"
-							aria-label="Breadcrumb">
+					</BreadcrumbsWrapper>
+					<BreadcrumbsWrapper v-else>
 						<li class="text-sm">
 							<Link :href="route('index')" class="flex items-center text-gray-500 hover:text-blue-600" href="/">
 								<BaseIcon class="size-5" name="home" />
@@ -84,7 +82,7 @@
 								{{ additionalEducationTitle }}
 							</Link>
 						</li>
-					</ol>
+					</BreadcrumbsWrapper>
 				</div>
 			</div>
 		</div>
@@ -97,10 +95,11 @@
 import {Link} from "@inertiajs/vue3";
 import slugify from "slugify";
 import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
+import BreadcrumbsWrapper from "@/Components/BaseComponents/Breadcrumbs/BreadcrumbsWrapper.vue";
 
 export default {
 	name: "AdditionalEducationProgramItemBreadcrumbs",
-	components: {BaseIcon, Link},
+	components: {BreadcrumbsWrapper, BaseIcon, Link},
 	data() {
 		return {
 		}

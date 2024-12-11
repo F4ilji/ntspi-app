@@ -3,8 +3,7 @@
 		<div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
 			<div class="grow">
 				<div class="grid sm:flex sm:justify-between sm:items-center gap-2">
-					<ol v-if="breadcrumbs" class="flex items-center whitespace-normal min-w-0 flex-wrap gap-y-2"
-							aria-label="Breadcrumb">
+					<BreadcrumbsWrapper v-if="breadcrumbs">
 						<li class="text-sm">
 							<Link :href="route('index')" class="flex items-center text-gray-500 hover:text-blue-600" href="/">
 								<BaseIcon class="size-5" name="home" />
@@ -43,9 +42,8 @@
 								{{ textLimit(breadcrumbs.page.data.title, 25) }}
 							</Link>
 						</li>
-					</ol>
-					<ol v-if="!breadcrumbs" class="flex items-center whitespace-nowrap min-w-0 flex-wrap"
-							aria-label="Breadcrumb">
+					</BreadcrumbsWrapper>
+					<BreadcrumbsWrapper v-else>
 						<li class="text-sm">
 							<Link :href="route('index')" class="flex items-center text-gray-500 hover:text-blue-600" href="/">
 								<BaseIcon class="size-5" name="home" />
@@ -62,7 +60,7 @@
 								{{ textLimit(breadcrumbs.page.data.title, 25) }}
 							</Link>
 						</li>
-					</ol>
+					</BreadcrumbsWrapper>
 				</div>
 			</div>
 		</div>
@@ -75,10 +73,11 @@
 import {Link} from "@inertiajs/vue3";
 import slugify from "slugify";
 import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
+import BreadcrumbsWrapper from "@/Components/BaseComponents/Breadcrumbs/BreadcrumbsWrapper.vue";
 
 export default {
 	name: "BaseBreadcrumbs",
-	components: {BaseIcon, Link},
+	components: {BreadcrumbsWrapper, BaseIcon, Link},
 	data() {
 		return {
 		}

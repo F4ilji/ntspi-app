@@ -6,6 +6,7 @@ import { createSSRApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import {linksReform} from "@/mixins/LinksReform.js";
+import YSmartCaptcha from 'vue3-yandex-smartcaptcha'
 
 // const appName = import.meta.env.VITE_APP_NAME || 'НТГСПИ';
 
@@ -20,6 +21,10 @@ createInertiaApp({
             .use(plugin)
             .mixin(linksReform)
             .use(ZiggyVue)
+            .use(YSmartCaptcha, {
+                siteKey: "ysc1_jxb2IcslgBuHgHbmmKY1F7Nvb8zYHuAeBgjoaTka6886f893",
+                lang: "Язык ('ru' | 'en' | 'be' | 'kk' | 'tt' | 'uk' | 'uz' | 'tr')"
+            })
             .mount(el);
     },
     progress: {
