@@ -1,5 +1,5 @@
 <template>
-	<ol class="flex items-center whitespace-normal min-w-0 flex-nowrap hide-scrollbar overflow-x-scroll" aria-label="Breadcrumb">
+	<ol style="white-space: nowrap;" class="flex items-center whitespace-normal min-w-0 flex-nowrap hide-scrollbar overflow-x-scroll" aria-label="Breadcrumb">
 		<slot />
 	</ol>
 </template>
