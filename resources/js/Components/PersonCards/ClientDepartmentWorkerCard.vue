@@ -1,6 +1,6 @@
 <template>
 
-	<div class="flex flex-col rounded-xl p-4 md:p-6 bg-white border border-gray-200 dark:bg-slate-900 dark:border-gray-700">
+	<div class="flex flex-col rounded-xl p-4 md:p-6 bg-white border border-gray-200">
 		<div class="flex items-center gap-y-4 gap-x-4 flex-wrap md:flex-nowrap">
 			<img v-if="worker.photo" @click="toggler = !toggler" loading="lazy" class="rounded-xl md:w-[150px]" :src="'/storage/' + worker.photo" alt="Image Description">
 			<div class="grow">
