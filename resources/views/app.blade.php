@@ -26,6 +26,10 @@
         -webkit-tap-highlight-color: transparent !important;
     }
 
+    #nprogress .bar {
+        z-index: 10000000!important;
+    }
+
     .ce-header {
         font-weight: bold;
         font-size: 20px;

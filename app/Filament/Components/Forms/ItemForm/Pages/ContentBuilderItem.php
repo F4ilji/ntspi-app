@@ -58,6 +58,7 @@ class ContentBuilderItem
                             ->label(''),
                     ])->label('Текст'),
                 Builder\Block::make('files')
+                    ->label('Файл(-ы)')
                     ->schema([
                         Forms\Components\Repeater::make('file')->schema([
                             Hidden::make('expansion')->required(),
@@ -91,6 +92,7 @@ class ContentBuilderItem
                         ]),
                     ]),
                 Builder\Block::make('person')
+                    ->label('Персона')
                     ->schema([
                         TextInput::make('name')
                             ->label('Имя')
@@ -99,21 +101,24 @@ class ContentBuilderItem
                         FileUpload::make('photo')
                             ->label('Фотография')
                             ->image()
+                            ->optimize('webp')
+                            ->resize(50)
                             ->disk('public')
                             ->directory('images')
                             ->imageEditor(),
                         Forms\Components\Repeater::make('info')->schema([
-                            Forms\Components\Grid::make(2)->schema([
                                 TextInput::make('column')
+                                    ->label('Название колонки')
                                     ->required()
                                     ->maxLength(255),
-                                TextInput::make('content')
+                                Forms\Components\Textarea::make('content')
+                                    ->label('Содержание')
                                     ->required()
-                                    ->maxLength(255),
-                            ]),
-                        ])->minItems(1),
+                                    ->maxLength(1000),
+                        ])->minItems(1)->label('Информация о персоне'),
                     ]),
                 Builder\Block::make('stepper')
+                    ->label('Строитель этапов')
                     ->schema([
                         TextInput::make('step_name')
                             ->label('Название шага')
@@ -127,6 +132,7 @@ class ContentBuilderItem
                         ])->minItems(1),
                     ]),
                 Builder\Block::make('tabs')
+                    ->label('Вкладки')
                     ->schema([
                         Forms\Components\Repeater::make('tab')->schema([
                             TextInput::make('title')
@@ -325,6 +331,7 @@ class ContentBuilderItem
                             ->placeholder('Необязяательно')
                     ])->label('Изображение'),
                 Builder\Block::make('video')
+                    ->label('Видео (Не стабильно)')
                     ->schema([
                         TextInput::make('mime')->readOnly(),
                         TextInput::make('title')
