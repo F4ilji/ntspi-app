@@ -63,7 +63,7 @@ class CreatePost extends CreateRecord
             $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
         }
         if ($rowData !== null) {
-            $description = strip_tags($rowData['data']['content']);
+            $description = html_entity_decode(strip_tags($rowData['data']['content']));
         } else {
             $description = null;
         }        $image = ($data['preview'] !== null) ? $data['preview'] : null;
@@ -81,7 +81,7 @@ class CreatePost extends CreateRecord
         if ($rowData === null) {
             $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
         }
-        $preview_text = strip_tags($rowData['data']['content']);
+        $preview_text = html_entity_decode(strip_tags($rowData['data']['content']));
         return Str::limit($preview_text, 160);
     }
 
@@ -284,7 +284,7 @@ class CreatePost extends CreateRecord
             case 'paragraph':
                 // Удаляем все HTML-теги и заменяем закрывающие теги p и h2 на двойной отступ
                 $content = preg_replace('/<\/(p|h2)>/', "\n\n", $block['data']['content']);
-                $data .= strip_tags($content);
+                $data .= html_entity_decode(strip_tags($content));
                 break;
 
             case 'heading':
