@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Components\Forms\ItemForm\Pages;
+namespace App\Filament\Components\Forms\ItemForm\Defaults;
 
 use App\Enums\CustomFormStatus;
 use App\Enums\PostStatus;
@@ -25,7 +25,7 @@ use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
-class ContentBuilderItem
+class TabBuilderItem
 {
     public static function getItem()
     {
