@@ -37,7 +37,6 @@ class MainController extends Controller
 {
     public function index()
     {
-
         $admissionCampaign = $this->getAdmissionCampaign();
         $educations = $this->getEducationsData();
         $sliders = $this->getActiveSliders();

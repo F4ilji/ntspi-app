@@ -70,21 +70,10 @@ class EventResource extends Resource
                                     ]),
                                 Builder\Block::make('paragraph')
                                     ->schema([
-                                        RichEditor::make('content')
-                                            ->toolbarButtons([
-                                                'blockquote',
-                                                'bold',
-                                                'bulletList',
-                                                'italic',
-                                                'link',
-                                                'orderedList',
-                                                'redo',
-                                                'strike',
-                                                'underline',
-                                                'undo',
-                                            ])
+                                        TinyEditor::make('content')
                                             ->label('')
-                                            ->required()
+                                            ->profile('test')
+                                            ->required(),
                                     ])->label('Текст'),
                                 Builder\Block::make('image')
                                     ->schema([

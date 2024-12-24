@@ -59,11 +59,12 @@ class SearchController extends Controller
             ->add(EducationalProgram::where('status', '=', true)->whereHas('admission_plans'), 'name')
             ->add(Faculty::where('is_active', '=', true), 'title')
             ->add(User::whereHas('userDetail'), 'name')
-            ->beginWithWildcard()
-            ->orderByRelevance()
+            ->orderByDesc()
+            //            ->beginWithWildcard()
+//            ->orderByRelevance()
             ->includeModelType()
             ->ignoreCase(true)
-            ->search($req);
+            ->search("$req");
 
         $resourceMap = $this->resourceMap;
         $resources = collect($results)->map(function ($result) use ($resourceMap) {

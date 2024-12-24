@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class FacultyResource extends Resource
 {
@@ -83,20 +84,10 @@ class FacultyResource extends Resource
                                         ]),
                                     Builder\Block::make('paragraph')
                                         ->schema([
-                                            RichEditor::make('content')
-                                                ->toolbarButtons([
-                                                    'blockquote',
-                                                    'bold',
-                                                    'bulletList',
-                                                    'italic',
-                                                    'link',
-                                                    'orderedList',
-                                                    'redo',
-                                                    'strike',
-                                                    'underline',
-                                                    'undo',
-                                                ])
-                                                ->label(''),
+                                            TinyEditor::make('content')
+                                                ->label('')
+                                                ->profile('test')
+                                                ->required(),
                                         ])->label('Текст'),
                                     Builder\Block::make('files')
                                         ->schema([
@@ -164,8 +155,11 @@ class FacultyResource extends Resource
                                                 TextInput::make('title')
                                                     ->required()
                                                     ->maxLength(255)->columnSpanFull(),
-                                                RichEditor::make('content')->required(),
-                                            ])->minItems(1),
+                                                TinyEditor::make('content')
+                                                    ->label('')
+                                                    ->profile('test')
+                                                    ->required(),
+                                                ])->minItems(1),
                                         ]),
                                     Builder\Block::make('tabs')
                                         ->schema([

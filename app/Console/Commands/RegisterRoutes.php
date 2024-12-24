@@ -28,13 +28,13 @@ class RegisterRoutes extends Command
                     'code' => 200,
                 ]);
 
-                $this->info("Route registered: " . $route->uri);
+                $this->info("Маршрут зарегистрирован: " . $route->uri);
             } else {
-                $this->info("Route already registered: " . $route->uri);
+                $this->info("Маршрут уже существует: " . $route->uri);
             }
         }
 
-        $this->info('All routes have been processed.');
+        $this->info('Все маршруты успешно проверены.');
     }
 }
 

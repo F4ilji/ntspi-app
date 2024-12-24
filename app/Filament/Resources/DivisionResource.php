@@ -74,20 +74,9 @@ class DivisionResource extends Resource
                                                 ]),
                                             Builder\Block::make('paragraph')->label('Текст')
                                                 ->schema([
-                                                    RichEditor::make('content')
-                                                        ->toolbarButtons([
-                                                            'blockquote',
-                                                            'bold',
-                                                            'bulletList',
-                                                            'italic',
-                                                            'link',
-                                                            'orderedList',
-                                                            'redo',
-                                                            'strike',
-                                                            'underline',
-                                                            'undo',
-                                                        ])
-                                                        ->label(''),
+                                                    TinyEditor::make('content')
+                                                        ->label('')
+                                                        ->profile('test')
                                                 ]),
                                             Builder\Block::make('files')->label('Файлы')
                                                 ->schema([
@@ -146,8 +135,10 @@ class DivisionResource extends Resource
                                                             ->required()
                                                             ->live()
                                                             ->maxLength(255)->columnSpanFull(),
-                                                        RichEditor::make('content')->required(),
-                                                    ])
+                                                        TinyEditor::make('content')
+                                                            ->label('')
+                                                            ->profile('test')
+                                                            ->required(),                                                    ])
                                                         ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
                                                         ->minItems(1)
                                                         ->collapsible()

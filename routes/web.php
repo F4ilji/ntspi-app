@@ -49,7 +49,6 @@ Route::middleware('access-check')->group(function () {
     Route::get('/schedule/{id}', [ClientScheduleController::class, 'show'])->name('client.schedule.show');
 
     Route::get('/persons/{slug}', [PersonController::class, 'show'])->name('client.person.show');
-//    Route::get('/students/{student}', [StudentController::class, 'show'])->name('client.student.show')->middleware('auth');
 
     // Новости
     Route::get('/news', [ClientPostController::class, 'index'])->name('client.post.index');
@@ -97,7 +96,6 @@ Route::middleware('access-check')->group(function () {
     Route::get('/divisions/{slug}', [ClientDivisionController::class, 'show'])->name('client.division.show');
 
     Route::get('/get-data', [UpdateEduDataApiController::class, 'index']);
-
 
     Route::get('{path}', [PageController::class, 'render'])->where('path', '[0-9,a-z,/,-]+')->name('page.view');
 
