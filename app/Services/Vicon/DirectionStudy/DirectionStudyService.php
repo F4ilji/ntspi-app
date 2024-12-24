@@ -3,6 +3,7 @@
 namespace App\Services\Vicon\DirectionStudy;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class DirectionStudyService
 {
@@ -72,10 +73,17 @@ class DirectionStudyService
         try {
             $response = Http::withToken($token)->get($endpoint);
             $data = $response->object();
+
+            // Проверяем наличие сообщения об ошибке в ответе
+            if (isset($data->message)) {
+                throw new \Exception($data->message);
+            }
+
             return $data;
         } catch (\Exception $e) {
             Log::error('Ошибка при вызове API: ' . $e->getMessage());
-            throw $e;
+            throw $e; // Перебрасываем исключение
         }
     }
+
 }
