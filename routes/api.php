@@ -12,6 +12,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\VkAuthController;
 use App\Http\Controllers\VkPostController;
 use App\Models\AdmissionCampaign;
+use App\Services\Vicon\DirectionStudy\DirectionStudyService;
 use App\Services\VK\VkAuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,11 @@ Route::get('/getAcademicYear', function () {
     $activeCampaign = AdmissionCampaign::query()->where('status', 1)->first();
     return $activeCampaign->academic_year;
 })->name('academic.year');
+
+Route::get('/test', function () {
+    $service = new DirectionStudyService();
+    dd($service->getAllNaprsUuid());
+});
 
 Route::get('/search', [SearchController::class, 'index'])->name('client.search.index');
 
