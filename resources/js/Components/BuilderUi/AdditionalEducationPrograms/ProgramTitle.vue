@@ -1,6 +1,6 @@
 <template>
 
-	<h1 class="text-brand-primary text-2xl mb-3 mt-2 md:text-3xl font-semibold tracking-tight dark:text-white lg:text-[40px] lg:leading-tight">
+	<h1 class="text-brand-primary text-2xl md:text-center mb-3 mt-2 md:text-3xl font-semibold tracking-tight dark:text-white lg:text-[40px] lg:leading-tight">
 		{{ header }}
 	</h1>
 

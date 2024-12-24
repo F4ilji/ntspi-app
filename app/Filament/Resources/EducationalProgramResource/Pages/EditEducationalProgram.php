@@ -18,7 +18,7 @@ class EditEducationalProgram extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $this->seoData = $this->generateSeo($data);
-        $data['search_data'] = $this->generateSearchData($data['content']);
+        $data['search_data'] = $this->generateSearchData($data['about_program']);
 
         return $data;
     }
@@ -30,7 +30,7 @@ class EditEducationalProgram extends EditRecord
 
     private function generateSeo(array $data) : array
     {
-        $title = $data['title'];
+        $title = $data['name'];
         $rowData = $this->getFirstBlockByName('paragraph', $data['about_program']);
         if ($rowData !== null) {
             $description = strip_tags($rowData['data']['content']);

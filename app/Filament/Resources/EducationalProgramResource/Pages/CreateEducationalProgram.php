@@ -32,7 +32,7 @@ class CreateEducationalProgram extends CreateRecord
 
     private function generateSeo(array $data) : array
     {
-        $title = $data['title'];
+        $title = $data['name'];
         $rowData = $this->getFirstBlockByName('paragraph', $data['about_program']);
         if ($rowData !== null) {
             $description = strip_tags($rowData['data']['content']);
