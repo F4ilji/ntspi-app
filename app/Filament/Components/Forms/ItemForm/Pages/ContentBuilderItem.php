@@ -27,6 +27,21 @@ use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class ContentBuilderItem
 {
+    private static function findSeoActive(array $data) : bool
+    {
+        $bool = false;
+
+        foreach ($data as $item) {
+            if ($item['type'] !== 'paragraph') {
+                continue;
+            }
+            if ($item['data']['seo_active'] === true) {
+                $bool = true;
+                break;
+            }
+        }
+        return $bool;
+    }
     public static function getItem(string $name)
     {
         return
@@ -42,6 +57,14 @@ class ContentBuilderItem
                     ]),
                 Builder\Block::make('paragraph')
                     ->schema([
+                        Toggle::make('seo_active')->label('Использовать блок как seo')
+                            ->live(onBlur: true)
+                            ->required()
+                            ->disabled(function ($state, Forms\Get $get) {
+                                $data = $get('../../');
+                                return self::findSeoActive($data) && !$state;
+                            })
+                            ->dehydrated(),
                         TinyEditor::make('content')
                             ->label('')
                             ->profile('test')

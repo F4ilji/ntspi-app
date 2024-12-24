@@ -37,21 +37,7 @@ use Symfony\Component\Finder\Finder;
 class PostForm
 {
 
-    private static function findSeoActive(array $data) : bool
-    {
-        $bool = false;
 
-        foreach ($data as $item) {
-            if ($item['type'] !== 'paragraph') {
-                continue;
-            }
-            if ($item['data']['seo_active'] === true) {
-                $bool = true;
-                break;
-            }
-        }
-        return $bool;
-    }
     public static function getForm(Form $form): Form
     {
         return $form

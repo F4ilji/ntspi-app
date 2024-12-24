@@ -28,7 +28,7 @@ class ClientDepartmentController extends Controller
             ->first());
         $directions = $this->groupProgramsByDirection($department->programs);
 
-        $seo = $department->seo;
+        $seo = $department->seo ?? null;
         return Inertia::render('Client/Departments/Show', compact('department', 'departments', 'directions', 'seo'));
     }
 

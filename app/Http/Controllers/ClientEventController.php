@@ -66,7 +66,7 @@ class ClientEventController extends Controller
             $breadcrumbs = null;
         }
 
-        $seo = $event->seo;
+        $seo = $event->seo ?? null;
 
         return Inertia::render('Client/Events/Show', compact('event', 'breadcrumbs', 'seo'));
     }

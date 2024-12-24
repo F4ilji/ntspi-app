@@ -40,7 +40,8 @@ class PageController extends Controller
             $breadcrumbs = null;
         }
 
-        $seo = $page->seo;
+        $seo = $page->seo ?? null;
+
 
 
         $page = new PageResource($page);
