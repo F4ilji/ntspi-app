@@ -82,14 +82,16 @@ export default {
 							<div class="flex space-x-3 text-gray-500 ">
 								<div class="flex items-center gap-3">
 									<div>
-
 										<div class="md:flex md:items-center space-y-3 md:space-y-0 space-x-2 text-sm">
 											<p v-if="event.data.is_online === 1" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600">
 												Онлайн
 											</p>
-											<p class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600">
+											<p v-if="event.data.category" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600">
 												{{ event.data.category }}
 											</p>
+											<div class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600">
+												<span>Дата начала: {{ event.data.event_date_start }}, {{ event.data.event_time_start }}</span>
+											</div>
 											<div class="col-start-2 text-center">
 												<span>Адрес: {{ event.data.address }}</span>
 											</div>

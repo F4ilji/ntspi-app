@@ -3,7 +3,7 @@
 		<div class="max-w-4xl mx-auto bg-white min-w-0">
 			<div class="overflow-x-scroll flex no-scrollbar">
 				<div class="flex items-center gap-x-3 whitespace-nowrap">
-					<template v-for="eventMonth in dates">
+					<template v-for="eventMonth in dates.toReversed()">
 						<div class="">
 							<div class="flex flex-col items-center">
 								<!--							<span class="text-[12px] text-gray-500">|</span>-->
