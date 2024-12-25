@@ -23,7 +23,7 @@ class ClientEventResource extends JsonResource
             'event_time_start' => Carbon::parse($this->event_time_start)->format('H:i'),
             'address' => $this->address,
             'is_online' => $this->is_online,
-            'category' => $this->category->title,
+            'category' => $this->category->title ?? null,
         ];
     }
 }
