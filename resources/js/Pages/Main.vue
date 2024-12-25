@@ -11,6 +11,7 @@
 				</template>
 			</div>
 
+
 			<div class="flex justify-center">
 				<a :href="route('client.post.index')" class="group mt-3 inline-flex items-center gap-x-1 text-sm font-semibold text-primaryBlue">
 					Все новости
