@@ -3,6 +3,11 @@
 
 	<MainPageNavBar :sections="$page.props.navigation" :slider-ref="sliderRef" />
 	<ClientMainSlider @slider-mounted="setSliderRef" :slidersCarousel="sliders" />
+	<h1 class="text-3xl text-center mb-2">Сайт изменен!!!</h1>
+	<div class="flex justify-center">
+		<img class="rounded-lg" src="https://icdn.lenta.ru/images/2019/12/29/16/20191229162041144/pic_35b06e2bd3403fb2d4748e36b1e25189.png" alt="">
+
+	</div>
 	<section class="max-w-screen-xl w-full mx-auto px-4 py-3 pb-10">
 			<h2 class="text-brand-primary my-6 md:mb-[50px] md:mt-[80px] text-2xl font-semibold tracking-tight text-black lg:text-[32px] lg:leading-tight">Последние новости</h2>
 			<div class="grid gap-10 pb-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
@@ -10,6 +15,7 @@
 					<ClientPost :post="post" />
 				</template>
 			</div>
+
 
 			<div class="flex justify-center">
 				<a :href="route('client.post.index')" class="group mt-3 inline-flex items-center gap-x-1 text-sm font-semibold text-primaryBlue">
