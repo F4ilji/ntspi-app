@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\NavigateController;
 use App\Http\Controllers\ClientWidgetAdditionalEducationalProgramController;
+use App\Http\Controllers\ClientWidgetContactController;
 use App\Http\Controllers\ClientWidgetEducationalProgramController;
 use App\Http\Controllers\ClientWidgetFormController;
 use App\Http\Controllers\ClientWidgetPageController;
@@ -24,10 +25,6 @@ Route::get('/getAcademicYear', function () {
     return $activeCampaign->academic_year;
 })->name('academic.year');
 
-Route::get('/test', function () {
-    $service = new DirectionStudyService();
-    dd($service->getAllNaprsUuid());
-});
 
 Route::get('/search', [SearchController::class, 'index'])->name('client.search.index');
 
@@ -40,7 +37,9 @@ Route::get('/widget/get-additional-programs', [ClientWidgetAdditionalEducational
 Route::get('/widget/get-educational-programs', [ClientWidgetEducationalProgramController::class, 'index'])->name('client.widget.educational.program.index');
 
 
-Route::get('/widget/get-page-resource/{id}', [ClientWidgetPageReferenceListController::class, 'show'])->name('client.widget.page.resource.index');
+Route::get('/widget/get-page-resource/{id}', [ClientWidgetPageReferenceListController::class, 'show'])->name('client.widget.page.resource.show');
+
+Route::get('/widget/get-contact-widget/{id}', [ClientWidgetContactController::class, 'show'])->name('client.widget.contact.show');
 
 
 Route::get('/widget/get-page/{id}', [ClientWidgetPageController::class, 'single'])->name('client.widget.page.single');

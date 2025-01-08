@@ -41,6 +41,7 @@ export default {
 				pageItem: () => import('@/Components/BuilderUi/Pages/Blocks/PageItemBlock.vue'),
 				customForm: () => import('@/Components/BuilderUi/Pages/Blocks/FormBlock.vue'),
 				pageResourceList: () => import('@/Components/BuilderUi/Pages/Blocks/PageResourceList.vue'),
+				contact: () => import('@/Components/BaseComponents/BaseBuilderUi/Blocks/Contacts/ContactSectionBlock.vue'),
 			};
 
 			// Создайте массив промисов для загрузки всех компонентов
@@ -65,6 +66,7 @@ export default {
 				pageItem: () => import('@/Components/BuilderUi/Pages/Blocks/PageItemBlock.vue'),
 				customForm: () => import('@/Components/BuilderUi/Pages/Blocks/FormBlock.vue'),
 				pageResourceList: () => import('@/Components/BuilderUi/Pages/Blocks/PageResourceList.vue'),
+				contact: () => import('@/Components/BaseComponents/BaseBuilderUi/Blocks/Contacts/ContactSectionBlock.vue'),
 			};
 			return defineAsyncComponent(componentMap[type] || null);
 		},

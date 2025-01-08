@@ -145,7 +145,7 @@
 									Построй свою индивидуальную траекторию
 								</p>
 							</div>
-							<div class="mt-auto p-4 md:p-6 grid grid-cols-2 lg:grid-cols-3 sm:space-y-0 space-y-3">
+							<div class="mt-auto p-4 md:p-6 grid grid-cols-2 lg:grid-cols-3">
 								<div class="pb-4">
 									<p class="text-2xl font-semibold text-blue-600">{{ educations.additional_education.educations_count }}</p>
 									<p class="mt-1 text-sm text-gray-500">Программ</p>
@@ -167,58 +167,7 @@
 			<!-- End Card Blog -->
 		</section>
 	<PageResourceList resource-id="glavnaia-stranica-resurs" />
-	<section class="bg-[#F5F5F5] w-full py-10">
-			<div class="max-w-screen-xl md:flex justify-around w-full mx-auto px-4 py-[50px] flex-wrap">
-				<div class="mb-[50px] space-y-3">
-					<h2 class="font-semibold text-[#1A5AAF] text-lg">Контакты</h2>
-					<div>
-						<h3 class="font-semibold mb-4">Главный корпус</h3>
-						<div class="font-light">
-							<p>622031, Нижний Тагил,  Красногвардейская 57</p>
-						</div>
-					</div>
-					<div>
-						<h3 class="font-semibold mb-4">Свяжитесь с нами</h3>
-						<div class="flex gap-x-3 font-light">
-							<p>+7(906)-802-55-59</p>
-							<p>ntgspi@yandex.ru</p>
-						</div>
-					</div>
-				</div>
-				<div class="mb-[50px] space-y-3">
-					<h2 class="font-semibold text-[#1A5AAF] text-lg">Приемная комиссия</h2>
-					<div>
-						<h3 class="font-semibold mb-4">Расписание</h3>
-						<div class="font-light">
-							<p>Понедельник - Пятница с 08.30 до 17.00</p>
-						</div>
-					</div>
-					<div>
-						<h3 class="font-semibold mb-4">Ответственный секретарь приемной комиссии</h3>
-						<div class="font-light">
-							<p>+7(906)-802-55-59</p>
-							<p>ntgspi@yandex.ru</p>
-						</div>
-					</div>
-				</div>
-				<div class="space-y-3">
-					<h2 class="font-semibold text-[#1A5AAF] text-lg">Полезное</h2>
-					<div>
-						<h3 class="font-semibold mb-4">Главный корпус</h3>
-						<div class="font-light">
-							<p>Понедельник - Пятница <br> с 08.30 до 17.00</p>
-						</div>
-					</div>
-					<div>
-						<h3 class="font-semibold mb-4">Ответственный секретарь <br> приемной комиссии</h3>
-						<div class="font-light">
-							<p>+7(906)-802-55-59</p>
-							<p>ntgspi@yandex.ru</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+	<ContactSectionBlock contact-id="glavnaia-stranica-kontakty" />
 	<ClientFooterDown />
 
 </template>
@@ -234,6 +183,7 @@ import LevelEducational from "../Enum/LevelEducational.js";
 import BaseMetaHead from "@/Components/BaseComponents/BaseMetaHead.vue";
 import PageResourceList from "@/Components/BuilderUi/Pages/Blocks/PageResourceList.vue";
 import AppHead from "@/Components/AppHead.vue";
+import ContactSectionBlock from "@/Components/BaseComponents/BaseBuilderUi/Blocks/Contacts/ContactSectionBlock.vue";
 
 
 
@@ -272,6 +222,7 @@ export default {
 	},
 
 	components: {
+		ContactSectionBlock,
 		AppHead,
 		PageResourceList,
 		BaseMetaHead,

@@ -73,11 +73,12 @@ export default {
 								<div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
 
 									<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
-										<DivisionListBreadcrumbs />
 
 										<h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Подразделения института</h2>
-										<p class="mt-1 text-gray-600 dark:text-neutral-400">We've helped some great companies brand, design and get to market.</p>
+										<p class="mt-1 text-gray-600 dark:text-neutral-400">Список структурных и административных отделов НТГСПИ</p>
 									</div>
+									<DivisionListBreadcrumbs />
+
 									<!-- Grid -->
 									<div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-6">
 										<template v-for="division in divisions.data">

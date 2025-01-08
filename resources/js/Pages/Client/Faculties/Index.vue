@@ -74,7 +74,7 @@ export default {
 								<div class="max-w-[85rem] px-0 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
 									<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
 										<h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Факультеты и кафедры</h2>
-										<p class="mt-1 text-gray-600 dark:text-neutral-400">We've helped some great companies brand, design and get to market.</p>
+										<p class="mt-1 text-gray-600 dark:text-neutral-400">Информация о наших факультетах и кафедрах</p>
 									</div>
 									<FacultyListBreadcrumbs />
 

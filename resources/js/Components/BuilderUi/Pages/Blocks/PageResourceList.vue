@@ -1,21 +1,38 @@
 <template>
 	<div v-if="loading" class="flex flex-col space-y-4">
-		<div class="group block rounded-xl overflow-hidden animate-pulse">
+		<div class="group flex justify-center space-x-8 mb-8 flex-wrap rounded-xl overflow-hidden animate-pulse items-center">
 			<div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
 				<div class="shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-44">
 					<div class="w-full h-full bg-gray-200"></div>
 				</div>
 			</div>
+			<div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+				<div class="shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-44">
+					<div class="w-full h-full bg-gray-200"></div>
+				</div>
+			</div>
+			<div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+				<div class="shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-44">
+					<div class="w-full h-full bg-gray-200"></div>
+				</div>
+			</div>
+			<div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+				<div class="shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-44">
+					<div class="w-full h-full bg-gray-200"></div>
+				</div>
+			</div>
+
 		</div>
 	</div>
 	<div v-else>
 
+
 		<!-- Card Blog -->
-		<div class="px-0 py-10 sm:px-2 lg:py-14 mx-auto">
+		<div v-if="resource.data.length !== 0" class="px-0 py-10 sm:px-2 lg:py-14 mx-auto">
 			<!-- Title -->
 			<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
 				<h2 class="text-2xl font-bold md:text-4xl md:leading-tight">Полезные ресурсы</h2>
-				<p class="mt-1 text-gray-600">We've helped some great companies brand, design and get to market.</p>
+				<p class="mt-1 text-gray-600"></p>
 			</div>
 			<!-- End Title -->
 
@@ -66,7 +83,7 @@ export default {
 	},
 	methods: {
 		getResource(id) {
-			axios.get(route('client.widget.page.resource.index', id))
+			axios.get(route('client.widget.page.resource.show', id))
 					.then(response => {
 						this.resource = response.data;
 						this.loading = false; // Установить состояние загрузки в false

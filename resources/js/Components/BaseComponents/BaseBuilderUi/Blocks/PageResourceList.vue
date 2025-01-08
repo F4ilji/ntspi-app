@@ -8,6 +8,7 @@
 			</div>
 		</div>
 	</div>
+
 	<div v-else>
 
 		<!-- Card Blog -->
@@ -66,7 +67,7 @@ export default {
 	},
 	methods: {
 		getResource(id) {
-			axios.get(route('client.widget.page.resource.index', id))
+			axios.get(route('client.widget.page.resource.show', id))
 					.then(response => {
 						this.resource = response.data;
 						this.loading = false; // Установить состояние загрузки в false

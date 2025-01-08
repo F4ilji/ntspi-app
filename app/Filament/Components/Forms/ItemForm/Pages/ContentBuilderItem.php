@@ -6,6 +6,7 @@ use App\Enums\CustomFormStatus;
 use App\Enums\PostStatus;
 use App\Helpers\ByteConverter;
 use App\Models\Category;
+use App\Models\ContactWidget;
 use App\Models\CustomForm;
 use App\Models\Page;
 use App\Models\PageReferenceList;
@@ -407,6 +408,13 @@ class ContentBuilderItem
                             ->searchable()
                             ->required(),
                     ])->label('Ресурсы'),
+                Builder\Block::make('contact')
+                    ->schema([
+                        Select::make('contact')
+                            ->options(ContactWidget::query()->where('is_active', true)->pluck('title', 'slug'))
+                            ->searchable()
+                            ->required(),
+                    ])->label('Контакты'),
             ])
                 ->collapsed()
                 ->blockNumbers(false)

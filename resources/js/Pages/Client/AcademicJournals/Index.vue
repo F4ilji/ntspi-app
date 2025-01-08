@@ -71,7 +71,6 @@ export default {
 
 									<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
 										<h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Научные периодические издания НТГСПИ</h2>
-										<p class="mt-1 text-gray-600 dark:text-neutral-400">We've helped some great companies brand, design and get to market.</p>
 									</div>
 									<!-- Grid -->
 									<div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-6">

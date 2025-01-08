@@ -56,7 +56,7 @@
 import {Link} from "@inertiajs/vue3";
 import axios from "axios";
 import ClientGlobalSearch from "@/Components/ClientGlobalSearch.vue";
-// import * as isvek from "bvi"
+import * as isvek from "bvi"
 import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
 import MobileNavbar from "@/Navbars/MobileNavbar.vue";
 import SearchModal from "@/Components/Modals/SearchModal.vue";
@@ -155,7 +155,6 @@ export default {
 		// 		theme: 'black',
 		// 		speech: false,
 		// 		reload: true,
-		// 		//...etc
 		// 	});
 		// }
 	},
