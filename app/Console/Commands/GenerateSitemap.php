@@ -43,18 +43,18 @@ class GenerateSitemap extends Command
     {
         $sitemap = Sitemap::create();
 
+        // Генерация карты сайта для всех моделей
         $this->generatePages($sitemap);
         $this->generatePosts($sitemap);
-        $this->generateEvents($sitemap);
-        $this->generateFaculties($sitemap);
-        $this->generateDepartments($sitemap);
-        $this->generateDivisisons($sitemap);
-        $this->generateEducationalPrograms($sitemap);
-        $this->generateAdditionalPrograms($sitemap);
-        $this->generateAcademicJournals($sitemap);
-        $this->generateVirtualExhibitions($sitemap);
-        $this->generateLibraryNews($sitemap);
+        $this->generateDivisions($sitemap);
+        $this->generateEducationPrograms($sitemap); // Добавляем генерацию для EducationProgram
+        $this->generateEvents($sitemap); // Добавляем генерацию для Event
+        $this->generateAdditionalEducations($sitemap); // Добавляем генерацию для AdditionalEducation
+        $this->generateFaculties($sitemap); // Добавляем генерацию для Faculty
+        $this->generateDepartments($sitemap); // Добавляем генерацию для Department
+        $this->generateUsers($sitemap); // Добавляем генерацию для User
 
+        // Сохраняем карту сайта в файл
         $sitemap->writeToFile(public_path('sitemap.xml'));
     }
 
@@ -67,22 +67,9 @@ class GenerateSitemap extends Command
 
         $this->addUrlsToSitemap($sitemap, $pages, function($page) {
             return [
-                'path' => "/{$page->path}",
+                'route' => 'page.view',
+                'params' => ['path' => $page->path],
                 'lastModificationDate' => $page->updated_at,
-                'priority' => 0.5,
-            ];
-        });
-    }
-
-    protected function generateEvents(Sitemap $sitemap)
-    {
-        $events = Event::query()
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $events, function($event) {
-            return [
-                'path' => route('client.event.show', $event->slug, false),
-                'lastModificationDate' => $event->updated_at,
                 'priority' => 0.5,
             ];
         });
@@ -96,39 +83,75 @@ class GenerateSitemap extends Command
 
         $this->addUrlsToSitemap($sitemap, $posts, function($post) {
             return [
-                'path' => route('client.post.show', $post->slug, false),
+                'route' => 'client.post.show',
+                'params' => ['slug' => $post->slug],
                 'lastModificationDate' => $post->updated_at,
                 'priority' => 0.5,
             ];
         });
     }
 
-    protected function generateEducationalPrograms(Sitemap $sitemap)
+    protected function generateDivisions(Sitemap $sitemap)
     {
-        $posts = EducationalProgram::query()
-            ->where('status', EducationalProgramStatus::PUBLISHED)
-            ->whereHas('admission_plans')
+        $divisions = Division::query()
+            ->where('is_active', true)
             ->get();
 
-        $this->addUrlsToSitemap($sitemap, $posts, function($program) {
+        $this->addUrlsToSitemap($sitemap, $divisions, function($division) {
             return [
-                'path' => route('client.program.show', $program->slug, false),
+                'route' => 'client.division.show',
+                'params' => ['slug' => $division->slug],
+                'lastModificationDate' => $division->updated_at,
+                'priority' => 0.5,
+            ];
+        });
+    }
+
+    protected function generateEducationPrograms(Sitemap $sitemap)
+    {
+        $programs = EducationalProgram::query()
+            ->where('status', EducationalProgramStatus::PUBLISHED) // Пример условия для активных программ
+            ->get();
+
+        $this->addUrlsToSitemap($sitemap, $programs, function($program) {
+            return [
+                'route' => 'client.program.show',
+                'params' => ['slug' => $program->slug],
                 'lastModificationDate' => $program->updated_at,
                 'priority' => 0.5,
             ];
         });
     }
 
-    protected function generateAdditionalPrograms(Sitemap $sitemap)
+    protected function generateEvents(Sitemap $sitemap)
     {
-        $posts = AdditionalEducation::query()
-            ->where('is_active', true)
+        $now = now()->toDateString(); // Текущая дата
+
+        $events = Event::query()
+            ->where('event_date_end', '>=', $now) // Только актуальные события
             ->get();
 
-        $this->addUrlsToSitemap($sitemap, $posts, function($program) {
+        $this->addUrlsToSitemap($sitemap, $events, function($event) {
             return [
-                'path' => route('client.additionalProgram.show', $program->slug, false),
-                'lastModificationDate' => $program->updated_at,
+                'route' => 'client.event.show',
+                'params' => ['slug' => $event->slug],
+                'lastModificationDate' => $event->updated_at,
+                'priority' => 0.5,
+            ];
+        });
+    }
+
+    protected function generateAdditionalEducations(Sitemap $sitemap)
+    {
+        $educations = AdditionalEducation::query()
+            ->where('is_active', true) // Пример условия для активных программ
+            ->get();
+
+        $this->addUrlsToSitemap($sitemap, $educations, function($education) {
+            return [
+                'route' => 'client.additionalEducation.show',
+                'params' => ['slug' => $education->slug],
+                'lastModificationDate' => $education->updated_at,
                 'priority' => 0.5,
             ];
         });
@@ -136,13 +159,14 @@ class GenerateSitemap extends Command
 
     protected function generateFaculties(Sitemap $sitemap)
     {
-        $posts = Faculty::query()
-            ->where('is_active', true)
+        $faculties = Faculty::query()
+            ->where('is_active', true) // Пример условия для активных факультетов
             ->get();
 
-        $this->addUrlsToSitemap($sitemap, $posts, function($faculty) {
+        $this->addUrlsToSitemap($sitemap, $faculties, function($faculty) {
             return [
-                'path' => route('client.faculty.show', $faculty->slug, false),
+                'route' => 'client.faculty.show',
+                'params' => ['slug' => $faculty->slug],
                 'lastModificationDate' => $faculty->updated_at,
                 'priority' => 0.5,
             ];
@@ -151,107 +175,44 @@ class GenerateSitemap extends Command
 
     protected function generateDepartments(Sitemap $sitemap)
     {
-        $posts = Department::query()
-            ->with('faculty')
-            ->where('is_active', true)
+        $departments = Department::query()
+            ->where('is_active', true) // Пример условия для активных кафедр
             ->get();
 
-        $this->addUrlsToSitemap($sitemap, $posts, function($department) {
+        $this->addUrlsToSitemap($sitemap, $departments, function($department) {
             return [
-                'path' => route('client.department.show', [
-                    'facultySlug' => $department->faculty->slug,
-                    'departmentSlug' => $department->slug,
-                ], false),
+                'route' => 'client.department.show',
+                'params' => ['facultySlug' => $department->faculty->slug, 'departmentSlug' => $department->slug],
                 'lastModificationDate' => $department->updated_at,
                 'priority' => 0.5,
             ];
         });
     }
 
-    protected function generateDivisisons(Sitemap $sitemap)
+    protected function generateUsers(Sitemap $sitemap)
     {
-        $posts = Division::query()
-            ->where('is_active', true)
+        $users = User::query()
+            ->whereHas('userDetail', function ($q) {
+                $q->where('is_only_worker', false);
+            })
             ->get();
 
-        $this->addUrlsToSitemap($sitemap, $posts, function($division) {
+        $this->addUrlsToSitemap($sitemap, $users, function($user) {
             return [
-                'path' => route('client.division.show', $division->slug, false),
-                'lastModificationDate' => $division->updated_at,
+                'route' => 'client.person.show',
+                'params' => ['slug' => $user->slug],
+                'lastModificationDate' => $user->updated_at,
                 'priority' => 0.5,
             ];
         });
     }
-
-    protected function generateAcademicJournals(Sitemap $sitemap)
-    {
-        $posts = AcademicJournal::query()
-            ->where('is_active', true)
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $posts, function($journal) {
-            return [
-                'path' => route('client.academicJournal.show', $journal->slug, false),
-                'lastModificationDate' => $journal->updated_at,
-                'priority' => 0.5,
-            ];
-        });
-    }
-
-    protected function generateLibraryNews(Sitemap $sitemap)
-    {
-        $posts = LibraryNews::query()
-            ->where('is_active', true)
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $posts, function($journal) {
-            return [
-                'path' => route('client.library.news.show', $journal->slug, false),
-                'lastModificationDate' => $journal->updated_at,
-                'priority' => 0.5,
-            ];
-        });
-    }
-
-    protected function generateVirtualExhibitions(Sitemap $sitemap)
-    {
-        $posts = VirtualExhibition::query()
-            ->where('is_active', true)
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $posts, function($exhibition) {
-            return [
-                'path' => route('client.library.exhibition.show', $exhibition->slug, false),
-                'lastModificationDate' => $exhibition->updated_at,
-                'priority' => 0.5,
-            ];
-        });
-    }
-
-    protected function generatePersons(Sitemap $sitemap)
-    {
-        $posts = User::query()
-            ->whereHas('userDetail')
-            ->with('userDetail')
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $posts, function($user) {
-            return [
-                'path' => route('client.person.show', $user->slug, false),
-                'lastModificationDate' => $user->userDetail->updated_at,
-                'priority' => 0.5,
-            ];
-        });
-    }
-
-
-
 
     protected function addUrlsToSitemap(Sitemap $sitemap, $items, callable $callback)
     {
         foreach ($items as $item) {
             $urlData = $callback($item);
-            $sitemap->add(Url::create($urlData['path'])
+            $url = route($urlData['route'], $urlData['params']);
+            $sitemap->add(Url::create($url)
                 ->setLastModificationDate($urlData['lastModificationDate'])
                 ->setPriority($urlData['priority']));
         }

@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
           libzip-dev \
           zip \
           unzip \
-          git && \
+          git \
+          cron && \
           docker-php-ext-configure gd --with-webp --with-jpeg && \
           docker-php-ext-install gd && \
           docker-php-ext-install pdo_mysql && \
@@ -30,14 +31,12 @@ RUN docker-php-ext-install intl
 
 RUN apt-get update && apt-get install -y default-mysql-client
 
-
 # Копирование конфигурационного файла PHP
 COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 
 # Установка Node.js
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs npm
-
 
 EXPOSE 6001
 EXPOSE 5173
@@ -47,5 +46,13 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --filename=composer \
     --install-dir=/usr/local/bin
 
+# Настройка Cron
+COPY ./_docker/app/crontab /etc/cron.d/laravel-cron
+RUN chmod 0644 /etc/cron.d/laravel-cron # Устанавливаем правильные права
+RUN crontab /etc/cron.d/laravel-cron # Добавляем задачи в crontab
+RUN touch /var/log/cron.log # Создаем файл для логов Cron
+
 WORKDIR /var/www
 
+# Запуск Cron и PHP-FPM
+CMD ["sh", "-c", "cron && php-fpm"]
