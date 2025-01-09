@@ -29,20 +29,20 @@ export const linksReform = {
 
         this.clearBodyStyles();
 
-        // const hostname = window.location.hostname;
-        // const defaultLinks = Array.from(this.getDefaultLinks());
-        //
-        // const reactiveLinks = this.createReactiveLinks(defaultLinks, hostname);
-        //
-        // reactiveLinks.forEach(link => {
-        //     link.addEventListener('click', (event) => {
-        //         event.preventDefault();
-        //         this.clearBodyStyles();
-        //         const url = link.getAttribute('href');
-        //         this.$inertia.visit(url, {
-        //             preserveScroll: false,
-        //         });
-        //     });
-        // });
+        const hostname = window.location.hostname;
+        const defaultLinks = Array.from(this.getDefaultLinks());
+
+        const reactiveLinks = this.createReactiveLinks(defaultLinks, hostname);
+
+        reactiveLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                this.clearBodyStyles();
+                const url = link.getAttribute('href');
+                this.$inertia.visit(url, {
+                    preserveScroll: false,
+                });
+            });
+        });
     }
 };

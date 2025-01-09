@@ -35,20 +35,39 @@
 			<!-- End Title -->
 
 			<!-- Grid -->
-			<div class="flex overflow-x-auto space-x-6 mb-10 lg:mb-14 p-4">
+			<div class="flex md:justify-center overflow-x-auto space-x-6 mb-10 lg:mb-14 p-4">
 				<!-- Card -->
 
-				<Link v-for="item in resource.data.content" class="group flex-shrink-0 w-64 flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition" :href="item.link">
+				<Link
+						v-for="item in resource.data.content"
+						class="group flex-shrink-0 w-64 flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition"
+						:href="item.link"
+				>
 					<div class="aspect-w-16 aspect-h-9">
-						<img v-if="item.image" class="w-full backdrop-blur-xl object-cover rounded-t-xl h-[150px]" :src="'/storage/' + item.image" alt="Blog Image">
-						<div v-else :class="randomBgClass()" class="w-full object-cover rounded-t-xl h-[150px] bg-gradient-to-tr" />
+						<img
+								v-if="item.image"
+								class="w-full backdrop-blur-xl object-cover rounded-t-xl h-[150px]"
+								:src="'/storage/' + item.image"
+								alt="Blog Image"
+						>
+						<div
+								v-else
+								:class="randomBgClass()"
+								class="w-full object-cover rounded-t-xl h-[150px] bg-gradient-to-tr"
+						/>
 					</div>
-					<div class="p-4 md:p-5">
-						<p class="mt-2 text-xs uppercase text-gray-600">{{ item.model_select }}</p>
-						<h3 class="mt-2 text-lg font-medium text-gray-800 group-hover:text-blue-600">{{ item.title }}</h3>
-						<p class="mt-2 text-xs text-gray-600">{{ item.link_text }}</p>
+					<div class="p-4 md:p-5 flex flex-col flex-grow">
+						<!-- <p class="mt-2 text-xs uppercase text-gray-600">{{ item.model_select }}</p> -->
+						<h3 class="my-2 text-lg font-medium text-gray-800 group-hover:text-blue-600">
+							{{ textLimit(item.title, 40) }}
+						</h3>
+						<p class="text-xs text-gray-600 mt-auto group-hover:text-gray-900">
+							{{ item.link_text }}
+						</p>
 					</div>
 				</Link>
+
+
 
 
 
@@ -92,6 +111,14 @@ export default {
 		},
 		randomBgClass() {
 			return this.colors[Math.floor(Math.random() * this.colors.length)];
+		},
+		textLimit(text, symbols) {
+			if (text.length > symbols) {
+				let LimitedText;
+				LimitedText = text.substring(0, symbols);
+				return LimitedText + "...";
+			}
+			return text;
 		},
 	},
 	mounted() {
