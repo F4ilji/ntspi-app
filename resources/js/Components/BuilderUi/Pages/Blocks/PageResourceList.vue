@@ -38,7 +38,7 @@
 			<div class="flex md:justify-center overflow-x-auto space-x-6 mb-10 lg:mb-14 p-4">
 				<!-- Card -->
 
-				<Link
+				<a
 						v-for="item in resource.data.content"
 						class="group flex-shrink-0 w-64 flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition"
 						:href="item.link"
@@ -65,7 +65,7 @@
 							{{ item.link_text }}
 						</p>
 					</div>
-				</Link>
+				</a>
 
 
 
