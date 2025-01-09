@@ -1,8 +1,8 @@
 <template>
-	<div class="mb-[50px] space-y-3">
+	<div class="space-y-3">
 		<h2 class="font-semibold text-[#1A5AAF] text-lg">{{ title }}</h2>
 		<div v-for="(item, index) in items" :key="index">
-			<h3 class="font-semibold mb-4">{{ item.header }}</h3>
+			<h3 class="font-semibold md:mb-2 mb-1">{{ item.header }}</h3>
 			<div class="font-light">
 				<p v-for="(detail, idx) in item.details" :key="idx">
           <span v-if="detail.url">

@@ -25,8 +25,6 @@
 		</div>
 	</div>
 	<div v-else>
-
-
 		<!-- Card Blog -->
 		<div v-if="resource.data.length !== 0" class="px-0 py-10 sm:px-2 lg:py-14 mx-auto">
 			<!-- Title -->
@@ -40,7 +38,7 @@
 			<div class="flex overflow-x-auto space-x-6 mb-10 lg:mb-14 p-4">
 				<!-- Card -->
 
-				<a v-for="item in resource.data.content" class="group flex-shrink-0 w-64 flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition" :href="item.link">
+				<Link v-for="item in resource.data.content" class="group flex-shrink-0 w-64 flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition" :href="item.link">
 					<div class="aspect-w-16 aspect-h-9">
 						<img v-if="item.image" class="w-full backdrop-blur-xl object-cover rounded-t-xl h-[150px]" :src="'/storage/' + item.image" alt="Blog Image">
 						<div v-else :class="randomBgClass()" class="w-full object-cover rounded-t-xl h-[150px] bg-gradient-to-tr" />
@@ -50,7 +48,7 @@
 						<h3 class="mt-2 text-lg font-medium text-gray-800 group-hover:text-blue-600">{{ item.title }}</h3>
 						<p class="mt-2 text-xs text-gray-600">{{ item.link_text }}</p>
 					</div>
-				</a>
+				</Link>
 
 
 

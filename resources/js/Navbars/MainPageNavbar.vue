@@ -6,10 +6,10 @@
 		<nav class="max-w-screen-xl w-full mx-auto px-4 py-3" aria-label="Global">
 			<div class="relative lg:flex md:items-center md:justify-between">
 				<div class="flex items-center justify-between">
-					<a class="flex-none text-xl font-semibold dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-						 href="/" aria-label="Brand">
+					<Link class="flex-none text-xl font-semibold dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+						 :href="route('index')" aria-label="NTSPI">
 						<img class="max-w-[300px] duration-300" :src="currentLogo" alt="Логотип">
-					</a>
+					</Link>
 					<div class="lg:hidden">
 						<button :class="underSliderHeader ? 'text-black' : 'text-white'"
 								type="button"
