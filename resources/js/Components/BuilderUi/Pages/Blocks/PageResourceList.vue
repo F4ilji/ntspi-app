@@ -26,9 +26,9 @@
 	</div>
 	<div v-else>
 		<!-- Card Blog -->
-		<div v-if="resource.data.length !== 0" class="px-0 py-10 sm:px-2 lg:py-14 mx-auto">
+		<div v-if="resource.data.length !== 0" class="px-0 sm:px-2 lg:py-14 mx-auto">
 			<!-- Title -->
-			<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
+			<div class="max-w-2xl text-center mx-auto mb-4 md:mb-10 lg:mb-14">
 				<h2 class="text-2xl font-bold md:text-4xl md:leading-tight">Полезные ресурсы</h2>
 				<p class="mt-1 text-gray-600"></p>
 			</div>

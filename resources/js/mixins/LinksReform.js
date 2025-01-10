@@ -37,7 +37,6 @@ export const linksReform = {
         reactiveLinks.forEach(link => {
             link.addEventListener('click', (event) => {
                 event.preventDefault();
-                this.clearBodyStyles();
                 const url = link.getAttribute('href');
                 this.$inertia.visit(url, {
                     preserveScroll: false,
