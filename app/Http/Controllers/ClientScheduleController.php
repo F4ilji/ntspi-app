@@ -23,6 +23,7 @@ class ClientScheduleController extends Controller
                     $query->whereRaw('LOWER(title) like ?', ["%".strtolower($search)."%"]);
                 })
                 ->with('schedules')
+                ->with('faculty')
                 ->orderBy('title')
                 ->get());
         }

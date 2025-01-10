@@ -18,6 +18,7 @@ class ClientEducationalGroupResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'schedules' => ClientScheduleSearchResource::collection($this->schedules),
+            'faculty' => $this->faculty->title,
         ];
     }
 }
