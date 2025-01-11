@@ -4,13 +4,14 @@
 			<div
 					v-for="(item, index) in items"
 					:key="index"
-					class="w-full"
+					class="w-full h-[500px] overflow-hidden relative"
 					:class="{ 'block': currentIndex === index, 'hidden': currentIndex !== index }"
 			>
+				<div class="absolute inset-0 bg-cover bg-center blur-lg" :style="{ backgroundImage: 'url(/storage/' + item + ')' }"></div>
 				<img
 						@click="openLightboxOnSlide(index + 1)"
 						:src="'/storage/' + item"
-						class="mx-auto max-h-[500px] object-cover rounded-md hover:opacity-95 hover:duration-200 transition"
+						class="absolute inset-0 w-full h-full object-cover rounded-md hover:opacity-95 hover:duration-200 transition"
 				/>
 			</div>
 		</div>
@@ -32,10 +33,7 @@
 		{{ block.data.alt }}
 	</figcaption>
 
-
-
 	<FsLightbox class="" :slide="slide" :toggler="toggler" :sources="items.map(item => domainPath + '/storage/' + item)"/>
-
 </template>
 
 <script>
@@ -73,7 +71,7 @@ export default {
 				this.currentIndex++;
 			}
 		},
-		openLightboxOnSlide: function(number) {
+		openLightboxOnSlide: function (number) {
 			this.slide = number;
 			this.toggler = !this.toggler;
 		}
@@ -83,3 +81,9 @@ export default {
 	},
 };
 </script>
+
+<style scoped>
+.blur-lg {
+	filter: blur(20px);
+}
+</style>
