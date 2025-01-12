@@ -65,6 +65,8 @@ class GenerateSitemap extends Command
             ->where('code', 200)
             ->where('path', '!=', null)
             ->where('is_url', false)
+            ->where('title', '!=', null)
+            ->where('searchable', true)
             ->get();
 
         $this->addUrlsToSitemap($sitemap, $pages, function($page) {
