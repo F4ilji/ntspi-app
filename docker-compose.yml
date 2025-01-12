@@ -47,3 +47,14 @@ services:
       - MYSQL_PASSWORD=secret
     ports:
       - "3306:3306"
+
+  redis:
+    image: redis:latest
+    container_name: ntspi-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
