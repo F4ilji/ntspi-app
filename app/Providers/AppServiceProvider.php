@@ -2,10 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\MainSection;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\SubSection;
+use App\Observers\MainSectionObserver;
 use App\Observers\PageObserver;
 use App\Observers\PostObserver;
+use App\Observers\SubSectionObserver;
 use Carbon\Carbon;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
@@ -33,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
         setlocale(LC_TIME, 'ru_RU.UTF-8');
         Page::observe(PageObserver::class);
         Post::observe(PostObserver::class);
+        MainSection::observe(MainSectionObserver::class);
+        SubSection::observe(SubSectionObserver::class);
         Carbon::setLocale(config('app.locale'));
         Model::preventLazyLoading(!app()->isProduction());
 //        URL::forceScheme('https');

@@ -240,6 +240,12 @@ class FormBuilderItem
                 Builder\Block::make('captcha')
                     ->label('reCaptcha')
                     ->schema([
+                        TextInput::make('title_field')
+                            ->label('Заголовок поля')
+                            ->live(onBlur: true)
+                            ->default('Капча')
+                            ->disabled(true)
+                            ->dehydrated(true),
                         Forms\Components\Hidden::make('name_field')->required()->default(Str::slug('reCaptcha') . Carbon::now()->timestamp),
                         Section::make('Настройка')
                             ->collapsed()

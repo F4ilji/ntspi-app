@@ -12,7 +12,7 @@ class PageObserver
      */
     public function created(Page $page): void
     {
-        //
+        Cache::forget('navigation');
     }
 
     /**
@@ -22,6 +22,7 @@ class PageObserver
     {
         $cacheKey = 'page_' . md5($page->path);
         Cache::forget($cacheKey);
+        Cache::forget('navigation');
     }
 
     /**
@@ -31,6 +32,7 @@ class PageObserver
     {
         $cacheKey = 'page_' . md5($page->path);
         Cache::forget($cacheKey);
+        Cache::forget('navigation');
     }
 
     /**
