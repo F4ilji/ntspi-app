@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Http\Resources\ClientNavigationResource;
 use App\Models\MainSection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
 
@@ -32,6 +33,14 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $navigation = Cache::remember('navigation', now()->addHours(1), function () {
+            return ClientNavigationResource::collection(
+                MainSection::with('subSections.pages.section')
+                    ->orderBy('sort', 'asc')
+                    ->get()
+            );
+        });
+
         return [
             ...parent::share($request),
             'auth' => [
@@ -41,15 +50,14 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-            'navigation' => ClientNavigationResource::collection(MainSection::with('subSections.pages.section')->orderBy('sort', 'asc')->get()),
+            'navigation' => $navigation,
             'urlPrev' => function() {
                 if (url()->previous() !== '' && url()->previous() !== url()->current()) {
                     return url()->previous();
                 } else {
-                    return 'empty'; // Используется в JavaScript для отключения поведения кнопки "Назад"
+                    return 'empty';
                 }
             },
-
         ];
     }
 }

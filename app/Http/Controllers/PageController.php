@@ -15,6 +15,7 @@ use App\Models\MainSection;
 use App\Models\Page;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -23,7 +24,16 @@ class PageController extends Controller
 {
     public function render($path)
     {
-        $page = Page::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
+        // Генерируем уникальный ключ для кеширования
+        $cacheKey = 'page_' . md5($path);
+
+        // Пытаемся получить данные из кеша
+        $page = Cache::remember($cacheKey, now()->addHours(1), function () use ($path) {
+            return Page::where('path', '=', $path)
+                ->with('section.pages.section', 'section.mainSection')
+                ->first();
+        });
+
         if ($page === null) {
             abort(404);
         }
@@ -42,13 +52,9 @@ class PageController extends Controller
 
         $seo = $page->seo ?? null;
 
-
-
         $page = new PageResource($page);
 
         $error = $page->code;
-
-
 
         if ($page->code != 200) {
             abort($error);
@@ -56,7 +62,6 @@ class PageController extends Controller
 
         return Inertia::render($page->template, compact('page', 'subSectionPages', 'breadcrumbs', 'seo'));
     }
-
     public function getRegisteredPages()
     {
         $pages = PageResource::collection(Page::query()

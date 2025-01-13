@@ -6,9 +6,10 @@ use App\Http\Middleware\AccessCheck;
 use App\Http\Middleware\RateLimitCheckMiddleware;
 use App\Http\Middleware\RateLimitCounterMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use Spatie\Permission\Middlewares\PermissionMiddleware;
-use Spatie\Permission\Middlewares\RoleMiddleware;
-use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
+
 
 class Kernel extends HttpKernel
 {

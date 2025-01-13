@@ -1,7 +1,7 @@
 version: '3'
 services:
   webserver:
-    image: nginx:latest
+    image: nginx:1.27.2
     volumes:
       - ./:/var/www
       - ./_docker/nginx/conf.d/:/etc/nginx/conf.d/
@@ -24,7 +24,7 @@ services:
     command: >
       sh -c "cron && php artisan inertia:start-ssr & php-fpm"
 
-  php-queue:
+  php-queue-worker:
     restart: always
     build:
       context: .
@@ -48,13 +48,16 @@ services:
     ports:
       - "3306:3306"
 
-  redis:
-    image: redis:latest
-    container_name: ntspi-redis
+  redis-cache:
+    image: redis:7.4.2
+    restart: always
+    container_name: ntspi-cache-service
     ports:
       - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning
     volumes:
-      - redis_data:/data
+      - cache:/data
 
 volumes:
-  redis_data:
+  cache:
+    driver: local

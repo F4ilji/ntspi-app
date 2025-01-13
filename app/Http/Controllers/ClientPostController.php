@@ -20,6 +20,7 @@ use App\Models\Tag;
 use Carbon\Carbon;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -128,28 +129,52 @@ class ClientPostController extends Controller
 
     public function show(Request $request, $slug)
     {
-        $post = new PostResource(Post::where('slug', $slug)->where('publish_at', '<', Carbon::now())->firstOrFail());
-        $routeUrl = route('client.post.index');
-        $path = ltrim(parse_url($routeUrl, PHP_URL_PATH), '/');
+        // Уникальный ключ для кеширования
+        $cacheKey = 'post_' . md5($slug);
 
-        $page = Page::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
+        // Пытаемся получить данные из кеша
+        $data = Cache::remember($cacheKey, now()->addHours(1), function () use ($slug) {
+            // Получаем пост
+            $post = Post::where('slug', $slug)
+                ->where('publish_at', '<', Carbon::now())
+                ->firstOrFail();
 
-        if (isset($page->section)) {
-            $breadcrumbs = [
-                'mainSection' => new ClientBreadcrumbSection($page->section->mainSection),
-                'subSection' => new ClientBreadcrumbSubSection($page->section),
-                'page' => new ClientBreadcrumbPage($page),
-            ];
-        } else {
+            // Преобразуем пост в ресурс
+            $postResource = new PostResource($post);
+
+            // Получаем путь для страницы
+            $routeUrl = route('client.post.index');
+            $path = ltrim(parse_url($routeUrl, PHP_URL_PATH), '/');
+
+            // Получаем данные страницы
+            $page = Page::where('path', '=', $path)
+                ->with('section.pages.section', 'section.mainSection')
+                ->first();
+
+            // Формируем хлебные крошки
             $breadcrumbs = null;
-        }
+            if (isset($page->section)) {
+                $breadcrumbs = [
+                    'mainSection' => new ClientBreadcrumbSection($page->section->mainSection),
+                    'subSection' => new ClientBreadcrumbSubSection($page->section),
+                    'page' => new ClientBreadcrumbPage($page),
+                ];
+            }
 
-        $seo = $post->seo ?? null;
+            // SEO-данные
+            $seo = $post->seo ?? null;
 
+            // Возвращаем данные для кеширования
+            return [
+                'post' => $postResource,
+                'breadcrumbs' => $breadcrumbs,
+                'seo' => $seo,
+            ];
+        });
 
-        return Inertia::render('Client/Posts/Show', compact('post', 'breadcrumbs', 'seo'));
+        // Возвращаем ответ с использованием кешированных данных
+        return Inertia::render('Client/Posts/Show', $data);
     }
-
 
 
 }

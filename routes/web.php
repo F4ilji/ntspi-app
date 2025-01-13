@@ -13,31 +13,22 @@ use App\Http\Controllers\ClientProgramController;
 use App\Http\Controllers\ClientScheduleController;
 use App\Http\Controllers\ClientVacantPositionController;
 use App\Http\Controllers\ClientVirtualExhibitionController;
-use App\Http\Controllers\ClientWidgetFormController;
 use App\Http\Controllers\EducationalProgramController;
 use App\Http\Controllers\GenerateSitemapController;
-use App\Http\Controllers\LinkToolController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PersonController;
-use App\Http\Controllers\ScheduleController;
-use App\Http\Controllers\StudentController;
+
 use App\Http\Controllers\UpdateEduDataApiController;
-use App\Http\Controllers\UpdateViconDataApi;
-use App\Http\Controllers\VkAuthController;
-use App\Http\Controllers\VkPostController;
-use App\Models\Post;
+
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use Spatie\Sitemap\Sitemap;
-use Spatie\Sitemap\SitemapGenerator;
-use Spatie\Sitemap\Tags\Url;
+
 
 
 Route::middleware('signed')->get('invitation/{invitation}/accept', \App\Livewire\AcceptInvitation::class)
     ->name('invitation.accept');
 
-Route::get('/generate-sitemap', [GenerateSitemapController::class, 'index'])->name('generate-sitemap');
 
 Route::middleware('access-check')->group(function () {
 
@@ -98,7 +89,6 @@ Route::middleware('access-check')->group(function () {
     Route::get('/get-data', [UpdateEduDataApiController::class, 'index']);
 
     Route::get('{path}', [PageController::class, 'render'])->where('path', '[0-9,a-z,/,-]+')->name('page.view');
-
 });
 
 

@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Page;
 use App\Models\Post;
+use App\Observers\PageObserver;
 use App\Observers\PostObserver;
 use Carbon\Carbon;
 use Filament\Facades\Filament;
@@ -29,6 +31,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         setlocale(LC_TIME, 'ru_RU.UTF-8');
+        Page::observe(PageObserver::class);
+        Post::observe(PostObserver::class);
         Carbon::setLocale(config('app.locale'));
         Model::preventLazyLoading(!app()->isProduction());
 //        URL::forceScheme('https');

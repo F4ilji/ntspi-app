@@ -13,6 +13,5 @@ class NavigateController extends Controller
     public function index()
     {
         return ClientNavigationResource::collection(MainSection::with('subSections.pages')->orderBy('sort', 'asc')->get());
-
     }
 }
