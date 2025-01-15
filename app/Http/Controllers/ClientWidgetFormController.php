@@ -29,9 +29,6 @@ class ClientWidgetFormController extends Controller
         $messages = $this->generateValidationMessages($data['columns']);
 
 
-
-
-
         $validateData = Validator::make($request->all(), $rules, $messages);
 
 

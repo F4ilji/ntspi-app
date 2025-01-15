@@ -72,6 +72,7 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsToMany(Division::class, 'division_user')->withPivot(['administrativePosition']);
     }
 
+
     public function faculties()
     {
         return $this->belongsToMany(Faculty::class, 'workers_faculties')->withPivot(['position']);

@@ -22,13 +22,13 @@ use Inertia\Inertia;
 
 class PageController extends Controller
 {
-    public function render($path)
+    public function render(Request $request, $path)
     {
         // Генерируем уникальный ключ для кеширования
         $cacheKey = 'page_' . md5($path);
 
         // Пытаемся получить данные из кеша
-        $page = Cache::remember($cacheKey, now()->addHours(1), function () use ($path) {
+        $page = Cache::remember($cacheKey, now()->addHours(48), function () use ($path) {
             return Page::where('path', '=', $path)
                 ->with('section.pages.section', 'section.mainSection')
                 ->first();

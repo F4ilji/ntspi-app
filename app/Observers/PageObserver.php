@@ -3,16 +3,24 @@
 namespace App\Observers;
 
 use App\Models\Page;
+use App\Services\App\Cache\PageCacheService;
 use Illuminate\Support\Facades\Cache;
 
 class PageObserver
 {
+    private PageCacheService $pageCacheService;
+
+    public function __construct()
+    {
+        $this->pageCacheService = app(PageCacheService::class);
+    }
+
     /**
      * Handle the Page "created" event.
      */
     public function created(Page $page): void
     {
-        Cache::forget('navigation');
+        $this->pageCacheService->clearAllCacheByModel();
     }
 
     /**
@@ -20,9 +28,7 @@ class PageObserver
      */
     public function updated(Page $page)
     {
-        $cacheKey = 'page_' . md5($page->path);
-        Cache::forget($cacheKey);
-        Cache::forget('navigation');
+        $this->pageCacheService->clearCache($page);
     }
 
     /**
@@ -30,9 +36,7 @@ class PageObserver
      */
     public function deleted(Page $page)
     {
-        $cacheKey = 'page_' . md5($page->path);
-        Cache::forget($cacheKey);
-        Cache::forget('navigation');
+        $this->pageCacheService->clearAllCacheByModel();
     }
 
     /**

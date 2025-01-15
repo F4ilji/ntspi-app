@@ -16,9 +16,8 @@ use App\Models\AdmissionCampaign;
 use App\Services\Vicon\DirectionStudy\DirectionStudyService;
 use App\Services\VK\VkAuthService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/getNavigation', [NavigateController::class, 'index'])->name('client.main.navigate');
 
 Route::get('/getAcademicYear', function () {
     $activeCampaign = AdmissionCampaign::query()->where('status', 1)->first();
@@ -26,34 +25,42 @@ Route::get('/getAcademicYear', function () {
 })->name('academic.year');
 
 
-Route::get('/search', [SearchController::class, 'index'])->name('client.search.index');
+Route::middleware('ensure.browser')->group(function () {
+    Route::get('/getNavigation', [NavigateController::class, 'index'])->name('client.main.navigate');
 
-Route::get('/widget/get-posts', [ClientWidgetPostController::class, 'index'])->name('client.widget.post.index');
+    Route::get('/search', [SearchController::class, 'index'])->name('client.search.index');
 
-Route::get('/widget/get-posts/{id}', [ClientWidgetPostController::class, 'single'])->name('client.widget.post.single');
+    Route::get('/widget/get-posts', [ClientWidgetPostController::class, 'index'])->name('client.widget.post.index');
 
-Route::get('/widget/get-additional-programs', [ClientWidgetAdditionalEducationalProgramController::class, 'index'])->name('client.widget.additional.program.index');
+    Route::get('/widget/get-posts/{id}', [ClientWidgetPostController::class, 'single'])->name('client.widget.post.single');
 
-Route::get('/widget/get-educational-programs', [ClientWidgetEducationalProgramController::class, 'index'])->name('client.widget.educational.program.index');
+    Route::get('/widget/get-additional-programs', [ClientWidgetAdditionalEducationalProgramController::class, 'index'])->name('client.widget.additional.program.index');
+
+    Route::get('/widget/get-educational-programs', [ClientWidgetEducationalProgramController::class, 'index'])->name('client.widget.educational.program.index');
+
+    Route::get('/widget/get-page-resource/{id}', [ClientWidgetPageReferenceListController::class, 'show'])->name('client.widget.page.resource.show');
+
+    Route::get('/widget/get-contact-widget/{id}', [ClientWidgetContactController::class, 'show'])->name('client.widget.contact.show');
+
+    Route::get('/widget/get-page/{path}', [ClientWidgetPageController::class, 'single'])->name('client.widget.page.single');
+
+    Route::get('/widget/get-form/{id}', [ClientWidgetFormController::class, 'single'])->middleware('rate.limited.check')->name('client.widget.form.single');
+
+    Route::post('/widget/get-form/{id}/submit', [ClientWidgetFormController::class, 'submit'])->middleware(['rate.limited.counter', 'rate.limited.check'])->name('client.widget.form.submit');
+});
+
+Route::middleware(['auth', 'superadmin'])->group(function () {
+    Route::get('/login/vk', [VkAuthService::class, 'redirectToProvider'])->name('vk.login');
+    Route::get('/login/vk/callback', [VkAuthService::class, 'handleProviderCallback'])->name('vk.callback');
+    Route::get('/vk-get-token', [VkAuthService::class, 'getToken'])->name('vk.getToken');
+    Route::get('/vk-refresh-token', [VkAuthService::class, 'refresh'])->name('vk.refreshToken');
+    Route::get('/vk-logout', [VkAuthService::class, 'logout'])->name('vk.logout');
+});
 
 
-Route::get('/widget/get-page-resource/{id}', [ClientWidgetPageReferenceListController::class, 'show'])->name('client.widget.page.resource.show');
-
-Route::get('/widget/get-contact-widget/{id}', [ClientWidgetContactController::class, 'show'])->name('client.widget.contact.show');
 
 
-Route::get('/widget/get-page/{id}', [ClientWidgetPageController::class, 'single'])->name('client.widget.page.single');
 
-Route::get('/widget/get-form/{id}', [ClientWidgetFormController::class, 'single'])->middleware('rate.limited.check')->name('client.widget.form.single');
-
-Route::post('/widget/get-form/{id}/submit', [ClientWidgetFormController::class, 'submit'])->middleware(['rate.limited.counter', 'rate.limited.check'])->name('client.widget.form.submit');
-
-
-Route::get('/login/vk', [VkAuthService::class, 'redirectToProvider'])->name('vk.login');
-Route::get('/login/vk/callback', [VkAuthService::class, 'handleProviderCallback'])->name('vk.callback');
-Route::get('/vk-get-token', [VkAuthService::class, 'getToken'])->name('vk.getToken');
-Route::get('/vk-refresh-token', [VkAuthService::class, 'refresh'])->name('vk.refreshToken');
-Route::get('/vk-logout', [VkAuthService::class, 'logout'])->name('vk.logout');
 
 
 

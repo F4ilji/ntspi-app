@@ -28,82 +28,103 @@ class ClientPostController extends Controller
 {
     public function index(Request $request)
     {
-        $tagIds = DB::table('taggables')
-            ->distinct()
-            ->select('tag_id')
-            ->where('taggable_type', Post::class)
-            ->get()
-            ->pluck('tag_id');
+        // Кешируем список тегов
+        $tagIds = Cache::remember('tag_ids', now()->addHours(1), function () {
+            return DB::table('taggables')
+                ->distinct()
+                ->select('tag_id')
+                ->where('taggable_type', Post::class)
+                ->get()
+                ->pluck('tag_id');
+        });
 
-        $tags = \Spatie\Tags\Tag::whereIn('id', $tagIds)->get();
-        $posts = ClientPostListResource::collection(Post::query()
-            ->with('category')
-            ->select('title', 'slug', 'authors', 'category_id', 'preview', 'search_data', 'publish_at')
-            ->where('status', '=', 'published')
-            ->where('publish_at', '<', Carbon::now())
-            ->when(request()->input('search'), function ($query, $search) {
-                $query->whereRaw('LOWER(title) like ?', ["%".strtolower($search)."%"]);
-            })
-            ->when(request()->input('category'), function ($query) {
-                $slugs = request()->input('category');
-                if (is_array($slugs)) {
-                    $query->whereHas('category', function ($query) use ($slugs) {
-                        $query->whereIn('slug', $slugs);
-                    });
-                }
-            })
-            ->when(request()->input('tag'), function ($query, $slugs) {
-                if (is_array($slugs)) {
-                    return $query->withAnyTags($slugs);
-                }
+        // Кешируем теги
+        $tags = Cache::remember('tags', now()->addHours(1), function () use ($tagIds) {
+            return \Spatie\Tags\Tag::whereIn('id', $tagIds)->get();
+        });
 
-                $slugsArray = explode(',', $slugs);
-                return $query->withAnyTags($slugsArray);
-            })
-            ->orderBy('publish_at', request()->input('sort', 'desc'))
+        // Кешируем посты с учетом фильтров
+        $cacheKey = 'posts_' . md5(serialize($request->all()));
+        $posts = Cache::remember($cacheKey, now()->addHours(1), function () use ($request) {
+            return ClientPostListResource::collection(Post::query()
+                ->with('category')
+                ->select('title', 'slug', 'authors', 'category_id', 'preview', 'search_data', 'publish_at')
+                ->where('status', '=', 'published')
+                ->where('publish_at', '<', Carbon::now())
+                ->when($request->input('search'), function ($query, $search) {
+                    $query->whereRaw('LOWER(title) like ?', ["%".strtolower($search)."%"]);
+                })
+                ->when($request->input('category'), function ($query) use ($request) {
+                    $slugs = $request->input('category');
+                    if (is_array($slugs)) {
+                        $query->whereHas('category', function ($query) use ($slugs) {
+                            $query->whereIn('slug', $slugs);
+                        });
+                    }
+                })
+                ->when($request->input('tag'), function ($query, $slugs) {
+                    if (is_array($slugs)) {
+                        return $query->withAnyTags($slugs);
+                    }
 
-            ->paginate(6)
-            ->withQueryString());
+                    $slugsArray = explode(',', $slugs);
+                    return $query->withAnyTags($slugsArray);
+                })
+                ->orderBy('publish_at', $request->input('sort', 'desc'))
+                ->paginate(6)
+                ->withQueryString());
+        });
 
-        $categories = CategoryResource::collection(Category::has('posts')->get());
+        // Кешируем категории
+        $categories = Cache::remember('categories', now()->addHours(48), function () {
+            return CategoryResource::collection(Category::has('posts')->get());
+        });
 
+        // Кешируем контент категорий
         $categoriesContent = [];
-        if (request()->input('category')) {
-            foreach (request()->input('category') as $item) {
-                $categoriesContent[$item] = new CategoryResource(Category::where('slug', $item)->first());
+        if ($request->input('category')) {
+            foreach ($request->input('category') as $item) {
+                $cacheKey = 'category_content_' . $item;
+                $categoriesContent[$item] = Cache::remember($cacheKey, now()->addHours(1), function () use ($item) {
+                    return new CategoryResource(Category::where('slug', $item)->first());
+                });
             }
         }
 
+        // Кешируем контент тегов
         $tagsContent = [];
-        if (request()->input('tag')) {
-            foreach (request()->input('tag') as $item) {
-                $tagsContent[$item] = new ClientTagResource(DB::table('tags')
-                    ->where(DB::raw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.ru'))"), $item)
-                    ->first());
+        if ($request->input('tag')) {
+            foreach ($request->input('tag') as $item) {
+                $cacheKey = 'tag_content_' . $item;
+                $tagsContent[$item] = Cache::remember($cacheKey, now()->addHours(1), function () use ($item) {
+                    return new ClientTagResource(DB::table('tags')
+                        ->where(DB::raw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.ru'))"), $item)
+                        ->first());
+                });
             }
         }
 
         $filters = [
             'search_filter' => [
                 'type' => 'search',
-                'value' => request()->input('search'),
+                'value' => $request->input('search'),
                 'param' => 'search'
             ],
             'category_filter' => [
                 'type' => 'category',
-                'value' => request()->input('category'),
+                'value' => $request->input('category'),
                 'param' => 'category',
                 'content' => $categoriesContent,
             ],
             'tag_filter' => [
                 'type' => 'tag',
-                'value' => request()->input('tag'),
+                'value' => $request->input('tag'),
                 'param' => 'tag',
                 'content' => $tagsContent
             ],
             'sortingBy_filter' => [
                 'type' => 'sort',
-                'value' => request()->input('sort'),
+                'value' => $request->input('sort'),
                 'param' => 'sort',
             ],
         ];
@@ -111,7 +132,10 @@ class ClientPostController extends Controller
         $routeUrl = route('client.post.index');
         $path = ltrim(parse_url($routeUrl, PHP_URL_PATH), '/');
 
-        $page = Page::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
+        // Кешируем страницу
+        $page = Cache::remember('page_' . $path, now()->addHours(1), function () use ($path) {
+            return Page::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
+        });
 
         if (isset($page->section)) {
             $breadcrumbs = [
@@ -122,7 +146,6 @@ class ClientPostController extends Controller
         } else {
             $breadcrumbs = null;
         }
-
 
         return Inertia::render('Client/Posts/Index', compact('filters', 'posts', 'categories', 'tags', 'breadcrumbs'));
     }

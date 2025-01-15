@@ -3,18 +3,26 @@
 namespace App\Observers;
 
 use App\Models\Post;
+use App\Services\App\Cache\PostCacheService;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redirect;
 
 class PostObserver
 {
+    protected PostCacheService $postCacheService;
+
+    public function __construct()
+    {
+        $this->postCacheService = new PostCacheService();
+    }
+
     /**
      * Handle the Post "created" event.
      */
     public function saved(Post $post): void
     {
-
+        $this->postCacheService->clearAllCacheByModel();
     }
 
     /**
@@ -22,8 +30,7 @@ class PostObserver
      */
     public function updated(Post $post)
     {
-        $this->clearPostCache($post);
-        $this->cachePost($post); // Кешируем обновленный пост
+        $this->postCacheService->clearCache($post);
     }
 
     /**
@@ -31,7 +38,7 @@ class PostObserver
      */
     public function deleted(Post $post)
     {
-        $this->clearPostCache($post);
+        $this->postCacheService->clearAllCacheByModel();
     }
 
     /**
@@ -50,23 +57,4 @@ class PostObserver
         //
     }
 
-    protected function cachePost(Post $post)
-    {
-        $cacheKey = 'post_' . md5($post->slug);
-        $cacheData = [
-            'post' => $post,
-            'seo' => $post->seo,
-        ];
-
-        Cache::put($cacheKey, $cacheData, now()->addHours(1)); // Кешируем на 1 час
-    }
-
-    /**
-     * Очистка кеша поста.
-     */
-    protected function clearPostCache(Post $post)
-    {
-        $cacheKey = 'post_' . md5($post->slug);
-        Cache::forget($cacheKey);
-    }
 }

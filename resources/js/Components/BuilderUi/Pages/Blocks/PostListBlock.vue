@@ -9,7 +9,6 @@
 						<div class="bg-gray-200 group-focus:scale-105 transition-transform duration-500 ease-in-out size-full absolute top-0 start-0 object-cover rounded-xl" />
 					</div>
 
-
 					<div class="ms-4 mt-2 w-full">
 						<p class="h-4 bg-gray-200 rounded-full" style="width: 40%;"></p>
 						<ul class="mt-5 space-y-3 flex flex-col">
@@ -73,11 +72,14 @@
 						</div>
 
 						<div class="grow">
+							<div>
+								<span class="text-sm font-light text-gray-700">Опубликовано {{ post.created_post }}</span>
+							</div>
 							<h3 class="text-xl font-semibold text-gray-800 group-hover:text-gray-600">
 								{{ post.title }}
 							</h3>
 							<p class="mt-3 text-gray-600">
-								Produce professional, reliable streams easily leveraging Preline's innovative broadcast studio
+								{{ textLimit(post.preview_text, 80) }}
 							</p>
 							<p class="mt-4 inline-flex items-center gap-x-1 text-sm text-primaryBlue decoration-2 group-hover:underline group-focus:underline font-medium">
 								Читать далее
@@ -129,7 +131,15 @@ export default {
 						console.error('Ошибка:', error);
 						this.loading = false; // Установить состояние загрузки в false даже при ошибке
 					});
-		}
+		},
+		textLimit(text, symbols) {
+			if (text.length > symbols) {
+				let LimitedText;
+				LimitedText = text.substring(0, symbols);
+				return LimitedText + "...";
+			}
+			return text;
+		},
 	},
 	mounted() {
 		this.getPosts();
