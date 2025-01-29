@@ -13,6 +13,7 @@ use App\Models\PageReferenceList;
 use App\Models\Post;
 use Filament\Forms;
 use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
@@ -97,7 +98,7 @@ class PostForm
                                     ]),
                                 Tabs\Tab::make('Содержание новости')
                                     ->schema([
-                                        ContentBuilderItem::getItem('content')
+                                        ContentBuilderItem::getItem('content')->required(),
                                     ]),
                                 Tabs\Tab::make('Изображения')
                                     ->schema([
@@ -118,6 +119,51 @@ class PostForm
                                             ->multiple()
                                             ->directory('images'),
                                     ]),
+                                Tabs\Tab::make('Добавление новости в слайдер')
+                                    ->schema([
+                                        Toggle::make('is_slider_enabled')
+                                            ->label('Добавить новый слайд')
+                                            ->live()
+                                            ->dehydrated(false)
+                                            ->default(false),
+                                        Section::make()
+                                            ->schema([
+                                                Forms\Components\TextInput::make('slide.title')
+                                                    ->label('Заголовок слайда'),
+                                                Forms\Components\Textarea::make('slide.content')
+                                                    ->label('Текст слайда'),
+                                                FileUpload::make('slide.image')
+                                                    ->label('Изображение')
+                                                    ->image()
+                                                    ->optimize('webp')
+                                                    ->resize(50)
+                                                    ->disk('public')
+                                                    ->directory('images')
+                                                    ->imageEditor()
+                                                    ->required(),
+                                                Grid::make(2)->schema([
+                                                    Toggle::make('disable_link_text')
+                                                        ->label('Отключить текст кнопки (ссылка будет открываться при нажатии на слайд)')
+                                                        ->live()
+                                                        ->inline(false)
+                                                        ->dehydrated(false)
+                                                        ->default(false),
+                                                    Forms\Components\TextInput::make('slide.link_text')
+                                                        ->default('Читать')
+                                                        ->label('Текст кнопки')
+                                                        ->disabled(fn (Forms\Get $get) => $get('disable_link_text')),
+                                                ]),
+
+                                                DateTimePicker::make('slide.end_time')
+                                                    ->label('Слайд действует до')
+                                                    ->native()
+                                                    ->displayFormat('d/m/Y')
+                                                    ->minDate(Carbon::now())
+                                                    ->maxDate(Carbon::now()->addWeek()),
+                                            ])
+                                            ->disabled(fn (Forms\Get $get) => !$get('is_slider_enabled')) // Отключаем секцию, если Toggle выключен
+                                            ->hidden(fn (Forms\Get $get) => !$get('is_slider_enabled')), // Скрываем секцию, если Toggle выключен
+                                    ])->hidden(fn (string $context): bool => $context === 'edit'),
                             ]),
                     ])
             ]);

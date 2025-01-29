@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\AccessCheck;
 use App\Http\Middleware\InternalRequestOnly;
+use App\Http\Middleware\LimitPost;
 use App\Http\Middleware\RateLimitCheckMiddleware;
 use App\Http\Middleware\RateLimitCounterMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -84,6 +85,7 @@ class Kernel extends HttpKernel
         'rate.limited.check' => RateLimitCheckMiddleware::class,
         'ensure.browser' => InternalRequestOnly::class,
         'superadmin' => \App\Http\Middleware\EnsureUserIsSuperadmin::class,
+        'limit.post' => LimitPost::class,
 
     );
 }

@@ -4,12 +4,13 @@
 	<MainPageNavBar :sections="$page.props.navigation" :slider-ref="sliderRef" />
 	<ClientMainSlider @slider-mounted="setSliderRef" :slidersCarousel="sliders" />
 	<section class="max-w-screen-xl w-full mx-auto px-4 py-3 pb-10">
-			<h2 class="text-brand-primary my-6 md:mb-[50px] md:mt-[80px] text-2xl font-semibold tracking-tight text-black lg:text-[32px] lg:leading-tight">Последние новости</h2>
-			<div class="grid gap-10 pb-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
-				<template v-for="post in posts.data" :key="post.id">
-					<ClientPost :post="post" />
-				</template>
-			</div>
+		<h2 class="text-brand-primary my-6 md:mb-[50px] md:mt-[80px] text-2xl font-semibold tracking-tight text-black lg:text-[32px] lg:leading-tight bvi-show">Последние новости</h2>
+		<div class="grid gap-10 pb-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3 bvi-no-styles">
+			<template v-for="post in posts.data" :key="post.id">
+				<ClientPost :post="post" />
+			</template>
+		</div>
+
 
 
 			<div class="flex justify-center">
@@ -184,6 +185,7 @@ import BaseMetaHead from "@/Components/BaseComponents/BaseMetaHead.vue";
 import PageResourceList from "@/Components/BuilderUi/Pages/Blocks/PageResourceList.vue";
 import AppHead from "@/Components/AppHead.vue";
 import ContactSectionBlock from "@/Components/BaseComponents/BaseBuilderUi/Blocks/Contacts/ContactSectionBlock.vue";
+import Cookies from "js-cookie";
 
 
 
@@ -238,6 +240,7 @@ export default {
 	},
 
 	methods: {
+		Cookies,
 		setSliderRef(ref) {
 			this.sliderRef = ref;
 		},

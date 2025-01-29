@@ -44,6 +44,7 @@
 		</nav>
 	</header>
 
+
 	<MobileNavbar v-if="sections" :sections="sections" />
 
 
@@ -61,6 +62,7 @@ import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
 import MobileNavbar from "@/Navbars/MobileNavbar.vue";
 import SearchModal from "@/Components/Modals/SearchModal.vue";
 import DesktopNavBar from "@/Navbars/DesktopNavBar.vue";
+
 
 
 export default {
@@ -87,6 +89,7 @@ export default {
 			headerFilter: false,
 			underSliderHeader: this.sliderRef,
 			bvi: null,
+			isActiveBvi: null,
 			logos: {
 				default: '/logos/white_ntspi_logo.svg',
 				alternate: '/logos/ntspi-logo.svg',
@@ -123,6 +126,19 @@ export default {
 
 		},
 
+		iniBvi() {
+			if (this.getCookie('bvi_panelActive') === null) {
+				this.bvi = new isvek.Bvi({
+					target: '.open-bvi',
+					fontSize: 24,
+					theme: 'black',
+					speech: false,
+					reload: true,
+					panelHide: true
+				});
+			}
+		},
+
 		handleScroll() {
 			if (typeof this.sliderRef === 'object') {
 				const mainSlider = this.sliderRef;
@@ -133,30 +149,19 @@ export default {
 				this.headerFilter = true
 			}
 		},
-		getCookie(name) {
-			let cookies = document.cookie.split(';');
-			for (let i = 0; i < cookies.length; i++) {
-				let cookie = cookies[i].trim();
-				if (cookie.startsWith(name + '=')) {
-					return cookie.substring(name.length + 1);
-				}
-			}
-			return null; // Если cookie не найден
-		}
+
 
 
 	},
 	mounted() {
 		window.addEventListener('scroll', this.handleScroll)
-		// if (this.getCookie('bvi_panelActive') === null) {
-		// 	this.bvi = new isvek.Bvi({
-		// 		target: '.className',
-		// 		fontSize: 24,
-		// 		theme: 'black',
-		// 		speech: false,
-		// 		reload: true,
-		// 	});
-		// }
+
+
+		if (this.getCookie('bvi_panelActive') === null) {
+			this.iniBvi()
+		}
+
+
 	},
 	beforeDestroy() {
 		window.removeEventListener('scroll', this.handleScroll)

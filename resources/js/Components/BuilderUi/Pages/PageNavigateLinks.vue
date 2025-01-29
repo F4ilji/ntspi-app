@@ -1,5 +1,5 @@
 <template>
-	<div class="w-full h-[67px] fixed pointer-events-none" id="visor"></div>
+	<div class="w-full h-[67px] fixed pointer-events-none bvi-no-styles" id="visor"></div>
 
 	<nav class="order-last hidden w-56 shrink-0 lg:block">
 		<div v-if="headerNavs.length > 0" class="sticky top-[100px] h-[calc(100vh-121px)]">

@@ -30,9 +30,18 @@
         z-index: 10000000!important;
     }
 
+    .bvi-active {
+        padding: 0;
+        margin: 0;
+    }
+
     .ce-header {
         font-weight: bold;
         font-size: 20px;
+    }
+
+    body .bvi-body {
+        padding: 0;
     }
 
     *, html {

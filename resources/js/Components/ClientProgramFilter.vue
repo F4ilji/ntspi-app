@@ -69,8 +69,6 @@
 						<DirectionFilter :direction_filter="direction_filter" :direction_studies="direction_studies" />
 					</div>
 				</div>
-
-
 			</div>
 		</div>
 	</div>

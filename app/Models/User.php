@@ -94,6 +94,7 @@ class User extends Authenticatable implements FilamentUser
     {
         if (config('filament-shield.dashboard_user.enabled', false)) {
             FilamentShield::createRole(name: config('filament-shield.dashboard_user.name', 'dashboard_user'));
+            FilamentShield::createRole(name: config('', 'editor'));
             static::created(function (User $user) {
                 $user->assignRole(config('filament-shield.dashboard_user.name', 'dashboard_user'));
             });

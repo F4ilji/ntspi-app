@@ -27,6 +27,7 @@ use App\Services\Vicon\EducationalProgram\EducationalProgramService;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -37,14 +38,32 @@ class MainController extends Controller
 {
     public function index()
     {
-        $admissionCampaign = $this->getAdmissionCampaign();
-        $educations = $this->getEducationsData();
-        $sliders = $this->getActiveSliders();
-        $posts = $this->getRecentPosts();
-        $events = $this->getUpcomingEvents();
+        // Кешируем данные на 60 минут (можно изменить время по необходимости)
+//        $admissionCampaign = Cache::remember('admission_campaign', now()->addHour(), function () {
+//            return $this->getAdmissionCampaign();
+//        });
+
+        $educations = Cache::remember('educations_data', now()->addHour(), function () {
+            return $this->getEducationsData();
+        });
+
+        $sliders = Cache::remember('active_sliders', now()->addHour(), function () {
+            return $this->getActiveSliders();
+        });
+
+        $posts = Cache::remember('recent_posts', now()->addHour(), function () {
+            return $this->getRecentPosts();
+        });
+
+        $events = Cache::remember('upcoming_events', now()->addHour(), function () {
+            return $this->getUpcomingEvents();
+        });
 
         $path = route('index', null, false);
-        $page = Page::where('path', $path)->first();
+        $page = Cache::remember('page_' . $path, now()->addHour(), function () use ($path) {
+            return Page::where('path', $path)->first();
+        });
+
         $seo = $page->seo ?? null;
 
         return Inertia::render('Main', compact('posts', 'events', 'sliders', 'educations', 'seo'));
@@ -82,11 +101,10 @@ class MainController extends Controller
 
     private function getActiveSliders()
     {
-        return ClientMainSliderResource::collection(
+        return (ClientMainSliderResource::collection(
             MainSlider::where('is_active', true)
                 ->orderBy('sort', 'asc')
-                ->get()
-        );
+                ->get()));
     }
 
     private function getRecentPosts()

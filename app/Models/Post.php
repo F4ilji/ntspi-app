@@ -34,6 +34,11 @@ class Post extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function author() : BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 
     public function seo()
     {

@@ -3,9 +3,8 @@
 namespace App\Services\App\Cache;
 
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 
-class PostCacheService extends AbstractCacheService implements CacheInterface
+class MainSliderCacheService extends AbstractCacheService implements CacheInterface
 {
     /**
      * Очищает кеш, связанный с постом.
@@ -15,22 +14,13 @@ class PostCacheService extends AbstractCacheService implements CacheInterface
      */
     public function clearCache($entity): void
     {
-        $cacheKeyBySlug = md5($entity->slug);
-        $cacheKeyById = md5($entity->id);
-
-        Cache::forget('post_' .$cacheKeyBySlug);
-        Cache::forget('post_' .$cacheKeyById);
-
-        $this->clearCacheByPrefix('recent_posts*');
-
     }
 
     public function clearAllCacheByModel(): void
     {
-        $this->clearCacheByPrefix('post_*');
-        $this->clearCacheByPrefix('posts_*');
-        $this->clearCacheByPrefix('recent_posts*');
+        $this->clearCacheByPrefix('active_sliders*');
     }
+
 
     /**
      * Получает кешированные данные по ключу.
@@ -55,6 +45,4 @@ class PostCacheService extends AbstractCacheService implements CacheInterface
     {
         Cache::put($key, $data, $ttl);
     }
-
-
 }

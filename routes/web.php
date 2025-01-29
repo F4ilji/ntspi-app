@@ -86,8 +86,6 @@ Route::middleware('access-check')->group(function () {
     Route::get('/divisions', [ClientDivisionController::class, 'index'])->name('client.division.index');
     Route::get('/divisions/{slug}', [ClientDivisionController::class, 'show'])->name('client.division.show');
 
-    Route::get('/get-data', [UpdateEduDataApiController::class, 'index']);
-
     Route::get('{path}', [PageController::class, 'render'])->where('path', '[0-9,a-z,/,-]+')->name('page.view');
 });
 

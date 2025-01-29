@@ -50,7 +50,6 @@ class UserResource extends Resource implements HasShieldPermissions
                         Forms\Components\TextInput::make('password')
                             ->label('Пароль')
                             ->password()
-                            ->default(Str::password(15))
                             ->required(fn (string $context): bool => $context === 'create')
                             ->dehydrated(fn ($state) => filled($state))
                             ->maxLength(255),

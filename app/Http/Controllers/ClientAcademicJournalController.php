@@ -22,11 +22,10 @@ class ClientAcademicJournalController extends Controller
     public function show(string $slug)
     {
         $journal = new ClientAcademicJournalListResource(AcademicJournal::query()->where('slug', '=', $slug)->firstOrFail());
-        $journalIssues = JournalIssue::all()
-            ->groupBy('year_publication');
+        $journalIssues = JournalIssue::where('academic_journal_id', $journal->id)
+            ->groupBy('year_publication')->get();
 
         $journals = [];
-        $years = JournalIssue::select('year_publication')->distinct()->get();
 
         foreach ($journalIssues as $year => $journalGroup) {
             $journals[] = [

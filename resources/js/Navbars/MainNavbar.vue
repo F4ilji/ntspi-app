@@ -36,72 +36,8 @@
 					</div>
 				</div>
 
-				<div id="navbar-collapse-with-animation"
-						 class="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow lg:block">
-					<div
-							class="overflow-hidden overflow-y-auto max-h-[75vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
-						<div
-								class="flex flex-col gap-x-0 mt-5 md:flex-row md:items-center md:justify-end md:gap-x-7 md:mt-0 md:ps-7 md:divide-y-0 md:divide-solid">
-							<template v-for="section in this.sections.data" :key="section.id">
-								<div
-										class="hs-dropdown [--strategy:static] md:[--strategy:absolute] [--adaptive:none] md:[--trigger:hover] py-3 md:py-6">
-									<button type="button"
-													class="active:text-blue-600 flex items-center w-full text-black hover:text-gray-300 font-medium">
-										{{ section.title }}
-
-									</button>
-									<div
-											class="hs-dropdown-menu transition-opacity duration-150 md:duration-500 hs-dropdown-open:opacity-100 opacity-0 w-full hidden z-10 top-full start-0 min-w-[15rem] bg-white md:shadow-2xl rounded-lg py-2 md:p-4 before:absolute before:-top-5 before:start-0 before:w-full before:h-5">
-										<div class="grid px-5 grid-cols-1 md:grid-cols-10">
-
-											<template v-for="subsection in section.subSections" :key="subsection.id">
-												<div class="md:col-span-3">
-													<div class="flex flex-col py-6 px-3 md:px-6">
-														<div class="space-y-4">
-															<div class="flex items-center mb-2 gap-x-2">
-																<span class="text-xs font-bold uppercase text-gray-800">{{
-																		subsection.title
-																	}}</span>
-															</div>
-
-															<template v-for="page in subsection.pages" :key="page.id">
-																<a :class="{'text-secondDarkBlue hover:text-gray-800 font-semibold ' : isSameRoute(page.path), 'text-gray-800 hover:text-gray-500' : !isSameRoute(page.path) }"
-																	 class="flex items-center gap-x-2"
-																	 :href="(page.is_url) ? page.path : route('page.view', page.path) + '/'">
-																	<div class="grow">
-																		<p>{{ page.title }}</p>
-																	</div>
-																</a>
-															</template>
-														</div>
-													</div>
-												</div>
-											</template>
-										</div>
-									</div>
-
-								</div>
-							</template>
-
-							<a href="#" class="hover:opacity-70 py-3 className">
-								<BaseIcon name="eye" class="w-6 h-6 duration-300 md:block hidden" />
-								<span class="md:hidden">Режим для слабовидящих</span>
-							</a>
-
-
-							<Link :href="route('client.schedule')" class="hover:opacity-70 py-3">
-								<BaseIcon name="schedule" class="w-6 h-6 text-black md:block hidden" />
-								<span class="md:hidden text-black">Расписание</span>
-							</Link>
-
-							<a class="hover:opacity-70 py-3 cursor-pointer" data-hs-overlay="#hs-full-screen-modal-below-md">
-								<BaseIcon name="search" class="w-6 h-6 text-black md:block hidden" />
-								<span class="md:hidden text-black">Поиск</span>
-							</a>
-
-
-						</div>
-					</div>
+				<div>
+					<DesktopNavBar v-if="sections" :sections="sections" />
 				</div>
 			</div>
 		</nav>
@@ -127,6 +63,7 @@ import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
 import MobileNavbar from "@/Navbars/MobileNavbar.vue";
 import SearchModal from "@/Components/Modals/SearchModal.vue";
 import {defineAsyncComponent} from "vue";
+import DesktopNavBar from "@/Navbars/DesktopNavBar.vue";
 
 
 export default {
@@ -141,6 +78,7 @@ export default {
 		return {}
 	},
 	components: {
+		DesktopNavBar,
 		SearchModal,
 		MobileNavbar,
 		BaseIcon,

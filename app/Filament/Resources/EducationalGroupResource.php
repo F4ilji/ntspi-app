@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\FormEducation;
 use App\Filament\Resources\EducationalGroupResource\Pages;
 use App\Filament\Resources\EducationalGroupResource\RelationManagers;
 use App\Models\EducationalGroup;
@@ -33,7 +34,9 @@ class EducationalGroupResource extends Resource
                     Forms\Components\Grid::make(2)->schema([
                         Forms\Components\TextInput::make('title')->label('Название группы')->required(),
                         Forms\Components\Select::make('faculty_id')->label('Факультет')->required()
-                            ->options(Faculty::all()->pluck('title', 'id'))
+                            ->options(Faculty::all()->pluck('title', 'id')),
+                        Forms\Components\Select::make('education_form_id')->label('Форма обучения')
+                            ->options(FormEducation::class)
                     ]),
                 ]),
             ]);

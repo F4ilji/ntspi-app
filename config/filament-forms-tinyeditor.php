@@ -28,13 +28,17 @@ return [
             'plugins' => 'advlist paste autoresize codesample directionality emoticons fullscreen hr image imagetools link lists media table toc wordcount',
             'toolbar' => ' bold italic | numlist bullist | blockquote table hr |  link   |  fullscreen',
             'upload_directory' => null,
+            'browser_spellcheck' => true,
             'custom_configs' => [
                 'table_advtab' => false,
                 'table_row_advtab' => false,
                 'table_cell_advtab' => false,
                 'contextmenu' => '',
                 'table_resize_bars' => false,
-                'paste_as_text' => true
+                'paste_as_text' => true,
+                'browser_spellcheck' => true, // Включение проверки орфографии
+
+
             ],
         ]
 

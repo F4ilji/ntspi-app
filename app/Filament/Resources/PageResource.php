@@ -44,8 +44,6 @@ class PageResource extends Resource
 
     protected static ?string $pluralLabel = 'Страницы';
 
-    public static ?string $label = 'Страница';
-
 
     protected static ?string $navigationGroup = 'Структура приложения';
 

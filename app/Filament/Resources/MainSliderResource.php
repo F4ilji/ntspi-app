@@ -10,15 +10,19 @@ use App\Models\Page;
 use App\Models\Post;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Yepsua\Filament\Forms\Components\RangeSlider;
 
 class MainSliderResource extends Resource
 {
@@ -96,32 +100,75 @@ class MainSliderResource extends Resource
                     ]),
                 ]),
                 Forms\Components\Section::make('Слайдер')->schema([
-                    Forms\Components\TextInput::make('title')
-                        ->label('Заголовок слайда')
-                        ->required(),
-                    Forms\Components\Textarea::make('content')
-                        ->label('Текст слайда'),
-                    FileUpload::make('image')
-                        ->label('Изображение')
-                        ->image()
-                        ->optimize('webp')
-                        ->resize(50)
-                        ->disk('public')
-                        ->directory('images')
-                        ->imageEditor(),
-                    Forms\Components\Grid::make(2)->schema([
+
+                    Forms\Components\Section::make('Информация слайда')->schema([
+                        Forms\Components\TextInput::make('title')
+                            ->label('Заголовок слайда'),
+                        Forms\Components\Textarea::make('content')
+                            ->label('Текст слайда'),
+                        Forms\Components\Grid::make()->schema([
+                            ColorPicker::make('color_theme')
+                                ->label('Цвет текста')
+                                ->default('#ffffff')
+                                ->required(),
+                            Forms\Components\ToggleButtons::make('settings.text_position')
+                            ->options([
+                                'left' => 'Текст слева',
+                                'center' => 'Текст по середине',
+                                'right' => 'Текст справа'
+                            ])
+                            ->inline()->default('left')->grouped()
+                            ->label('Позиция текста на слайде'),
+                        ]),
+                        Forms\Components\Grid::make()->schema([
+                            Toggle::make('active_button')
+                                ->label('Использовать кнопку для ссылки (Ссылка будет открываться при нажатии на слайд)')
+                                ->inline(false)
+                                ->default(true)
+                                ->live()
+                                ->dehydrated(false),
+                            Forms\Components\TextInput::make('settings.link_text')
+                                ->default('Читать')
+                                ->label('Текст кнопки')
+                                ->disabled(fn (Forms\Get $get) => !$get('active_button'))
+                        ]),
+                    ]),
+                    Forms\Components\Section::make('Изображение')->schema([
+                        FileUpload::make('image.url')
+                            ->label('Изображение')
+                            ->image()
+                            ->optimize('webp')
+                            ->resize(50)
+                            ->disk('public')
+                            ->directory('images')
+                            ->imageEditor()
+                            ->required(),
+                        ToggleButtons::make('image.shading')->inline()->grouped()->label('Уровень затемнения изображения')->options([
+                            '1' => 'Без затемнения',
+                            '0.7' => 'Слабое затемнение',
+                            '0.5' => 'Среднее затемнение',
+                            '0.3' => 'Сильное затемнение',
+                        ]),
+                    ]),
+                    Forms\Components\Section::make('Общая часть')->schema([
+                        Forms\Components\Grid::make()->schema([
+                            DateTimePicker::make('start_time')
+                                ->label('Слайд начинается с')
+                                ->native()
+                                ->displayFormat('d/m/Y')
+                                ->minDate(Carbon::now()->subDay())
+                                ->maxDate(Carbon::now()->addWeek()),
+                            DateTimePicker::make('end_time')
+                                ->label('Слайд действует до')
+                                ->native()
+                                ->displayFormat('d/m/Y')
+                                ->minDate(Carbon::now())
+                                ->maxDate(Carbon::now()->addMonth()),
+                        ]),
                         Forms\Components\TextInput::make('link')
                             ->label('Ссылка кнопки')
                             ->required(),
-                        Forms\Components\TextInput::make('link_text')
-                            ->default('Читать')
-                            ->label('Текст кнопки')
-                            ->required(),
                     ]),
-                    ColorPicker::make('color_theme')
-                        ->label('Цвет текста')
-                        ->default('#ffffff')
-                        ->required(),
 
                     Toggle::make('is_active')->default(true)->label('Активный слайдер')->inline(false),
                 ]),

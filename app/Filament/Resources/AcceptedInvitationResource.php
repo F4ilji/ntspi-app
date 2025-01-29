@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -29,7 +30,7 @@ class AcceptedInvitationResource extends Resource implements HasShieldPermission
     {
         return $form
             ->schema([
-                //
+
             ]);
     }
 
@@ -37,7 +38,8 @@ class AcceptedInvitationResource extends Resource implements HasShieldPermission
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('receiver.name')->label('Приглашенный пользователь'),
+                TextInputColumn::make('post_limit')->label('Лимит постов')->default(0)->rules(['required', 'max:10', 'integer'])
             ])
             ->filters([
                 //

@@ -29,6 +29,8 @@ class DashboardPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->login()
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('5s')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Dashboard/Pages'), for: 'App\\Filament\\Dashboard\\Pages')
             ->pages([

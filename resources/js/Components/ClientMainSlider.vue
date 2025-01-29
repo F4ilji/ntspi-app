@@ -1,32 +1,34 @@
 <template>
 	<div ref="sliderRef" class="relative z-0 min-h-[calc(100vh)] items-center">
-		<div class="absolute -z-10 h-full w-full before:absolute before:z-10 before:h-full before:w-full before:bg-black/30">
+		<a :href="(!slider.settings.link_text) ? slider.link : '#'" v-for="(slider, index) in slidersCarousel.data" :class="`brightness-[${slider.image.shading}]`"
+			 class="absolute -z-10 h-full w-full before:absolute before:z-10 before:h-full before:w-full ">
 			<img
 					alt="Thumbnail"
 					loading="eager"
 					decoding="async"
 					data-nimg="fill"
-					class="object-cover brightness-[0.7] transition-opacity duration-1000 absolute inset-0 h-full w-full"
+					class="object-cover transition-opacity duration-1000 absolute inset-0 h-full w-full"
 					sizes="100vw"
-					v-for="(slider, index) in slidersCarousel.data"
 					:key="index"
-					:src="'/storage/' + slider.image"
+					:src="'/storage/' + slider.image.url"
 					:class="{ 'opacity-1': currentIndex === index, 'opacity-0': currentIndex !== index }"
 			/>
-		</div>
-		<div v-show="currentIndex === index" v-for="(item, index) in slidersCarousel.data" :key="index" class="mx-auto max-w-screen-md px-5 pt-[150px] pb-0">
-			<h1 class="text-brand-primary mb-3 mt-2 text-3xl font-semibold tracking-tight text-white lg:text-5xl lg:leading-tight">
+		</a>
+		<div v-show="currentIndex === index" v-for="(item, index) in slidersCarousel.data" :key="index" class="mx-auto max-w-screen-md px-5 pt-[150px] pb-0 bvi-no-styles">
+			<h1 v-if="item.title" :class="`text-${item.settings.text_position}`" class="text-brand-primary mb-3 mt-2 text-3xl font-semibold tracking-tight text-white lg:text-5xl lg:leading-tight">
 				{{ item.title }}
 			</h1>
-			<div class="mt-8 flex space-x-3 text-gray-500 mb-8">
-				<div class="flex flex-col gap-3 md:flex-row md:items-center">
-					<div class="flex gap-3">
-						<p class="text-gray-100 line-clamp-3"><a href="/author/erika-oliver">{{ item.content }}</a></p>
+			<div v-if="item.content" class="mt-8 space-x-3 text-gray-500 mb-8">
+				<div class="gap-3 md:flex-row md:items-center">
+					<div class="gap-3">
+						<p :class="`text-${item.settings.text_position}`" class="text-gray-100 line-clamp-3">
+							{{ item.content }}
+						</p>
 					</div>
 				</div>
 			</div>
-			<a :href="item.link" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-white text-white hover:border-white/70 hover:text-white/70 disabled:opacity-50 disabled:pointer-events-none">
-				{{ item.link_text }}
+			<a v-if="item.settings.link_text" :href="item.link" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-white text-white hover:border-white/70 hover:text-white/70 disabled:opacity-50 disabled:pointer-events-none">
+				{{ item.settings.link_text }}
 			</a>
 		</div>
 		<div v-if="slidersCarousel.data.length >= 2" class="mx-auto max-w-screen-md px-5">

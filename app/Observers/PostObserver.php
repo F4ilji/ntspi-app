@@ -30,7 +30,7 @@ class PostObserver
      */
     public function updated(Post $post)
     {
-        $this->postCacheService->clearCache($post);
+        $this->postCacheService->clearAllCacheByModel();
     }
 
     /**

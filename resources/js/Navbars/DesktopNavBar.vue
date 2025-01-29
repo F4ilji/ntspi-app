@@ -60,9 +60,7 @@
 					</template>
 				</template>
 
-
-
-				<a href="#" class="hover:opacity-70 py-3 className">
+				<a @click="this.removeCookieBvi()" href="#" class="hover:opacity-70 py-3 open-bvi ">
 					<svg :class="!underSliderHeader ? 'text-white' : 'text-black'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
 							 stroke="currentColor"
 							 class="w-6 h-6 duration-300 md:block hidden">
@@ -167,6 +165,11 @@ export default {
 			//
 			// return hasActiveInPages || hasActiveInSubSections;
 		},
+		removeCookieBvi() {
+			if (this.getCookie('bvi_panelActive') === 'true') {
+				this.deleteCookiesWithPrefix('bvi')
+			}
+		}
 	},
 
 

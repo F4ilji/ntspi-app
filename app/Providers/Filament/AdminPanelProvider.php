@@ -31,7 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->registration()
+//            ->registration()
             ->login()
             ->databaseNotifications()
             ->databaseNotificationsPolling('5s')

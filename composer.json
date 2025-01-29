@@ -31,7 +31,8 @@
         "symfony/filesystem": "^6.3",
         "tightenco/ziggy": "^1.0",
         "vkcom/vk-php-sdk": "^5.131",
-        "xvladqt/faker-lorem-flickr": "^1.0"
+        "xvladqt/faker-lorem-flickr": "^1.0",
+        "yepsua/filament-range-field": "^0.3.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

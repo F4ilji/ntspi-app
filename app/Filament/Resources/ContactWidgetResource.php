@@ -104,4 +104,16 @@ class ContactWidgetResource extends Resource
             'edit' => Pages\EditContactWidget::route('/{record}/edit'),
         ];
     }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+        ];
+    }
 }

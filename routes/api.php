@@ -10,6 +10,7 @@ use App\Http\Controllers\ClientWidgetPageReferenceListController;
 use App\Http\Controllers\ClientWidgetPostController;
 use App\Http\Controllers\IconController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\UpdateEduDataApiController;
 use App\Http\Controllers\VkAuthController;
 use App\Http\Controllers\VkPostController;
 use App\Models\AdmissionCampaign;
@@ -23,6 +24,9 @@ Route::get('/getAcademicYear', function () {
     $activeCampaign = AdmissionCampaign::query()->where('status', 1)->first();
     return $activeCampaign->academic_year;
 })->name('academic.year');
+
+
+
 
 
 Route::middleware('ensure.browser')->group(function () {
@@ -50,6 +54,8 @@ Route::middleware('ensure.browser')->group(function () {
 });
 
 Route::middleware(['auth', 'superadmin'])->group(function () {
+    Route::get('/get-data', [UpdateEduDataApiController::class, 'index']);
+
     Route::get('/login/vk', [VkAuthService::class, 'redirectToProvider'])->name('vk.login');
     Route::get('/login/vk/callback', [VkAuthService::class, 'handleProviderCallback'])->name('vk.callback');
     Route::get('/vk-get-token', [VkAuthService::class, 'getToken'])->name('vk.getToken');
