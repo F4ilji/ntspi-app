@@ -60,7 +60,7 @@ class CreatePost extends CreateRecord
         $this->slideData['start_time'] = $this->record->publish_at;
 
         $sliderDTO = MainSliderDTO::fromArray($this->slideData);
-        (new PostSliderService($sliderDTO, $this->record->slug))->create();
+        (new PostSliderService($sliderDTO, $this->record))->create();
     }
 
     protected function generateSeo(): void

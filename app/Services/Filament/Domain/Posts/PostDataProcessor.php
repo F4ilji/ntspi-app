@@ -35,6 +35,7 @@ class PostDataProcessor
         // Устанавливаем ID текущего пользователя
         $data['user_id'] = auth()->id();
 
+
         return $data;
     }
 
@@ -62,10 +63,14 @@ class PostDataProcessor
      * @param string $status
      * @return Carbon|null
      */
-    private function setPublishDateTime(array $publishSetting, string|PostStatus $status): ?Carbon
+    private function setPublishDateTime(array $publishSetting, $status): ?Carbon
     {
         if ($publishSetting['publish_after'] === true) {
             return Carbon::parse($publishSetting['publish_at']);
+        }
+
+        if ($status === PostStatus::PUBLISHED->value) {
+            return Carbon::now();
         }
 
         if ($status === PostStatus::PUBLISHED) {

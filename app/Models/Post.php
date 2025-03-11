@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Tags\HasTags;
 
@@ -39,10 +41,14 @@ class Post extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-
     public function seo()
     {
         return $this->morphOne(Seo::class, 'seoable');
+    }
+
+    public function mainSlider()
+    {
+        return $this->morphOne(MainSlider::class, 'slidable');
     }
 
     protected $casts = [

@@ -27,9 +27,18 @@
 					</div>
 				</div>
 			</div>
-			<a v-if="item.settings.link_text" :href="item.link" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-white text-white hover:border-white/70 hover:text-white/70 disabled:opacity-50 disabled:pointer-events-none">
-				{{ item.settings.link_text }}
-			</a>
+			<div :class="`text-${item.settings.text_position}`">
+				<a
+						v-if="item.settings.link_text"
+						:href="item.link"
+						class="py-3 px-4 inline-flex items-center duration-300 gap-x-2 text-sm font-semibold rounded-lg border border-white text-white bg-transparent  hover:bg-white hover:text-black hover:mix-blend-screen disabled:opacity-50 disabled:pointer-events-none"
+				>
+					{{ item.settings.link_text }}
+				</a>
+
+
+
+			</div>
 		</div>
 		<div v-if="slidersCarousel.data.length >= 2" class="mx-auto max-w-screen-md px-5">
 			<div class="mt-8 text-gray-500 absolute bottom-[100px]">

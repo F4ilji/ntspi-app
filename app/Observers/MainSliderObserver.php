@@ -19,12 +19,14 @@ class MainSliderObserver
      */
     public function created(MainSlider $mainSlider): void
     {
+
+
         // Устанавливаем сортировку для новой записи
         $mainSlider->sort = 1;
         $mainSlider->save();
 
         // Обновляем сортировку для всех остальных записей
-        $this->updateSortOrder();
+        $this->updateSortOrder($mainSlider->id);
 
         $this->cacheService->clearAllCacheByModel();
     }
@@ -61,15 +63,16 @@ class MainSliderObserver
         //
     }
 
-    protected function updateSortOrder(): void
+    protected function updateSortOrder($id): void
     {
         // Получаем все записи, отсортированные по текущему значению sort
-        $slides = MainSlider::orderBy('sort', 'asc')->get();
+        $slides = MainSlider::orderBy('sort', 'asc')->where('id', '!=', $id)->get();
 
-        // Обновляем сортировку для каждой записи
-        foreach ($slides as $index => $slide) {
-            $slide->sort = $index + 1; // Начинаем с 1
-            $slide->save();
+        if ($slides->count() > 0) {
+            foreach ($slides as $index => $slide) {
+                $slide->sort = $index + 2; // Начинаем с 1
+                $slide->save();
+            }
         }
     }
 }

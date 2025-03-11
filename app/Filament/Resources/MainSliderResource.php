@@ -124,8 +124,13 @@ class MainSliderResource extends Resource
                             Toggle::make('active_button')
                                 ->label('Использовать кнопку для ссылки (Ссылка будет открываться при нажатии на слайд)')
                                 ->inline(false)
-                                ->default(true)
+                                ->default(true) // Проверяем, есть ли текст в link_text
                                 ->live()
+                                ->afterStateHydrated(function (Toggle $component, $state, $get) {
+                                    if ($state === null && !empty($get('settings.link_text'))) {
+                                        $component->state(true); // Устанавливаем значение по умолчанию
+                                    }
+                                })
                                 ->dehydrated(false),
                             Forms\Components\TextInput::make('settings.link_text')
                                 ->default('Читать')
@@ -156,12 +161,13 @@ class MainSliderResource extends Resource
                                 ->label('Слайд начинается с')
                                 ->native()
                                 ->displayFormat('d/m/Y')
-                                ->minDate(Carbon::now()->subDay())
-                                ->maxDate(Carbon::now()->addWeek()),
+                                ->default(Carbon::now())
+                                ->maxDate(Carbon::now()->addWeeks(2)),
                             DateTimePicker::make('end_time')
                                 ->label('Слайд действует до')
                                 ->native()
                                 ->displayFormat('d/m/Y')
+                                ->default(Carbon::now()->addWeeks(2))
                                 ->minDate(Carbon::now())
                                 ->maxDate(Carbon::now()->addMonth()),
                         ]),

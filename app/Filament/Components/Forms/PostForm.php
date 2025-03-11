@@ -25,6 +25,7 @@ use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\CreateRecord;
@@ -124,46 +125,76 @@ class PostForm
                                         Toggle::make('is_slider_enabled')
                                             ->label('Добавить новый слайд')
                                             ->live()
+                                            ->hidden(fn (string $context): bool => $context === 'edit')
                                             ->dehydrated(false)
                                             ->default(false),
                                         Section::make()
                                             ->schema([
-                                                Forms\Components\TextInput::make('slide.title')
-                                                    ->label('Заголовок слайда'),
-                                                Forms\Components\Textarea::make('slide.content')
-                                                    ->label('Текст слайда'),
-                                                FileUpload::make('slide.image')
-                                                    ->label('Изображение')
-                                                    ->image()
-                                                    ->optimize('webp')
-                                                    ->resize(50)
-                                                    ->disk('public')
-                                                    ->directory('images')
-                                                    ->imageEditor()
-                                                    ->required(),
-                                                Grid::make(2)->schema([
-                                                    Toggle::make('disable_link_text')
-                                                        ->label('Отключить текст кнопки (ссылка будет открываться при нажатии на слайд)')
-                                                        ->live()
-                                                        ->inline(false)
-                                                        ->dehydrated(false)
-                                                        ->default(false),
-                                                    Forms\Components\TextInput::make('slide.link_text')
-                                                        ->default('Читать')
-                                                        ->label('Текст кнопки')
-                                                        ->disabled(fn (Forms\Get $get) => $get('disable_link_text')),
+                                                Forms\Components\Section::make('Информация слайда')->schema([
+                                                    Forms\Components\TextInput::make('slide.title')
+                                                        ->label('Заголовок слайда'),
+                                                    Forms\Components\Textarea::make('slide.content')
+                                                        ->label('Текст слайда'),
+                                                    Forms\Components\Grid::make()->schema([
+                                                        ColorPicker::make('slide.color_theme')
+                                                            ->label('Цвет текста')
+                                                            ->default('#ffffff')
+                                                            ->required(),
+                                                        Forms\Components\ToggleButtons::make('slide.settings.text_position')
+                                                            ->options([
+                                                                'left' => 'Текст слева',
+                                                                'center' => 'Текст по середине',
+                                                                'right' => 'Текст справа'
+                                                            ])
+                                                            ->inline()->default('left')->grouped()
+                                                            ->label('Позиция текста на слайде'),
+                                                    ]),
+                                                    Forms\Components\Grid::make()->schema([
+                                                        Toggle::make('active_button')
+                                                            ->label('Использовать кнопку для ссылки (Ссылка будет открываться при нажатии на слайд)')
+                                                            ->inline(false)
+                                                            ->live()
+                                                            ->afterStateHydrated(function (Toggle $component, $state, $get) {
+                                                                $component->state(true);
+                                                            })
+                                                            ->dehydrated(false),
+                                                        Forms\Components\TextInput::make('slide.settings.link_text')
+                                                            ->default('Читать')
+                                                            ->label('Текст кнопки')
+                                                            ->disabled(fn (Forms\Get $get) => !$get('active_button'))
+                                                    ]),
                                                 ]),
-
-                                                DateTimePicker::make('slide.end_time')
-                                                    ->label('Слайд действует до')
-                                                    ->native()
-                                                    ->displayFormat('d/m/Y')
-                                                    ->minDate(Carbon::now())
-                                                    ->maxDate(Carbon::now()->addWeek()),
+                                                Forms\Components\Section::make('Изображение')->schema([
+                                                    FileUpload::make('slide.image.url')
+                                                        ->label('Изображение')
+                                                        ->image()
+                                                        ->optimize('webp')
+                                                        ->resize(50)
+                                                        ->disk('public')
+                                                        ->directory('images')
+                                                        ->imageEditor()
+                                                        ->required(),
+                                                    ToggleButtons::make('slide.image.shading')->inline()->grouped()->label('Уровень затемнения изображения')->options([
+                                                        '1' => 'Без затемнения',
+                                                        '0.7' => 'Слабое затемнение',
+                                                        '0.5' => 'Среднее затемнение',
+                                                        '0.3' => 'Сильное затемнение',
+                                                    ]),
+                                                ]),
+                                                Forms\Components\Section::make('Общая часть')->schema([
+                                                    Forms\Components\Grid::make()->schema([
+                                                        DateTimePicker::make('slide.end_time')
+                                                            ->label('Слайд действует до')
+                                                            ->native()
+                                                            ->displayFormat('d/m/Y')
+                                                            ->minDate(Carbon::now())
+                                                            ->maxDate(Carbon::now()->addMonth()),
+                                                    ]),
+                                                ]),
                                             ])
-                                            ->disabled(fn (Forms\Get $get) => !$get('is_slider_enabled')) // Отключаем секцию, если Toggle выключен
-                                            ->hidden(fn (Forms\Get $get) => !$get('is_slider_enabled')), // Скрываем секцию, если Toggle выключен
-                                    ])->hidden(fn (string $context): bool => $context === 'edit'),
+
+
+                                    ]),
                             ]),
                     ])
             ]);

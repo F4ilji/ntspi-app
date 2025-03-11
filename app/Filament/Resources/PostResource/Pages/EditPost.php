@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PostResource\Pages;
 use App\Dto\MainSliderDTO;
 use App\Enums\PostStatus;
 use App\Filament\Resources\PostResource;
+use App\Models\Post;
 use App\Services\Filament\Domain\Posts\PostDataProcessor;
 use App\Services\Filament\Domain\Posts\PostNotificationService;
 use App\Services\Filament\Domain\Posts\PostSeoGenerator;
@@ -23,6 +24,12 @@ class EditPost extends EditRecord
 
     protected array $slideData;
 
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $post = Post::query()->with(['seo', 'mainSlider'])->find($data['id']);
+        $data['slide'] = $post->mainSlider->toArray() ?? null;
+        return $data;
+    }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
@@ -61,7 +68,7 @@ class EditPost extends EditRecord
         $this->slideData['start_time'] = $this->record->publish_at;
 
         $sliderDTO = MainSliderDTO::fromArray($this->slideData);
-        (new PostSliderService($sliderDTO, $this->record->slug))->update();
+        (new PostSliderService($sliderDTO, $this->record))->update();
     }
 
     protected function generateSeo(): void
