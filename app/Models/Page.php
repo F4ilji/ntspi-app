@@ -25,6 +25,7 @@ class Page extends Model
 
     protected $casts = [
         'content' => 'array',
+        'settings' => 'array',
     ];
 
 }

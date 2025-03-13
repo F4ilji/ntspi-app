@@ -30,6 +30,7 @@
         "spatie/laravel-sitemap": "^7.2",
         "symfony/filesystem": "^6.3",
         "tightenco/ziggy": "^1.0",
+        "tomatophp/filament-icons": "^1.1",
         "vkcom/vk-php-sdk": "^5.131",
         "xvladqt/faker-lorem-flickr": "^1.0",
         "yepsua/filament-range-field": "^0.3.4"

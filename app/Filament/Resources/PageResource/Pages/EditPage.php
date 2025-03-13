@@ -13,8 +13,6 @@ class EditPage extends EditRecord
 
     protected array $seoData;
 
-
-
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $this->seoData = $this->generateSeo($data);

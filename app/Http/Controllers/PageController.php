@@ -60,7 +60,7 @@ class PageController extends Controller
             abort($error);
         }
 
-        return Inertia::render($page->template, compact('page', 'subSectionPages', 'breadcrumbs', 'seo'));
+        return Inertia::render('Page', compact('page', 'subSectionPages', 'breadcrumbs', 'seo'));
     }
     public function getRegisteredPages()
     {
@@ -77,75 +77,5 @@ class PageController extends Controller
             'search' => request()->input('search'),
         ];
         return Inertia::render('AdminPanel/Pages/Registered', compact('pages', 'filters'));
-    }
-
-
-
-    public function index()
-    {
-        $pages = PageResource::collection(Page::query()
-            ->when(request()->input('search'), function ($query, $search) {
-                $query->where('title', 'like', "%{$search}%");
-            })
-            ->where('is_registered', false)
-            ->orderBy('id', 'desc')
-            ->paginate(request()->input('perPage', 9))
-            ->withQueryString());
-        $filters = [
-            'search' => request()->input('search'),
-        ];
-        return Inertia::render('AdminPanel/Pages/Index', compact('pages', 'filters'));
-    }
-
-    public function edit($slug)
-    {
-        $page = new PageResource(Page::where('slug', '=', $slug)->first());
-        return Inertia::render('AdminPanel/Pages/Edit', compact('page'));
-    }
-
-    public function update(Page $page, UpdateRequest $request)
-    {
-        $data = $request->validated();
-        $data['content'] = json_encode($data['content']);
-        $page->update($data);
-        return redirect()->route('admin.page.index');
-    }
-
-    public function editRegisteredPage($id)
-    {
-        $page = new RegisteredPageResource(Page::find($id));
-        return Inertia::render('AdminPanel/Pages/EditRegisteredPage', compact('page'));
-    }
-
-    public function updateRegisteredPage($id, Request $request)
-    {
-        $data = $request->validate([
-            'title' => 'required',
-            'path' => 'required',
-            'is_visible' => 'required',
-            'code' => 'required'
-        ]);
-        $page = Page::find($id);
-        $page->update($data);
-        return redirect()->route('admin.registered.page.index');
-    }
-
-    public function destroy(Page $page)
-    {
-        $page->delete();
-        return redirect()->route('admin.page.index');
-    }
-
-    public function create()
-    {
-        return Inertia::render('AdminPanel/Pages/Create');
-    }
-
-    public function store(StoreRequest $request)
-    {
-        $data = $request->validated();
-        $data['content'] = json_encode($data['content']);
-        Page::create($data);
-        return redirect()->route('admin.page.index');
     }
 }

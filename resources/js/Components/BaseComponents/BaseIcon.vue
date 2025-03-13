@@ -1,30 +1,12 @@
 <template>
-	<svg xmlns="http://www.w3.org/2000/svg"
-			 :fill="icon.fill || 'none'"
-			 :viewBox="icon.viewBox || this.viewBox || '0 0 24 24'"
-			 :stroke-width="icon.stroke_width || this.stroke_width || 1.5"
-			 :stroke="icon.stroke || 'currentColor'"
-			 :class="$attrs.class || 'w-6 h-6'"
-			 v-html="icon.path"
-	>
-	</svg>
-
-
+	<svg v-bind="svgAttributes" v-html="icon.path"></svg>
 </template>
 
 <script>
-import slugify from "slugify";
 import icons from "@/Components/other/icons.js";
 
 export default {
 	name: "BaseIcon",
-	data() {
-		return {
-			icon: icons[this.name] || icons['file']
-		}
-	},
-	methods: {
-	},
 	props: {
 		name: {
 			type: String,
@@ -39,9 +21,26 @@ export default {
 			type: String
 		}
 	},
+	computed: {
+		icon() {
+			return icons[this.transformIconName(this.name)] || icons['file'];
+		},
+		svgAttributes() {
+			return {
+				xmlns: "http://www.w3.org/2000/svg",
+				fill: this.icon.fill || 'none',
+				viewBox: this.icon.viewBox || this.viewBox || '0 0 24 24',
+				'stroke-width': this.icon.stroke_width || this.stroke_width || 1.5,
+				stroke: this.icon.stroke || 'currentColor',
+				class: this.$attrs.class || 'w-6 h-6'
+			};
+		}
+	},
+	methods: {
+		transformIconName(iconName) {
+			return iconName.replace(/^heroicon-(o|c|s|m)-/, '')
+					.replace(/-(\w)/g, (_, letter) => letter.toUpperCase());
+		}
+	}
 }
 </script>
-
-<style scoped>
-
-</style>

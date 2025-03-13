@@ -1,32 +1,26 @@
 <template>
-	<Head>
-		<title>{{ page.data.title }}</title>
-		<meta name="description" content="Your page description">
-	</Head>
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+	<AppHead :seo="seo" />
 
-	<div class="w-full h-[67px] fixed pointer-events-none bvi-no-styles" id="visor"></div>
-	<div class="flex flex-col h-screen">
-		<main class="flex-grow">
-			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
-				<PageSubSectionLinks :sub-section-pages="subSectionPages" :current-section="page.data.section"/>
-				<PageNavigateLinks :header-navs="this.headerNavs"/>
-				<div class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
-					<div class="space-y-5 md:space-y-5">
-						<PageBreadcrumbs :breadcrumbs="breadcrumbs" :page-title="page.data.title"/>
-						<PageTitle :header="page.data.title"/>
-						<div id="page-area" class="space-y-4">
-							<PageBuilder :blocks="this.page.data.content"/>
-						</div>
+	<div class="flex flex-col h-screen justify-between">
+		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+
+
+		<div class="relative mx-auto mb-auto mt-[67px] max-w-screen-xl w-full px-4 py-10 md:flex md:flex-row md:py-10">
+			<PageSubSectionLinks v-if="!settings.hide_page_sub_section_links" :sub-section-pages="subSectionPages" :current-section="page.data.section"/>
+			<PageNavigateLinks v-if="!settings.hide_page_navigate_links"  :header-navs="headerNavs"/>
+			<div class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
+				<div class="space-y-5 md:space-y-5">
+					<PageBreadcrumbs v-if="!settings.hide_breadcrumbs" :breadcrumbs="breadcrumbs" :page-title="page.data.title"/>
+					<PageTitle :header="page.data.title"/>
+					<div id="page-area">
+						<PageBuilder :blocks="page.data.content"/>
 					</div>
 				</div>
 			</div>
-		</main>
+		</div>
+
 		<ClientFooterDown/>
 	</div>
-
-
-
 
 
 </template>
@@ -36,17 +30,15 @@
 
 import {Link} from "@inertiajs/vue3";
 import FsLightbox from "fslightbox-vue/v3";
-import MainNavbar from "@/Navbars/MainNavbar.vue";
 import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import {Head} from '@inertiajs/vue3'
-import slugify from "slugify";
-import axios from "axios";
 import PageBuilder from "@/Components/BuilderUi/Pages/PageBuilder.vue";
 import PageBreadcrumbs from "@/Components/BuilderUi/Pages/PageBreadcrumbs.vue";
 import PageTitle from "@/Components/BuilderUi/Pages/PageTitle.vue";
 import PageNavigateLinks from "@/Components/BuilderUi/Pages/PageNavigateLinks.vue";
 import PageSubSectionLinks from "@/Components/BuilderUi/Pages/PageSubSectionLinks.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import AppHead from "@/Components/AppHead.vue";
 
 
 export default {
@@ -56,9 +48,12 @@ export default {
 			headerNavs: this.page.data.content.filter(block => block.type === 'heading').map(block => ({
 				id: block.data.id,
 				text: block.data.content
-			}))
+			})),
+			settings: this.page.data.settings
 		}
 	},
+
+
 	props: {
 		navigation: {
 			type: Object,
@@ -72,8 +67,12 @@ export default {
 		breadcrumbs: {
 			type: Object,
 		},
+		seo: {
+			type: Object,
+		}
 	},
 	components: {
+		AppHead,
 		MainPageNavBar,
 		PageSubSectionLinks,
 		PageNavigateLinks,
@@ -81,7 +80,6 @@ export default {
 		PageBreadcrumbs,
 		PageBuilder,
 		ClientFooterDown,
-		MainNavbar,
 		Link,
 		FsLightbox,
 		Head

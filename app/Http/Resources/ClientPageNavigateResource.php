@@ -20,6 +20,7 @@ class ClientPageNavigateResource extends JsonResource
             'slug' => $this->slug,
             'path' => $this->path,
             'is_url' => $this->is_url,
+            'icon' => $this->icon
         ];
     }
 }

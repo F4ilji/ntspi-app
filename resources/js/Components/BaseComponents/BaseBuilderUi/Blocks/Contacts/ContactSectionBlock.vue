@@ -8,7 +8,7 @@
 			</div>
 		</div>
 	</div>
-	<div v-else>
+	<div v-else-if="!loading & contacts">
 		<section class="bg-[#F5F5F5] w-full py-10">
 			<div class="max-w-screen-xl md:flex justify-around w-full mx-auto px-4 md:py-[50px] flex-wrap space-y-7 md:space-y-0">
 							<ContactGroup v-for="contact in contacts.data.content"
@@ -18,6 +18,7 @@
 			</div>
 		</section>
 	</div>
+
 </template>
 
 <script>

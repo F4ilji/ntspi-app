@@ -4,13 +4,14 @@
 		<nav v-if="subSectionPages"
 				 class="flex h-[calc(100vh-200px)] flex-col overflow-hidden pr-2 pb-4">
 			<div class="text-gray-1000 mb-2 text-md font-medium">{{ currentSection }}</div>
-			<div class="flex gap-x-1">
+			<div>
 				<ul class="px-0.5 last-of-type:mb-0 mb-8">
 					<li v-for="page in subSectionPages.data" :key="page.id" class="my-1.5 flex">
-						<a :class="{'text-white font-semibold bg-primaryBlue': isSameRoute(page.path), 'text-gray-600 hover:text-[#2C6288]': !isSameRoute(page.path) }"
+						<a :class="{'text-white font-normal bg-primaryBlue border': isSameRoute(page.path), 'text-gray-600 hover:text-[#2C6288]': !isSameRoute(page.path) }"
 							 :href="(page.is_url) ? page.path : route('page.view', page.path) + '/'"
-							 class="relative duration-300 flex gap-x-1 w-full rounded-md cursor-pointer items-center px-2 py-1 text-left text-sm">
-							{{
+							 class="duration-300 flex gap-x-2 w-full rounded-md cursor-pointer items-center px-2 py-1.5 text-left text-sm">
+							<BaseIcon class="w-4" :name="page.icon" />
+									{{
 								page.title
 							}}
 						</a>
@@ -22,14 +23,15 @@
 	</div>
 
 
+
 </template>
 
 <script>
 import {Link} from "@inertiajs/vue3";
-
+import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
 export default {
 	name: "PageSubSectionLinks",
-	components: {Link},
+	components: {Link, BaseIcon},
 	data() {
 		return {
 			currentNavSection: null,
@@ -50,10 +52,12 @@ export default {
 				return true
 			}
 		},
-
-
+	},
+	mounted() {
+		// console.log(IconsMap)
 
 	},
+
 
 
 	props: {

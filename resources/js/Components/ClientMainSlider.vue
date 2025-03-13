@@ -1,6 +1,6 @@
 <template>
 	<div ref="sliderRef" class="relative z-0 min-h-[calc(100vh)] items-center">
-		<a :href="(!slider.settings.link_text) ? slider.link : '#'" v-for="(slider, index) in slidersCarousel.data" :class="`brightness-[${slider.image.shading}]`"
+		<a :href="(!slider.settings.link_text) ? slider.link : '#'" v-for="(slider, index) in slidersCarousel.data" :style="{ filter: `brightness(${slider.image.shading})` }"
 			 class="absolute -z-10 h-full w-full before:absolute before:z-10 before:h-full before:w-full ">
 			<img
 					alt="Thumbnail"
@@ -35,13 +35,11 @@
 				>
 					{{ item.settings.link_text }}
 				</a>
-
-
-
 			</div>
 		</div>
+
 		<div v-if="slidersCarousel.data.length >= 2" class="mx-auto max-w-screen-md px-5">
-			<div class="mt-8 text-gray-500 absolute bottom-[100px]">
+			<div class="mt-8 text-gray-500 absolute bottom-[50px] left-1/2 transform -translate-x-1/2 lg:bottom-[100px]">
 				<div class="">
 					<div class="flex space-x-3 items-center justify-between">
 						<button @click="prev" class="bg-gray-200 w-8 h-8 hover:bg-gray-300 text-gray-800 font-bold rounded-full">
@@ -50,10 +48,10 @@
 							</svg>
 						</button>
 
-						<div class="flex space-x-3 w-[100px] items-center font-semibold text-xl text-white">
+						<div class="flex space-x-3 w-[200px] items-center font-semibold text-xl text-white">
 							<span>{{ currentIndex + 1 }}</span>
-							<div class="flex w-full h-1 bg-gray-200 rounded-full overflow-hidden dark:bg-neutral-700" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-								<div class="flex flex-col justify-center rounded-full overflow-hidden bg-blue-600 text-xs text-white text-center whitespace-nowrap transition duration-500 dark:bg-blue-500 my-slider-progress-bar" :style="{ 'width': `${percentage}%` }"></div>
+							<div class="flex w-full h-1 bg-gray-200 rounded-full overflow-hidden" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+								<div class="flex flex-col justify-center rounded-full overflow-hidden bg-blue-600 text-xs text-white text-center whitespace-nowrap transition-all duration-500 ease-in-out" :style="{ 'width': `${progressBarStep}%` }"></div>
 							</div>
 							<span>{{ slidersCarousel.data.length }}</span>
 						</div>
@@ -76,21 +74,26 @@ export default {
 	props: {
 		slidersCarousel: {
 			type: Object,
-			required: true, // Убедитесь, что пропс передан
+			required: true,
 		},
 	},
 	data() {
 		return {
 			currentIndex: 0,
-			percentage: 0,
 			intervalId: null,
-			slideDuration: 5000 // Продолжительность слайда в миллисекундах
+			slideDuration: 5000,
+
 		}
 	},
 	computed: {
 		totalSlides() {
 			return this.slidersCarousel && this.slidersCarousel.data ? this.slidersCarousel.data.length : 0;
 		},
+		progressBarStep() {
+			const slides = this.totalSlides
+			const step = 100 / slides
+			return (this.currentIndex + 1) * step
+		}
 	},
 	methods: {
 		next() {
@@ -105,18 +108,9 @@ export default {
 				this.resetTimer();
 			}
 		},
-		progressStatus() {
-			if (this.percentage >= 100) {
-				this.resetTimer();
-				this.next();
-			} else {
-				this.percentage += (100 / (this.slideDuration / 60)); // Увеличиваем процент равномерно
-			}
-		},
 		startTimer() {
 			this.stopTimer(); // Останавливаем предыдущий таймер, если он есть
-			this.percentage = 0; // Сбрасываем процент
-			this.intervalId = setInterval(this.progressStatus, 60); // Запускаем новый таймер
+			this.intervalId = setInterval(this.next, this.slideDuration); // Запускаем новый таймер
 		},
 		stopTimer() {
 			clearInterval(this.intervalId);
@@ -129,6 +123,9 @@ export default {
 	mounted() {
 		this.$emit('slider-mounted', this.$refs.sliderRef);
 		this.startTimer();
+	},
+	beforeUnmount() {
+		this.stopTimer();
 	},
 }
 </script>
@@ -149,5 +146,3 @@ export default {
 	transform: translateY(30px);
 }
 </style>
-
-Найти еще

@@ -5,56 +5,17 @@ namespace App\Filament\Components\Forms;
 use App\Enums\CustomFormStatus;
 use App\Enums\PostStatus;
 use App\Filament\Components\Forms\ItemForm\Pages\ContentBuilderItem;
-use App\Helpers\ByteConverter;
-use App\Models\Category;
-use App\Models\CustomForm;
-use App\Models\Page;
-use App\Models\Post;
 use Filament\Forms;
-use Filament\Forms\Components\Builder;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
-use Filament\Resources\Components\Tab;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
-use Symfony\Component\Finder\Finder;
+use TomatoPHP\FilamentIcons\Components\IconPicker;
 
 class PageForm
 {
-
-    public static function getPageTemplates() {
-
-        $finder = new Finder();
-        $finder->files()->in('../resources/js/Pages/Client/BasePageTemplate');
-
-
-        $fileInfos = [];
-        foreach ($finder as $fileInfo) {
-            $fileInfos[] = [
-                'filename' => $fileInfo->getBasename('.' . $fileInfo->getExtension()),
-
-                'path' => preg_replace('/.*\/(Client\/.*)/', '$1', $fileInfo->getPath() . '/' . $fileInfo->getBasename('.' . $fileInfo->getExtension())),
-                'extension' => $fileInfo->getExtension(),
-                'size' => $fileInfo->getSize(),
-                'mtime' => $fileInfo->getMTime(),
-                'atime' => $fileInfo->getATime(),
-                'isReadable' => $fileInfo->isReadable(),
-                'isWritable' => $fileInfo->isWritable(),
-            ];
-        }
-        $fileInfos = collect($fileInfos);
-        return $fileInfos->pluck('filename', 'path');
-
-    }
-
     public static function getForm(Form $form): Form
     {
         return $form
@@ -92,13 +53,34 @@ class PageForm
                                     '500' => 'Ведутся технические работы',
                                 ])->label('Статус')->required()->default('200'),
                                 Toggle::make('searchable')->default(true)->label('Индексируется поиском')->inline(false),
+                                IconPicker::make('icon')
+                                    ->default('heroicon-o-academic-cap')
+                                    ->label('Icon'),
+
+
                                 TextInput::make('search_data')->hidden(),
                             ]),
                             Forms\Components\Tabs\Tab::make('Контент')->schema([
                                 ContentBuilderItem::getItem('content')
                             ]),
                             Forms\Components\Tabs\Tab::make('Настройки')->schema([
-                                Select::make('template')->label('Шаблон')->options(self::getPageTemplates())->required(),
+                                Section::make()->schema([
+                                    Toggle::make('settings.hide_page_sub_section_links')
+                                        ->label('Скрыть сайдбар смежных страниц')
+                                        ->columnSpan(1),
+
+                                    Toggle::make('settings.hide_page_navigate_links')
+                                        ->label('Скрыть навигацию по страницу')
+                                        ->columnSpan(1),
+
+                                    Toggle::make('settings.hide_breadcrumbs')
+                                        ->label('Скрыть хлебные крошки')
+                                        ->columnSpan(1),
+//
+//                                    Toggle::make('settings.full_width_page')
+//                                        ->label('Страница на всю ширину')
+//                                        ->columnSpan(1)->default(true),
+                                ]),
                             ]),
                         ]),
 
