@@ -47,7 +47,6 @@
 
 	<MobileNavbar v-if="sections" :sections="sections" />
 
-
 	<SearchModal open_id="open-search-modal" />
 
 </template>
@@ -55,14 +54,13 @@
 <script>
 
 import {Link} from "@inertiajs/vue3";
-import axios from "axios";
 import ClientGlobalSearch from "@/Components/ClientGlobalSearch.vue";
 import * as isvek from "bvi"
 import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
 import MobileNavbar from "@/Navbars/MobileNavbar.vue";
 import SearchModal from "@/Components/Modals/SearchModal.vue";
 import DesktopNavBar from "@/Navbars/DesktopNavBar.vue";
-
+import {mapGetters} from "vuex";
 
 
 export default {
@@ -87,7 +85,7 @@ export default {
 		return {
 			scrollPosition: 0,
 			headerFilter: false,
-			underSliderHeader: this.sliderRef,
+			underSliderHeader: true,
 			bvi: null,
 			isActiveBvi: null,
 			logos: {
@@ -96,36 +94,23 @@ export default {
 			},
 		}
 	},
-
 	methods: {
 		isSameRoute(route) {
 			if (route === this.$page.props.ziggy.location) {
 				return true;
 			}
-
 			const currentLocation = this.$page.props.ziggy.location;
 			const currentUrl = this.$page.props.ziggy.url + '/' + route;
-
-			if (currentLocation === currentUrl) {
-				return true;
-			}
-
-			return false;
+			return currentLocation === currentUrl;
 		},
 		hasActivePage(section) {
-			// Проверяем, есть ли активная страница в секции или подсекции
-			// if (!section || !section.pages) return false; // Проверка на наличие section и pages
-
 			if (section.pages) {
 				return section.pages.some(page => this.isSameRoute(page.path));
 			}
-
 			if (section.subSections) {
 				return section.subSections.some(subSection => this.hasActivePage(subSection));
 			}
-
 		},
-
 		iniBvi() {
 			if (this.getCookie('bvi_panelActive') === null) {
 				this.bvi = new isvek.Bvi({
@@ -138,43 +123,43 @@ export default {
 				});
 			}
 		},
-
 		handleScroll() {
-			if (typeof this.sliderRef === 'object') {
-				const mainSlider = this.sliderRef;
-				this.underSliderHeader = mainSlider.getBoundingClientRect().bottom < 50
-				this.scrollPosition = window.pageYOffset
-				this.headerFilter = this.scrollPosition > 90
+			if (this.lastSlider) {
+				const slider = this.lastSlider;
+				this.scrollPosition = window.pageYOffset;
+				if (this.isSameRoute(slider.url)) {
+					this.underSliderHeader = slider.bottom < this.scrollPosition;
+				}
+				this.headerFilter = this.scrollPosition > 90;
 			} else {
-				this.headerFilter = true
+				this.headerFilter = true;
 			}
 		},
-
-
-
+	},
+	watch: {
+		lastSlider(newVal) {
+			if (this.isSameRoute(newVal?.url)) {
+				this.underSliderHeader = newVal.bottom < 0; // Пример логики
+			}
+		},
 	},
 	mounted() {
-		window.addEventListener('scroll', this.handleScroll)
-
+		window.addEventListener('scroll', this.handleScroll);
 
 		if (this.getCookie('bvi_panelActive') === null) {
-			this.iniBvi()
+			this.iniBvi();
 		}
-
-
 	},
 	beforeDestroy() {
-		window.removeEventListener('scroll', this.handleScroll)
+		window.removeEventListener('scroll', this.handleScroll);
 	},
 	computed: {
+		...mapGetters(['lastSlider']),
 		currentLogo() {
 			return this.underSliderHeader ? this.logos.alternate : this.logos.default;
 		},
 	},
-
-
 }
-
 </script>
 
 <style scoped>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Slider extends Model
 {
@@ -11,13 +12,10 @@ class Slider extends Model
 
     protected $guarded = false;
 
-    protected $casts = [
-        'settings' => 'array',
-        'image' => 'array',
-    ];
 
-    public function slidable()
+    public function slides(): HasMany
     {
-        return $this->morphTo();
+        return $this->hasMany(Slide::class);
     }
+
 }

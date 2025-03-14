@@ -69,6 +69,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
 	name: 'slider',
 	props: {
@@ -82,7 +84,6 @@ export default {
 			currentIndex: 0,
 			intervalId: null,
 			slideDuration: 5000,
-
 		}
 	},
 	computed: {
@@ -90,12 +91,13 @@ export default {
 			return this.slidersCarousel && this.slidersCarousel.data ? this.slidersCarousel.data.length : 0;
 		},
 		progressBarStep() {
-			const slides = this.totalSlides
-			const step = 100 / slides
-			return (this.currentIndex + 1) * step
+			const slides = this.totalSlides;
+			const step = 100 / slides;
+			return (this.currentIndex + 1) * step;
 		}
 	},
 	methods: {
+		...mapActions(['updateLastSlider']),
 		next() {
 			if (this.totalSlides > 0) {
 				this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
@@ -109,8 +111,8 @@ export default {
 			}
 		},
 		startTimer() {
-			this.stopTimer(); // Останавливаем предыдущий таймер, если он есть
-			this.intervalId = setInterval(this.next, this.slideDuration); // Запускаем новый таймер
+			this.stopTimer();
+			this.intervalId = setInterval(this.next, this.slideDuration);
 		},
 		stopTimer() {
 			clearInterval(this.intervalId);
@@ -121,7 +123,11 @@ export default {
 		}
 	},
 	mounted() {
-		this.$emit('slider-mounted', this.$refs.sliderRef);
+		// Передаем данные в Vuex после монтирования компонента
+		this.updateLastSlider({
+			url: this.$page.props.ziggy.location,
+			bottom: this.$refs.sliderRef.getBoundingClientRect().bottom, // Получаем актуальное значение bottom
+		});
 		this.startTimer();
 	},
 	beforeUnmount() {

@@ -1,8 +1,8 @@
 <template>
 	<AppHead :seo="seo" />
 
-	<MainPageNavBar :sections="$page.props.navigation" :slider-ref="sliderRef" />
-	<ClientMainSlider @slider-mounted="setSliderRef" :slidersCarousel="sliders" />
+	<MainPageNavBar :sections="$page.props.navigation" />
+	<ClientMainSlider :slidersCarousel="sliders" />
 
 	<section class="max-w-screen-xl w-full mx-auto px-4 py-3 pb-10">
 		<h2 class="text-brand-primary my-6 md:mb-[50px] md:mt-[80px] text-2xl font-semibold tracking-tight text-black lg:text-[32px] lg:leading-tight bvi-show">Последние новости</h2>
@@ -195,11 +195,6 @@ export default {
 			return LevelEducational
 		}
 	},
-	data() {
-		return {
-			sliderRef: null,
-		}
-	},
 
 	props: {
 		posts: {
@@ -240,9 +235,6 @@ export default {
 
 	methods: {
 		Cookies,
-		setSliderRef(ref) {
-			this.sliderRef = ref;
-		},
 	},
 
 

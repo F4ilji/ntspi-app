@@ -179,6 +179,10 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/robots-txt" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/temporary-directory" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/dom-crawler" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/predis/predis" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/yepsua/filament-range-field" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/tomatophp/console-helpers" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/tomatophp/filament-icons" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

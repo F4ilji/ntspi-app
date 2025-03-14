@@ -8,6 +8,8 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import {linksReform} from "@/mixins/LinksReform.js";
 import YSmartCaptcha from 'vue3-yandex-smartcaptcha'
 import cookieMixin from "@/mixins/cookieMixin.js";
+import store from '@/store/index.js';
+
 
 // const appName = import.meta.env.VITE_APP_NAME || 'НТГСПИ';
 
@@ -20,6 +22,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         return createSSRApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(store)
             .mixin(linksReform)
             .mixin(cookieMixin)
             .use(ZiggyVue)
