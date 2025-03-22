@@ -58,12 +58,11 @@
 <script>
 
 import {Link} from "@inertiajs/vue3";
-import axios from "axios";
-import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
 import MobileNavbar from "@/Navbars/MobileNavbar.vue";
-import SearchModal from "@/Components/Modals/SearchModal.vue";
 import {defineAsyncComponent} from "vue";
 import DesktopNavBar from "@/Navbars/DesktopNavBar.vue";
+import SearchModal from "@/componentss/shared/modals/SearchModal.vue";
+import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
 
 
 export default {
@@ -81,10 +80,7 @@ export default {
 		DesktopNavBar,
 		SearchModal,
 		MobileNavbar,
-		BaseIcon,
-		ClientGlobalSearch: defineAsyncComponent(() =>
-				import('@/Components/ClientGlobalSearch.vue')
-		),
+		BasicIcon,
 		Link,
 	},
 	methods: {
@@ -96,11 +92,7 @@ export default {
 			const currentLocation = this.$page.props.ziggy.location;
 			const currentUrl = this.$page.props.ziggy.url + '/' + route;
 
-			if (currentLocation === currentUrl) {
-				return true;
-			}
-
-			return false;
+			return currentLocation === currentUrl;
 		},
 		hasActivePage(section) {
 			// Проверяем, есть ли активная страница в секции или подсекции

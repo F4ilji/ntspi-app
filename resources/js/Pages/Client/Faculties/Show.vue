@@ -1,9 +1,9 @@
 <template>
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
 
 	<div class="flex flex-col h-screen justify-between">
-		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+		<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 
 		<div class="relative mx-auto mb-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
 
@@ -83,7 +83,7 @@
 
 
 						<template v-for="worker in faculty.data.workers">
-							<ClientFacultyWorkerCard :worker="worker" />
+							<FacultyWorkerCard :worker="worker" />
 						</template>
 
 
@@ -120,7 +120,7 @@
 
 
 						<div class="space-y-3 md:space-y-4">
-							<FacultyBuilder :blocks="faculty.data.content "/>
+							<Builder :blocks="faculty.data.content "/>
 						</div>
 
 					</div>
@@ -130,7 +130,7 @@
 			</article>
 		</div>
 
-		<ClientFooterDown/>
+		<BasicFooter />
 	</div>
 
 
@@ -141,23 +141,15 @@
 
 
 import {Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
 import MainNavbar from "@/Navbars/MainNavbar.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import { Head } from '@inertiajs/vue3'
 import slugify from "slugify";
-import axios from "axios";
-import PageNavigateLinks from "@/Components/BuilderUi/Pages/PageNavigateLinks.vue";
-import PageBreadcrumbs from "@/Components/BuilderUi/Pages/PageBreadcrumbs.vue";
-import PageBuilder from "@/Components/BuilderUi/Pages/PageBuilder.vue";
-import PageSubSectionLinks from "@/Components/BuilderUi/Pages/PageSubSectionLinks.vue";
-import PageTitle from "@/Components/BuilderUi/Pages/PageTitle.vue";
-import ClientFacultyWorkerCard from "@/Components/PersonCards/ClientFacultyWorkerCard.vue";
-import PostBuilder from "@/Components/BuilderUi/Posts/PostBuilder.vue";
-import FacultyBuilder from "@/Components/BuilderUi/Faculties/FacultyBuilder.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import FacultyItemBreadcrumbs from "@/Components/BuilderUi/Faculties/FacultyItemBreadcrumbs.vue";
-import AppHead from "@/Components/AppHead.vue";
+import FacultyWorkerCard from "@/componentss/features/faculties/components/FacultyWorkerCard.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import FacultyItemBreadcrumbs from "@/componentss/features/faculties/components/FacultyItemBreadcrumbs.vue";
 
 
 export default {
@@ -182,17 +174,14 @@ export default {
 	},
 
 	components: {
-		AppHead,
+    MetaTags,
+    Builder,
+    BasicFooter,
+    FacultyWorkerCard,
 		FacultyItemBreadcrumbs,
 		MainPageNavBar,
-		FacultyBuilder,
-		PostBuilder,
-		ClientFacultyWorkerCard,
-		PageTitle, PageSubSectionLinks, PageBuilder, PageBreadcrumbs, PageNavigateLinks,
-		ClientFooterDown,
 		MainNavbar,
 		Link,
-		FsLightbox,
 		Head
 	},
 	methods: {
@@ -203,10 +192,6 @@ export default {
 				return LimitedText + "..."
 			}
 			return text
-		},
-		openEditorImagesOnSlide: function (number) {
-			this.slide = number;
-			this.toggler = !this.toggler;
 		},
 		isSameRoute(route) {
 			if (this.$page.props.ziggy.location === route) {
@@ -222,11 +207,7 @@ export default {
 		},
 		onScroll(e) {
 			const windowTop = window.top.scrollY
-			if (windowTop > 100) {
-				this.scrollTop = true
-			} else {
-				this.scrollTop = false
-			}
+			this.scrollTop = windowTop > 100;
 		},
 		scrollToTop() {
 			window.scrollTo(0, 0)
@@ -236,8 +217,6 @@ export default {
 	},
 	mounted() {
 		window.addEventListener("scroll", this.onScroll)
-
-		// this.editorImages = this.blocksWithSlideNumber.filter(block => block.type === 'image').map(block => block.data.file.url);
 
 		window.addEventListener("scroll", () => {
 			const headings = document.querySelectorAll('h2');
@@ -283,16 +262,6 @@ export default {
 
 <style>
 
-
-
-.paragraph-container a {
-	@apply text-[#1E57A3];
-	@apply underline;
-}
-
-.paragraph-container p {
-	@apply mb-2
-}
 
 
 

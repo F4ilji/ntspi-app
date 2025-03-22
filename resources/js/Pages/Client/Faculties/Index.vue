@@ -1,37 +1,22 @@
 <script>
-import MainNavbar from "@/Navbars/MainNavbar.vue";
 import {Head, Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import AdminIndexSearch from "@/Components/AdminIndexSearch.vue";
-import AdminIndexFilter from "@/Components/AdminIndexFilter.vue";
-import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
-import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
-import ClientPostFilter from '@/Components/ClientPostFilter.vue';
-import ClientPost from '@/Components/ClientPost.vue';
-import ClientPostSearch from '@/Components/ClientPostSearch.vue';
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import FacultyListBreadcrumbs from "@/Components/BuilderUi/Faculties/FacultyListBreadcrumbs.vue";
-import AppHead from "@/Components/AppHead.vue";
+import FacultyListBreadcrumbs from "@/componentss/features/faculties/components/FacultyListBreadcrumbs.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import BasicTitle from "@/componentss/ui/titles/BasicTitle.vue";
+import FacultyListTitle from "@/componentss/features/faculties/components/FacultyListTitle.vue";
 
 export default {
   name: "Index",
   components: {
-		AppHead,
-		FacultyListBreadcrumbs,
-		MainPageNavBar,
-    AdminIndexHeaderTitle, AdminIndexHeader,
-    AdminIndexFilter, AdminIndexSearch,
-    ClientFooterDown,
-    ClientScrollTimeline,
-    ClientPostFilter,
-    Link,
-    MainNavbar,
-    FsLightbox,
-    Head,
-    ClientPost,
-    ClientPostSearch
+    FacultyListTitle,
+    BasicTitle,
+    BasicFooter,
+    FacultyListBreadcrumbs,
+    MainPageNavBar,
+    MetaTags,
+    Link
   },
   data() {
     return {
@@ -56,14 +41,14 @@ export default {
 </script>
 
 <template>
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl py-10 md:flex md:flex-row md:py-10">
-				<div class="px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
+				<div class="px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto w-full max-w-screen-xl">
 					<div>
 						<!-- Avatar Media -->
 						<!-- End Avatar Media -->
@@ -72,10 +57,9 @@ export default {
 							<div class="space-y-5 md:space-y-4">
 								<!-- Card Section -->
 								<div class="max-w-[85rem] px-0 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-									<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
-										<h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Факультеты и кафедры</h2>
-										<p class="mt-1 text-gray-600 dark:text-neutral-400">Информация о наших факультетах и кафедрах</p>
-									</div>
+                  <FacultyListTitle
+                      bottom-text="Информация о наших факультетах и кафедрах"
+                      header="Факультеты и кафедры" />
 									<FacultyListBreadcrumbs />
 
 									<!-- Grid -->
@@ -111,7 +95,7 @@ export default {
 				</div>
 			</div>
 		</main>
-		<ClientFooterDown/>
+		<BasicFooter />
 	</div>
 </template>
 

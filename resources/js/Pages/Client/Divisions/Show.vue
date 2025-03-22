@@ -1,5 +1,5 @@
 <template>
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
 	<div class="flex flex-col h-screen">
 		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
@@ -74,17 +74,14 @@
 
 							<h2 v-if="division.data.workers.length > 0" id="persons" class="font-bold text-xl">Состав</h2>
 							<template v-for="worker in division.data.workers">
-								<ClientDivisionWorkerCard :worker="worker" />
+								<DivisionWorkerCard :worker="worker" />
 							</template>
 
 
 
 							<h2 v-if="division.data.description.length > 0" id="description" class="font-bold text-xl">Описание</h2>
 
-							<DivisionBuilder :blocks="division.data.description" />
-
-
-
+							<Builder :blocks="division.data.description" />
 
 						</div>
 
@@ -93,7 +90,8 @@
 				</main>
 			</div>
 		</main>
-		<ClientFooterDown/>
+
+		<BasicFooter/>
 	</div>
 
 
@@ -104,17 +102,14 @@
 
 
 import {Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import MainNavbar from "@/Navbars/MainNavbar.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import { Head } from '@inertiajs/vue3'
 import slugify from "slugify";
-import axios from "axios";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import DivisionBuilder from "@/Components/BuilderUi/Divisions/DivisionBuilder.vue";
-import DivisionItemBreadcrumbs from "@/Components/BuilderUi/Divisions/DivisionItemBreadcrumbs.vue";
-import AppHead from "@/Components/AppHead.vue";
-import ClientDivisionWorkerCard from "@/Components/PersonCards/ClientDivisionWorkerCard.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
+import DivisionWorkerCard from "@/componentss/features/divisions/components/DivisionWorkerCard.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import DivisionItemBreadcrumbs from "@/componentss/features/divisions/components/DivisionItemBreadcrumbs.vue";
 
 
 export default {
@@ -139,14 +134,13 @@ export default {
 	},
 
 	components: {
-		ClientDivisionWorkerCard,
-		AppHead,
+    BasicFooter,
+    DivisionWorkerCard,
+    Builder,
+    MetaTags,
 		DivisionItemBreadcrumbs,
-		DivisionBuilder,
 		MainPageNavBar,
-		ClientFooterDown,
 		Link,
-		FsLightbox,
 		Head
 	},
 	methods: {
@@ -157,10 +151,6 @@ export default {
 				return LimitedText + "..."
 			}
 			return text
-		},
-		openEditorImagesOnSlide: function (number) {
-			this.slide = number;
-			this.toggler = !this.toggler;
 		},
 		isSameRoute(route) {
 			if (this.$page.props.ziggy.location === route) {
@@ -185,46 +175,46 @@ export default {
 		scrollToTop() {
 			window.scrollTo(0, 0)
 		},
+    handleScroll() {
+      const headings = document.querySelectorAll('h2');
+      const visor = document.querySelector('#visor');
+      let lastVisibleHeading = null;
+
+      const visorRect = visor.getBoundingClientRect();
+
+      // Проверяем, находится ли визор в пределах видимости
+      if (visorRect.top > window.scrollY) {
+        this.currentNavSection = null;
+        lastVisibleHeading = null; // Сбрасываем заголовок, если визор не виден
+        return; // Выходим из функции, если визор не виден
+      }
+
+      for (let i = 0; i < headings.length; i++) {
+        const heading = headings[i];
+        const rect = heading.getBoundingClientRect();
+
+        // Проверяем, находится ли заголовок в видимой области и касается ли он элемента visor
+        if (rect.top >= 0 && rect.bottom <= window.innerHeight && rect.bottom >= visorRect.top && rect.top <= visorRect.bottom) {
+          // Проверяем, изменился ли заголовок
+          if (heading !== lastVisibleHeading) {
+            this.currentNavSection = heading.id;
+            lastVisibleHeading = heading;
+          }
+          break; // Выходим из цикла, если нашли видимый заголовок
+        }
+      }
+    }
 
 
 	},
 	mounted() {
-		window.addEventListener("scroll", this.onScroll)
+    window.addEventListener("scroll", this.handleScroll);
 
-		window.addEventListener("scroll", () => {
-			const headings = document.querySelectorAll('h2');
-			const visor = document.querySelector('#visor');
-			let lastVisibleHeading = null;
-
-			const visorRect = visor.getBoundingClientRect();
-
-			// Проверяем, находится ли визор в пределах видимости
-			if (visorRect.top > window.scrollY) {
-				this.currentNavSection = null;
-				lastVisibleHeading = null; // Сбрасываем заголовок, если визор не виден
-				return; // Выходим из функции, если визор не виден
-			}
-
-			for (let i = 0; i < headings.length; i++) {
-				const heading = headings[i];
-				const rect = heading.getBoundingClientRect();
-
-				// Проверяем, находится ли заголовок в видимой области и касается ли он элемента visor
-				if (rect.top >= 0 && rect.bottom <= window.innerHeight && rect.bottom >= visorRect.top && rect.top <= visorRect.bottom) {
-					// Проверяем, изменился ли заголовок
-					if (heading !== lastVisibleHeading) {
-						this.currentNavSection = heading.id;
-						lastVisibleHeading = heading;
-					}
-					break; // Выходим из цикла, если нашли видимый заголовок
-				}
-			}
-		});
-
+    window.addEventListener("scroll", this.onScroll)
 
 	},
 	beforeDestroy() {
-		window.removeEventListener('scroll', this.handleScroll);
+		window.removeEventListener("scroll", this.handleScroll);
 		window.removeEventListener("scroll", this.onScroll)
 	},
 

@@ -1,17 +1,18 @@
 <template>
 
-	<header :style=" underSliderHeader ? 'background: hsla(0,0%,100%,.6)' : '' "
-					:class="{ 'header-filter': headerFilter }"
-					class="flex duration-500 fixed top-0 left-0 right-0 flex-wrap md:justify-start md:flex-nowrap z-50 w-full text-sm py-3 md:py-0">
+	<header :class="[{ 'header-filter': headerFilter }, { 'under-slider-bg': underSliderHeader }]"
+          class="flex duration-500 fixed top-0 left-0 right-0 flex-wrap md:justify-start md:flex-nowrap z-50 w-full text-sm py-3 md:py-0">
 		<nav class="max-w-screen-xl w-full mx-auto px-4 py-3" aria-label="Global">
 			<div class="relative lg:flex md:items-center md:justify-between">
 				<div class="flex items-center justify-between">
-					<Link class="flex-none text-xl font-semibold dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+					<Link class="flex-none text-xl font-semibold"
 						 :href="route('index')" aria-label="NTSPI">
-						<img class="max-w-[300px] duration-300" :src="currentLogo" alt="Логотип">
-					</Link>
+            <transition name="logo" mode="out-in">
+              <img :key="currentLogo" class="max-w-[300px] logo-transition" :src="currentLogo" alt="Логотип">
+            </transition>
+          </Link>
 					<div class="lg:hidden">
-						<button :class="underSliderHeader ? 'text-black' : 'text-white'"
+            <button :class="{ 'text-black': underSliderHeader, 'text-white': !underSliderHeader }"
 								type="button"
 								id="open-mobile-btn"
 								class="flex justify-center items-center w-9 h-9 text-sm font-semibold rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-gray-800 disabled:opacity-50 disabled:pointer-events-none"
@@ -54,23 +55,23 @@
 <script>
 
 import {Link} from "@inertiajs/vue3";
-import ClientGlobalSearch from "@/Components/ClientGlobalSearch.vue";
 import * as isvek from "bvi"
-import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
+import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
 import MobileNavbar from "@/Navbars/MobileNavbar.vue";
-import SearchModal from "@/Components/Modals/SearchModal.vue";
 import DesktopNavBar from "@/Navbars/DesktopNavBar.vue";
 import {mapGetters} from "vuex";
+import SearchModal from "@/componentss/shared/modals/SearchModal.vue";
+import {helpers} from "@/mixins/Helpers.js";
 
 
 export default {
-	name: 'MainPageNavBar',
+  mixins: [helpers],
+  name: 'MainPageNavBar',
 	components: {
 		DesktopNavBar,
 		SearchModal,
 		MobileNavbar,
-		BaseIcon,
-		ClientGlobalSearch,
+		BasicIcon,
 		Link,
 	},
 	props: {
@@ -95,22 +96,6 @@ export default {
 		}
 	},
 	methods: {
-		isSameRoute(route) {
-			if (route === this.$page.props.ziggy.location) {
-				return true;
-			}
-			const currentLocation = this.$page.props.ziggy.location;
-			const currentUrl = this.$page.props.ziggy.url + '/' + route;
-			return currentLocation === currentUrl;
-		},
-		hasActivePage(section) {
-			if (section.pages) {
-				return section.pages.some(page => this.isSameRoute(page.path));
-			}
-			if (section.subSections) {
-				return section.subSections.some(subSection => this.hasActivePage(subSection));
-			}
-		},
 		iniBvi() {
 			if (this.getCookie('bvi_panelActive') === null) {
 				this.bvi = new isvek.Bvi({
@@ -123,22 +108,31 @@ export default {
 				});
 			}
 		},
-		handleScroll() {
-			if (this.lastSlider) {
-				const slider = this.lastSlider;
-				this.scrollPosition = window.pageYOffset;
-				if (this.isSameRoute(slider.url)) {
-					this.underSliderHeader = slider.bottom < this.scrollPosition;
-				}
-				this.headerFilter = this.scrollPosition > 90;
-			} else {
-				this.headerFilter = true;
-			}
-		},
-	},
+    handleScroll() {
+      // Сохраняем текущую позицию прокрутки
+      this.scrollPosition = window.pageYOffset;
+
+      // Проверяем, существует ли слайдер
+      if (this.lastSlider) {
+        const slider = this.lastSlider;
+
+        // Проверяем, совпадает ли текущий маршрут с маршрутом слайдера
+        if (this.IS_SAME_ROUTE(slider.url)) {
+          // Определяем, находится ли слайдер в области видимости
+          const isSliderVisible = slider.top <= this.scrollPosition && slider.bottom >= this.scrollPosition;
+
+          // Если слайдер виден, underSliderHeader будет false, иначе true
+          this.underSliderHeader = !isSliderVisible;
+        }
+      }
+
+      // Активируем фильтр заголовка, если прокрутка превышает 90 пикселей
+      this.headerFilter = this.scrollPosition > 50;
+    }
+    },
 	watch: {
 		lastSlider(newVal) {
-			if (this.isSameRoute(newVal?.url)) {
+			if (this.IS_SAME_ROUTE(newVal?.url)) {
 				this.underSliderHeader = newVal.bottom < 0; // Пример логики
 			}
 		},
@@ -168,6 +162,22 @@ export default {
 .header-filter {
 	transition: all 0.3s;
 	backdrop-filter: saturate(180%) blur(7px);
+}
+
+.under-slider-bg {
+  background: hsla(0,0%,100%,.6)
+}
+
+.logo-transition {
+  transition: opacity 0.3s ease-out;
+}
+
+.logo-enter, .logo-leave-to {
+  opacity: 0;
+}
+
+.logo-enter-to, .logo-leave {
+  opacity: 1;
 }
 
 

@@ -12,6 +12,7 @@ use App\Http\Resources\ClientNavigationResource;
 use App\Models\Event;
 use App\Models\EventCategory;
 use App\Models\Page;
+use App\Services\App\Breadcrumb\BreadcrumbService;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
@@ -19,56 +20,46 @@ use Inertia\Inertia;
 
 class ClientEventController extends Controller
 {
-    public function index(Request $request)
+    public function __construct(private readonly BreadcrumbService $breadcrumbService){}
+
+
+    public function index(Request $request): \Inertia\Response
     {
         $currentDate = $this->getCurrentDate($request);
         $filters = $this->getFilters();
-        $eventDates = $this->getEventDates($filters); // Передаем фильтры
+        $eventDates = $this->getEventDates($filters);
 
         $events = $this->getEvents($currentDate);
         $categories = ClientEventCategoryResource::collection(EventCategory::has('events')->get());
 
-        $routeUrl = route('client.event.index');
-        $path = ltrim(parse_url($routeUrl, PHP_URL_PATH), '/');
+        $breadcrumbs = $this->breadcrumbService->generateBreadcrumbs('client.event.index');
 
-        $page = Page::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
-
-        if (isset($page->section)) {
-            $breadcrumbs = [
-                'mainSection' => new ClientBreadcrumbSection($page->section->mainSection),
-                'subSection' => new ClientBreadcrumbSubSection($page->section),
-                'page' => new ClientBreadcrumbPage($page),
-            ];
-        } else {
-            $breadcrumbs = null;
-        }
 
         return Inertia::render('Client/Events/Index', compact('eventDates', 'events', 'currentDate', 'filters', 'categories', 'breadcrumbs'));
     }
 
-    public function show(string $slug)
+    public function show(string $slug): \Inertia\Response
     {
         $event = new ClientEventFullResource(Event::where('slug', '=', $slug)->with('category')->first());
 
-
-        $routeUrl = route('client.event.index');
-        $path = ltrim(parse_url($routeUrl, PHP_URL_PATH), '/');
-
-        $page = Page::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
-
-        if (isset($page->section)) {
-            $breadcrumbs = [
-                'mainSection' => new ClientBreadcrumbSection($page->section->mainSection),
-                'subSection' => new ClientBreadcrumbSubSection($page->section),
-                'page' => new ClientBreadcrumbPage($page),
-            ];
-        } else {
-            $breadcrumbs = null;
-        }
+        $breadcrumbs = $this->breadcrumbService->generateBreadcrumbs('client.event.index');
 
         $seo = $event->seo ?? null;
 
         return Inertia::render('Client/Events/Show', compact('event', 'breadcrumbs', 'seo'));
+    }
+
+    public function archive(Request $request): \Inertia\Response
+    {
+        $filters = $this->getFilters();
+
+        $events = $this->getEventsArchive();
+        $categories = ClientEventCategoryResource::collection(EventCategory::has('events')->get());
+
+        $breadcrumbs = $this->breadcrumbService->generateBreadcrumbs('client.event.archive');
+
+
+        return Inertia::render('Client/Events/Archive', compact('events', 'filters', 'categories', 'breadcrumbs'));
     }
 
     private function getCurrentDate(Request $request): array
@@ -107,6 +98,9 @@ class ClientEventController extends Controller
             ->when(request()->input('is_online'), function ($query, $value) {
                 $this->applyOnlineFilter($query, $value);
             })
+            ->when(request()->input('search'), function ($query, $search) {
+                $query->whereRaw('LOWER(title) like ?', ["%".strtolower($search)."%"]);
+            })
             ->when(request()->input('category'), function ($query) {
                 $slugs = request()->input('category');
                 if (is_array($slugs)) {
@@ -117,6 +111,33 @@ class ClientEventController extends Controller
             })
             ->orderBy('event_time_start', 'asc')
             ->get());
+    }
+
+    private function getEventsArchive()
+    {
+        return ClientEventResource::collection(Event::select('title', 'slug', 'event_date_start', 'event_time_start', 'address', 'is_online', 'category_id')
+            ->whereDate('event_date_start', '<', now())
+            ->with('category')
+            ->when(request()->input('is_online'), function ($query, $value) {
+                $this->applyOnlineFilter($query, $value);
+            })
+            ->when(request()->input('search'), function ($query, $search) {
+                $query->whereRaw('LOWER(title) like ?', ["%".strtolower($search)."%"]);
+            })
+            ->when(request()->input('category'), function ($query) {
+                $slugs = request()->input('category');
+                if (is_array($slugs)) {
+                    $query->whereHas('category', function ($query) use ($slugs) {
+                        $query->whereIn('slug', $slugs);
+                    });
+                }
+            })
+            ->when(request()->input('sort', 'desc'), function ($query, $sort) {
+                $query->orderBy('event_date_start', $sort);
+            })
+            ->orderBy('event_time_start', 'asc')
+            ->paginate(6)
+            ->withQueryString());
     }
 
     private function getEventDates(array $filters): \Illuminate\Support\Collection
@@ -163,6 +184,8 @@ class ClientEventController extends Controller
             ->sortKeys() // Сортируем ключи по возрастанию
             ->values(); // Получаем массив без ключей
 
+
+
         // Извлекаем уникальные даты из событий
         return $mappingDates;
     }
@@ -177,6 +200,11 @@ class ClientEventController extends Controller
         }
 
         return [
+            'search_filter' => [
+                'type' => 'search',
+                'value' => request()->input('search'),
+                'param' => 'search'
+            ],
             'category_filter' => [
                 'type' => 'category',
                 'value' => request()->input('category'),
@@ -231,7 +259,7 @@ class ClientEventController extends Controller
         return $russianMonths[$month] ?? '';
     }
 
-    private function applyOnlineFilter($query, $isOnline)
+    private function applyOnlineFilter($query, $isOnline): void
     {
         if ($isOnline === 'online') {
             $query->where('is_online', true);

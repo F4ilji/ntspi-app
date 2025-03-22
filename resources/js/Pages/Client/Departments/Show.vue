@@ -1,10 +1,8 @@
 <template>
 
-	<AppHead :seo="seo" />
-
+	<MetaTags :seo="seo" />
 
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
-
 
 	<div class="flex flex-col h-screen justify-between">
 		<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
@@ -18,7 +16,7 @@
 					<div class="flex gap-x-1">
 						<ul class="px-0.5 last-of-type:mb-0 mb-8">
 							<li v-for="depart in departments.data" :key="department.id" class="my-1.5 flex">
-								<a :class="{'text-white hover:text-gray-200 font-semibold bg-[#135aae]': isSameRoute(route('client.department.show', { facultySlug: department.data.faculty.slug, departmentSlug: depart.slug })), 'text-gray-600 hover:text-[#2C6288]': !isSameRoute(route('client.department.show', { facultySlug: department.data.faculty.slug, departmentSlug: depart.slug })) }"
+								<a :class="{'text-white hover:text-gray-200 font-semibold bg-[#135aae]': this.IS_SAME_ROUTE(route('client.department.show', { facultySlug: department.data.faculty.slug, departmentSlug: depart.slug })), 'text-gray-600 hover:text-[#2C6288]': !this.IS_SAME_ROUTE(route('client.department.show', { facultySlug: department.data.faculty.slug, departmentSlug: depart.slug })) }"
 									 :href="route('client.department.show', { facultySlug: department.data.faculty.slug, departmentSlug: depart.slug }) + '/'"
 									 class="relative duration-300 flex w-full rounded-md cursor-pointer items-center px-2 py-1 text-left text-sm">{{
 										depart.title
@@ -84,19 +82,17 @@
 						</div>
 					</div>
 
-					<div class="space-y-3">
-						<h1 class="text-2xl mb-10 font-bold md:text-3xl">{{ department.data.title }}</h1>
-					</div>
+					<BasicTitle :header="department.data.title" />
 
 					<div id="page-area" class="space-y-5 md:space-y-5">
 						<h2 id="workers" class="font-bold text-xl">Сотрудники кафедры</h2>
 
 						<template v-for="worker in department.data.workers">
-							<ClientDepartmentWorkerCard :worker="worker" />
+							<DepartmentWorkerCard :worker="worker" />
 						</template>
 						<h2 id="teachers" class="font-bold text-xl">Преподаватели кафедры</h2>
 						<template v-for="teacher in department.data.teachers">
-							<ClientDepartmentTeacherCard :teacher="teacher" />
+							<DepartmentTeacherCard :teacher="teacher" />
 						</template>
 						<h2 id="external-teachers" class="font-bold text-xl">Внешние совместители</h2>
 
@@ -127,11 +123,9 @@
 
 
 						<div class="space-y-3 md:space-y-4">
-							<DepartmentBuilder :blocks="department.data.content "/>
+							<Builder :blocks="department.data.content "/>
 						</div>
 					</div>
-
-
 
 
 				</div>
@@ -140,11 +134,9 @@
 		</div>
 
 
-		<ClientFooterDown/>
+		<BasicFooter />
 
 	</div>
-
-
 
 </template>
 
@@ -152,26 +144,21 @@
 
 
 import {Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import { Head } from '@inertiajs/vue3'
 import slugify from "slugify";
-import PageNavigateLinks from "@/Components/BuilderUi/Pages/PageNavigateLinks.vue";
-import PageBreadcrumbs from "@/Components/BuilderUi/Pages/PageBreadcrumbs.vue";
-import PageBuilder from "@/Components/BuilderUi/Pages/PageBuilder.vue";
-import PageTitle from "@/Components/BuilderUi/Pages/PageTitle.vue";
-import ClientDepartmentWorkerCard from "@/Components/PersonCards/ClientDepartmentWorkerCard.vue";
-import ClientDepartmentTeacherCard from "@/Components/PersonCards/ClientDepartmentTeacherCard.vue";
-import FacultyBuilder from "@/Components/BuilderUi/Faculties/FacultyBuilder.vue";
-import DepartmentBuilder from "@/Components/BuilderUi/Departments/DepartmentBuilder.vue";
-import DepartmentBackButton from "@/Components/BuilderUi/Departments/DepartmentBackButton.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import DepartmentItemBreadcrumbs from "@/Components/BuilderUi/Departments/DepartmentItemBreadcrumbs.vue";
-import AppHead from "@/Components/AppHead.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import DepartmentItemBreadcrumbs from "@/componentss/features/departments/components/DepartmentItemBreadcrumbs.vue";
+import BasicTitle from "@/componentss/ui/titles/BasicTitle.vue";
+import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
+import DepartmentWorkerCard from "@/componentss/features/departments/components/DepartmentWorkerCard.vue";
+import DepartmentTeacherCard from "@/componentss/features/departments/components/DepartmentTeacherCard.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import {helpers} from "@/mixins/Helpers.js";
 
 
 export default {
-	name: "Page",
+  mixins: [helpers],
+  name: "Page",
 	data() {
 		return {
 			scrollTop: false,
@@ -195,19 +182,15 @@ export default {
 	},
 
 	components: {
-		AppHead,
+    BasicFooter,
+    DepartmentTeacherCard,
+    DepartmentWorkerCard,
+    Builder,
+    BasicTitle,
+    MetaTags,
 		DepartmentItemBreadcrumbs,
 		MainPageNavBar,
-		DepartmentBackButton,
-		DepartmentBuilder,
-		FacultyBuilder,
-		ClientDepartmentTeacherCard,
-		ClientDepartmentWorkerCard,
-		PageTitle, PageBuilder, PageBreadcrumbs, PageNavigateLinks,
-		ClientFooterDown,
 		Link,
-		FsLightbox,
-		Head
 	},
 	methods: {
 		textLimit(text, symbols) {
@@ -217,10 +200,6 @@ export default {
 				return LimitedText + "..."
 			}
 			return text
-		},
-		openEditorImagesOnSlide: function (number) {
-			this.slide = number;
-			this.toggler = !this.toggler;
 		},
 		isSameRoute(route) {
 			if (this.$page.props.ziggy.location === route) {

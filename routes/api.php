@@ -8,6 +8,7 @@ use App\Http\Controllers\ClientWidgetFormController;
 use App\Http\Controllers\ClientWidgetPageController;
 use App\Http\Controllers\ClientWidgetPageReferenceListController;
 use App\Http\Controllers\ClientWidgetPostController;
+use App\Http\Controllers\ClientWidgetSliderController;
 use App\Http\Controllers\IconController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UpdateEduDataApiController;
@@ -24,8 +25,6 @@ Route::get('/getAcademicYear', function () {
     $activeCampaign = AdmissionCampaign::query()->where('status', 1)->first();
     return $activeCampaign->academic_year;
 })->name('academic.year');
-
-
 
 
 
@@ -51,6 +50,8 @@ Route::middleware('ensure.browser')->group(function () {
     Route::get('/widget/get-form/{id}', [ClientWidgetFormController::class, 'single'])->middleware('rate.limited.check')->name('client.widget.form.single');
 
     Route::post('/widget/get-form/{id}/submit', [ClientWidgetFormController::class, 'submit'])->middleware(['rate.limited.counter', 'rate.limited.check'])->name('client.widget.form.submit');
+
+    Route::get('/widget/get-slider/{slug}', [ClientWidgetSliderController::class, 'show'])->name('client.widget.slider.show');
 });
 
 Route::middleware(['auth', 'superadmin'])->group(function () {

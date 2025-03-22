@@ -1,32 +1,25 @@
 <script>
-import MainNavbar from "@/Navbars/MainNavbar.vue";
 import {Head, Link} from "@inertiajs/vue3";
-import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import ClientImageSlider from "@/Components/ClientImageSlider.vue";
-import EventBackButton from "@/Components/BuilderUi/Events/EventBackButton.vue";
-import TitleEvent from "@/Components/BuilderUi/Events/TitleEvent.vue";
-import PostBuilder from "@/Components/BuilderUi/Posts/PostBuilder.vue";
-import EventBuilder from "@/Components/BuilderUi/Events/EventBuilder.vue";
-import ClientEventSelectDate from "@/Components/ClientEventSelectDate.vue";
-import ClientEventFilter from "@/Components/ClientEventFilter.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import EventItemBreadcrumbs from "@/Components/BuilderUi/Events/EventItemBreadcrumbs.vue";
-import AppHead from "@/Components/AppHead.vue";
-
+import BackButton from "@/componentss/ui/buttons/BackButton.vue";
+import BasicTitle from "@/componentss/ui/titles/BasicTitle.vue";
+import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import EventItemBreadcrumbs from "@/componentss/features/events/components/EventItemBreadcrumbs.vue";
 
 export default {
 	name: "Show",
 	components: {
-		AppHead,
+    MetaTags,
+    BasicFooter,
+    Builder,
+    BasicTitle,
+    BackButton,
 		EventItemBreadcrumbs,
 		MainPageNavBar,
-		ClientEventFilter, ClientEventSelectDate,
-		EventBuilder,
-		PostBuilder,
-		TitleEvent,
-		EventBackButton,
-		ClientImageSlider, ClientFooterDown, ClientScrollTimeline, Link, MainNavbar, Head},
+    Link
+  },
 	data() {
 		return {
 		}
@@ -62,22 +55,20 @@ export default {
 </script>
 
 <template>
-	<AppHead :seo="seo" />
-
+	<MetaTags :seo="seo" />
 
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl py-10 md:flex md:flex-row md:py-10">
-				<div class="max-w-4xl px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
+				<div class="max-w-4xl px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto w-full">
 					<div>
 						<div class="space-y-5 md:space-y-10">
 							<div class="space-y-3">
 								<EventItemBreadcrumbs :breadcrumbs="breadcrumbs" :event-title="event.data.title" />
-								<EventBackButton link="client.event.index" title="Все мероприятия" />
-								<TitleEvent :header="event.data.title" />
+								<BackButton link="client.event.index" title="Все мероприятия" />
+								<BasicTitle :header="event.data.title" />
 							</div>
-
 
 							<div class="flex space-x-3 text-gray-500 ">
 								<div class="flex items-center gap-3">
@@ -101,10 +92,8 @@ export default {
 							</div>
 
 							<div class="space-y-3 md:space-y-4">
-								<EventBuilder :blocks="event.data.content"/>
+								<Builder :blocks="event.data.content"/>
 							</div>
-
-
 						</div>
 						<!-- End Content -->
 					</div>
@@ -112,7 +101,7 @@ export default {
 
 			</div>
 		</main>
-		<ClientFooterDown/>
+		<BasicFooter />
 	</div>
 </template>
 

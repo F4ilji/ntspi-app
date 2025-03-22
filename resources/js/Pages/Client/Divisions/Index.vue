@@ -1,36 +1,21 @@
 <script>
-import MainNavbar from "@/Navbars/MainNavbar.vue";
 import {Head, Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import AdminIndexSearch from "@/Components/AdminIndexSearch.vue";
-import AdminIndexFilter from "@/Components/AdminIndexFilter.vue";
-import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
-import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
-import ClientPostFilter from '@/Components/ClientPostFilter.vue';
-import ClientPost from '@/Components/ClientPost.vue';
-import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import DivisionListBreadcrumbs from "@/Components/BuilderUi/Divisions/DivisionListBreadcrumbs.vue";
-import AppHead from "@/Components/AppHead.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import DivisionListTitle from "@/componentss/features/divisions/components/DivisionListTitle.vue";
+import DivisionListBreadcrumbs from "@/componentss/features/divisions/components/DivisionListBreadcrumbs.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
 
 export default {
   name: "Index",
   components: {
-		AppHead,
+    BasicFooter,
+    DivisionListTitle,
+    MetaTags,
 		DivisionListBreadcrumbs,
 		MainPageNavBar,
-    AdminIndexHeaderTitle, AdminIndexHeader,
-    AdminIndexFilter, AdminIndexSearch,
-    ClientFooterDown,
-    ClientScrollTimeline,
-    ClientPostFilter,
     Link,
-    FsLightbox,
     Head,
-    ClientPost,
-    ClientPostSearch
   },
   data() {
     return {
@@ -55,7 +40,7 @@ export default {
 </script>
 
 <template>
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
@@ -72,11 +57,10 @@ export default {
 								<!-- Card Section -->
 								<div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
 
-									<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
+                  <DivisionListTitle
+                      bottom-text="Список структурных и административных отделов НТГСПИ"
+                      header="Подразделения института" />
 
-										<h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Подразделения института</h2>
-										<p class="mt-1 text-gray-600 dark:text-neutral-400">Список структурных и административных отделов НТГСПИ</p>
-									</div>
 									<DivisionListBreadcrumbs />
 
 									<!-- Grid -->
@@ -109,7 +93,8 @@ export default {
 				</div>
 			</div>
 		</main>
-		<ClientFooterDown/>
+
+		<BasicFooter/>
 	</div>
 </template>
 

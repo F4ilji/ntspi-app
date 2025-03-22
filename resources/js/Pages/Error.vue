@@ -31,7 +31,7 @@
 			<!-- ========== END FOOTER ========== -->
 		</div>
 
-		<ClientFooterDown />
+		<BasicFooter />
 	</div>
 
 
@@ -47,16 +47,12 @@
 <script>
 
 
-import {Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import MainNavbar from "@/Navbars/MainNavbar.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import { Head } from '@inertiajs/vue3'
 import {defineComponent} from "vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
 
 export default defineComponent({
-	components: {ClientFooterDown, MainPageNavBar},
+	components: {BasicFooter, MainPageNavBar},
 	props: {
 		status: Number,
 	},

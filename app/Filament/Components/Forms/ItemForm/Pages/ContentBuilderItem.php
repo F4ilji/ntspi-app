@@ -11,6 +11,7 @@ use App\Models\CustomForm;
 use App\Models\Page;
 use App\Models\PageReferenceList;
 use App\Models\Post;
+use App\Models\Slider;
 use Filament\Forms;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\FileUpload;
@@ -415,6 +416,13 @@ class ContentBuilderItem
                             ->searchable()
                             ->required(),
                     ])->label('Контакты'),
+                Builder\Block::make('slider')
+                    ->schema([
+                        Select::make('slider')
+                            ->options(Slider::query()->whereHas('slides')->where('is_active', true)->pluck('title', 'slug'))
+                            ->searchable()
+                            ->required(),
+                    ])->label('Слайдеры'),
             ])
                 ->collapsed()
                 ->blockNumbers(false)

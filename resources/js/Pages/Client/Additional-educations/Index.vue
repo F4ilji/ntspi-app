@@ -1,47 +1,34 @@
 <script>
-import {Head, Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import AdminIndexSearch from "@/Components/AdminIndexSearch.vue";
-import AdminIndexFilter from "@/Components/AdminIndexFilter.vue";
-import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
-import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
-import ClientPostFilter from '@/Components/ClientPostFilter.vue';
-import ClientPost from '@/Components/ClientPost.vue';
-import ClientPostSearch from '@/Components/ClientPostSearch.vue';
-import ClientImageSlider from "@/Components/ClientImageSlider.vue";
+import {Link} from "@inertiajs/vue3";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import LevelEduFilter from "@/Components/BuilderUi/AdditionalEducationPrograms/Filters/LevelEduFilter.vue";
-import ClientAdditionalProgramFilter
-	from "@/Components/BuilderUi/AdditionalEducationPrograms/ClientAdditionalProgramFilter.vue";
-import PostBadge from "@/Components/BuilderUi/Events/EventBadgeBuilder.vue";
-import ProgramBadge from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramBadge.vue";
-import AdditionalEducationProgramListBreadcrumbs
-	from "@/Components/BuilderUi/AdditionalEducationPrograms/AdditionalEducationProgramListBreadcrumbs.vue";
-import AppHead from "@/Components/AppHead.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import AdditionalProgramTitle
+  from "@/componentss/features/additionalEducationPrograms/components/AdditionalProgramTitle.vue";
+import AdditionalProgramListBreadcrumbs
+  from "@/componentss/features/additionalEducationPrograms/components/AdditionalProgramListBreadcrumbs.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
+import AdditionalProgramBadge
+  from "@/componentss/features/additionalEducationPrograms/components/AdditionalProgramBadge.vue";
+import LevelEduFilter from "@/componentss/features/additionalEducationPrograms/components/LevelEduFilter.vue";
+import CategoryFilter from "@/componentss/shared/filter/filters/CategoryFilter.vue";
+import BasicListBadge from "@/componentss/shared/badge/BasicListBadge.vue";
+import FormEducationalFilter from "@/componentss/shared/filter/filters/FormEducationalFilter.vue";
 
 export default {
   name: "Index",
   components: {
-		AppHead,
-		AdditionalEducationProgramListBreadcrumbs,
-		ProgramBadge,
-		PostBadge,
-		ClientAdditionalProgramFilter,
+    BasicListBadge,
+    AdditionalProgramBadge,
+    FormEducationalFilter, CategoryFilter,
+    BasicListFilter,
+    BasicFooter,
+    AdditionalProgramListBreadcrumbs,
+    AdditionalProgramTitle,
+    MetaTags,
 		LevelEduFilter,
 		MainPageNavBar,
-		ClientImageSlider,
-    AdminIndexHeaderTitle, AdminIndexHeader,
-    AdminIndexFilter, AdminIndexSearch,
-    ClientFooterDown,
-    ClientScrollTimeline,
-    ClientPostFilter,
     Link,
-    FsLightbox,
-    Head,
-    ClientPost,
-    ClientPostSearch
   },
   data() {
     return {
@@ -91,17 +78,22 @@ export default {
 		},
 
 
+
+
   },
-  mounted() {
-  }
+  computed: {
+    hasActiveFilters() {
+      return this.filters.category_filter.value || this.filters.form_education_filter.value
+    }
+  },
 };
 </script>
 
 <template>
 
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 
 
 	<div class="flex flex-col h-screen">
@@ -110,37 +102,32 @@ export default {
 				<div class="">
 					<div class="">
 						<div class="space-y-5 md:space-y-4">
-							<h1 class="text-brand-primary text-center mb-3 mt-2 text-3xl font-semibold tracking-tight dark:text-white lg:text-[40px] lg:leading-tight">
-								Дополнительное образование
-
-							</h1>
-							<div class="space-y-5 md:space-y-4 mx-auto max-w-3xl">
+							<AdditionalProgramTitle class="text-center" header="Дополнительное образование" />
+							<div class="space-y-5 md:space-y-4 mx-auto max-w-3xl w-full">
 								<div>
 									<div class="">
 										<div class="my-10 w-full">
-											<AdditionalEducationProgramListBreadcrumbs :breadcrumbs="breadcrumbs" />
+                      <AdditionalProgramListBreadcrumbs :breadcrumbs="breadcrumbs" />
 											<div class="flex items-center gap-x-2">
 												<LevelEduFilter :directions="directionAdditionalEducations" :direction_filter="filters.direction_filter" />
-												<ClientAdditionalProgramFilter
-														:forms_educational="forms_education"
-														:form_education_filter="filters.form_education_filter"
-														:category_filter="filters.category_filter"
-														:categories="categories"
-												/>
+                        <BasicListFilter>
+                          <FormEducationalFilter :forms="forms_education" :formEdu_filter="filters.form_education_filter" />
+                          <CategoryFilter :categories="categories" :category_filter="filters.category_filter" />
+                        </BasicListFilter>
 											</div>
 										</div>
-										<div class="px-2 mx-auto">
-											<div class="flex-wrap flex gap-3 md:items-center">
-												<ProgramBadge :filters="filters" />
-											</div>
-										</div>
-									</div>
+                    <div v-if="hasActiveFilters" class="px-1">
+                      <h3 class="text-sm text-gray-500 mb-4">Найдено программ: {{ additionalEducations.data.length }}</h3>
+                      <div class="flex-wrap flex gap-3 md:items-center">
+                        <BasicListBadge :filters="filters" />
+                      </div>
+                    </div>									</div>
 									<div class="container py-5 lg:py-4">
 										<div class="w-full mx-auto flex flex-wrap lg:justify-between">
 											<template v-for="educations in transformToColumns(additionalEducations.data)">
 												<div class="flex flex-col">
 													<template v-for="education in educations">
-														<div style="height: max-content" class="px-2">
+														<div style="height: max-content" class="px-1">
 															<h1 class="text-brand-primary mb-2 mt-2 text-lg font-semibold upper tracking-tight dark:text-white lg:text-md lg:leading-tight">
 																{{ education.title }}
 															</h1>
@@ -160,7 +147,8 @@ export default {
 				</div>
 			</div>
 		</main>
-		<ClientFooterDown/>
+
+		<BasicFooter />
 	</div>
 </template>
 

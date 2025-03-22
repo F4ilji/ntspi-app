@@ -1,54 +1,31 @@
 <script>
-import MainNavbar from "@/Navbars/MainNavbar.vue";
 import {Head, Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import AdminIndexSearch from "@/Components/AdminIndexSearch.vue";
-import AdminIndexFilter from "@/Components/AdminIndexFilter.vue";
-import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
-import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
-import ClientPostFilter from '@/Components/ClientPostFilter.vue';
-import ClientPost from '@/Components/ClientPost.vue';
-import ClientPostSearch from '@/Components/ClientPostSearch.vue';
-import LevelEduFilter from "@/Components/BuilderUi/Programs/Filters/LevelEduFilter.vue";
-import ClientProgramFilter from "@/Components/ClientProgramFilter.vue";
-import PostAuthorsList from "@/Components/BuilderUi/Posts/PostAuthorsList.vue";
-import PostTimeRead from "@/Components/BuilderUi/Posts/PostTimeRead.vue";
-import PostBackButton from "@/Components/BuilderUi/Posts/PostBackButton.vue";
-import PostTitle from "@/Components/BuilderUi/Posts/PostTitle.vue";
-import PostBuilder from "@/Components/BuilderUi/Posts/PostBuilder.vue";
-import PostGallery from "@/Components/BuilderUi/Posts/PostGallery.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import ProgramListBreadcrumbs from "@/Components/BuilderUi/Programs/ProgramListBreadcrumbs.vue";
-import ClientAdditionalProgramFilter
-	from "@/Components/BuilderUi/AdditionalEducationPrograms/ClientAdditionalProgramFilter.vue";
-import ProgramBadge from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramBadge.vue";
-import AdditionalEducationProgramListBreadcrumbs
-	from "@/Components/BuilderUi/AdditionalEducationPrograms/AdditionalEducationProgramListBreadcrumbs.vue";
-import AppHead from "@/Components/AppHead.vue";
+import FormEducationalFilter from "@/componentss/shared/filter/filters/FormEducationalFilter.vue";
+import DirectionFilter from "@/componentss/shared/filter/filters/DirectionFilter.vue";
+import BudgetFilter from "@/componentss/shared/filter/filters/BudgetFilter.vue";
+import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
+import ProgramTitle from "@/componentss/features/educationalPrograms/components/ProgramTitle.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import ProgramListBreadcrumbs from "@/componentss/features/educationalPrograms/components/ProgramListBreadcrumbs.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import ProgramLevelEduFilter from "@/componentss/features/educationalPrograms/components/ProgramLevelEduFilter.vue";
 
 export default {
   name: "Index",
   components: {
-		AppHead,
-		AdditionalEducationProgramListBreadcrumbs, ProgramBadge, ClientAdditionalProgramFilter,
+    ProgramLevelEduFilter,
+    FormEducationalFilter,
+    DirectionFilter,
+    BudgetFilter,
+    BasicListFilter,
+    ProgramTitle,
+    MetaTags,
+    BasicFooter,
 		ProgramListBreadcrumbs,
 		MainPageNavBar,
-		PostGallery, PostBuilder, PostTitle, PostBackButton, PostTimeRead, PostAuthorsList,
-		ClientProgramFilter,
-		LevelEduFilter,
-    AdminIndexHeaderTitle, AdminIndexHeader,
-    AdminIndexFilter, AdminIndexSearch,
-    ClientFooterDown,
-    ClientScrollTimeline,
-    ClientPostFilter,
     Link,
-    MainNavbar,
-    FsLightbox,
     Head,
-    ClientPost,
-    ClientPostSearch
   },
   data() {
     return {
@@ -101,15 +78,13 @@ export default {
 		},
 
   },
-  mounted() {
-  }
 };
 </script>
 
 <template>
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 
 
 	<div class="flex flex-col h-screen">
@@ -118,23 +93,19 @@ export default {
 				<div class="">
 					<div class="">
 						<div class="space-y-5 md:space-y-4">
-							<h1 class="text-brand-primary text-center mb-3 mt-2 text-3xl font-semibold tracking-tight dark:text-white lg:text-[40px] lg:leading-tight">
-								{{ this.campaignName }}
-							</h1>
-							<div class="space-y-5 md:space-y-4 mx-auto max-w-3xl">
+							<ProgramTitle class="text-center" :header="this.campaignName" />
+							<div class="space-y-5 md:space-y-4 mx-auto max-w-3xl w-full">
 								<div>
 									<div class="">
 										<div class="my-10 w-full">
-											<ProgramListBreadcrumbs :breadcrumbs="breadcrumbs" />
+											<ProgramListBreadcrumbs />
 											<div class="flex items-center gap-x-2">
-												<LevelEduFilter :levels="levelsEducational" :level_filter="filters.level_filter" />
-												<ClientProgramFilter
-														:budget_filter="filters.budget_filter"
-														:direction_filter="filters.direction_filter"
-														:formEdu_filter="filters.formEdu_filter"
-														:types_budget="budgetEdu"
-														:direction_studies="direction_studies"
-														:forms_educational="formsEdu" />
+												<ProgramLevelEduFilter :levels="levelsEducational" :level_filter="filters.level_filter" />
+                        <BasicListFilter>
+                          <BudgetFilter :budget_filter="filters.budget_filter" :types_budget="budgetEdu" />
+                          <DirectionFilter :direction_studies="direction_studies" :direction_filter="filters.direction_filter" />
+                          <FormEducationalFilter :formEdu_filter="filters.formEdu_filter" :forms_educational="formsEdu" />
+                        </BasicListFilter>
 											</div>
 										</div>
 									</div>
@@ -166,11 +137,9 @@ export default {
 				</div>
 			</div>
 		</main>
-		<ClientFooterDown/>
+
+		<BasicFooter />
 	</div>
-
-
-
 
 </template>
 

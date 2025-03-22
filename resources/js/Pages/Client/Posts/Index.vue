@@ -1,39 +1,36 @@
 <script>
-import MainNavbar from "@/Navbars/MainNavbar.vue";
 import {Head, Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import AdminIndexSearch from "@/Components/AdminIndexSearch.vue";
-import AdminIndexFilter from "@/Components/AdminIndexFilter.vue";
-import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
-import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
-import ClientPostFilter from '@/Components/ClientPostFilter.vue';
-import ClientPost from '@/Components/ClientPost.vue';
-import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import NewsBreadcrumbs from "@/Components/BuilderUi/Posts/NewsBreadcrumbs.vue";
-import AppHead from "@/Components/AppHead.vue";
-import PostBadge from "@/Components/BuilderUi/Posts/PostBadge.vue";
-
+import PostListBreadcrumbs from "@/componentss/features/posts/components/PostListBreadcrumbs.vue.vue";
+import HeadItemsWrapper from "@/componentss/ui/wrappers/HeadItemsWrapper.vue";
+import PostListSearch from "@/componentss/features/posts/components/PostListSearch.vue";
+import PostListItem from "@/componentss/features/posts/components/PostListItem.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import PostListBadge from "@/componentss/features/posts/components/PostListBadge.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
+import SortingByFilter from "@/componentss/shared/filter/filters/SortingByFilter.vue";
+import CategoryFilter from "@/componentss/shared/filter/filters/CategoryFilter.vue";
+import TagFilter from "@/componentss/shared/filter/filters/TagFilter.vue";
+import BasicListBadge from "@/componentss/shared/badge/BasicListBadge.vue";
 export default {
   name: "Index",
   components: {
-		AppHead,
-		NewsBreadcrumbs,
+    BasicListBadge,
+    TagFilter,
+    CategoryFilter,
+    SortingByFilter,
+    BasicListFilter,
+    MetaTags,
+    PostListBadge,
+    BasicFooter,
+    PostListItem,
+    PostListSearch,
+    HeadItemsWrapper,
+    PostListBreadcrumbs,
 		MainPageNavBar,
-		PostBadge,
-    AdminIndexHeaderTitle, AdminIndexHeader,
-    AdminIndexFilter, AdminIndexSearch,
-    ClientFooterDown,
-    ClientScrollTimeline,
-    ClientPostFilter,
     Link,
-    MainNavbar,
-    FsLightbox,
     Head,
-    ClientPost,
-    ClientPostSearch
   },
   data() {
     return {
@@ -63,57 +60,53 @@ export default {
 			type: Object,
 		}
   },
-  methods: {
-
+  computed: {
+    hasActiveFilters() {
+      return this.filters.category_filter.value || this.filters.tag_filter.value || this.filters.search_filter.value;
+    }
   },
 
-	mounted() {
-  }
 };
 </script>
 
 <template>
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl py-10 md:flex md:flex-row md:py-10">
-				<div class="pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
+				<div class="pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto w-full max-w-screen-lg">
 					<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
 						<h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Новости НТГСПИ</h2>
 						<p class="mt-1 text-gray-600 dark:text-neutral-400">Узнайте последние новости любимого вуза</p>
 					</div>
-					<NewsBreadcrumbs :breadcrumbs="breadcrumbs" class="px-5" />
+					<PostListBreadcrumbs :breadcrumbs="breadcrumbs" class="px-5" />
 					<div>
-						<AdminIndexHeader>
-							<ClientPostSearch :search_filter="filters.search_filter" />
-							<ClientPostFilter :sorting-by_filter="filters.sortingBy_filter" :category_filter="filters.category_filter" :tag_filter="filters.tag_filter" :tags="tags" :items="categories"/>
-						</AdminIndexHeader>
+						<HeadItemsWrapper>
+							<PostListSearch :search_filter="filters.search_filter" />
+              <BasicListFilter>
+                <SortingByFilter :sortingBy_filter="filters.sortingBy_filter" />
+                <CategoryFilter :categories="categories" :category_filter="filters.category_filter" />
+                <TagFilter :tags="tags" :tag_filter="filters.tag_filter" />
+              </BasicListFilter>
+						</HeadItemsWrapper>
 
 
-
-
-						<div v-if="filters.category_filter.value || filters.tag_filter.value || filters.search_filter.value" class="px-6">
+						<div v-if="hasActiveFilters" class="px-6">
 							<h3 class="text-sm text-gray-500 mb-4">Найдено новостей: {{ posts.meta.total }}</h3>
 							<div class="flex-wrap flex gap-3 md:items-center">
-								<PostBadge :filters="filters" />
+								<BasicListBadge :filters="filters" />
 							</div>
 						</div>
 
-
-
-
-						<!-- Avatar Media -->
-						<!-- End Avatar Media -->
-						<!-- Content -->
 						<div class="space-y-5 md:space-y-4">
 							<div class="space-y-5 md:space-y-4">
 								<div>
 									<div class="container px-4 mx-auto xl:px-5 max-w-screen-lg py-5 lg:py-8">
 										<div class="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
 											<template v-for="post in posts.data" :key="post.id">
-												<ClientPost :post="post" />
+												<PostListItem :post="post" />
 											</template>
 										</div>
 										<div class="mt-10 flex items-center justify-center">
@@ -144,7 +137,7 @@ export default {
 				</div>
 			</div>
 		</main>
-		<ClientFooterDown/>
+		<BasicFooter />
 	</div>
 </template>
 

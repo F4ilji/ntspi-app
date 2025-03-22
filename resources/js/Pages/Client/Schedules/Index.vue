@@ -1,11 +1,15 @@
 <script>
 import MainNavbar from "@/Navbars/MainNavbar.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import { debounce } from "lodash";
 import { Link } from "@inertiajs/vue3";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
-import ClientScheduleFilter from "@/Components/BuilderUi/Schedules/ClientScheduleFilter.vue";
+import ScheduleListTitle from "@/componentss/features/schedules/components/ScheduleListTitle.vue";
+import ScheduleListFilter from "@/componentss/features/schedules/components/ScheduleListFilter.vue";
+import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
+import FormEducationalFilter from "@/componentss/shared/filter/filters/FormEducationalFilter.vue";
+
 
 export default {
 	name: "Index",
@@ -17,7 +21,12 @@ export default {
 			loading: false,
 		};
 	},
-	components: {ClientScheduleFilter, BaseIcon, MainPageNavBar, ClientFooterDown, MainNavbar, Link},
+	components: {
+    FormEducationalFilter,
+    BasicListFilter,
+    BasicFooter,
+    ScheduleListFilter,
+    ScheduleListTitle, BasicIcon, MainPageNavBar, MainNavbar, Link},
 
 	props: {
 		navigation: {
@@ -127,17 +136,10 @@ export default {
 				<article class="w-full min-w-0 mt-4 px-1 md:px-6">
 					<div class="relative overflow-hidden">
 						<div class="max-w-[85rem] mx-auto sm:px-6 lg:px-8 py-10 sm:pb-12 sm:py-5">
-							<div class="">
-								<h1 class="text-2xl sm:text-4xl font-bold text-gray-800 text-center">
-									Расписание занятий
-								</h1>
-
-								<div class="">
-									<p class="mt-3 text-gray-600 text-center">
-										Просто введите название группы
-									</p>
-								</div>
-
+							<div>
+                <ScheduleListTitle
+                    bottom-text="Просто введите название группы"
+                    header="Расписание занятий" />
 								<div class="mt-7 sm:mt-12 mx-auto max-w-xl relative space-y-4">
 									<!-- Form -->
 									<form>
@@ -168,17 +170,19 @@ export default {
 											<button
 													@click="toggleShowFavorites"
 													type="button"
-													:disabled="favoriteGroups.length === 0 || loading"
+													:disabled="favoriteGroups?.length === 0 || loading"
 													:class="
 															filters.favorite_filter.value !== null ? 'bg-primaryBlue text-white hover:bg-secondDarkBlue': 'text-gray-700 hover:bg-gray-100',
 															loading ? 'animate-pulse' : ''
 															"
 													class="flex w-full py-2 px-4 items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
 													>
-												<BaseIcon name="heart" class="shrink-0 size-4"/>
+												<BasicIcon name="heart" class="shrink-0 size-4"/>
 												<span>Избранное</span>
 											</button>
-											<ClientScheduleFilter :forms_educational="this.forms_education" :form-edu_filter="this.filters.form_education_filter" />
+                      <ScheduleListFilter>
+                        <FormEducationalFilter :forms="this.forms_education" :form-edu_filter="this.filters.form_education_filter" />
+                      </ScheduleListFilter>
 										</div>
 									</div>
 								</div>
@@ -198,13 +202,13 @@ export default {
 												<div class="flex py-4 px-5 gap-x-3">
 													<button @click="toggleFavorite(educationalGroup.data.id)">
 														<transition name="heart" mode="out-in">
-															<BaseIcon
+															<BasicIcon
 																	v-if="isFavorite(educationalGroup.data.id)"
 																	name="heart_filled"
 																	class="shrink-0 size-4 text-red-500"
 																	key="filled"
 															/>
-															<BaseIcon
+															<BasicIcon
 																	v-else
 																	name="heart"
 																	class="shrink-0 size-4"
@@ -247,7 +251,8 @@ export default {
 				</article>
 			</div>
 		</main>
-		<ClientFooterDown/>
+
+		<BasicFooter />
 	</div>
 </template>
 

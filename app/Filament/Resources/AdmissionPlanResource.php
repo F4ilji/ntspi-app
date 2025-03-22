@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\BudgetEducation;
 use App\Enums\EducationalProgramStatus;
+use App\Enums\FormEducation;
 use App\Filament\Resources\AdmissionPlanResource\Pages;
 use App\Filament\Resources\AdmissionPlanResource\RelationManagers;
 use App\Filament\Resources\EducationalProgramResource\RelationManagers\AdmissionPlansRelationManager;
@@ -39,13 +41,15 @@ class AdmissionPlanResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('educational_programs_id')
-                    ->searchable()
-                    ->label('Образовательная программа')
-                    ->options(EducationalProgram::whereIn('status', [EducationalProgramStatus::PUBLISHED, EducationalProgramStatus::IN_PROGRESS])->pluck('name', 'id')),
-                Forms\Components\Select::make('admission_campaigns_id')
-                    ->label('Приемная компания')
-                    ->options(AdmissionCampaign::all()->pluck('name', 'id')),
+                Section::make()->schema([
+                    Forms\Components\Select::make('educational_programs_id')
+                        ->searchable()
+                        ->label('Образовательная программа')
+                        ->options(EducationalProgram::whereIn('status', [EducationalProgramStatus::PUBLISHED, EducationalProgramStatus::IN_PROGRESS])->pluck('name', 'id')),
+                    Forms\Components\Select::make('admission_campaigns_id')
+                        ->label('Приемная компания')
+                        ->options(AdmissionCampaign::all()->pluck('name', 'id')),
+                ]),
                 Section::make('План приема')->schema([
                     Forms\Components\Repeater::make('exams')->label('Вступительные испытания')->schema([
                         TextInput::make('title')->label('Название-предмета'),
@@ -59,12 +63,11 @@ class AdmissionPlanResource extends Resource
                         return "Вступительное испытание #" . $count;
                     }),
                     Forms\Components\Repeater::make('contests')->label('Условия поступления')->schema([
-                        Forms\Components\Select::make('form_education')->label('Форма образования')
-                            ->options(['och' => 'Очная форма обучения', 'zaoch' => 'Заочная форма обучения', 'och_zaoch' => 'Очно-заочная форма обучения']),
+                        Forms\Components\Select::make('form_education')->label('Форма обучения')
+                            ->options(FormEducation::class),
                         Forms\Components\Select::make('financing_source')->label('Источник финансирования')
-                            ->options(['budget' => 'Бюджетное место', 'non_budget' => 'С оплатой обучения']),
-                        TextInput::make('budget_quantity_position')->label('Количество бюджетных мест')->integer(),
-                        TextInput::make('non_budget_quantity_position')->label('Количество платных мест')->integer()
+                            ->options(BudgetEducation::class),
+                        TextInput::make('position_count')->label('Количество мест на прием')->integer(),
                     ])->live()->maxItems(2)->collapsed()->addActionLabel('Добавить группу')->columns(3)
                         ->itemLabel(function (Get $get) {
                         static $count = 0;

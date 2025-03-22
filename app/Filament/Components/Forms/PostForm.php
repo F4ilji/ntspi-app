@@ -192,6 +192,7 @@ class PostForm
                                                     ]),
                                                 ]),
                                             ])
+                                            ->hidden(fn(Forms\Get $get) => !$get('is_slider_enabled'))
 
 
                                     ]),

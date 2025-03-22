@@ -1,41 +1,32 @@
 <script>
-import MainNavbar from "@/Navbars/MainNavbar.vue";
 import {Head, Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import AdminIndexSearch from "@/Components/AdminIndexSearch.vue";
-import AdminIndexFilter from "@/Components/AdminIndexFilter.vue";
-import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
-import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
-import ClientPostFilter from '@/Components/ClientPostFilter.vue';
-import ClientPost from '@/Components/ClientPost.vue';
-import ClientPostSearch from '@/Components/ClientPostSearch.vue';
-import ClientEventSelectDate from "@/Components/ClientEventSelectDate.vue";
-import ClientEventFilter from "@/Components/ClientEventFilter.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import EventListBreadcrumbs from "@/Components/BuilderUi/Events/EventListBreadcrumbs.vue";
-import AppHead from "@/Components/AppHead.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import EventListSelectDate from "@/componentss/features/events/components/EventListSelectDate.vue";
+import EventListFilter from "@/componentss/features/events/components/EventListFilter.vue";
+import EventListBreadcrumbs from "@/componentss/features/events/components/EventListBreadcrumbs.vue";
+import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
+import CategoryFilter from "@/componentss/shared/filter/filters/CategoryFilter.vue";
+import IsOnlineFilter from "@/componentss/shared/filter/filters/IsOnlineFilter.vue";
+import BasicListBadge from "@/componentss/shared/badge/BasicListBadge.vue";
+
 
 export default {
 	name: "Index",
 	components: {
-		AppHead,
-		EventListBreadcrumbs,
+    BasicListBadge,
+    CategoryFilter,
+    IsOnlineFilter,
+    BasicListFilter,
+    BasicFooter,
+    EventListSelectDate,
+    EventListFilter,
+    EventListBreadcrumbs,
+    MetaTags,
 		MainPageNavBar,
-		ClientEventFilter,
-		ClientEventSelectDate,
-		AdminIndexHeaderTitle, AdminIndexHeader,
-		AdminIndexFilter, AdminIndexSearch,
-		ClientFooterDown,
-		ClientScrollTimeline,
-		ClientPostFilter,
 		Link,
-		MainNavbar,
-		FsLightbox,
 		Head,
-		ClientPost,
-		ClientPostSearch
 	},
 	props: {
 		events: {
@@ -63,18 +54,22 @@ export default {
 			type: Object,
 		}
 	},
-	methods: {},
+  computed: {
+    hasActiveFilters() {
+      return this.filters.category_filter.value || this.filters.is_online_filter.value
+    }
+  },
 };
 </script>
 
 <template>
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
-				<div class="pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
+				<div class="pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto w-full max-w-screen-md">
 					<div>
 						<EventListBreadcrumbs :breadcrumbs="breadcrumbs" />
 						<div class="space-y-5 md:space-y-4">
@@ -82,7 +77,10 @@ export default {
 								<h1 class="block text-brand-primary text-center mb-3 mt-2 mr-4 text-3xl font-semibold tracking-tight dark:text-white lg:text-[40px] lg:leading-tight">
 									Мероприятия НТГСПИ
 								</h1>
-								<ClientEventFilter :is_online_filter="filters.is_online_filter" :categories="categories" :category_filter="filters.category_filter" :sorting-by_filter="filters.sortingBy_filter" />
+                <BasicListFilter>
+                  <IsOnlineFilter :is_online_filter="filters.is_online_filter" />
+                  <CategoryFilter :categories="categories" :category_filter="filters.category_filter" />
+                </BasicListFilter>
 
 							</div>
 
@@ -96,10 +94,16 @@ export default {
 							</div>
 							<div class="space-y-5 md:space-y-4">
 								<div>
-									<ClientEventSelectDate :current-date="currentDate.fullDate" :dates="eventDates"/>
+									<EventListSelectDate :current-date="currentDate.fullDate" :dates="eventDates"/>
 								</div>
 
 							</div>
+              <div v-if="hasActiveFilters" class="px-6">
+                <h3 class="text-sm text-gray-500 mb-4">Найдено мероприятий: {{ events.data.length }}</h3>
+                <div class="flex-wrap flex gap-3 md:items-center">
+                  <BasicListBadge :filters="filters" />
+                </div>
+              </div>
 						</div>
 						<div class="grid gap-y-10 mt-10">
 							<template v-for="event in events.data">
@@ -107,7 +111,7 @@ export default {
 									<div class="grow">
 										<div class="flex flex-col h-full">
 											<div class="mb-3">
-												<p class="inline-flex items-center gap-1.5 py-1.5 rounded-md text-[12px] text-gray-600">
+												<p class="inline-flex mr-2 items-center gap-1.5 py-1.5 rounded-md text-[12px] text-gray-600">
 													{{ event.event_time_start }}
 												</p>
 												<p v-if="event.category" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600">
@@ -129,7 +133,7 @@ export default {
 				</div>
 			</div>
 		</main>
-		<ClientFooterDown/>
+		<BasicFooter />
 	</div>
 
 </template>

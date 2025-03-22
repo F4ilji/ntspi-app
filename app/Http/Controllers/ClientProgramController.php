@@ -45,6 +45,7 @@ class ClientProgramController extends Controller
             DirectionStudy::query()
                 ->withAdmissionCampaignByYear($activeCampaign->academic_year)
                 ->withActivePrograms()
+                ->with('programs.admission_plans')
                 ->when($level, function ($query) use ($level) {
                     $query->where('lvl_edu', LevelEducational::fromName($level)->value);
                 })
@@ -149,12 +150,13 @@ class ClientProgramController extends Controller
     {
         $budgetValue = Str::of(BudgetEducation::fromName($budget)->value)->toString();
 
+
         $query->whereHas('programs.admission_plans', function ($query) use ($budgetValue) {
-            $query->whereJsonContains('contests', [['places' => ['form_budget' => $budgetValue]]]);
+            $query->whereJsonContains('contests', ['financing_source' => $budgetValue]);
         })
             ->with(['programs' => function ($query) use ($budgetValue) {
                 $query->whereHas('admission_plans', function ($query) use ($budgetValue) {
-                    $query->whereJsonContains('contests', [['places' => ['form_budget' => $budgetValue]]]);
+                    $query->whereJsonContains('contests', ['financing_source' => $budgetValue]);
                 });
             }]);
     }

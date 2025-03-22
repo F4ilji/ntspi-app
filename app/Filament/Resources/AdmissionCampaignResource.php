@@ -31,11 +31,15 @@ class AdmissionCampaignResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->label('Название')->required()->columnSpanFull(),
-                Forms\Components\Select::make('academic_year')->label('Академический год')->required()
-                    ->options(['2024' => '2024/2025', '2025' => '2025/2026']),
-                Forms\Components\Select::make('status')->label('Статус')->required()
-                    ->options(['1' => 'Активный', '2' => 'Архивный', '3' => 'Скрыт']),
+                Forms\Components\Section::make()->schema([
+                    TextInput::make('name')->label('Название')->required()->columnSpanFull(),
+                    Forms\Components\Grid::make()->schema([
+                        Forms\Components\Select::make('academic_year')->label('Академический год')->required()
+                            ->options(self::generateAcademicYears()),
+                        Forms\Components\Select::make('status')->label('Статус')->required()
+                            ->options(['1' => 'Активный', '2' => 'Архивный', '3' => 'Скрыт']),
+                    ]),
+                ]),
                 Forms\Components\Section::make()->schema([
                     Forms\Components\Repeater::make('info')->schema([
                         Forms\Components\Select::make('edu_name')->options(LevelEducational::class),
@@ -90,5 +94,20 @@ class AdmissionCampaignResource extends Resource
             'create' => Pages\CreateAdmissionCampaign::route('/create'),
             'edit' => Pages\EditAdmissionCampaign::route('/{record}/edit'),
         ];
+    }
+
+    protected static function generateAcademicYears(): array
+    {
+        $currentYear = (int) date('Y') - 5;
+        $yearsAhead = 10; // Количество лет вперед
+        $academicYears = [];
+
+        for ($i = 0; $i < $yearsAhead; $i++) {
+            $startYear = $currentYear + $i;
+            $endYear = $startYear + 1;
+            $academicYears[$startYear] = "{$startYear}/{$endYear}";
+        }
+
+        return $academicYears;
     }
 }

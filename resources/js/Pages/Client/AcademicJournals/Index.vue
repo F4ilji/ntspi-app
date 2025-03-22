@@ -1,33 +1,19 @@
 <script>
 import {Head, Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import AdminIndexSearch from "@/Components/AdminIndexSearch.vue";
-import AdminIndexFilter from "@/Components/AdminIndexFilter.vue";
-import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
-import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
-import ClientPostFilter from '@/Components/ClientPostFilter.vue';
-import ClientPost from '@/Components/ClientPost.vue';
-import ClientPostSearch from '@/Components/ClientPostSearch.vue';
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import AppHead from "@/Components/AppHead.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
 
 export default {
   name: "Index",
   components: {
-		AppHead,
+    BasicFooter,
+    MetaTags,
 		MainPageNavBar,
-    AdminIndexHeaderTitle, AdminIndexHeader,
-    AdminIndexFilter, AdminIndexSearch,
     ClientFooterDown,
     ClientScrollTimeline,
-    ClientPostFilter,
     Link,
-    FsLightbox,
     Head,
-    ClientPost,
-    ClientPostSearch
   },
   data() {
     return {
@@ -52,10 +38,10 @@ export default {
 </script>
 
 <template>
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
@@ -102,7 +88,8 @@ export default {
 				</div>
 			</div>
 		</main>
-		<ClientFooterDown/>
+
+		<BasicFooter/>
 	</div>
 </template>
 

@@ -1,44 +1,33 @@
 <script>
-import MainNavbar from "@/Navbars/MainNavbar.vue";
 import {Head, Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import ClientImageSlider from "@/Components/ClientImageSlider.vue";
-import PostTitle from "@/Components/BuilderUi/Posts/PostTitle.vue";
-import PostBackButton from "@/Components/BuilderUi/Posts/PostBackButton.vue";
-import PostAuthorsList from "@/Components/BuilderUi/Posts/PostAuthorsList.vue";
-import PostTimeRead from "@/Components/BuilderUi/Posts/PostTimeRead.vue";
-import PostBuilder from "@/Components/BuilderUi/Posts/PostBuilder.vue";
-import PostGallery from "@/Components/BuilderUi/Posts/PostGallery.vue";
-import PostBadge from "@/Components/BuilderUi/Events/EventBadgeBuilder.vue";
-import ClientPostFilter from "@/Components/ClientPostFilter.vue";
-import ClientPostSearch from "@/Components/ClientPostSearch.vue";
-import ClientPost from "@/Components/ClientPost.vue";
-import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
+import BasicTitle from "@/componentss/ui/titles/BasicTitle.vue";
+import BackButton from "@/componentss/ui/buttons/BackButton.vue";
+import PostItemBreadcrumbs from "@/componentss/features/posts/components/PostItemBreadcrumbs.vue";
+import PostGallery from "@/componentss/features/posts/components/PostGallery.vue";
+import PostTimeRead from "@/componentss/features/posts/components/PostTimeRead.vue";
+import PostAuthorsList from "@/componentss/features/posts/components/PostAuthorsList.vue";
+import ScrollTimeline from "@/componentss/shared/timeline/ScrollTimeline.vue";
+import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import PostBreadcrumbs from "@/Components/BuilderUi/Posts/PostBreadcrumbs.vue";
-import AppHead from "@/Components/AppHead.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+
 
 export default {
 	name: "Show",
 	components: {
-		AppHead,
-		PostBreadcrumbs,
-		MainPageNavBar,
-		AdminIndexHeader, ClientPost, ClientPostSearch, ClientPostFilter, PostBadge,
+    MetaTags,
+    MainPageNavBar,
+    BasicFooter,
+    Builder,
+    ScrollTimeline,
+    BasicTitle,
+    BackButton,
+    PostItemBreadcrumbs,
 		PostGallery,
-		PostBuilder,
 		PostTimeRead,
 		PostAuthorsList,
-		PostBackButton,
-		PostTitle,
-		ClientImageSlider,
-		ClientFooterDown,
-		ClientScrollTimeline,
 		Link,
-		MainNavbar,
-		FsLightbox,
 		Head
 	},
 	data() {
@@ -71,21 +60,21 @@ export default {
 </script>
 <template>
 
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
-	<ClientScrollTimeline/>
+	<ScrollTimeline />
 
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
-				<div class="max-w-3xl lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
+				<div class="max-w-3xl lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto w-full">
 					<div>
 						<div class="space-y-5 md:space-y-10">
 							<div class="space-y-3">
-								<PostBreadcrumbs :breadcrumbs="breadcrumbs" :post-title="post.data.title" />
-								<PostBackButton link="client.post.index" title="Все новости"/>
-								<PostTitle :header="post.data.title"/>
+								<PostItemBreadcrumbs :breadcrumbs="breadcrumbs" :post-title="post.data.title" />
+								<BackButton link="client.post.index" title="Все новости"/>
+								<BasicTitle :header="post.data.title"/>
 							</div>
 
 							<div class="flex space-x-3 text-gray-500 ">
@@ -98,7 +87,7 @@ export default {
 									</div>
 								</div>
 							</div>
-							<PostBuilder :blocks="blocks"/>
+							<Builder :blocks="blocks"/>
 
 
 							<div>
@@ -117,7 +106,7 @@ export default {
 
 			</div>
 		</main>
-		<ClientFooterDown/>
+		<BasicFooter />
 	</div>
 </template>
 

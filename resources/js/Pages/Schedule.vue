@@ -1,6 +1,4 @@
 <script>
-import MainNavbar from "@/Navbars/MainNavbar.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import {debounce} from "lodash";
 import {Link} from "@inertiajs/vue3";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
@@ -13,7 +11,7 @@ export default {
 			searchInput: this.searchRequest,
 		}
 	},
-	components: {MainPageNavBar, ClientFooterDown, Link},
+	components: {MainPageNavBar, Link},
 	props: [
 		'schedules',
 		'navigation',

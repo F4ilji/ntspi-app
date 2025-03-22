@@ -17,6 +17,7 @@ use App\Models\MainSection;
 use App\Models\Page;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Services\App\Breadcrumb\BreadcrumbService;
 use Carbon\Carbon;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Http\Request;
@@ -26,6 +27,8 @@ use Inertia\Inertia;
 
 class ClientPostController extends Controller
 {
+    public function __construct(private readonly BreadcrumbService $breadcrumbService){}
+
     public function index(Request $request)
     {
         // Кешируем список тегов
@@ -129,23 +132,9 @@ class ClientPostController extends Controller
             ],
         ];
 
-        $routeUrl = route('client.post.index');
-        $path = ltrim(parse_url($routeUrl, PHP_URL_PATH), '/');
+        $breadcrumbs = $this->breadcrumbService->generateBreadcrumbs('client.post.index');
 
-        // Кешируем страницу
-        $page = Cache::remember('page_' . $path, now()->addHours(1), function () use ($path) {
-            return Page::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
-        });
 
-        if (isset($page->section)) {
-            $breadcrumbs = [
-                'mainSection' => new ClientBreadcrumbSection($page->section->mainSection),
-                'subSection' => new ClientBreadcrumbSubSection($page->section),
-                'page' => new ClientBreadcrumbPage($page),
-            ];
-        } else {
-            $breadcrumbs = null;
-        }
 
         return Inertia::render('Client/Posts/Index', compact('filters', 'posts', 'categories', 'tags', 'breadcrumbs'));
     }
@@ -165,24 +154,7 @@ class ClientPostController extends Controller
             // Преобразуем пост в ресурс
             $postResource = new PostResource($post);
 
-            // Получаем путь для страницы
-            $routeUrl = route('client.post.index');
-            $path = ltrim(parse_url($routeUrl, PHP_URL_PATH), '/');
-
-            // Получаем данные страницы
-            $page = Page::where('path', '=', $path)
-                ->with('section.pages.section', 'section.mainSection')
-                ->first();
-
-            // Формируем хлебные крошки
-            $breadcrumbs = null;
-            if (isset($page->section)) {
-                $breadcrumbs = [
-                    'mainSection' => new ClientBreadcrumbSection($page->section->mainSection),
-                    'subSection' => new ClientBreadcrumbSubSection($page->section),
-                    'page' => new ClientBreadcrumbPage($page),
-                ];
-            }
+            $breadcrumbs = $this->breadcrumbService->generateBreadcrumbs('client.post.index');
 
             // SEO-данные
             $seo = $post->seo ?? null;

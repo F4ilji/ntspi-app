@@ -40,7 +40,7 @@
 													</div>
 													<template v-for="page in subsection.pages" :key="page.id">
 														<a
-																:class="{ 'text-[#135aae] hover:text-gray-800 font-semibold': isSameRoute(page.path), 'text-gray-800 hover:text-[#2C6288]': !isSameRoute(page.path) }"
+																:class="{ 'text-[#135aae] hover:text-gray-800 font-semibold': IS_SAME_ROUTE(page.path), 'text-gray-800 hover:text-[#2C6288]': !IS_SAME_ROUTE(page.path) }"
 																class="flex items-center gap-x-2"
 																:href="(page.is_url) ? page.path : route('page.view', page.path) + '/'">
 															<div class="grow">
@@ -101,13 +101,13 @@
 <script>
 
 import {Link} from "@inertiajs/vue3";
-import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
-import jsonIcons from "@/Components/other/icons.json";
-import {defineAsyncComponent} from "vue";
+import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
+import {helpers} from "@/mixins/Helpers.js";
 
 
 export default {
-	name: 'DesktopNavBar',
+  mixins: [helpers],
+  name: 'DesktopNavBar',
 	props: {
 		sections: {
 			type: Object,
@@ -116,55 +116,12 @@ export default {
 		}
 
 	},
-	data() {
-		return {
-			icons: jsonIcons,
-		}
-	},
+
 	components: {
-		BaseIcon,
-		ClientGlobalSearch: defineAsyncComponent(() =>
-				import('@/Components/ClientGlobalSearch.vue')
-		),
+		BasicIcon,
 		Link,
 	},
 	methods: {
-		isSameRoute(route) {
-			if (route === this.$page.props.ziggy.location) {
-				return true;
-			}
-
-			const currentLocation = this.$page.props.ziggy.location;
-			const currentUrl = this.$page.props.ziggy.url + '/' + route;
-
-			if (currentLocation === currentUrl) {
-				return true;
-			}
-
-			return false;
-		},
-		hasActivePage(section) {
-			// Проверяем, есть ли активная страница в секции или подсекции
-			// if (!section || !section.pages) return false; // Проверка на наличие section и pages
-
-			if (section.pages) {
-				return section.pages.some(page => this.isSameRoute(page.path));
-			}
-
-			if (section.subSections) {
-				return section.subSections.some(subSection => this.hasActivePage(subSection));
-			}
-
-
-
-			// // Проверяем наличие активной страницы в подсекциях
-			// const hasActiveInSubSections = section.subSections && section.subSections.some(subSection => this.hasActivePage(subSection));
-			//
-			// console.log(hasActiveInSubSections)
-			//
-			//
-			// return hasActiveInPages || hasActiveInSubSections;
-		},
 		removeCookieBvi() {
 			if (this.getCookie('bvi_panelActive') === 'true') {
 				this.deleteCookiesWithPrefix('bvi')

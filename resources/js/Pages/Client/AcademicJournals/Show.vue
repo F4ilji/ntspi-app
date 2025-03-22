@@ -1,39 +1,21 @@
 <script>
 import {Head, Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import AdminIndexSearch from "@/Components/AdminIndexSearch.vue";
-import AdminIndexFilter from "@/Components/AdminIndexFilter.vue";
-import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
-import AdminIndexHeaderTitle from "@/Components/AdminIndexHeaderTitle.vue";
-import ClientPostFilter from '@/Components/ClientPostFilter.vue';
-import ClientPost from '@/Components/ClientPost.vue';
-import ClientPostSearch from '@/Components/ClientPostSearch.vue';
-import ClientImageSlider from "@/Components/ClientImageSlider.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import AcademicJournalsBuilder from "@/Components/BuilderUi/AcademicJournals/AcademicJournalsBuilder.vue";
-import AcademicJournalsTitle from "@/Components/BuilderUi/AcademicJournals/AcademicJournalsTitle.vue";
-import AppHead from "@/Components/AppHead.vue";
+import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import AcademicJournalsTitle from "@/componentss/features/academicJournals/components/AcademicJournalsTitle.vue";
 
 export default {
   name: "Show",
   components: {
-		AppHead,
+    MetaTags,
+    BasicFooter,
+    Builder,
 		AcademicJournalsTitle,
-		AcademicJournalsBuilder,
 		MainPageNavBar,
-		ClientImageSlider,
-    AdminIndexHeaderTitle, AdminIndexHeader,
-    AdminIndexFilter, AdminIndexSearch,
-    ClientFooterDown,
-    ClientScrollTimeline,
-    ClientPostFilter,
     Link,
-    FsLightbox,
     Head,
-    ClientPost,
-    ClientPostSearch
   },
   data() {
     return {
@@ -71,9 +53,9 @@ export default {
 </script>
 
 <template>
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
@@ -108,7 +90,7 @@ export default {
 							</div>
 							<div class="container max-w-4xl px-2 xl:px-5 lg:py-4 md:w-4/5 mx-auto">
 								<div id="horizontal-alignment-1" role="tabpanel" aria-labelledby="horizontal-alignment-item-1">
-									<AcademicJournalsBuilder :blocks="journal.data.main_info" />
+									<Builder :blocks="journal.data.main_info" />
 								</div>
 								<div id="horizontal-alignment-2" class="hidden w-full" role="tabpanel" aria-labelledby="horizontal-alignment-item-2">
 									<template v-for="block in journal.data.chief_editor" :key="block.id">
@@ -162,7 +144,7 @@ export default {
 									</template>
 								</div>
 								<div id="horizontal-alignment-3" class="hidden" role="tabpanel" aria-labelledby="horizontal-alignment-item-3">
-									<AcademicJournalsBuilder :blocks="journal.data.for_authors" />
+									<Builder :blocks="journal.data.for_authors" />
 								</div>
 								<div id="horizontal-alignment-4" class="hidden" role="tabpanel" aria-labelledby="horizontal-alignment-item-4">
 									<!-- List -->
@@ -212,7 +194,8 @@ export default {
 				</div>
 			</div>
 		</main>
-		<ClientFooterDown/>
+
+		<BasicFooter />
 	</div>
 </template>
 

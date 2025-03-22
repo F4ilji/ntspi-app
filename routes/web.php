@@ -56,23 +56,24 @@ Route::middleware('access-check')->group(function () {
     Route::get('/additional-education/{slug}', [ClientAdditionalEducationController::class, 'show'])->name('client.additionalEducation.show');
 
     // События
-    Route::get('/events', [ClientEventController::class, 'index'])->name('client.event.index'); // Доделать builder
+    Route::get('/events', [ClientEventController::class, 'index'])->name('client.event.index');
+    Route::get('/events/archive', [ClientEventController::class, 'archive'])->name('client.event.archive'); // Доделать builder
     Route::get('/events/{slug}', [ClientEventController::class, 'show'])->name('client.event.show');
 
-    // Заметки библиотеки
-    Route::get('/library/news', [ClientLibraryNewsController::class, 'index'])->name('client.library.news.index'); // Доделать builder
-    Route::get('/library/news/{slug}', [ClientLibraryNewsController::class, 'show'])->name('client.library.news.show');
-
-    // Виртуальные выставки библиотеки
-    Route::get('/library/exhibition', [ClientVirtualExhibitionController::class, 'index'])->name('client.library.exhibition.index'); // Доделать builder
-    Route::get('/library/exhibition/{slug}', [ClientVirtualExhibitionController::class, 'show'])->name('client.library.exhibition.show');
+//    // Заметки библиотеки
+//    Route::get('/library/news', [ClientLibraryNewsController::class, 'index'])->name('client.library.news.index'); // Доделать builder
+//    Route::get('/library/news/{slug}', [ClientLibraryNewsController::class, 'show'])->name('client.library.news.show');
+//
+//    // Виртуальные выставки библиотеки
+//    Route::get('/library/exhibition', [ClientVirtualExhibitionController::class, 'index'])->name('client.library.exhibition.index'); // Доделать builder
+//    Route::get('/library/exhibition/{slug}', [ClientVirtualExhibitionController::class, 'show'])->name('client.library.exhibition.show');
 
     // Вакансии вуза
-    Route::get('/vacant/', [ClientVacantPositionController::class, 'index'])->name('client.vacant.index');
+//    Route::get('/vacant/', [ClientVacantPositionController::class, 'index'])->name('client.vacant.index');
 
-    // Вакансии других учереждений
-    Route::get('/current-vacancies/', [ClientExternalVacancyController::class, 'index'])->name('client.external.vacant.index'); // Доделать builder
-    Route::get('/current-vacancies/{id}', [ClientExternalVacancyController::class, 'show'])->name('client.external.vacant.show');
+//    // Вакансии других учереждений
+//    Route::get('/current-vacancies/', [ClientExternalVacancyController::class, 'index'])->name('client.external.vacant.index'); // Доделать builder
+//    Route::get('/current-vacancies/{id}', [ClientExternalVacancyController::class, 'show'])->name('client.external.vacant.show');
 
     Route::get('/academic-journals/', [ClientAcademicJournalController::class, 'index'])->name('client.academicJournals.index'); // Доделать builder
     Route::get('/academic-journals/{slug}', [ClientAcademicJournalController::class, 'show'])->name('client.academicJournals.show');

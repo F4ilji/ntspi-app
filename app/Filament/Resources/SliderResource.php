@@ -14,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class SliderResource extends Resource
 {
@@ -27,7 +28,13 @@ class SliderResource extends Resource
             ->schema([
                 Forms\Components\Section::make()->schema([
                     Forms\Components\TextInput::make('title')
-                        ->label('Заголовок слайдера'),
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
+                            $set('slug', Str::slug($state));
+                        })
+                        ->label('Заголовок слайдера')
+                        ->required(),
+                    TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
                     Toggle::make('is_active')->default(true)->label('Активный слайдер')->inline(false),
                 ]),
             ]);

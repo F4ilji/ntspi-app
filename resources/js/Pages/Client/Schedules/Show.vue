@@ -1,6 +1,5 @@
 <script>
 import MainNavbar from "@/Navbars/MainNavbar.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import {debounce} from "lodash";
 import {Link} from "@inertiajs/vue3";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
@@ -15,7 +14,7 @@ export default {
 			timeSchedules: ['09:00 - 10:35', '10:55 - 12:30', '13:00 - 14:35', '14:45 - 16:20', '16:30 - 18:00']
 		}
 	},
-	components: {MainPageNavBar, ClientFooterDown, MainNavbar, Link},
+	components: {MainPageNavBar, MainNavbar, Link},
 	props: [
 		'schedule',
 		'searchRequest',

@@ -17,7 +17,7 @@
 					<li>
 						<Link
 								:href="route('index')"
-								:class="(isSameRoute(route('index')) ? 'text-blue-600 bg-white border border-[#E4E4E7]' : 'text-gray-700')"
+								:class="(IS_SAME_ROUTE(route('index')) ? 'text-blue-600 bg-white border border-[#E4E4E7]' : 'text-gray-700')"
 								class="flex items-center gap-x-3 py-2 px-2.5 text-sm rounded-lg hover:bg-gray-[#EFEFEF]" href="#">
 							<svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
 							Главная
@@ -28,10 +28,10 @@
 					<li v-for="section in sections.data" class="hs-accordion" :id="'nav-section-accordion-' + section.slug">
 						<button
 								:id="'nav-section-accordion-btn-' + section.slug"
-								:class="(hasActivePage(section) ? 'text-blue-600 bg-gray-100' : 'text-gray-700')"
+								:class="(HAS_ACTIVE_PAGE(section) ? 'text-blue-600 bg-gray-100' : 'text-gray-700')"
 								type="button"
 								class="hs-accordion-toggle hs-accordion-active:text-blue-600 w-full text-start flex items-center gap-x-3 py-2 px-2.5 text-sm rounded-lg focus:outline-none" aria-expanded="true" aria-controls="users-accordion">
-							<BaseIcon class="w-4" name="line" />
+							<BasicIcon class="w-4" name="line" />
 							{{ section.title }}
 							<svg class="flex-shrink-0 hs-accordion-active:block ms-auto hidden size-4 text-gray-600 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
 							<svg class="flex-shrink-0 hs-accordion-active:hidden ms-auto block size-4 text-gray-600 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
@@ -41,7 +41,7 @@
 								<li v-for="subSection in section.subSections" class="hs-accordion" :id="'nav-sub-section-accordion-' + subSection.slug">
 									<button
 											:id="'nav-sub-section-accordion-btn-' + subSection.slug"
-											:class="(hasActivePage(subSection) ? 'text-blue-600 bg-gray-100' : 'text-gray-700')"
+											:class="(HAS_ACTIVE_PAGE(subSection) ? 'text-blue-600 bg-gray-100' : 'text-gray-700')"
 											type="button"
 											class="hs-accordion-toggle hs-accordion-active:text-blue-600 w-full text-start flex items-center gap-x-3 py-2 px-2.5 text-sm rounded-lg focus:outline-none " aria-expanded="true" :aria-controls="'nav-accordion-' + subSection.slug">
 										{{ subSection.title }}
@@ -57,9 +57,9 @@
 												<a
 														:href="(page.is_url) ? page.path : route('page.view', page.path) + '/'"
 														class="flex items-center gap-x-3 py-2 px-2.5 text-sm rounded-lg hover:bg-gray-[#EFEFEF] focus:outline-none focus:bg-gray-100"
-														:class="(isSameRoute(page.path) ? 'text-blue-600 bg-white border border-[#E4E4E7]' : 'text-gray-700')"
+														:class="(IS_SAME_ROUTE(page.path) ? 'text-blue-600 bg-white border border-[#E4E4E7]' : 'text-gray-700')"
 												>
-													<BaseIcon class="w-4" :name="page.icon" />
+													<BasicIcon class="w-4" :name="page.icon" />
 													{{ page.title }}
 												</a>
 											</li>
@@ -73,22 +73,22 @@
 
 					<li class="">
 						<Link :href="route('client.schedule')"
-									:class="(isSameRoute(route('client.schedule')) ? 'text-blue-600 bg-white border border-[#E4E4E7]' : 'text-gray-700')"
+									:class="(IS_SAME_ROUTE(route('client.schedule')) ? 'text-blue-600 bg-white border border-[#E4E4E7]' : 'text-gray-700')"
 									class="flex items-center gap-x-3 py-2 px-2.5 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300" href="#">
-							<BaseIcon class="w-4" name="schedule" />
+							<BasicIcon class="w-4" name="schedule" />
 							Расписание
 						</Link>
 					</li>
 					<li>
 						<a class="flex items-center gap-x-3 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300" href="#">
-							<BaseIcon class="w-4" name="eye" />
+							<BasicIcon class="w-4" name="eye" />
 							Режим для слабовидящих
 						</a>
 					</li>
 					<li>
 						<a aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-full-screen-modal-below-md" data-hs-overlay="#open-search-modal"
 							 class="flex items-center gap-x-3 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300" href="#">
-							<BaseIcon class="w-4" name="search" />
+							<BasicIcon class="w-4" name="search" />
 							Поиск
 						</a>
 					</li>
@@ -97,96 +97,32 @@
 		</div>
 	</div>
 
-
-
-
-
-
-
-
 </template>
 
 <script>
 
 import {Link} from "@inertiajs/vue3";
-import BaseIcon from "@/Components/BaseComponents/BaseIcon.vue";
-import jsonIcons from "@/Components/other/icons.json";
-import {defineAsyncComponent} from "vue";
+import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
+import {helpers} from "@/mixins/Helpers.js";
 
 
 export default {
 	name: 'MobileNavbar',
-	props: {
+  mixins: [helpers],
+  props: {
 		sections: {
 			type: Object,
 		}
 
 	},
-	data() {
-		return {
-			icons: jsonIcons,
-		}
-	},
 	components: {
-		BaseIcon,
-		ClientGlobalSearch: defineAsyncComponent(() =>
-				import('@/Components/ClientGlobalSearch.vue')
-		),
+		BasicIcon,
 		Link,
 	},
-	methods: {
-		isSameRoute(route) {
-			if (route === this.$page.props.ziggy.location) {
-				return true;
-			}
-
-			const currentLocation = this.$page.props.ziggy.location;
-			const currentUrl = this.$page.props.ziggy.url + '/' + route;
-
-			if (currentLocation === currentUrl) {
-				return true;
-			}
-
-			return false;
-		},
-		hasActivePage(section) {
-			// Проверяем, есть ли активная страница в секции или подсекции
-			// if (!section || !section.pages) return false; // Проверка на наличие section и pages
-
-			if (section.pages) {
-				return section.pages.some(page => this.isSameRoute(page.path));
-			}
-
-			if (section.subSections) {
-				return section.subSections.some(subSection => this.hasActivePage(subSection));
-			}
-
-
-
-			// // Проверяем наличие активной страницы в подсекциях
-			// const hasActiveInSubSections = section.subSections && section.subSections.some(subSection => this.hasActivePage(subSection));
-			//
-			// console.log(hasActiveInSubSections)
-			//
-			//
-			// return hasActiveInPages || hasActiveInSubSections;
-		},
-	},
-
 
 }
 
 </script>
 
 <style scoped>
-
-.header-filter {
-	transition: all 0.3s;
-	backdrop-filter: saturate(180%) blur(7px);
-	background: hsla(0, 0%, 100%, .6);
-}
-
-
-
-
 </style>

@@ -11,6 +11,7 @@ import cookieMixin from "@/mixins/cookieMixin.js";
 import store from '@/store/index.js';
 
 
+
 // const appName = import.meta.env.VITE_APP_NAME || 'НТГСПИ';
 
 createInertiaApp({

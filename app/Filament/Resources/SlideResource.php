@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\Page;
 use App\Models\Post;
 use App\Models\Slide;
+use App\Models\Slider;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\DateTimePicker;
@@ -92,7 +93,10 @@ class SlideResource extends Resource
                             }),
                     ]),
                 ]),
-                Forms\Components\Section::make('Слайдер')->schema([
+                Forms\Components\Section::make('Выбрать слайдер')->schema([
+                    Forms\Components\Select::make('slider_id')->label('')->options(Slider::where('is_active', true)->pluck('title', 'id')),
+                ]),
+                Forms\Components\Section::make('Тело слайда')->schema([
 
                     Forms\Components\Section::make('Информация слайда')->schema([
                         Forms\Components\TextInput::make('title')

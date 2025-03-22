@@ -1,20 +1,18 @@
 <template>
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
 	<MainPageNavBar :sections="$page.props.navigation" />
-	<ClientMainSlider :slidersCarousel="sliders" />
+  <Slider class="rounded" slider-id="quos-velit-quisquam" />
 
 	<section class="max-w-screen-xl w-full mx-auto px-4 py-3 pb-10">
 		<h2 class="text-brand-primary my-6 md:mb-[50px] md:mt-[80px] text-2xl font-semibold tracking-tight text-black lg:text-[32px] lg:leading-tight bvi-show">Последние новости</h2>
 		<div class="grid gap-10 pb-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3 bvi-no-styles">
 			<template v-for="post in posts.data" :key="post.id">
-				<ClientPost :post="post" />
+				<PostListItem :post="post" />
 			</template>
 		</div>
 
-
-
-			<div class="flex justify-center">
+    <div class="flex justify-center">
 				<a :href="route('client.post.index')" class="group mt-3 inline-flex items-center gap-x-1 text-sm font-semibold text-primaryBlue">
 					Все новости
 					<svg class="flex-shrink-0 size-4 transition ease-in-out group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
@@ -76,14 +74,15 @@
 				<!-- End Grid -->
 			</div>
 
-			<div class="flex justify-center">
+
+    <div class="flex justify-center">
 				<Link :href="route('client.event.index')" class="group mt-3 inline-flex items-center gap-x-1 text-sm font-semibold text-[#1A5AAF]">
 					Все мероприятия
 					<svg class="flex-shrink-0 size-4 transition ease-in-out group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
 				</Link>
 			</div>
 
-			<!-- End Card Blog -->
+    <!-- End Card Blog -->
 
 			<h2 class="text-brand-primary my-10 md:mb-[50px] md:mt-[80px] text-2xl font-semibold tracking-tight text-black lg:text-[32px] lg:leading-tight">Образование</h2>
 
@@ -168,23 +167,21 @@
 		</section>
 	<PageResourceList resource-id="glavnaia-stranica-resurs" />
 	<ContactSectionBlock contact-id="glavnaia-stranica-kontakty" />
-	<ClientFooterDown />
+	<BasicFooter />
 
 </template>
 
 <script>
 import {Head, Link} from "@inertiajs/vue3";
-import ClientMainSlider from "@/Components/ClientMainSlider.vue";
-import ClientMainSliderSecond from "@/Components/ClientMainSliderSecond.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import ClientPost from "@/Components/ClientPost.vue";
 import LevelEducational from "../Enum/LevelEducational.js";
-import BaseMetaHead from "@/Components/BaseComponents/BaseMetaHead.vue";
-import PageResourceList from "@/Components/BuilderUi/Pages/Blocks/PageResourceList.vue";
-import AppHead from "@/Components/AppHead.vue";
-import ContactSectionBlock from "@/Components/BaseComponents/BaseBuilderUi/Blocks/Contacts/ContactSectionBlock.vue";
+import Slider from "@/componentss/features/sliders/Slider.vue";
+import PostListItem from "@/componentss/features/posts/components/PostListItem.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
 import Cookies from "js-cookie";
+import PageResourceList from "@/componentss/shared/pageResource/PageResourceList.vue";
+import ContactSectionBlock from "@/componentss/shared/contactSection/ContactSectionBlock.vue";
 
 
 
@@ -218,15 +215,13 @@ export default {
 	},
 
 	components: {
+    MetaTags,
+    BasicFooter,
+    PostListItem,
+    Slider,
 		ContactSectionBlock,
-		AppHead,
 		PageResourceList,
-		BaseMetaHead,
-		ClientPost,
 		MainPageNavBar,
-		ClientFooterDown,
-		ClientMainSlider,
-		ClientMainSliderSecond,
 		Head,
 		Link,
 
@@ -236,8 +231,6 @@ export default {
 	methods: {
 		Cookies,
 	},
-
-
 
 
 }

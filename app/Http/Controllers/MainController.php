@@ -43,21 +43,21 @@ class MainController extends Controller
 //            return $this->getAdmissionCampaign();
 //        });
 
-        $educations = Cache::remember('educations_data', now()->addHour(), function () {
-            return $this->getEducationsData();
-        });
+//        $educations = Cache::remember('educations_data', now()->addHour(), function () {
+//            return $this->getEducationsData();
+//        });
 
-        $sliders = Cache::remember('active_sliders', now()->addHour(), function () {
-            return $this->getActiveSliders();
-        });
+        $educations = $this->getEducationsData();
 
         $posts = Cache::remember('recent_posts', now()->addHour(), function () {
             return $this->getRecentPosts();
         });
 
-        $events = Cache::remember('upcoming_events', now()->addHour(), function () {
-            return $this->getUpcomingEvents();
-        });
+//        $events = Cache::remember('upcoming_events', now()->addHour(), function () {
+//            return $this->getUpcomingEvents();
+//        });
+
+        $events = $this->getUpcomingEvents();
 
         $path = route('index', null, false);
         $page = Cache::remember('page_' . $path, now()->addHour(), function () use ($path) {
@@ -66,7 +66,7 @@ class MainController extends Controller
 
         $seo = $page->seo ?? null;
 
-        return Inertia::render('Main', compact('posts', 'events', 'sliders', 'educations', 'seo'));
+        return Inertia::render('Main', compact('posts', 'events', 'educations', 'seo'));
     }
 
     private function getAdmissionCampaign()
@@ -99,13 +99,6 @@ class MainController extends Controller
         ];
     }
 
-    private function getActiveSliders()
-    {
-        return (ClientMainSliderResource::collection(
-            MainSlider::where('is_active', true)
-                ->orderBy('sort', 'asc')
-                ->get()));
-    }
 
     private function getRecentPosts()
     {

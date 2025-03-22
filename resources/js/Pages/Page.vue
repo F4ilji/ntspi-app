@@ -1,25 +1,25 @@
 <template>
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
 	<div class="flex flex-col h-screen justify-between">
-		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+		<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 
 
 		<div class="relative mx-auto mb-auto mt-[67px] max-w-screen-xl w-full px-4 py-10 md:flex md:flex-row md:py-10">
 			<PageSubSectionLinks v-if="!settings.hide_page_sub_section_links" :sub-section-pages="subSectionPages" :current-section="page.data.section"/>
-			<PageNavigateLinks v-if="!settings.hide_page_navigate_links"  :header-navs="headerNavs"/>
+			<NavigateLinks v-if="!settings.hide_page_navigate_links"  :header-navs="headerNavs"/>
 			<div class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
 				<div class="space-y-5 md:space-y-5">
 					<PageBreadcrumbs v-if="!settings.hide_breadcrumbs" :breadcrumbs="breadcrumbs" :page-title="page.data.title"/>
-					<PageTitle :header="page.data.title"/>
+					<BasicTitle :header="page.data.title"/>
 					<div id="page-area">
-						<PageBuilder :blocks="page.data.content"/>
+						<Builder :blocks="page.data.content"/>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<ClientFooterDown/>
+		<BasicFooter />
 	</div>
 
 
@@ -28,17 +28,15 @@
 <script>
 
 
-import {Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import {Head} from '@inertiajs/vue3'
-import PageBuilder from "@/Components/BuilderUi/Pages/PageBuilder.vue";
-import PageBreadcrumbs from "@/Components/BuilderUi/Pages/PageBreadcrumbs.vue";
-import PageTitle from "@/Components/BuilderUi/Pages/PageTitle.vue";
-import PageNavigateLinks from "@/Components/BuilderUi/Pages/PageNavigateLinks.vue";
-import PageSubSectionLinks from "@/Components/BuilderUi/Pages/PageSubSectionLinks.vue";
+import {Link, Head} from "@inertiajs/vue3";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import AppHead from "@/Components/AppHead.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
+import BasicTitle from "@/componentss/ui/titles/BasicTitle.vue";
+import PageSubSectionLinks from "@/componentss/features/pages/components/PageSubSectionLinks.vue";
+import PageBreadcrumbs from "@/componentss/features/pages/components/PageBreadcrumbs.vue";
+import NavigateLinks from "@/componentss/shared/navigate/NavigateLinks.vue";
 
 
 export default {
@@ -72,16 +70,15 @@ export default {
 		}
 	},
 	components: {
-		AppHead,
+    NavigateLinks,
+    BasicTitle,
+    Builder,
+    BasicFooter,
+    MetaTags,
 		MainPageNavBar,
 		PageSubSectionLinks,
-		PageNavigateLinks,
-		PageTitle,
 		PageBreadcrumbs,
-		PageBuilder,
-		ClientFooterDown,
 		Link,
-		FsLightbox,
 		Head
 	},
 	methods: {},

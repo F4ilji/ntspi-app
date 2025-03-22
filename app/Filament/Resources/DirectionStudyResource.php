@@ -31,18 +31,16 @@ class DirectionStudyResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                //
-            ]);
+            ->schema([]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('code'),
-                Tables\Columns\TextColumn::make('lvl_edu')
+                Tables\Columns\TextColumn::make('name')->label('Название'),
+                Tables\Columns\TextColumn::make('code')->label('Код направления'),
+                Tables\Columns\TextColumn::make('lvl_edu')->label('Уровень образования')
                     ->formatStateUsing(fn ($state) => $state->getLabel())
             ])
             ->filters([

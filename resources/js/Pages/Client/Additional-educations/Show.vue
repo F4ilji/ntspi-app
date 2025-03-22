@@ -1,42 +1,29 @@
 <script>
 import {Head, Link} from "@inertiajs/vue3";
-import FsLightbox from "fslightbox-vue/v3";
-import ClientScrollTimeline from "@/Components/ClientScrollTimeline.vue";
-import ClientFooterDown from "@/Components/ClientFooterDown.vue";
-import ClientPostFilter from "@/Components/ClientPostFilter.vue";
-import ClientPost from "@/Components/ClientPost.vue";
-import AdminIndexHeader from "@/Components/AdminIndexHeader.vue";
-import ClientPostSearch from "@/Components/ClientPostSearch.vue";
+
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import FormBuilder from "@/Components/BuilderUi/Pages/FormBuilder.vue";
-import FormBlock from "@/Components/BuilderUi/Pages/Blocks/FormBlock.vue";
-import ProgramBackButton from "@/Components/BuilderUi/Programs/ProgramBackButton.vue";
-import PostTitle from "@/Components/BuilderUi/Posts/PostTitle.vue";
-import PostBackButton from "@/Components/BuilderUi/Posts/PostBackButton.vue";
-import ProgramTitle from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramTitle.vue";
-import ProgramBuilder from "@/Components/BuilderUi/AdditionalEducationPrograms/ProgramBuilder.vue";
-import AdditionalEducationProgramItemBreadcrumbs
-	from "@/Components/BuilderUi/AdditionalEducationPrograms/AdditionalEducationProgramItemBreadcrumbs.vue";
-import AppHead from "@/Components/AppHead.vue";
+
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import BackButton from "@/componentss/ui/buttons/BackButton.vue";
+import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
+import BasicFooter from "@/footers/BasicFooter.vue";
+import ProgramTitle from "@/componentss/features/educationalPrograms/components/ProgramTitle.vue";
+import AdditionalProgramItemBreadcrumbs
+  from "@/componentss/features/additionalEducationPrograms/components/AdditionalProgramItemBreadcrumbs.vue";
 
 
 export default {
   name: "Show",
   components: {
-		AppHead,
-		AdditionalEducationProgramItemBreadcrumbs,
-		ProgramBuilder,
+    AdditionalProgramItemBreadcrumbs,
+    BasicFooter,
+    Builder,
+    BackButton,
+    MetaTags,
 		ProgramTitle,
-		PostBackButton, PostTitle,
-		ProgramBackButton,
-		FormBlock,
-		FormBuilder,
 		MainPageNavBar,
-		ClientPostSearch,
-		AdminIndexHeader,
-		ClientPost,
-		ClientPostFilter,
-		ClientFooterDown, ClientScrollTimeline, Link, Head},
+		Link, Head
+  },
   data() {
     return {
 
@@ -70,14 +57,14 @@ export default {
 </script>
 
 <template>
-	<AppHead :seo="seo" />
+	<MetaTags :seo="seo" />
 
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
-				<div class="px-0 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
+				<div class="px-0 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto w-full max-w-screen-md">
 					<div>
 
 						<div class="space-y-5 md:space-y-4">
@@ -87,8 +74,8 @@ export default {
 									<div class="container mx-auto xl:px-5 max-w-screen-lg py-5 lg:py-8">
 										<div class="space-y-10">
 											<div class="space-y-3">
-												<PostBackButton link="client.additionalEducation.index" title="Все программы"/>
-												<AdditionalEducationProgramItemBreadcrumbs :breadcrumbs="breadcrumbs" :additional-education-title="additionalEducation.data.title" />
+												<BackButton link="client.additionalEducation.index" title="Все программы"/>
+												<AdditionalProgramItemBreadcrumbs :breadcrumbs="breadcrumbs" :additional-education-title="additionalEducation.data.title" />
 											</div>
 											<ProgramTitle :header="additionalEducation.data.title" class="text-center" />
 										</div>
@@ -187,7 +174,7 @@ export default {
 										<div v-if="additionalEducation.data.content.length > 0">
 											<h2 class="text-xl font-bold md:text-2xl">О программе</h2>
 											<div class="py-4 px-5">
-												<ProgramBuilder :blocks="additionalEducation.data.content" />
+												<Builder :blocks="additionalEducation.data.content" />
 											</div>
 										</div>
 										<!-- End Icon Blocks -->
@@ -201,21 +188,14 @@ export default {
 				</div>
 			</div>
 		</main>
-		<ClientFooterDown/>
+
+		<BasicFooter />
 	</div>
 
 </template>
 
 <style>
 
-.paragraph-container a {
-	@apply text-[#1E57A3];
-	@apply underline;
-}
-
-.paragraph-container p {
-	@apply mb-6
-}
 
 
 </style>
