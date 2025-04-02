@@ -9,14 +9,14 @@
 		</div>
 	</div>
 
-	<div v-else>
+	<div v-else-if="!loading & resource">
 
 		<!-- Card Blog -->
 		<div class="px-0 py-10 sm:px-2 lg:py-14 mx-auto">
 			<!-- Title -->
 			<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
 				<h2 class="text-2xl font-bold md:text-4xl md:leading-tight">Полезные ресурсы</h2>
-				<p class="mt-1 text-gray-600">We've helped some great companies brand, design and get to market.</p>
+<!--				<p class="mt-1 text-gray-600">We've helped some great companies brand, design and get to market.</p>-->
 			</div>
 			<!-- End Title -->
 

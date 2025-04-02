@@ -1,7 +1,7 @@
 <template>
                     <div class="group cursor-pointer">
                       <div
-                          class="overflow-hidden rounded-md max-h-[250px] bg-gray-100 transition-all hover:scale-105 dark:bg-gray-800"
+                          class="overflow-hidden rounded-md max-h-[250px] bg-gray-100 transition-all hover:scale-105 bvi-hide dark:bg-gray-800"
                       >
                         <a
                             class="relative block aspect-square"
@@ -16,7 +16,7 @@
                               position: absolute;
                               height: 100%;
                               width: 100%;
-                              inset: 0px;
+                              inset: 0;
                               color: transparent;
                             "
                             sizes="(max-width: 768px) 30vw, 33vw"
@@ -25,7 +25,7 @@
                       </div>
                       <div class="">
                         <div>
-                          <div v-if="post.category" class="flex gap-3">
+                          <div v-if="post.category" class="flex gap-3 bvi-hide">
                             <a :href="route('client.post.index', { 'category[]': post.category.slug })">
                                 <span class="inline-block text-xs font-medium tracking-wider uppercase mt-5 text-blue-600">
                                     {{ post.category ? post.category.title : "Новости" }}

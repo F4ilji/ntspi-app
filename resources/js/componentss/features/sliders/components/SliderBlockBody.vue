@@ -13,7 +13,7 @@
           loading="eager"
           decoding="async"
           data-nimg="fill"
-          class="object-cover rounded-md transition-opacity duration-1000 absolute inset-0 h-full w-full"
+          class="object-cover rounded-xl transition-opacity duration-1000 absolute inset-0 h-full w-full"
           sizes="100vw"
           :src="'/storage/' + slide.image.url"
           :class="{ 'opacity-1': currentIndex === index, 'opacity-0': currentIndex !== index }"
@@ -118,7 +118,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateLastSlider']),
     next() {
       if (this.totalSlides > 0) {
         this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
@@ -145,11 +144,6 @@ export default {
   },
   mounted() {
     // Передаем данные в Vuex после монтирования компонента
-    this.updateLastSlider({
-      url: this.$page.props.ziggy.location,
-      top: this.$refs.sliderRef.getBoundingClientRect().top,
-      bottom: this.$refs.sliderRef.getBoundingClientRect().bottom, // Получаем актуальное значение bottom
-    });
     this.startTimer();
   },
   beforeUnmount() {

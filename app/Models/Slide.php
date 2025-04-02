@@ -21,4 +21,9 @@ class Slide extends Model
     {
         return $this->belongsTo(Slider::class);
     }
+
+    public function slidable()
+    {
+        return $this->morphTo();
+    }
 }

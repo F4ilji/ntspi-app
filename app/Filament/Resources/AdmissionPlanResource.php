@@ -15,7 +15,9 @@ use Filament\Forms;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -42,43 +44,125 @@ class AdmissionPlanResource extends Resource
         return $form
             ->schema([
                 Section::make()->schema([
-                    Forms\Components\Select::make('educational_programs_id')
+                    Select::make('educational_programs_id')
+                        ->label('Приемная кампания')
+                        ->required()
+                        ->columnSpanFull()
+                        ->options(EducationalProgram::whereIn('status', [EducationalProgramStatus::PUBLISHED, EducationalProgramStatus::IN_PROGRESS])->pluck('name', 'id'))
                         ->searchable()
-                        ->label('Образовательная программа')
-                        ->options(EducationalProgram::whereIn('status', [EducationalProgramStatus::PUBLISHED, EducationalProgramStatus::IN_PROGRESS])->pluck('name', 'id')),
-                    Forms\Components\Select::make('admission_campaigns_id')
-                        ->label('Приемная компания')
-                        ->options(AdmissionCampaign::all()->pluck('name', 'id')),
-                ]),
-                Section::make('План приема')->schema([
-                    Forms\Components\Repeater::make('exams')->label('Вступительные испытания')->schema([
-                        TextInput::make('title')->label('Название-предмета'),
-                        Forms\Components\Select::make('type_exam')->label('Тип-ВИ')
-                        ->options(['ege' => 'ЕГЭ', 'internal_test' => 'ВИ, проводимое организацией самостоятельно']),
-                        TextInput::make('min_score')->label('Минимальный-балл')->integer()
-                    ])->live()->maxItems(2)->collapsed()->addActionLabel('Добавить вступительное испытание')->columns(3)                                ->itemLabel(function (Get $get) {
-                        static $count = 0;
-                        $maxCount = count($get('exams'));
-                        $count = ($count++ <= $maxCount) ? $count : 1;
-                        return "Вступительное испытание #" . $count;
-                    }),
-                    Forms\Components\Repeater::make('contests')->label('Условия поступления')->schema([
-                        Forms\Components\Select::make('form_education')->label('Форма обучения')
-                            ->options(FormEducation::class),
-                        Forms\Components\Select::make('financing_source')->label('Источник финансирования')
-                            ->options(BudgetEducation::class),
-                        TextInput::make('position_count')->label('Количество мест на прием')->integer(),
-                    ])->live()->maxItems(2)->collapsed()->addActionLabel('Добавить группу')->columns(3)
-                        ->itemLabel(function (Get $get) {
-                        static $count = 0;
-                        $maxCount = count($get('contests'));
-                        $count = ($count++ <= $maxCount) ? $count : 1;
-                        return "Группа #" . $count;
-                    }),
+                        ->preload()
+                        ->placeholder('Выберите образовательную программу'),
 
+                    Select::make('admission_campaigns_id')
+                        ->label('Приемная кампания')
+                        ->required()
+                        ->columnSpanFull()
+                        ->options(
+                            AdmissionCampaign::query()
+                                ->orderBy('name')
+                                ->pluck('name', 'id')
+                        )
+                        ->searchable()
+                        ->preload()
+                        ->placeholder('Выберите приемную кампанию')
+                        ->helperText('Выберите связанную приемную кампанию'),
                 ]),
+
+                Section::make('План приема')
+                    ->description('Настройка вступительных испытаний и условий поступления')
+                    ->collapsible()
+                    ->schema([
+                        self::getExamsRepeater(),
+                        self::getContestsRepeater(),
+                    ]),
 
             ]);
+    }
+
+    protected static function getExamsRepeater(): Repeater
+    {
+        return Repeater::make('exams')
+            ->label('Вступительные испытания')
+            ->schema([
+                TextInput::make('title')
+                    ->label('Название предмета')
+                    ->required()
+                    ->maxLength(100)
+                    ->placeholder('Например: Математика')
+                    ->helperText('Название вступительного испытания'),
+
+                Select::make('type_exam')
+                    ->label('Тип испытания')
+                    ->required()
+                    ->options([
+                        'ege' => 'ЕГЭ',
+                        'internal_test' => 'Внутреннее испытание',
+                    ])
+                    ->native(false)
+                    ->placeholder('Выберите тип')
+                    ->helperText('Тип вступительного испытания'),
+
+                TextInput::make('min_score')
+                    ->label('Минимальный балл')
+                    ->required()
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(100)
+                    ->placeholder('Укажите минимальный балл')
+                    ->helperText('Минимальный проходной балл'),
+            ])
+            ->columns(3)
+            ->maxItems(10)
+            ->collapsible()
+            ->collapsed()
+            ->addActionLabel('Добавить испытание')
+            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Новое испытание')
+            ->helperText('Добавьте все необходимые вступительные испытания');
+    }
+
+    protected static function getContestsRepeater(): Repeater
+    {
+        return Repeater::make('contests')
+            ->label('Условия поступления')
+            ->schema([
+                Select::make('form_education')
+                    ->label('Форма обучения')
+                    ->options(FormEducation::class)
+                    ->required()
+                    ->native(false)
+                    ->placeholder('Выберите форму')
+                    ->columnSpanFull()
+                    ->helperText('Форма обучения для данной группы'),
+
+                Repeater::make('places')
+                    ->label('Места')
+                    ->schema([
+                        Select::make('form_budget')
+                            ->label('Форма финансирования')
+                            ->options(BudgetEducation::class)
+                            ->required()
+                            ->native(false)
+                            ->placeholder('Выберите тип')
+                            ->helperText('Бюджетные или платные места'),
+
+                        TextInput::make('count')
+                            ->label('Количество мест')
+                            ->required()
+                            ->numeric()
+                            ->minValue(0)
+                            ->placeholder('Укажите количество')
+                            ->helperText('Количество доступных мест'),
+                    ])
+                    ->columnSpanFull()
+                    ->maxItems(2)
+                    ->addActionLabel('Добавить тип мест')
+            ])
+            ->columns(2)
+            ->maxItems(3)
+            ->collapsible()
+            ->collapsed()
+            ->addActionLabel('Добавить группу')
+            ->helperText('Добавьте группы с условиями поступления');
     }
 
     public static function table(Table $table): Table

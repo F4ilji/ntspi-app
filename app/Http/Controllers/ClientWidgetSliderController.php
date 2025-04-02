@@ -15,7 +15,9 @@ class ClientWidgetSliderController extends Controller
             $slider = Slider::query()
                 ->where('slug', $slug)
                 ->where('is_active', true)
-                ->with('slides')
+                ->with(['slides' => function($query) {
+                    $query->where('is_active', true);
+                }])
                 ->first();
 
             return $slider ?: null;

@@ -3,14 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CategoryResource;
-use App\Http\Resources\ClientBreadcrumbPage;
-use App\Http\Resources\ClientBreadcrumbSection;
-use App\Http\Resources\ClientBreadcrumbSubSection;
-use App\Http\Resources\ClientNavigationResource;
 use App\Http\Resources\ClientPostListResource;
 use App\Http\Resources\ClientTagResource;
-use App\Http\Resources\MainSectionResource;
-use App\Http\Resources\PageResource;
+
 use App\Http\Resources\PostResource;
 use App\Models\Category;
 use App\Models\MainSection;
@@ -18,8 +13,8 @@ use App\Models\Page;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Services\App\Breadcrumb\BreadcrumbService;
+use App\Services\App\Seo\SeoPageProvider;
 use Carbon\Carbon;
-use Doctrine\DBAL\Schema\Column;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -27,12 +22,12 @@ use Inertia\Inertia;
 
 class ClientPostController extends Controller
 {
-    public function __construct(private readonly BreadcrumbService $breadcrumbService){}
+    public function __construct(readonly SeoPageProvider $seoPageProvider){}
 
     public function index(Request $request)
     {
         // Кешируем список тегов
-        $tagIds = Cache::remember('tag_ids', now()->addHours(1), function () {
+        $tagIds = Cache::remember('tag_ids', now()->addHours(), function () {
             return DB::table('taggables')
                 ->distinct()
                 ->select('tag_id')
@@ -132,11 +127,9 @@ class ClientPostController extends Controller
             ],
         ];
 
-        $breadcrumbs = $this->breadcrumbService->generateBreadcrumbs('client.post.index');
+        $seo = $this->seoPageProvider->getSeoForCurrentPage();
 
-
-
-        return Inertia::render('Client/Posts/Index', compact('filters', 'posts', 'categories', 'tags', 'breadcrumbs'));
+        return Inertia::render('Client/Posts/Index', compact('filters', 'posts', 'categories', 'tags', 'seo'));
     }
 
     public function show(Request $request, $slug)
@@ -154,18 +147,16 @@ class ClientPostController extends Controller
             // Преобразуем пост в ресурс
             $postResource = new PostResource($post);
 
-            $breadcrumbs = $this->breadcrumbService->generateBreadcrumbs('client.post.index');
-
             // SEO-данные
-            $seo = $post->seo ?? null;
+            $seo = $this->seoPageProvider->getSeoForModel($post);
 
             // Возвращаем данные для кеширования
             return [
                 'post' => $postResource,
-                'breadcrumbs' => $breadcrumbs,
                 'seo' => $seo,
             ];
         });
+
 
         // Возвращаем ответ с использованием кешированных данных
         return Inertia::render('Client/Posts/Show', $data);

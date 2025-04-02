@@ -3,20 +3,20 @@
 namespace App\Filament\Resources\DepartmentResource\Pages;
 
 use App\Filament\Resources\DepartmentResource;
+use App\Services\Filament\Traits\SeoGenerate;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Str;
 
 class EditDepartment extends EditRecord
 {
-    protected static string $resource = DepartmentResource::class;
+    use SeoGenerate;
 
-    protected array $seoData;
+    protected static string $resource = DepartmentResource::class;
 
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $this->seoData = $this->generateSeo($data);
         $data['search_data'] = $this->generateSearchData($data['content']);
 
         return $data;
@@ -24,24 +24,7 @@ class EditDepartment extends EditRecord
 
     protected function afterSave(): void
     {
-        $this->record->seo()->update($this->seoData);
-    }
-
-
-
-    private function generateSeo(array $data) : array
-    {
-        $title = $data['title'];
-        $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
-        if ($rowData !== null) {
-            $description = strip_tags($rowData['data']['content']);
-        } else {
-            $description = null;
-        }
-        return [
-            'title' => $title,
-            'description' => Str::limit(htmlspecialchars($description, ENT_QUOTES, 'UTF-8'), 160),
-        ];
+        $this->updateSeo($this->record);
     }
 
     private function getDataFromBlocks($block) : string

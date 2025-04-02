@@ -3,42 +3,28 @@
 namespace App\Filament\Resources\FacultyResource\Pages;
 
 use App\Filament\Resources\FacultyResource;
+use App\Services\Filament\Traits\SeoGenerate;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Str;
 
 class CreateFaculty extends CreateRecord
 {
+    use SeoGenerate;
+
     protected static string $resource = FacultyResource::class;
 
-    protected array $seoData;
 
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $this->seoData = $this->generateSeo($data);
         $data['search_data'] = $this->generateSearchData($data['content']);
         return $data;
     }
 
     protected function afterCreate(): void
     {
-        $this->record->seo()->create($this->seoData);
-    }
-
-    private function generateSeo(array $data) : array
-    {
-        $title = $data['title'];
-        $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
-        if ($rowData !== null) {
-            $description = strip_tags($rowData['data']['content']);
-        } else {
-            $description = null;
-        }
-        return [
-            'title' => $title,
-            'description' => Str::limit(htmlspecialchars($description, ENT_QUOTES, 'UTF-8'), 160),
-        ];
+        $this->createSeo($this->record);
     }
 
     private function generateSearchData(array $data) : string

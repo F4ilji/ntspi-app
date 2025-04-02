@@ -3,22 +3,22 @@
 namespace App\Filament\Resources\AdditionalEducationResource\Pages;
 
 use App\Filament\Resources\AdditionalEducationResource;
+use App\Services\Filament\Traits\SeoGenerate;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Str;
 
 class EditAdditionalEducation extends EditRecord
 {
+    use SeoGenerate;
+
     protected static string $resource = AdditionalEducationResource::class;
 
-    protected array $seoData;
 
 
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $this->seoData = $this->generateSeo($data);
-
         $data['search_data'] = $this->generateSearchData($data['content']);
 
         return $data;
@@ -26,25 +26,9 @@ class EditAdditionalEducation extends EditRecord
 
     protected function afterSave(): void
     {
-        $this->record->seo()->update($this->seoData);
-
+        $this->updateSeo($this->record);
     }
 
-    private function generateSeo(array $data) : array
-    {
-        $title = $data['title'];
-        $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
-        if ($rowData !== null) {
-            $description = strip_tags($rowData['data']['content']);
-        } else {
-            $description = null;
-        }
-
-        return [
-            'title' => $title,
-            'description' => Str::limit(htmlspecialchars($description, ENT_QUOTES, 'UTF-8'), 160),
-        ];
-    }
     private function getFirstBlockByName(string $name, array $content) : array|null
     {
         $data = null;

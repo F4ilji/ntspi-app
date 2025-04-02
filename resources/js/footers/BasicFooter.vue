@@ -16,7 +16,7 @@ export default {
 					<!-- End Language Dropdown -->
           <div>
             <div class="mt-3 grid space-y-3 text-sm">
-              <p class="inline-flex gap-x-2  text-[12px]">© Нижнетагильский государственный социально-педагогический институт (Филиал РГППУ)</p>
+              <p class="inline-flex gap-x-2  text-[12px]">© Нижнетагильский государственный социально-педагогический институт (Филиал УРГПУ)</p>
               <p class="inline-flex gap-x-2  text-[12px]">Красногвардейская улица, 57, Нижний Тагил, Свердловская область, 622031</p>
             </div>
           </div>
@@ -42,8 +42,8 @@ export default {
 
           <!-- Social Brands -->
           <div class="space-x-4 flex items-center">
-            <a target="_blank" class="inline-block text-[12px] hover:text-gray-200" href="https://www.rsvpu.ru/">
-              Российский государственный профессионально-педагогический университет
+            <a target="_blank" class="inline-block text-[12px] hover:text-gray-200 underline" href="https://uspu.ru/">
+              Уральский государственный педагогический университет
             </a>
 
             <a target="_blank" class="inline-block" href="https://vk.com/ntspi">

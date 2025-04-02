@@ -8,11 +8,14 @@ use App\Http\Resources\ScheduleResource;
 use App\Models\EducationalGroup;
 use App\Models\Faculty;
 use App\Models\Schedule;
+use App\Services\App\Seo\SeoPageProvider;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ClientScheduleController extends Controller
 {
+    public function __construct(readonly SeoPageProvider $seoPageProvider){}
+
     public function index(Request $request)
     {
         $educationalGroups = ClientEducationalGroupResource::collection(EducationalGroup::query()
@@ -46,10 +49,6 @@ class ClientScheduleController extends Controller
         }
 
 
-
-
-
-
         $forms_education = [];
         foreach (FormEducation::cases() as $case) {
             $forms_education[$case->name] = $case->getLabel();
@@ -78,8 +77,10 @@ class ClientScheduleController extends Controller
             ]
         ];
 
+        $seo = $this->seoPageProvider->getSeoForCurrentPage();
+
         // Возвращаем данные в представление
-        return Inertia::render('Client/Schedules/Index', compact('educationalGroups', 'filters', 'forms_education', 'schedulesByFaculty'));
+        return Inertia::render('Client/Schedules/Index', compact('educationalGroups', 'filters', 'forms_education', 'schedulesByFaculty', 'seo'));
     }
 
     public function show($id)

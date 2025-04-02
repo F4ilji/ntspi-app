@@ -5,9 +5,9 @@
 			<YSmartCaptcha v-model="token" />
 			<!-- Скрытое поле ввода -->
 			<input
+          name="captcha"
 					v-model="inputValue"
-					:required="block.data.rules.required"
-					:name="block.data.name_field"
+					required="required"
 					type="text"
 					class="hidden"
 			/>

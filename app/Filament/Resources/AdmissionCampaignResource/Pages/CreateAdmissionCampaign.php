@@ -8,5 +8,6 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateAdmissionCampaign extends CreateRecord
 {
+
     protected static string $resource = AdmissionCampaignResource::class;
 }

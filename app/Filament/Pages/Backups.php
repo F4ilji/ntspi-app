@@ -24,7 +24,7 @@ class Backups extends BaseBackups
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Settings';
+        return 'Настройки приложения';
     }
 
     public static function getNavigationLabel(): string

@@ -17,6 +17,7 @@ class MainSliderDTO
         public ?Carbon $start_time,
         public ?Carbon $end_time,
         public ?int $sort,
+        public int $slider_id,
     ) {}
 
     // Опционально: метод для создания DTO из массива
@@ -33,6 +34,7 @@ class MainSliderDTO
             start_time: isset($data['start_time']) ? Carbon::parse($data['start_time']) : null,
             end_time: isset($data['end_time']) ? Carbon::parse($data['end_time']) : null,
             sort: $data['sort'] ?? null,
+            slider_id: $data['slider_id'],
         );
     }
 
@@ -50,6 +52,7 @@ class MainSliderDTO
             'start_time' => $this->start_time?->toDateTimeString(),
             'end_time' => $this->end_time?->toDateTimeString(),
             'sort' => $this->sort,
+            'slider_id' => $this->slider_id,
         ];
     }
 }

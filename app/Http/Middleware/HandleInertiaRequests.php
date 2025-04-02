@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Http\Resources\ClientNavigationResource;
 use App\Models\MainSection;
+use App\Services\App\Breadcrumb\BreadcrumbService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
@@ -11,28 +12,16 @@ use Tightenco\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
-    /**
-     * The root template that is loaded on the first page visit.
-     *
-     * @var string
-     */
     protected $rootView = 'app';
 
-    /**
-     * Determine the current asset version.
-     */
-    public function version(Request $request): string|null
+    public function version(Request $request): ?string
     {
         return parent::version($request);
     }
 
-    /**
-     * Define the props that are shared by default.
-     *
-     * @return array<string, mixed>
-     */
     public function share(Request $request): array
     {
+        // Навигация (кешированная)
         $navigation = Cache::remember('navigation', now()->addHours(1), function () {
             return ClientNavigationResource::collection(
                 MainSection::with('subSections.pages.section')
@@ -40,6 +29,9 @@ class HandleInertiaRequests extends Middleware
                     ->get()
             );
         });
+
+        // Хлебные крошки (автоматически по текущему URL)
+        $breadcrumbs = app(BreadcrumbService::class)->generateBreadcrumbs();
 
         return [
             ...parent::share($request),
@@ -51,12 +43,12 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'navigation' => $navigation,
-            'urlPrev' => function() {
-                if (url()->previous() !== '' && url()->previous() !== url()->current()) {
+            'breadcrumbs' => $breadcrumbs, // Добавляем хлебные крошки
+            'urlPrev' => function () {
+                if (url()->previous() !== url()->current()) {
                     return url()->previous();
-                } else {
-                    return 'empty';
                 }
+                return 'empty';
             },
         ];
     }

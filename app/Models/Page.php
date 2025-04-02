@@ -23,15 +23,6 @@ class Page extends Model
         return $this->morphOne(Seo::class, 'seoable');
     }
 
-    public function getBreadcrumbs(string $url) : array
-    {
-        $path = ltrim(parse_url(route($url), PHP_URL_PATH), '/');
-
-        $page = self::where('path', '=', $path)->with('section.pages.section', 'section.mainSection')->first();
-
-        dd($page);
-    }
-
     protected $casts = [
         'content' => 'array',
         'settings' => 'array',

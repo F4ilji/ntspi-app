@@ -11,6 +11,7 @@ use App\Http\Controllers\ClientWidgetPostController;
 use App\Http\Controllers\ClientWidgetSliderController;
 use App\Http\Controllers\IconController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\StaticSearchController;
 use App\Http\Controllers\UpdateEduDataApiController;
 use App\Http\Controllers\VkAuthController;
 use App\Http\Controllers\VkPostController;
@@ -33,6 +34,10 @@ Route::middleware('ensure.browser')->group(function () {
 
     Route::get('/search', [SearchController::class, 'index'])->name('client.search.index');
 
+    Route::get('/static/search', [StaticSearchController::class, 'search'])->name('client.search.static');
+    Route::get('/static/categories', [StaticSearchController::class, 'getCategories'])->name('client.categories.static');
+
+
     Route::get('/widget/get-posts', [ClientWidgetPostController::class, 'index'])->name('client.widget.post.index');
 
     Route::get('/widget/get-posts/{id}', [ClientWidgetPostController::class, 'single'])->name('client.widget.post.single');
@@ -49,7 +54,7 @@ Route::middleware('ensure.browser')->group(function () {
 
     Route::get('/widget/get-form/{id}', [ClientWidgetFormController::class, 'single'])->middleware('rate.limited.check')->name('client.widget.form.single');
 
-    Route::post('/widget/get-form/{id}/submit', [ClientWidgetFormController::class, 'submit'])->middleware(['rate.limited.counter', 'rate.limited.check'])->name('client.widget.form.submit');
+    Route::post('/widget/get-form/{id}/submit', [ClientWidgetFormController::class, 'submit'])->middleware(['rate.limited.counter', 'rate.limited.check', 'form.time.period'])->name('client.widget.form.submit');
 
     Route::get('/widget/get-slider/{slug}', [ClientWidgetSliderController::class, 'show'])->name('client.widget.slider.show');
 });

@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\Services\App\Seo\SeoDescriptionInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AcademicJournal extends Model
+class AcademicJournal extends Model implements SeoDescriptionInterface
 {
     use HasFactory;
 
@@ -26,5 +27,10 @@ class AcademicJournal extends Model
     public function seo()
     {
         return $this->morphOne(Seo::class, 'seoable');
+    }
+
+    public function getSeoDescription(): array
+    {
+        return $this->main_info;
     }
 }

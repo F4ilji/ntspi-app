@@ -11,16 +11,11 @@ use App\Http\Controllers\ClientLibraryNewsController;
 use App\Http\Controllers\ClientPostController;
 use App\Http\Controllers\ClientProgramController;
 use App\Http\Controllers\ClientScheduleController;
-use App\Http\Controllers\ClientVacantPositionController;
-use App\Http\Controllers\ClientVirtualExhibitionController;
-use App\Http\Controllers\EducationalProgramController;
-use App\Http\Controllers\GenerateSitemapController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PersonController;
 
-use App\Http\Controllers\UpdateEduDataApiController;
-
+use App\Services\App\Search\StaticFileSearch;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
@@ -30,13 +25,14 @@ Route::middleware('signed')->get('invitation/{invitation}/accept', \App\Livewire
     ->name('invitation.accept');
 
 
+
 Route::middleware('access-check')->group(function () {
 
     // Главная страница
     Route::get('/', [MainController::class, 'index'])->name('index');
 
     // Расписание занятий
-    Route::get('/schedule', [ClientScheduleController::class, 'index'])->name('client.schedule');
+    Route::get('/schedule', [ClientScheduleController::class, 'index'])->name('client.schedule.index');
     Route::get('/schedule/{id}', [ClientScheduleController::class, 'show'])->name('client.schedule.show');
 
     Route::get('/persons/{slug}', [PersonController::class, 'show'])->name('client.person.show');

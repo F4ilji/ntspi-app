@@ -2,191 +2,211 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Components\Forms\ItemForm\Pages\ContentBuilderItem;
 use App\Filament\Resources\EventResource\Pages;
-use App\Filament\Resources\EventResource\RelationManagers;
-use App\Models\Category;
-use App\Models\EventCategory;
-use Filament\Forms\Components\Builder;
-
 use App\Models\Event;
+use App\Models\EventCategory;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieTagsInput;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class EventResource extends Resource
 {
     protected static ?string $model = Event::class;
 
     protected static ?string $navigationGroup = 'Новости и мероприятия';
-
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-
-    protected static ?string $pluralLabel = 'Мероприятия';
+    protected static ?string $modelLabel = 'Мероприятие';
+    protected static ?string $pluralModelLabel = 'Мероприятия';
+    protected static ?string $navigationLabel = 'Мероприятия';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make()
-                    ->schema([
-                        Forms\Components\Grid::make(2)->schema([
-                            TextInput::make('title')->label('Заголовок')->required()
-                                ->live(onBlur: true)
-                                ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
-                                    if ($state !== null) {
-                                        $set('slug', Str::slug($state));
-                                    } else {
-                                        $set('slug', null);
-                                    }
-                                }),
-                            TextInput::make('slug')->label('Slug (Заполнится автоматически)')->unique(ignoreRecord: true)->readOnly()->required(),
-                        ]),
-                        Section::make('Контент')->schema([
-                            \Filament\Forms\Components\Builder::make('content')->label('')->blocks([
-                                Builder\Block::make('heading')->label('Заголовок')
+                Tabs::make('Мероприятие')
+                    ->tabs([
+                        Tabs\Tab::make('Основное')
+                            ->icon('heroicon-o-information-circle')
+                            ->schema([
+                                Grid::make(2)
                                     ->schema([
-                                        TextInput::make('id')->hidden()->integer()->default(rand(2335235,324634264263426)),
-                                        TextInput::make('content')
-                                            ->label('')
+                                        TextInput::make('title')
+                                            ->label('Название мероприятия')
+                                            ->placeholder('Введите название мероприятия')
+                                            ->helperText('Отображается на сайте')
+                                            ->required()
+                                            ->maxLength(255)
                                             ->live(onBlur: true)
-                                            ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set, $get) {
+                                            ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                                                $set('slug', $state ? Str::slug($state) : null);
                                             }),
+
+                                        TextInput::make('slug')
+                                            ->label('URL-адрес')
+                                            ->unique(ignoreRecord: true)
+                                            ->required()
+                                            ->readOnly()
+                                            ->helperText('Формируется автоматически из названия')
+                                            ->prefix(fn () => route('client.event.index') . '/')
+                                            ->suffixAction(
+                                                Action::make('copy')
+                                                    ->icon('heroicon-s-clipboard-document-check')
+                                                    ->action(function ($livewire, $state) {
+                                                        $livewire->js(
+                                                            'window.navigator.clipboard.writeText("'. route('client.event.index') . '/' . $state.'");
+                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
+                                                        );
+                                                    })),
                                     ]),
-                                Builder\Block::make('paragraph')
-                                    ->schema([
-                                        TinyEditor::make('content')
-                                            ->label('')
-                                            ->profile('test')
-                                            ->required(),
-                                    ])->label('Текст'),
-                                Builder\Block::make('image')
-                                    ->schema([
-                                        FileUpload::make('url')
-                                            ->label('Изображение(-я)')
-                                            ->image()
-                                            ->optimize('jpg')
-                                            ->resize(30)
-                                            ->multiple()
-                                            ->reorderable()
-                                            ->maxFiles(5)
-                                            ->disk('public')
-                                            ->directory('images')
-                                            ->imageEditor()
-                                            ->required(),
-                                        TextInput::make('alt')
-                                            ->label('Описание')
-                                            ->placeholder('Необязяательно')
-                                    ])->label('Изображение(-я)'),
-                                Builder\Block::make('video')
-                                    ->schema([
-                                        Hidden::make('mime'),
 
-                                        TextInput::make('title')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->autofocus(),
+                                Select::make('category_id')
+                                    ->label('Категория')
+                                    ->placeholder('Выберите категорию')
+                                    ->options(EventCategory::all()->pluck('title', 'id'))
+                                    ->preload()
+                                    ->helperText('Для систематизации мероприятий'),
 
-                                        FileUpload::make('path')
-                                            ->required()
-                                            ->acceptedFileTypes(['video/mp4','video/ogg','video/webm'])
-                                            ->maxSize(512000)
-                                            ->disk('videos')
-                                            ->visibility('public')
-                                            ->afterStateUpdated(fn (callable $set, $state) => $set('mime', $state?->getMimeType())),
-                                    ]),
-                                Builder\Block::make('files')
-                                    ->schema([
-                                        TextInput::make('title')
-                                            ->required()
-                                            ->maxLength(255)
-                                            ->autofocus(),
-                                        FileUpload::make('path')
-                                            ->required()
-                                            ->acceptedFileTypes([
-                                                'application/pdf',
-                                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                                                'application/zip'
-                                            ])
-                                            ->maxSize(512000)
-                                            ->disk('public')
-                                            ->directory('files')
-                                            ->downloadable()
-                                            ->visibility('public')
-                                    ])
-                            ])
-                                ->collapsed()
-                                ->blockNumbers(false)
-                                ->collapsible()
-                                ->addActionLabel('Добавить новый блок'),
+                                SpatieTagsInput::make('tags')
+                                    ->label('Теги')
+                                    ->placeholder('Добавьте теги')
+                                    ->helperText('Для фильтрации и поиска'),
 
-                        ]),
-                        TextInput::make('address')->label('Адрес')->required(),
-
-                        Forms\Components\Grid::make(2)->schema([
-                            Forms\Components\Grid::make(2)->schema([
-                                DatePicker::make('event_date_start')->label('Дата начала мероприятия')->required()->native(false)
-                                    ->minDate(now())
-                                    ->maxDate(now()->addYear()),
-                                Forms\Components\TimePicker::make('event_time_start')->label('Время начала мероприятия')->seconds(false)->required()->native(false),
-                                DatePicker::make('event_date_end')->label('Дата окончания мероприятия (Опиционально)')->native(false)
-                                    ->minDate(now())
-                                    ->maxDate(now()->addYear()),
+                                Toggle::make('is_online')
+                                    ->label('Онлайн-формат')
+                                    ->helperText('Отметьте для онлайн-мероприятий')
+                                    ->default(false)
+                                    ->inline(false)
+                                    ->onColor('success')
+                                    ->offColor('gray'),
                             ]),
 
-                            Toggle::make('is_online')->default(false)->label('Онлайн мероприятие')->inline(false)
+                        Tabs\Tab::make('Контент')
+                            ->icon('heroicon-o-document-text')
+                            ->schema([
+                                ContentBuilderItem::getItem('content')
+                                    ->columnSpanFull(),
+                            ]),
 
-                        ]),
+                        Tabs\Tab::make('Дата и место')
+                            ->icon('heroicon-o-map-pin')
+                            ->schema([
+                                TextInput::make('address')
+                                    ->label('Место проведения')
+                                    ->placeholder('Адрес или платформа')
+                                    ->helperText('Для онлайн укажите платформу (Zoom, YouTube и т.д.)')
+                                    ->required()
+                                    ->maxLength(255),
 
-                        Forms\Components\Grid::make(2)->schema([
-                            Select::make('category_id')
-                                ->options(EventCategory::all()->pluck('title', 'id'))
-                                ->preload()
-                                ->label('Категория'),
-                            SpatieTagsInput::make('tags')->label('Тэги'),
-                        ]),
+                                Grid::make(2)
+                                    ->schema([
+                                        DatePicker::make('event_date_start')
+                                            ->label('Дата начала')
+                                            ->native(false)
+                                            ->displayFormat('d/m/Y')
+                                            ->helperText('Когда начинается мероприятие')
+                                            ->required()
+                                            ->minDate(now())
+                                            ->maxDate(now()->addYear()),
 
+                                        TimePicker::make('event_time_start')
+                                            ->label('Время начала')
+                                            ->seconds(false)
+                                            ->native(false)
+                                            ->helperText('По местному времени')
+                                            ->required(),
+
+                                        DatePicker::make('event_date_end')
+                                            ->label('Дата окончания')
+                                            ->native(false)
+                                            ->displayFormat('d/m/Y')
+                                            ->helperText('Оставьте пустым для однодневного мероприятия')
+                                            ->minDate(now())
+                                            ->maxDate(now()->addYear()),
+                                    ]),
+                            ]),
                     ])
+                    ->persistTabInQueryString()
+                    ->columnSpanFull(),
             ]);
-
     }
-
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('id')->label('ID')->sortable(),
-                TextColumn::make('title')->label('Название')->sortable()->searchable(),
-                TextColumn::make('event_date_start')->label('Начало мероприятия')->sortable(),
-                TextColumn::make('created_at')->label('Дата создания')->sortable(),
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('title')
+                    ->label('Название')
+                    ->sortable()
+                    ->searchable()
+                    ->limit(30),
+
+                TextColumn::make('event_date_start')
+                    ->label('Дата начала')
+                    ->date('d.m.Y H:i')
+                    ->sortable(),
+
+                IconColumn::make('is_online')
+                    ->label('Онлайн')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-globe-alt')
+                    ->falseIcon('heroicon-o-map-pin'),
+
+                TextColumn::make('created_at')
+                    ->label('Создано')
+                    ->dateTime('d.m.Y H:i')
+                    ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('category_id')
+                    ->label('Категория')
+                    ->relationship('category', 'title'),
+
+                Tables\Filters\Filter::make('is_online')
+                    ->label('Только онлайн')
+                    ->query(fn ($query) => $query->where('is_online', true)),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->icon('heroicon-o-pencil')
+                    ->tooltip('Редактировать'),
+
+                Tables\Actions\Action::make('view')
+                    ->icon('heroicon-o-eye')
+                    ->tooltip('Просмотреть на сайте')
+                    ->url(fn (Event $record) => route('client.event.show', $record->slug))
+                    ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Удалить выбранное')
+                        ->icon('heroicon-o-trash'),
                 ]),
+            ])
+            ->defaultSort('event_date_start', 'desc')
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make()
+                    ->label('Добавить мероприятие'),
             ]);
     }
 

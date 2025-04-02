@@ -27,6 +27,11 @@ class SlideResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Виджеты';
+
+    protected static ?string $pluralLabel = 'Слайды';
+    protected static ?string $navigationParentItem = 'Слайдеры';
+
     public static function form(Form $form): Form
     {
         return $form

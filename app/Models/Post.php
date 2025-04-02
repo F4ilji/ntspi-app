@@ -41,14 +41,14 @@ class Post extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function seo()
+    public function seo(): MorphOne
     {
         return $this->morphOne(Seo::class, 'seoable');
     }
 
-    public function mainSlider()
+    public function slide(): MorphOne
     {
-        return $this->morphOne(MainSlider::class, 'slidable');
+        return $this->morphOne(Slide::class, 'slidable');
     }
 
     protected $casts = [

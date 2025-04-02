@@ -40,6 +40,9 @@ class CustomFormResource extends Resource
     public static ?string $label = 'Форма';
     protected static ?string $pluralLabel = 'Пользовательские формы';
 
+    protected static ?string $navigationGroup = 'Виджеты';
+
+
 
     protected static ?string $model = CustomForm::class;
 

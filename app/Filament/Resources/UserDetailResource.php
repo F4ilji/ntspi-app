@@ -20,7 +20,7 @@ class UserDetailResource extends Resource
 {
     protected static ?string $model = UserDetail::class;
 
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $navigationGroup = 'Настройки приложения';
 
 
     protected static ?string $pluralLabel = 'Доп. Информация';
