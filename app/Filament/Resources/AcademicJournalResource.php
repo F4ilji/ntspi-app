@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\CustomFormStatus;
 use App\Enums\PostStatus;
+use App\Filament\Components\Forms\ItemForm\Pages\ContentBuilderItem;
 use App\Filament\Resources\AcademicJournalResource\Pages;
 use App\Filament\Resources\AcademicJournalResource\RelationManagers;
 use App\Filament\Resources\AcademicJournalResource\RelationManagers\JournalsRelationManager;
@@ -14,10 +15,13 @@ use App\Models\CustomForm;
 use App\Models\Page;
 use App\Models\Post;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
@@ -33,780 +37,141 @@ use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class AcademicJournalResource extends Resource
 {
-
     protected static ?string $navigationGroup = 'Наука';
-
     public static ?string $label = 'Журнал';
-
     protected static ?string $pluralLabel = 'Научные журналы';
-
     protected static ?string $model = AcademicJournal::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-beaker';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make()->schema([
-                    Forms\Components\Grid::make(2)->schema([
-                        TextInput::make('title')->label('Заголовок')->required()
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
-                                $set('slug', Str::slug($state));
-                            }),
-                        TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
+                Section::make('Основные данные')
+                    ->description('Основная информация о научном журнале')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('title')
+                                    ->label('Название журнала')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->placeholder('Введите полное название журнала')
+                                    ->helperText('Официальное название журнала как в регистрационных документах')
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
+                                        $set('slug', Str::slug($state));
+                                    }),
+                                TextInput::make('slug')
+                                    ->label('URL-адрес')
+                                    ->unique(ignoreRecord: true)
+                                    ->required()
+                                    ->readOnly()
+                                    ->helperText('Формируется автоматически из названия')
+                                    ->prefix(fn () => route('client.academicJournals.index') . '/')
+                                    ->suffixAction(
+                                        Action::make('copy')
+                                            ->icon('heroicon-s-clipboard-document-check')
+                                            ->action(function ($livewire, $state) {
+                                                $livewire->js(
+                                                    'window.navigator.clipboard.writeText("'. route('client.academicJournals.index') . '/' . $state.'");
+                    $tooltip("'.__('Copied to clipboard').'", { timeout: 1500 });'
+                                                );
+                                            })),
+                            ]),
                     ]),
-                    ]),
-                Tabs::make('Tabs')
+
+                Tabs::make('Настройки журнала')
+                    ->persistTabInQueryString()
+                    ->columnSpanFull()
                     ->tabs([
-                        Tabs\Tab::make('Основная информация журнала')
+                        Tabs\Tab::make('Основная информация')
+                            ->icon('heroicon-o-information-circle')
                             ->schema([
-                                Builder::make('main_info')->label('')->blocks([
-                                    Builder\Block::make('heading')->label('Заголовок')
-                                        ->schema([
-                                            TextInput::make('id')->hidden()->integer()->default(rand(2335235,324634264263426)),
-                                            TextInput::make('content')
-                                                ->label('')
-                                                ->live(onBlur: true)
-                                                ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set, $get) {
-                                                }),
-                                        ]),
-                                    Builder\Block::make('paragraph')
-                                        ->schema([
-                                            RichEditor::make('content')
-                                                ->toolbarButtons([
-                                                    'blockquote',
-                                                    'bold',
-                                                    'bulletList',
-                                                    'italic',
-                                                    'link',
-                                                    'orderedList',
-                                                    'redo',
-                                                    'strike',
-                                                    'underline',
-                                                    'undo',
-                                                ])
-                                                ->label(''),
-                                        ])->label('Текст'),
-                                    Builder\Block::make('files')
-                                        ->schema([
-                                            Forms\Components\Repeater::make('file')->schema([
-                                                Hidden::make('expansion')->required(),
-                                                Hidden::make('size')->required(),
-                                                TextInput::make('title')
+                                ContentBuilderItem::getItem('main_info')
+                                    ->label('Описание журнала')
+                                    ->helperText('Добавьте полное описание журнала, его историю и основные направления'),
+                            ]),
+
+                        Tabs\Tab::make('Редакционная коллегия')
+                            ->icon('heroicon-o-user-group')
+                            ->schema([
+                                Section::make('Главный редактор')
+                                    ->description('Информация о главном редакторе журнала')
+                                    ->collapsible()
+                                    ->schema([
+                                        Forms\Components\Repeater::make('chief_editor')->label('')
+                                            ->schema([
+                                                TextInput::make('name')
+                                                    ->label('ФИО')
+                                                    ->required()
+                                                    ->maxLength(100)
+                                                    ->placeholder('Иванов Иван Иванович'),
+                                                TextInput::make('academicTitle')
+                                                    ->label('Учёная степень')
+                                                    ->required()
+                                                    ->maxLength(50)
+                                                    ->placeholder('д.т.н., профессор'),
+                                                TextInput::make('position')
+                                                    ->label('Должность')
+                                                    ->required()
+                                                    ->maxLength(100)
+                                                    ->placeholder('Главный научный сотрудник'),
+                                                TextInput::make('institution')
+                                                    ->label('Учреждение')
                                                     ->required()
                                                     ->maxLength(255)
-                                                    ->autofocus(),
-                                                FileUpload::make('path')
-                                                    ->required()
-                                                    ->getUploadedFileNameForStorageUsing(
-                                                        fn (TemporaryUploadedFile $file): string =>
-                                                        str(Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '-' . Carbon::now()->timestamp ) . '.' . $file->getClientOriginalExtension())
-                                                    )
-                                                    ->acceptedFileTypes([
-                                                        'application/pdf',
-                                                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                                                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                                        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                                                        'application/zip'
-                                                    ])
-                                                    ->maxSize(512000)
-                                                    ->disk('public')
-                                                    ->directory('files')
-                                                    ->downloadable()
-                                                    ->afterStateUpdated(function ($set, $state) {
-                                                        $set('expansion', $state?->getClientOriginalExtension());
-                                                        $set('size', ByteConverter::bytesToHuman($state?->getSize()));
-                                                    })
-                                                    ->visibility('public')
-                                            ]),
-                                        ]),
-                                    Builder\Block::make('person')
-                                        ->schema([
-                                            TextInput::make('name')
-                                                ->label('Имя')
-                                                ->required()
-                                                ->maxLength(255),
-                                            FileUpload::make('photo')
-                                                ->label('Фотография')
-                                                ->image()
-                                                ->disk('public')
-                                                ->directory('images')
-                                                ->imageEditor(),
-                                            Forms\Components\Repeater::make('info')->schema([
-                                                Forms\Components\Grid::make(2)->schema([
-                                                    TextInput::make('column')
-                                                        ->required()
-                                                        ->maxLength(255),
-                                                    TextInput::make('content')
-                                                        ->required()
-                                                        ->maxLength(255),
-                                                ]),
-                                            ])->minItems(1),
-                                        ]),
-                                    Builder\Block::make('stepper')
-                                        ->schema([
-                                            TextInput::make('step_name')
-                                                ->label('Название шага')
-                                                ->required()
-                                                ->maxLength(255),
-                                            Forms\Components\Repeater::make('steps')->schema([
-                                                TextInput::make('title')
-                                                    ->required()
-                                                    ->maxLength(255)->columnSpanFull(),
-                                                RichEditor::make('content')->required(),
-                                            ])->minItems(1),
-                                        ]),
-                                    Builder\Block::make('tabs')
-                                        ->schema([
-                                            Forms\Components\Repeater::make('tab')->schema([
-                                                TextInput::make('title')
-                                                    ->required()
-                                                    ->maxLength(255)->columnSpanFull(),
-                                                \Filament\Forms\Components\Builder::make('content')->label('')->blocks([
-                                                    Builder\Block::make('heading')->label('Заголовок')
-                                                        ->schema([
-                                                            TextInput::make('id')->hidden()->integer()->default(rand(2335235,324634264263426)),
-                                                            TextInput::make('content')
-                                                                ->label('')
-                                                                ->live(onBlur: true)
-                                                                ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set, $get) {
-                                                                }),
-                                                        ]),
-                                                    Builder\Block::make('paragraph')
-                                                        ->schema([
-                                                            RichEditor::make('content')
-                                                                ->toolbarButtons([
-                                                                    'blockquote',
-                                                                    'bold',
-                                                                    'bulletList',
-                                                                    'italic',
-                                                                    'link',
-                                                                    'orderedList',
-                                                                    'redo',
-                                                                    'strike',
-                                                                    'underline',
-                                                                    'undo',
-                                                                ])
-                                                                ->label(''),
-                                                        ])->label('Текст'),
-                                                    Builder\Block::make('files')
-                                                        ->schema([
-                                                            Forms\Components\Repeater::make('file')->schema([
-                                                                TextInput::make('title')
-                                                                    ->required()
-                                                                    ->maxLength(255)
-                                                                    ->autofocus(),
-                                                                FileUpload::make('path')
-                                                                    ->required()
-                                                                    ->acceptedFileTypes([
-                                                                        'application/pdf',
-                                                                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                                                                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                                                        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                                                                        'application/zip'
-                                                                    ])
-                                                                    ->maxSize(512000)
-                                                                    ->disk('public')
-                                                                    ->directory('files')
-                                                                    ->downloadable()
-                                                                    ->visibility('public')
-                                                            ]),
-                                                        ]),
-                                                    Builder\Block::make('person')
-                                                        ->schema([
-                                                            TextInput::make('name')
-                                                                ->label('Имя')
-                                                                ->required()
-                                                                ->maxLength(255),
-                                                            FileUpload::make('photo')
-                                                                ->label('Фотография')
-                                                                ->image()
-                                                                ->disk('public')
-                                                                ->directory('images')
-                                                                ->imageEditor(),
-                                                            Forms\Components\Repeater::make('info')->schema([
-                                                                Forms\Components\Grid::make(2)->schema([
-                                                                    TextInput::make('column')
-                                                                        ->required()
-                                                                        ->maxLength(255),
-                                                                    TextInput::make('content')
-                                                                        ->required()
-                                                                        ->maxLength(255),
-                                                                ]),
-                                                            ])->minItems(1),
-                                                        ]),
-                                                    Builder\Block::make('stepper')
-                                                        ->schema([
-                                                            TextInput::make('step_name')
-                                                                ->label('Название шага')
-                                                                ->required()
-                                                                ->maxLength(255),
-                                                            Forms\Components\Repeater::make('steps')->schema([
-                                                                TextInput::make('title')
-                                                                    ->required()
-                                                                    ->maxLength(255)->columnSpanFull(),
-                                                                RichEditor::make('content')->required(),
-                                                            ])->minItems(1),
-                                                        ]),
-                                                    Builder\Block::make('images')
-                                                        ->schema([
-                                                            FileUpload::make('url')
-                                                                ->label('Изображение(-я)')
-                                                                ->image()
-                                                                ->multiple()
-                                                                ->reorderable()
-                                                                ->maxFiles(5)
-                                                                ->disk('public')
-                                                                ->directory('images')
-                                                                ->imageEditor()
-                                                                ->required(),
-                                                            TextInput::make('alt')
-                                                                ->label('Описание')
-                                                                ->placeholder('Необязяательно')
-                                                        ])->label('Слайдер изображений'),
-                                                    Builder\Block::make('image')
-                                                        ->schema([
-                                                            FileUpload::make('url')
-                                                                ->label('Изображение(-я)')
-                                                                ->image()
-                                                                ->multiple()
-                                                                ->reorderable()
-                                                                ->maxFiles(5)
-                                                                ->disk('public')
-                                                                ->directory('images')
-                                                                ->imageEditor()
-                                                                ->required(),
-                                                            TextInput::make('alt')
-                                                                ->label('Описание')
-                                                                ->placeholder('Необязяательно')
-                                                        ])->label('Изображение'),
-                                                    Builder\Block::make('video')
-                                                        ->schema([
-                                                            TextInput::make('mime')->readOnly(),
-                                                            TextInput::make('title')
-                                                                ->required()
-                                                                ->maxLength(255)
-                                                                ->autofocus(),
-                                                            FileUpload::make('path')
-                                                                ->required()
-                                                                ->acceptedFileTypes([
-                                                                    'video/mp4',
-                                                                    'video/quicktime',
-                                                                    'video/x-msvideo',
-                                                                    'video/x-ms-wmv',
-                                                                    'video/avi',
-                                                                    'video/webm',
-                                                                    'video/ogg',
-                                                                    'video/3gpp',
-                                                                    'video/3gpp2',
-                                                                    'video/x-m4v',
-                                                                ])
-                                                                ->disk('public')
-                                                                ->directory('videos')
-                                                                ->afterStateUpdated(fn (callable $set, $state) => $set('mime', $state?->getMimeType())),
-                                                        ]),
-                                                    Builder\Block::make('postsList')
-                                                        ->schema([
-                                                            Forms\Components\Grid::make(2)->schema([
-                                                                TextInput::make('count')
-                                                                    ->label('Количество запией')
-                                                                    ->integer(),
-                                                                Select::make('category')
-                                                                    ->options(Category::all()->pluck('title', 'id'))
-                                                            ]),
-                                                        ])->label('Список новостей'),
-                                                ])
-                                                    ->collapsed()
-                                                    ->blockNumbers(false)
-                                                    ->collapsible()
-                                                    ->addActionLabel('Добавить новый блок'),
-                                            ])->minItems(1),
-                                        ]),
-                                    Builder\Block::make('images')
-                                        ->schema([
-                                            FileUpload::make('url')
-                                                ->label('Изображение(-я)')
-                                                ->image()
-                                                ->multiple()
-                                                ->reorderable()
-                                                ->maxFiles(5)
-                                                ->disk('public')
-                                                ->directory('images')
-                                                ->imageEditor()
-                                                ->required(),
-                                            TextInput::make('alt')
-                                                ->label('Описание')
-                                                ->placeholder('Необязяательно')
-                                        ])->label('Слайдер изображений'),
-                                    Builder\Block::make('image')
-                                        ->schema([
-                                            FileUpload::make('url')
-                                                ->label('Изображение(-я)')
-                                                ->image()
-                                                ->multiple()
-                                                ->reorderable()
-                                                ->maxFiles(5)
-                                                ->disk('public')
-                                                ->directory('images')
-                                                ->imageEditor()
-                                                ->required(),
-                                            TextInput::make('alt')
-                                                ->label('Описание')
-                                                ->placeholder('Необязяательно')
-                                        ])->label('Изображение'),
-                                    Builder\Block::make('video')
-                                        ->schema([
-                                            TextInput::make('mime')->readOnly(),
-                                            TextInput::make('title')
-                                                ->required()
-                                                ->maxLength(255)
-                                                ->autofocus(),
-                                            FileUpload::make('path')
-                                                ->required()
-                                                ->acceptedFileTypes([
-                                                    'video/mp4',
-                                                    'video/quicktime',
-                                                    'video/x-msvideo',
-                                                    'video/x-ms-wmv',
-                                                    'video/avi',
-                                                    'video/webm',
-                                                    'video/ogg',
-                                                    'video/3gpp',
-                                                    'video/3gpp2',
-                                                    'video/x-m4v',
-                                                ])
-                                                ->disk('public')
-                                                ->directory('videos')
-                                                ->afterStateUpdated(fn (callable $set, $state) => $set('mime', $state?->getMimeType())),
-                                        ]),
-                                    Builder\Block::make('postsList')
-                                        ->schema([
-                                            Forms\Components\Grid::make(2)->schema([
-                                                TextInput::make('count')
-                                                    ->label('Количество запией')
-                                                    ->integer(),
-                                                Select::make('category')
-                                                    ->options(Category::all()->pluck('title', 'id'))
-                                            ]),
-                                        ])->label('Список новостей'),
-                                    Builder\Block::make('postItem')
-                                        ->schema([
-                                            Select::make('post')
-                                                ->options(Post::query()->where('status', PostStatus::PUBLISHED)->pluck('title', 'id'))
-                                                ->searchable()
-                                                ->required(),
-                                        ])->label('Новость'),
-                                    Builder\Block::make('pageItem')
-                                        ->schema([
-                                            Select::make('page')
-                                                ->options(Page::query()->where('title', '!=' , null)->where('is_visible', true)->pluck('title', 'id'))
-                                                ->searchable()
-                                                ->required(),
-                                        ])->label('Страница'),
-                                    Builder\Block::make('customForm')
-                                        ->schema([
-                                            Select::make('form')
-                                                ->options(CustomForm::query()->where('status', CustomFormStatus::PUBLISHED)->pluck('title', 'form_id'))
-                                                ->searchable()
-                                                ->required(),
-                                        ])->label('Форма'),
-                                ])
-                                    ->collapsed()
-                                    ->blockNumbers(false)
-                                    ->collapsible()
-                                    ->blockPickerColumns(3)
-                                    ->blockPickerWidth('2xl')
-                                    ->addActionLabel('Добавить новый блок'),
-                            ]),
-                        Tabs\Tab::make('Редакция')
-                            ->schema([
-                                Forms\Components\Section::make('Главный редактор')->schema([
-                                    Forms\Components\Repeater::make('chief_editor')->label('')->schema([
-                                        TextInput::make('name')->label('Имя'),
-                                        TextInput::make('academicTitle')->label('Ученная степень'),
-                                        TextInput::make('position')->label('Должность'),
-                                        TextInput::make('institution')->label('Учереждение'),
-                                    ])->maxItems(1)->reorderable(false),
-                                ]),
-                                Forms\Components\Section::make('Редакторы')->schema([
-                                    Forms\Components\Repeater::make('editors')->label('')->schema([
-                                        TextInput::make('name')->label('Имя'),
-                                        TextInput::make('academicTitle')->label('Ученная степень'),
-                                        TextInput::make('position')->label('Должность'),
-                                        TextInput::make('institution')->label('Учереждение'),
-                                    ])
-                                        ->collapsed()
-                                        ->collapsible()
-                                        ->label('')
-                                        ->addActionLabel('Добавить редактора'),
+                                                    ->placeholder('МГУ имени М.В. Ломоносова'),
+                                            ])
+                                            ->maxItems(1)
+                                            ->reorderable(false)
+                                            ->helperText('Укажите данные главного редактора журнала'),
+                                    ]),
 
-                                ]),
-                            ]),
-                        Tabs\Tab::make('Информация для авторов')
-                            ->schema([
-                                Builder::make('for_authors')->label('')->blocks([
-                                    Builder\Block::make('heading')->label('Заголовок')
-                                        ->schema([
-                                            TextInput::make('id')->hidden()->integer()->default(rand(2335235,324634264263426)),
-                                            TextInput::make('content')
-                                                ->label('')
-                                                ->live(onBlur: true)
-                                                ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set, $get) {
-                                                }),
-                                        ]),
-                                    Builder\Block::make('paragraph')
-                                        ->schema([
-                                            RichEditor::make('content')
-                                                ->toolbarButtons([
-                                                    'blockquote',
-                                                    'bold',
-                                                    'bulletList',
-                                                    'italic',
-                                                    'link',
-                                                    'orderedList',
-                                                    'redo',
-                                                    'strike',
-                                                    'underline',
-                                                    'undo',
-                                                ])
-                                                ->label(''),
-                                        ])->label('Текст'),
-                                    Builder\Block::make('files')
-                                        ->schema([
-                                            Forms\Components\Repeater::make('file')->schema([
-                                                Hidden::make('expansion')->required(),
-                                                Hidden::make('size')->required(),
-                                                TextInput::make('title')
+                                Section::make('Редакционная коллегия')
+                                    ->description('Состав редакционной коллегии журнала')
+                                    ->collapsible()
+                                    ->schema([
+                                        Forms\Components\Repeater::make('editors')->label('')
+                                            ->schema([
+                                                TextInput::make('name')
+                                                    ->label('ФИО')
+                                                    ->required()
+                                                    ->maxLength(100)
+                                                    ->placeholder('Петров Петр Петрович'),
+                                                TextInput::make('academicTitle')
+                                                    ->label('Учёная степень')
+                                                    ->required()
+                                                    ->maxLength(50)
+                                                    ->placeholder('к.ф.-м.н., доцент'),
+                                                TextInput::make('position')
+                                                    ->label('Должность')
+                                                    ->required()
+                                                    ->maxLength(100)
+                                                    ->placeholder('Доцент кафедры'),
+                                                TextInput::make('institution')
+                                                    ->label('Учреждение')
                                                     ->required()
                                                     ->maxLength(255)
-                                                    ->autofocus(),
-                                                FileUpload::make('path')
-                                                    ->required()
-                                                    ->getUploadedFileNameForStorageUsing(
-                                                        fn (TemporaryUploadedFile $file): string =>
-                                                        str(Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '-' . Carbon::now()->timestamp ) . '.' . $file->getClientOriginalExtension())
-                                                    )
-                                                    ->acceptedFileTypes([
-                                                        'application/pdf',
-                                                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                                                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                                        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                                                        'application/zip'
-                                                    ])
-                                                    ->maxSize(512000)
-                                                    ->disk('public')
-                                                    ->directory('files')
-                                                    ->downloadable()
-                                                    ->afterStateUpdated(function ($set, $state) {
-                                                        $set('expansion', $state?->getClientOriginalExtension());
-                                                        $set('size', ByteConverter::bytesToHuman($state?->getSize()));
-                                                    })
-                                                    ->visibility('public')
-                                            ]),
-                                        ]),
-                                    Builder\Block::make('person')
-                                        ->schema([
-                                            TextInput::make('name')
-                                                ->label('Имя')
-                                                ->required()
-                                                ->maxLength(255),
-                                            FileUpload::make('photo')
-                                                ->label('Фотография')
-                                                ->image()
-                                                ->disk('public')
-                                                ->directory('images')
-                                                ->imageEditor(),
-                                            Forms\Components\Repeater::make('info')->schema([
-                                                Forms\Components\Grid::make(2)->schema([
-                                                    TextInput::make('column')
-                                                        ->required()
-                                                        ->maxLength(255),
-                                                    TextInput::make('content')
-                                                        ->required()
-                                                        ->maxLength(255),
-                                                ]),
-                                            ])->minItems(1),
-                                        ]),
-                                    Builder\Block::make('stepper')
-                                        ->schema([
-                                            TextInput::make('step_name')
-                                                ->label('Название шага')
-                                                ->required()
-                                                ->maxLength(255),
-                                            Forms\Components\Repeater::make('steps')->schema([
-                                                TextInput::make('title')
-                                                    ->required()
-                                                    ->maxLength(255)->columnSpanFull(),
-                                                RichEditor::make('content')->required(),
-                                            ])->minItems(1),
-                                        ]),
-                                    Builder\Block::make('tabs')
-                                        ->schema([
-                                            Forms\Components\Repeater::make('tab')->schema([
-                                                TextInput::make('title')
-                                                    ->required()
-                                                    ->maxLength(255)->columnSpanFull(),
-                                                \Filament\Forms\Components\Builder::make('content')->label('')->blocks([
-                                                    Builder\Block::make('heading')->label('Заголовок')
-                                                        ->schema([
-                                                            TextInput::make('id')->hidden()->integer()->default(rand(2335235,324634264263426)),
-                                                            TextInput::make('content')
-                                                                ->label('')
-                                                                ->live(onBlur: true)
-                                                                ->afterStateUpdated(function (string $operation, string $state, Forms\Set $set, $get) {
-                                                                }),
-                                                        ]),
-                                                    Builder\Block::make('paragraph')
-                                                        ->schema([
-                                                            RichEditor::make('content')
-                                                                ->toolbarButtons([
-                                                                    'blockquote',
-                                                                    'bold',
-                                                                    'bulletList',
-                                                                    'italic',
-                                                                    'link',
-                                                                    'orderedList',
-                                                                    'redo',
-                                                                    'strike',
-                                                                    'underline',
-                                                                    'undo',
-                                                                ])
-                                                                ->label(''),
-                                                        ])->label('Текст'),
-                                                    Builder\Block::make('files')
-                                                        ->schema([
-                                                            Forms\Components\Repeater::make('file')->schema([
-                                                                TextInput::make('title')
-                                                                    ->required()
-                                                                    ->maxLength(255)
-                                                                    ->autofocus(),
-                                                                FileUpload::make('path')
-                                                                    ->required()
-                                                                    ->acceptedFileTypes([
-                                                                        'application/pdf',
-                                                                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                                                                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                                                        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                                                                        'application/zip'
-                                                                    ])
-                                                                    ->maxSize(512000)
-                                                                    ->disk('public')
-                                                                    ->directory('files')
-                                                                    ->downloadable()
-                                                                    ->visibility('public')
-                                                            ]),
-                                                        ]),
-                                                    Builder\Block::make('person')
-                                                        ->schema([
-                                                            TextInput::make('name')
-                                                                ->label('Имя')
-                                                                ->required()
-                                                                ->maxLength(255),
-                                                            FileUpload::make('photo')
-                                                                ->label('Фотография')
-                                                                ->image()
-                                                                ->disk('public')
-                                                                ->directory('images')
-                                                                ->imageEditor(),
-                                                            Forms\Components\Repeater::make('info')->schema([
-                                                                Forms\Components\Grid::make(2)->schema([
-                                                                    TextInput::make('column')
-                                                                        ->required()
-                                                                        ->maxLength(255),
-                                                                    TextInput::make('content')
-                                                                        ->required()
-                                                                        ->maxLength(255),
-                                                                ]),
-                                                            ])->minItems(1),
-                                                        ]),
-                                                    Builder\Block::make('stepper')
-                                                        ->schema([
-                                                            TextInput::make('step_name')
-                                                                ->label('Название шага')
-                                                                ->required()
-                                                                ->maxLength(255),
-                                                            Forms\Components\Repeater::make('steps')->schema([
-                                                                TextInput::make('title')
-                                                                    ->required()
-                                                                    ->maxLength(255)->columnSpanFull(),
-                                                                RichEditor::make('content')->required(),
-                                                            ])->minItems(1),
-                                                        ]),
-                                                    Builder\Block::make('images')
-                                                        ->schema([
-                                                            FileUpload::make('url')
-                                                                ->label('Изображение(-я)')
-                                                                ->image()
-                                                                ->multiple()
-                                                                ->reorderable()
-                                                                ->maxFiles(5)
-                                                                ->disk('public')
-                                                                ->directory('images')
-                                                                ->imageEditor()
-                                                                ->required(),
-                                                            TextInput::make('alt')
-                                                                ->label('Описание')
-                                                                ->placeholder('Необязяательно')
-                                                        ])->label('Слайдер изображений'),
-                                                    Builder\Block::make('image')
-                                                        ->schema([
-                                                            FileUpload::make('url')
-                                                                ->label('Изображение(-я)')
-                                                                ->image()
-                                                                ->multiple()
-                                                                ->reorderable()
-                                                                ->maxFiles(5)
-                                                                ->disk('public')
-                                                                ->directory('images')
-                                                                ->imageEditor()
-                                                                ->required(),
-                                                            TextInput::make('alt')
-                                                                ->label('Описание')
-                                                                ->placeholder('Необязяательно')
-                                                        ])->label('Изображение'),
-                                                    Builder\Block::make('video')
-                                                        ->schema([
-                                                            TextInput::make('mime')->readOnly(),
-                                                            TextInput::make('title')
-                                                                ->required()
-                                                                ->maxLength(255)
-                                                                ->autofocus(),
-                                                            FileUpload::make('path')
-                                                                ->required()
-                                                                ->acceptedFileTypes([
-                                                                    'video/mp4',
-                                                                    'video/quicktime',
-                                                                    'video/x-msvideo',
-                                                                    'video/x-ms-wmv',
-                                                                    'video/avi',
-                                                                    'video/webm',
-                                                                    'video/ogg',
-                                                                    'video/3gpp',
-                                                                    'video/3gpp2',
-                                                                    'video/x-m4v',
-                                                                ])
-                                                                ->disk('public')
-                                                                ->directory('videos')
-                                                                ->afterStateUpdated(fn (callable $set, $state) => $set('mime', $state?->getMimeType())),
-                                                        ]),
-                                                    Builder\Block::make('postsList')
-                                                        ->schema([
-                                                            Forms\Components\Grid::make(2)->schema([
-                                                                TextInput::make('count')
-                                                                    ->label('Количество запией')
-                                                                    ->integer(),
-                                                                Select::make('category')
-                                                                    ->options(Category::all()->pluck('title', 'id'))
-                                                            ]),
-                                                        ])->label('Список новостей'),
-                                                ])
-                                                    ->collapsed()
-                                                    ->blockNumbers(false)
-                                                    ->collapsible()
-                                                    ->addActionLabel('Добавить новый блок'),
-                                            ])->minItems(1),
-                                        ]),
-                                    Builder\Block::make('images')
-                                        ->schema([
-                                            FileUpload::make('url')
-                                                ->label('Изображение(-я)')
-                                                ->image()
-                                                ->multiple()
-                                                ->reorderable()
-                                                ->maxFiles(5)
-                                                ->disk('public')
-                                                ->directory('images')
-                                                ->imageEditor()
-                                                ->required(),
-                                            TextInput::make('alt')
-                                                ->label('Описание')
-                                                ->placeholder('Необязяательно')
-                                        ])->label('Слайдер изображений'),
-                                    Builder\Block::make('image')
-                                        ->schema([
-                                            FileUpload::make('url')
-                                                ->label('Изображение(-я)')
-                                                ->image()
-                                                ->multiple()
-                                                ->reorderable()
-                                                ->maxFiles(5)
-                                                ->disk('public')
-                                                ->directory('images')
-                                                ->imageEditor()
-                                                ->required(),
-                                            TextInput::make('alt')
-                                                ->label('Описание')
-                                                ->placeholder('Необязяательно')
-                                        ])->label('Изображение'),
-                                    Builder\Block::make('video')
-                                        ->schema([
-                                            TextInput::make('mime')->readOnly(),
-                                            TextInput::make('title')
-                                                ->required()
-                                                ->maxLength(255)
-                                                ->autofocus(),
-                                            FileUpload::make('path')
-                                                ->required()
-                                                ->acceptedFileTypes([
-                                                    'video/mp4',
-                                                    'video/quicktime',
-                                                    'video/x-msvideo',
-                                                    'video/x-ms-wmv',
-                                                    'video/avi',
-                                                    'video/webm',
-                                                    'video/ogg',
-                                                    'video/3gpp',
-                                                    'video/3gpp2',
-                                                    'video/x-m4v',
-                                                ])
-                                                ->disk('public')
-                                                ->directory('videos')
-                                                ->afterStateUpdated(fn (callable $set, $state) => $set('mime', $state?->getMimeType())),
-                                        ]),
-                                    Builder\Block::make('postsList')
-                                        ->schema([
-                                            Forms\Components\Grid::make(2)->schema([
-                                                TextInput::make('count')
-                                                    ->label('Количество запией')
-                                                    ->integer(),
-                                                Select::make('category')
-                                                    ->options(Category::all()->pluck('title', 'id'))
-                                            ]),
-                                        ])->label('Список новостей'),
-                                    Builder\Block::make('postItem')
-                                        ->schema([
-                                            Select::make('post')
-                                                ->options(Post::query()->where('status', PostStatus::PUBLISHED)->pluck('title', 'id'))
-                                                ->searchable()
-                                                ->required(),
-                                        ])->label('Новость'),
-                                    Builder\Block::make('pageItem')
-                                        ->schema([
-                                            Select::make('page')
-                                                ->options(Page::query()->where('title', '!=' , null)->where('is_visible', true)->pluck('title', 'id'))
-                                                ->searchable()
-                                                ->required(),
-                                        ])->label('Страница'),
-                                    Builder\Block::make('customForm')
-                                        ->schema([
-                                            Select::make('form')
-                                                ->options(CustomForm::query()->where('status', CustomFormStatus::PUBLISHED)->pluck('title', 'form_id'))
-                                                ->searchable()
-                                                ->required(),
-                                        ])->label('Форма'),
-                                ])
-                                    ->collapsed()
-                                    ->blockNumbers(false)
-                                    ->collapsible()
-                                    ->blockPickerColumns(3)
-                                    ->blockPickerWidth('2xl')
-                                    ->addActionLabel('Добавить новый блок'),
+                                                    ->placeholder('СПбГУ'),
+                                            ])
+                                            ->collapsed()
+                                            ->collapsible()
+                                            ->addActionLabel('Добавить редактора')
+                                            ->reorderable(true)
+                                            ->itemLabel(fn (array $state): ?string => $state['name'] ?? null)
+                                            ->helperText('Добавьте членов редакционной коллегии журнала'),
+                                    ]),
                             ]),
-                    ])->columnSpanFull()
 
-
+                        Tabs\Tab::make('Для авторов')
+                            ->icon('heroicon-o-pencil')
+                            ->schema([
+                                ContentBuilderItem::getItem('for_authors')
+                                    ->label('Информация для авторов')
+                                    ->helperText('Разместите требования к статьям, правила оформления и сроки подачи'),
+                            ]),
+                    ])
             ]);
     }
 
@@ -814,18 +179,39 @@ class AcademicJournalResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Название журнала')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Дата создания')
+                    ->dateTime('d.m.Y')
+                    ->sortable(),
             ])
             ->filters([
-                //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Редактировать'),
+                Tables\Actions\DeleteAction::make()
+                    ->iconButton()
+                    ->tooltip('Удалить'),
+                Tables\Actions\RestoreAction::make()
+                    ->iconButton()
+                    ->tooltip('Восстановить'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Удалить выбранное'),
+                    Tables\Actions\RestoreBulkAction::make()
+                        ->label('Восстановить выбранное'),
                 ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make()
+                    ->label('Добавить журнал'),
             ]);
     }
 
@@ -844,4 +230,5 @@ class AcademicJournalResource extends Resource
             'edit' => Pages\EditAcademicJournal::route('/{record}/edit'),
         ];
     }
+
 }

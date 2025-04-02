@@ -14,6 +14,7 @@ use App\Http\Resources\RegisteredPageResource;
 use App\Models\MainSection;
 use App\Models\Page;
 use App\Models\Post;
+use App\Services\App\Seo\SeoPageProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -22,7 +23,9 @@ use Inertia\Inertia;
 
 class PageController extends Controller
 {
-    public function render(Request $request, $path)
+    public function __construct(readonly SeoPageProvider $seoPageProvider){}
+
+    public function render(string $path): \Inertia\Response
     {
         // Генерируем уникальный ключ для кеширования
         $cacheKey = 'page_' . md5($path);
@@ -37,45 +40,17 @@ class PageController extends Controller
         if ($page === null) {
             abort(404);
         }
+        $subSectionPages = $page->section ? PageResource::collection($page->section->pages) : null;
 
-        if (isset($page->section)) {
-            $subSectionPages = PageResource::collection($page->section->pages);
-            $breadcrumbs = [
-                'mainSection' => new ClientBreadcrumbSection($page->section->mainSection),
-                'subSection' => new ClientBreadcrumbSubSection($page->section),
-                'page' => new ClientBreadcrumbPage($page),
-            ];
-        } else {
-            $subSectionPages = null;
-            $breadcrumbs = null;
-        }
-
-        $seo = $page->seo ?? null;
+        $seo = $this->seoPageProvider->getSeoForModel($page);
 
         $page = new PageResource($page);
 
-        $error = $page->code;
 
         if ($page->code != 200) {
-            abort($error);
+            abort($page->code);
         }
 
-        return Inertia::render('Page', compact('page', 'subSectionPages', 'breadcrumbs', 'seo'));
-    }
-    public function getRegisteredPages()
-    {
-        $pages = PageResource::collection(Page::query()
-            ->when(request()->input('search'), function ($query, $search) {
-                $query->where('title', 'like', "%{$search}%");
-            })
-            ->where('is_registered', true)
-            ->where('is_visible', true)
-            ->orderBy('id', 'desc')
-            ->paginate(request()->input('perPage', 9))
-            ->withQueryString());
-        $filters = [
-            'search' => request()->input('search'),
-        ];
-        return Inertia::render('AdminPanel/Pages/Registered', compact('pages', 'filters'));
+        return Inertia::render('Page', compact('page', 'subSectionPages', 'seo'));
     }
 }

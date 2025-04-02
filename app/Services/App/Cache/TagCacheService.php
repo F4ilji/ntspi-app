@@ -2,49 +2,47 @@
 
 namespace App\Services\App\Cache;
 
+use App\Enums\CacheKeys;
 use Illuminate\Support\Facades\Cache;
 
 class TagCacheService extends AbstractCacheService implements CacheInterface
 {
-    /**
-     * Очищает кеш, связанный с постом.
-     *
-     * @param mixed $entity Пост или связанная сущность
-     * @return void
-     */
+    private const DEFAULT_TTL = 3600;
+
     public function clearCache($entity): void
     {
+        $this->clearAllCacheByModel();
     }
 
     public function clearAllCacheByModel(): void
     {
-        $this->clearCacheByPrefix('tag_ids*');
-        $this->clearCacheByPrefix('tags*');
-        $this->clearCacheByPrefix('tag_content_*');
+        $this->clearTagIdsCache();
+        $this->clearTagsCache();
+        $this->clearTagContentCache();
     }
 
-
-    /**
-     * Получает кешированные данные по ключу.
-     *
-     * @param string $key Ключ кеша
-     * @return mixed
-     */
     public function getCachedData(string $key)
     {
         return Cache::get($key);
     }
 
-    /**
-     * Кеширует данные по ключу.
-     *
-     * @param string $key Ключ кеша
-     * @param mixed $data Данные для кеширования
-     * @param int $ttl Время жизни кеша в секундах
-     * @return void
-     */
-    public function cacheData(string $key, $data, int $ttl = 3600): void
+    public function cacheData(string $key, $data, int $ttl = null): void
     {
-        Cache::put($key, $data, $ttl);
+        Cache::put($key, $data, $ttl ?? self::DEFAULT_TTL);
+    }
+
+    private function clearTagIdsCache(): void
+    {
+        $this->clearCacheByPrefix(CacheKeys::TAG_IDS_PREFIX->value.'*');
+    }
+
+    private function clearTagsCache(): void
+    {
+        $this->clearCacheByPrefix(CacheKeys::TAGS_PREFIX->value.'*');
+    }
+
+    private function clearTagContentCache(): void
+    {
+        $this->clearCacheByPrefix(CacheKeys::TAG_CONTENT_PREFIX->value.'*');
     }
 }

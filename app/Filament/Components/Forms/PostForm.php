@@ -11,6 +11,7 @@ use App\Models\CustomForm;
 use App\Models\Page;
 use App\Models\PageReferenceList;
 use App\Models\Post;
+use App\Models\Slider;
 use Filament\Forms;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\ColorPicker;
@@ -38,8 +39,6 @@ use Symfony\Component\Finder\Finder;
 
 class PostForm
 {
-
-
     public static function getForm(Form $form): Form
     {
         return $form
@@ -49,155 +48,264 @@ class PostForm
                         Tabs::make('Tabs')
                             ->tabs([
                                 Tabs\Tab::make('Основная информация')
+                                    ->icon('heroicon-o-information-circle')
                                     ->schema([
-                                        Forms\Components\Grid::make(2)->schema([
-                                            TextInput::make('title')->label('Заголовок')->required()
-                                                ->live(onBlur: true)
-                                                ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
-                                                    $set('slug', Str::slug($state));
-                                                    $set('seo.title', $state);
-                                                }),
-                                            TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
-                                        ]),
-                                        Select::make('status')->options(PostStatus::class)
-                                            ->label('Статус')->required()
+                                        Grid::make(2)
+                                            ->schema([
+                                                TextInput::make('title')
+                                                    ->label('Заголовок')
+                                                    ->required()
+                                                    ->maxLength(255)
+                                                    ->placeholder('Введите заголовок новости')
+                                                    ->helperText('Этот заголовок будет отображаться на сайте')
+                                                    ->live(onBlur: true)
+                                                    ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
+                                                        $set('slug', Str::slug($state));
+                                                        $set('seo.title', $state);
+                                                    }),
+                                                TextInput::make('slug')
+                                                    ->label('URL-адрес')
+                                                    ->unique(ignoreRecord: true)
+                                                    ->readOnly()
+                                                    ->required()
+                                                    ->helperText('Этот URL будет использоваться для страницы новости')
+                                                    ->maxLength(255),
+                                            ]),
+                                        Select::make('status')
+                                            ->label('Статус публикации')
+                                            ->options(PostStatus::class)
+                                            ->required()
+                                            ->default(PostStatus::VERIFICATION)
+                                            ->helperText('Выберите статус публикации новости')
                                             ->disableOptionWhen(fn (string $value): bool =>
                                                 $value == PostStatus::PUBLISHED->value && !auth()->user()->can('publish_post')
-                                            )
-                                            ->default(PostStatus::VERIFICATION),
+                                            ),
                                         Select::make('category_id')
+                                            ->label('Категория')
                                             ->options(Category::all()->pluck('title', 'id'))
+                                            ->searchable()
                                             ->preload()
-                                            ->label('Категория'),
-                                        SpatieTagsInput::make('tags')->label('Тэги'),
+                                            ->placeholder('Выберите категорию')
+                                            ->helperText('Выберите категорию для новости'),
+                                        SpatieTagsInput::make('tags')
+                                            ->label('Теги')
+                                            ->placeholder('Добавьте теги')
+                                            ->helperText('Добавьте теги для лучшей классификации'),
                                         Forms\Components\TagsInput::make('authors')
-                                            ->label('Авторы')->placeholder('Добавить автора'),
-                                        Section::make('Отложенная публикация')->schema([
-                                            Grid::make(2)->schema([
-                                                Toggle::make('publish_setting.publish_after')
-                                                    ->label('Включить')
-                                                    ->inline(false)
-                                                    ->default(false)
-                                                    ->live(),
-                                                DateTimePicker::make('publish_setting.publish_at')
-                                                    ->label('Дата публикации')
-                                                    ->native()
-                                                    ->displayFormat('d/m/Y')
-
-                                                    ->required(fn (Forms\Get $get) => $get('publish_setting.publish_after'))
-                                                    ->disabled(fn (Forms\Get $get) => !$get('publish_setting.publish_after'))
-                                                    ->minDate(Carbon::now()->subWeek())
-                                                    ->maxDate(Carbon::now()->addMonth()),
+                                            ->label('Авторы')
+                                            ->placeholder('Добавить автора')
+                                            ->helperText('Укажите авторов новости')
+                                            ->suggestions([
+                                                'Редакция',
+                                                'Администратор',
                                             ]),
-                                        ]),
-                                        Section::make('Публикация в сервисах')->schema([
-                                            Forms\Components\Grid::make()->schema([
-                                                Toggle::make('publication.vk')->label('Публикация в VK')->default(true),
-                                                Toggle::make('publication.telegram')->label('Публикация в Telegram')->default(true),
+                                        Section::make('Отложенная публикация')
+                                            ->description('Настройте автоматическую публикацию новости в указанное время')
+                                            ->collapsible()
+                                            ->schema([
+                                                Grid::make(2)
+                                                    ->schema([
+                                                        Toggle::make('publish_setting.publish_after')
+                                                            ->label('Включить отложенную публикацию')
+                                                            ->inline(false)
+                                                            ->default(false)
+                                                            ->live()
+                                                            ->helperText('Активируйте для публикации в указанное время'),
+                                                        DateTimePicker::make('publish_setting.publish_at')
+                                                            ->label('Дата и время публикации')
+                                                            ->native(false)
+                                                            ->displayFormat('d/m/Y H:i')
+                                                            ->seconds(false)
+                                                            ->minutesStep(15)
+                                                            ->helperText('Выберите дату и время публикации')
+                                                            ->required(fn (Forms\Get $get) => $get('publish_setting.publish_after'))
+                                                            ->disabled(fn (Forms\Get $get) => !$get('publish_setting.publish_after'))
+                                                            ->minDate(now())
+                                                            ->maxDate(now()->addMonth()),
+                                                    ]),
                                             ]),
-                                        ]),
+                                        Section::make('Публикация в соцсетях')
+                                            ->description('Управление автоматической публикацией в социальных сетях')
+                                            ->collapsible()
+                                            ->schema([
+                                                Grid::make()
+                                                    ->schema([
+                                                        Toggle::make('publication.vk')
+                                                            ->label('Опубликовать в VK')
+                                                            ->default(true)
+                                                            ->helperText('Новость будет автоматически опубликована в VK'),
+                                                        Toggle::make('publication.telegram')
+                                                            ->label('Опубликовать в Telegram')
+                                                            ->default(true)
+                                                            ->helperText('Новость будет автоматически опубликована в Telegram'),
+                                                    ]),
+                                            ]),
                                     ]),
-                                Tabs\Tab::make('Содержание новости')
+                                Tabs\Tab::make('Содержание')
+                                    ->icon('heroicon-o-document-text')
                                     ->schema([
-                                        ContentBuilderItem::getItem('content')->required(),
+                                        ContentBuilderItem::getItem('content')
+                                            ->required()
+                                            ->helperText('Создайте содержимое новости используя конструктор'),
                                     ]),
-                                Tabs\Tab::make('Изображения')
+                                Tabs\Tab::make('Медиа')
+                                    ->icon('heroicon-o-photo')
                                     ->schema([
-                                        FileUpload::make('preview')->label('Превью новости')
+                                        FileUpload::make('preview')
+                                            ->label('Главное изображение')
                                             ->image()
+                                            ->directory('posts/previews')
                                             ->optimize('webp')
                                             ->resize(50)
                                             ->imageEditor()
-                                            ->directory('images'),
-                                        FileUpload::make('images')->label('Альбом')
+                                            ->helperText('Загрузите главное изображение для новости')
+                                            ->maxSize(2048)
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                            ->imagePreviewHeight('150')
+                                            ->panelLayout('integrated'),
+                                        FileUpload::make('images')
+                                            ->label('Галерея изображений')
                                             ->image()
+                                            ->directory('posts/gallery')
                                             ->optimize('jpg')
                                             ->resize(30)
                                             ->imageEditor()
-                                            ->panelLayout('grid')
-                                            ->reorderable()
-                                            ->imageEditor()
                                             ->multiple()
-                                            ->directory('images'),
+                                            ->reorderable()
+                                            ->panelLayout('grid')
+                                            ->helperText('Загрузите дополнительные изображения для галереи')
+                                            ->maxFiles(10)
+                                            ->maxSize(2048)
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png'])
+                                            ->imagePreviewHeight('150'),
                                     ]),
-                                Tabs\Tab::make('Добавление новости в слайдер')
+                                Tabs\Tab::make('Слайдер')
+                                    ->icon('heroicon-o-view-columns')
                                     ->schema([
                                         Toggle::make('is_slider_enabled')
-                                            ->label('Добавить новый слайд')
+                                            ->label('Добавить в слайдер')
                                             ->live()
-                                            ->hidden(fn (string $context): bool => $context === 'edit')
+                                            ->helperText('Активируйте для добавления новости в слайдер')
+                                            ->hidden(function (Forms\Get $get, string $context) {
+                                                if ($context === 'edit') {
+                                                    return true;
+                                                }
+                                                return false;
+                                            })
                                             ->dehydrated(false)
                                             ->default(false),
-                                        Section::make()
+                                        Section::make('Настройки слайда')
+                                            ->description('Настройте отображение новости в слайдере')
+                                            ->collapsible()
+                                            ->collapsed()
                                             ->schema([
-                                                Forms\Components\Section::make('Информация слайда')->schema([
-                                                    Forms\Components\TextInput::make('slide.title')
-                                                        ->label('Заголовок слайда'),
-                                                    Forms\Components\Textarea::make('slide.content')
-                                                        ->label('Текст слайда'),
-                                                    Forms\Components\Grid::make()->schema([
+                                                Select::make('slide.slider_id')
+                                                    ->label('Выберите слайдер')
+                                                    ->options(Slider::where('is_active', true)->pluck('title', 'id'))
+                                                    ->required()
+                                                    ->helperText('Выберите слайдер для размещения'),
+                                                TextInput::make('slide.title')
+                                                    ->label('Заголовок слайда')
+                                                    ->maxLength(100)
+                                                    ->helperText('Короткий заголовок для слайда')
+                                                    ->placeholder('Введите заголовок'),
+                                                Forms\Components\Textarea::make('slide.content')
+                                                    ->label('Текст слайда')
+                                                    ->maxLength(255)
+                                                    ->helperText('Краткое описание для слайда')
+                                                    ->placeholder('Введите текст слайда'),
+                                                Grid::make()
+                                                    ->schema([
                                                         ColorPicker::make('slide.color_theme')
                                                             ->label('Цвет текста')
                                                             ->default('#ffffff')
-                                                            ->required(),
-                                                        Forms\Components\ToggleButtons::make('slide.settings.text_position')
+                                                            ->required()
+                                                            ->helperText('Выберите цвет текста на слайде'),
+                                                        ToggleButtons::make('slide.settings.text_position')
+                                                            ->label('Позиция текста')
                                                             ->options([
-                                                                'left' => 'Текст слева',
-                                                                'center' => 'Текст по середине',
-                                                                'right' => 'Текст справа'
+                                                                'left' => 'Слева',
+                                                                'center' => 'По центру',
+                                                                'right' => 'Справа',
                                                             ])
-                                                            ->inline()->default('left')->grouped()
-                                                            ->label('Позиция текста на слайде'),
+                                                            ->inline()
+                                                            ->grouped()
+                                                            ->default('left')
+                                                            ->helperText('Выберите расположение текста на слайде'),
                                                     ]),
-                                                    Forms\Components\Grid::make()->schema([
+                                                Grid::make()
+                                                    ->schema([
                                                         Toggle::make('active_button')
-                                                            ->label('Использовать кнопку для ссылки (Ссылка будет открываться при нажатии на слайд)')
+                                                            ->label('Добавить кнопку')
                                                             ->inline(false)
                                                             ->live()
+                                                            ->helperText('Добавить кнопку со ссылкой на новость')
                                                             ->afterStateHydrated(function (Toggle $component, $state, $get) {
                                                                 $component->state(true);
                                                             })
                                                             ->dehydrated(false),
-                                                        Forms\Components\TextInput::make('slide.settings.link_text')
-                                                            ->default('Читать')
+                                                        TextInput::make('slide.settings.link_text')
                                                             ->label('Текст кнопки')
+                                                            ->default('Читать')
+                                                            ->maxLength(20)
                                                             ->disabled(fn (Forms\Get $get) => !$get('active_button'))
+                                                            ->helperText('Текст для кнопки перехода'),
                                                     ]),
-                                                ]),
-                                                Forms\Components\Section::make('Изображение')->schema([
-                                                    FileUpload::make('slide.image.url')
-                                                        ->label('Изображение')
-                                                        ->image()
-                                                        ->optimize('webp')
-                                                        ->resize(50)
-                                                        ->disk('public')
-                                                        ->directory('images')
-                                                        ->imageEditor()
-                                                        ->required(),
-                                                    ToggleButtons::make('slide.image.shading')->inline()->grouped()->label('Уровень затемнения изображения')->options([
-                                                        '1' => 'Без затемнения',
-                                                        '0.7' => 'Слабое затемнение',
-                                                        '0.5' => 'Среднее затемнение',
-                                                        '0.3' => 'Сильное затемнение',
+                                                Section::make('Изображение слайда')
+                                                    ->schema([
+                                                        FileUpload::make('slide.image.url')
+                                                            ->label('Фоновое изображение')
+                                                            ->image()
+                                                            ->directory('sliders')
+                                                            ->optimize('webp')
+                                                            ->resize(50)
+                                                            ->imageEditor()
+                                                            ->required()
+                                                            ->maxSize(2048)
+                                                            ->helperText('Загрузите фоновое изображение для слайда')
+                                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp']),
+                                                        ToggleButtons::make('slide.image.shading')
+                                                            ->label('Затемнение фона')
+                                                            ->inline()
+                                                            ->grouped()
+                                                            ->options([
+                                                                '1' => 'Нет',
+                                                                '0.7' => 'Слабое',
+                                                                '0.5' => 'Среднее',
+                                                                '0.3' => 'Сильное',
+                                                            ])
+                                                            ->helperText('Выберите уровень затемнения фона'),
                                                     ]),
-                                                ]),
-                                                Forms\Components\Section::make('Общая часть')->schema([
-                                                    Forms\Components\Grid::make()->schema([
+                                                Section::make('Время показа')
+                                                    ->schema([
                                                         DateTimePicker::make('slide.end_time')
-                                                            ->label('Слайд действует до')
-                                                            ->native()
-                                                            ->displayFormat('d/m/Y')
-                                                            ->minDate(Carbon::now())
-                                                            ->maxDate(Carbon::now()->addMonth()),
+                                                            ->label('Дата окончания показа')
+                                                            ->native(false)
+                                                            ->displayFormat('d/m/Y H:i')
+                                                            ->minDate(now())
+                                                            ->maxDate(now()->addMonth())
+                                                            ->helperText('Укажите до какого времени слайд будет активен'),
                                                     ]),
-                                                ]),
                                             ])
-                                            ->hidden(fn(Forms\Get $get) => !$get('is_slider_enabled'))
-
-
-                                    ]),
-                            ]),
-                    ])
+                                            ->hidden(function (Forms\Get $get) {
+                                                if ($get('is_slider_enabled') === true) {
+                                                    return false;
+                                                }
+                                                if ($get('slide')['slider_id'] !== null) {
+                                                    return false;
+                                                }
+                                                return true;
+                                            }),
+                                    ])
+                                    ->hidden(function (Forms\Get $get, string $context) {
+                                        if ($context === 'edit' && $get('slide')['slider_id'] === null) {
+                                            return true;
+                                        }
+                                        return false;
+                                    }),
+                            ])
+                            ->persistTabInQueryString(),
+                    ]),
             ]);
     }
 }

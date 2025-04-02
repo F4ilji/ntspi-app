@@ -3,20 +3,20 @@
 namespace App\Filament\Resources\AdditionalEducationResource\Pages;
 
 use App\Filament\Resources\AdditionalEducationResource;
+use App\Services\Filament\Traits\SeoGenerate;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Str;
 
 class CreateAdditionalEducation extends CreateRecord
 {
+    use SeoGenerate;
+
     protected static string $resource = AdditionalEducationResource::class;
 
-    protected array $seoData;
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $this->seoData = $this->generateSeo($data);
-
         $data['search_data'] = $this->generateSearchData($data['content']);
 
         return $data;
@@ -24,32 +24,9 @@ class CreateAdditionalEducation extends CreateRecord
 
     protected function afterCreate(): void
     {
-        $this->record->seo()->create($this->seoData);
+        $this->createSeo($this->record);
     }
 
-    private function generateSeo(array $data) : array
-    {
-        $title = $data['title'];
-        $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
-        if ($rowData !== null) {
-            $description = strip_tags($rowData['data']['content']);
-        } else {
-            $description = null;
-        }
-        return [
-            'title' => $title,
-            'description' => Str::limit(htmlspecialchars($description, ENT_QUOTES, 'UTF-8'), 160),
-        ];
-    }
-    private function getFirstBlockByName(string $name, array $content) : array|null
-    {
-        $data = null;
-        foreach ($content as $block) {
-            $data = ($block['type'] === $name) ? $block : null;
-            break;
-        }
-        return $data;
-    }
 
     private function generateSearchData(array $data) : string
     {

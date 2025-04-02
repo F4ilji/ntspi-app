@@ -59,7 +59,7 @@
 														class="flex items-center gap-x-3 py-2 px-2.5 text-sm rounded-lg hover:bg-gray-[#EFEFEF] focus:outline-none focus:bg-gray-100"
 														:class="(IS_SAME_ROUTE(page.path) ? 'text-blue-600 bg-white border border-[#E4E4E7]' : 'text-gray-700')"
 												>
-													<BasicIcon class="w-4" :name="page.icon" />
+													<BasicIcon v-if="page.icon" class="w-4" :name="page.icon" />
 													{{ page.title }}
 												</a>
 											</li>
@@ -72,8 +72,8 @@
 
 
 					<li class="">
-						<Link :href="route('client.schedule')"
-									:class="(IS_SAME_ROUTE(route('client.schedule')) ? 'text-blue-600 bg-white border border-[#E4E4E7]' : 'text-gray-700')"
+						<Link :href="route('client.schedule.index')"
+									:class="(IS_SAME_ROUTE(route('client.schedule.index')) ? 'text-blue-600 bg-white border border-[#E4E4E7]' : 'text-gray-700')"
 									class="flex items-center gap-x-3 py-2 px-2.5 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300" href="#">
 							<BasicIcon class="w-4" name="schedule" />
 							Расписание

@@ -2,7 +2,7 @@
 	<MetaTags :seo="seo" />
 
 	<MainPageNavBar :sections="$page.props.navigation" />
-  <Slider class="rounded" slider-id="quos-velit-quisquam" />
+  <Slider class="bvi-hide" slider-id="quos-velit-quisquam" />
 
 	<section class="max-w-screen-xl w-full mx-auto px-4 py-3 pb-10">
 		<h2 class="text-brand-primary my-6 md:mb-[50px] md:mt-[80px] text-2xl font-semibold tracking-tight text-black lg:text-[32px] lg:leading-tight bvi-show">Последние новости</h2>

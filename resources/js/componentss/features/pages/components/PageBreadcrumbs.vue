@@ -9,7 +9,7 @@
 								<BasicIcon class="size-5" name="home" />
 							</Link>
 						</li>
-						<li v-if="breadcrumbs.mainSection" class="text-sm">
+						<li v-if="breadcrumbs.mainSection.data.title !== null" class="text-sm">
 							<span class="flex items-center text-gray-500 hover:text-primaryBlue cursor-pointer" @click.prevent="handleSectionClick(breadcrumbs.mainSection)">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
 										 width="16" height="16"
@@ -20,7 +20,7 @@
 								{{ textLimit(breadcrumbs.mainSection.data.title, 25) }}
 							</span>
 						</li>
-						<li v-if="breadcrumbs.subSection" class="text-sm">
+						<li v-if="breadcrumbs.subSection.data.title !== null" class="text-sm">
 							<span class="flex items-center text-gray-500 hover:text-primaryBlue cursor-pointer" @click.prevent="handleSubSectionClick(breadcrumbs.mainSection, breadcrumbs.subSection)">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
 										 width="16" height="16"

@@ -9,6 +9,7 @@ use App\Http\Resources\EventSearchResource;
 use App\Http\Resources\FacultySearchResource;
 use App\Http\Resources\PageSearchResource;
 use App\Http\Resources\PostSearchResource;
+use App\Http\Resources\StaticPageSearchResource;
 use App\Http\Resources\UserSearchResource;
 use App\Models\AdditionalEducation;
 use App\Models\EducationalGroup;

@@ -38,12 +38,11 @@ class SectionRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->visible(!$this->ownerRecord->section->exists()),
-                Tables\Actions\AssociateAction::make()
+//                Tables\Actions\CreateAction::make()->visible(!$this->ownerRecord->section->exists()),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DetachAction::make(),
+                Tables\Actions\DissociateAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

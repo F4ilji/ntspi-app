@@ -70,28 +70,32 @@ export default {
 								<BasicTitle :header="event.data.title" />
 							</div>
 
-							<div class="flex space-x-3 text-gray-500 ">
+							<div class="flex gap-x-3 text-gray-500 ">
 								<div class="flex items-center gap-3">
 									<div>
-										<div class="md:flex md:items-center space-y-3 md:space-y-0 space-x-2 text-sm">
-											<p v-if="event.data.is_online === 1" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600">
-												Онлайн
-											</p>
-											<p v-if="event.data.category" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600">
-												{{ event.data.category }}
-											</p>
-											<div class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600">
-												<span>Дата начала: {{ event.data.event_date_start }}, {{ event.data.event_time_start }}</span>
-											</div>
-											<div class="col-start-2 text-center">
-												<span>Адрес: {{ event.data.address }}</span>
-											</div>
-										</div>
-									</div>
+                    <div class="flex items-center flex-wrap gap-2 text-sm">
+                      <a :href="route('client.event.index', { 'is_online': 'online' })"
+                         v-if="event.data.is_online === 1"
+                         class="inline-flex items-center py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] hover:underline text-blue-600">
+                        Онлайн
+                      </a>
+                      <a :href="route('client.event.index', { 'category[]': event.data.category.slug })"
+                         v-if="event.data.category"
+                         class="inline-flex items-center py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] hover:underline text-blue-600">
+                        {{ event.data.category.title }}
+                      </a>
+                      <div class="inline-flex items-center py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600">
+                        <span>Дата начала: {{ event.data.event_date_start }}, {{ event.data.event_time_start }}</span>
+                      </div>
+                      <div class="md:flex md:items-center md:justify-center w-full md:w-auto">
+                        <span>Адрес: {{ event.data.address }}</span>
+                      </div>
+                    </div>
+                  </div>
 								</div>
 							</div>
 
-							<div class="space-y-3 md:space-y-4">
+							<div class="gap-y-3 md:gap-y-4">
 								<Builder :blocks="event.data.content"/>
 							</div>
 						</div>

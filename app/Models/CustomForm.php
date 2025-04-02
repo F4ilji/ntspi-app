@@ -16,6 +16,7 @@ class CustomForm extends Model
         'columns' => 'array',
         'status' => CustomFormStatus::class,
         'mail_settings' => 'array',
+        'settings' => 'array',
     ];
 
     public function responses()

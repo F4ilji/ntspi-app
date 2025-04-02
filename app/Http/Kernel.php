@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\AccessCheck;
+use App\Http\Middleware\FormTimePeriodMiddleware;
 use App\Http\Middleware\InternalRequestOnly;
 use App\Http\Middleware\LimitPost;
 use App\Http\Middleware\RateLimitCheckMiddleware;
@@ -86,6 +87,7 @@ class Kernel extends HttpKernel
         'ensure.browser' => InternalRequestOnly::class,
         'superadmin' => \App\Http\Middleware\EnsureUserIsSuperadmin::class,
         'limit.post' => LimitPost::class,
+        'form.time.period' => FormTimePeriodMiddleware::class,
 
     );
 }

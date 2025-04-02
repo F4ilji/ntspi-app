@@ -5,10 +5,15 @@ import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
 import BasicFooter from "@/footers/BasicFooter.vue";
 import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
 import AcademicJournalsTitle from "@/componentss/features/academicJournals/components/AcademicJournalsTitle.vue";
+import BasicPagination from "@/componentss/shared/paginate/BasicPagination.vue";
+import AcademicJournalsItemBreadcrumbs
+  from "@/componentss/features/academicJournals/components/AcademicJournalsItemBreadcrumbs.vue";
 
 export default {
   name: "Show",
   components: {
+    AcademicJournalsItemBreadcrumbs,
+    BasicPagination,
     MetaTags,
     BasicFooter,
     Builder,
@@ -66,6 +71,7 @@ export default {
 						<!-- End Avatar Media -->
 						<!-- Content -->
 						<div class="space-y-5 md:space-y-8">
+              <AcademicJournalsItemBreadcrumbs class="max-w-4xl px-2 xl:px-5 md:w-4/5 mx-auto" :title="journal.data.title" />
 							<AcademicJournalsTitle class="text-center" :header="journal.data.title" />
 							<div>
 								<nav class="flex flex-col md:flex-row justify-center gap-x-6" aria-label="Tabs" role="tablist" aria-orientation="horizontal">
@@ -149,10 +155,9 @@ export default {
 								<div id="horizontal-alignment-4" class="hidden" role="tabpanel" aria-labelledby="horizontal-alignment-item-4">
 									<!-- List -->
 									<!-- Card Section -->
-									<div class="px-4 py-5 sm:px-6 lg:px-8 lg:py-7 mx-auto">
+									<div class="px-0 py-5 sm:px-6 lg:px-8 lg:py-7 mx-auto">
 										<!-- Grid -->
-										<div class="">
-											<template v-for="journalByYear in journals">
+                    <template v-for="journalByYear in journals">
 												<h2 class="font-bold text-xl text-center">{{ journalByYear.year_publication }}</h2>
 												<hr class="mb-4 mt-2">
 												<div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 mb-4">
@@ -177,8 +182,6 @@ export default {
 													</template>
 												</div>
 											</template>
-
-										</div>
 										<!-- End Grid -->
 									</div>
 									<!-- End Card Section -->									<!-- End List -->

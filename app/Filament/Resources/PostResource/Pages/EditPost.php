@@ -11,23 +11,26 @@ use App\Services\Filament\Domain\Posts\PostNotificationService;
 use App\Services\Filament\Domain\Posts\PostSeoGenerator;
 use App\Services\Filament\Domain\Posts\PostSliderService;
 use App\Services\Filament\Domain\Posts\VkPostPublisher;
+use App\Services\Filament\Domain\Seo\SeoGeneratorService;
+use App\Services\Filament\Traits\SeoGenerate;
 use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditPost extends EditRecord
 {
+    use SeoGenerate;
+
     protected static string $resource = PostResource::class;
 
-    protected array $seoData;
     protected array $publicationAgreements;
 
     protected array $slideData;
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $post = Post::query()->with(['seo', 'mainSlider'])->find($data['id']);
-        $data['slide'] = $post->mainSlider->toArray() ?? null;
+        $post = Post::query()->with(['seo', 'slide'])->find($data['id']);
+        $data['slide'] = $post->slide->toArray() ?? null;
         return $data;
     }
 
@@ -52,7 +55,7 @@ class EditPost extends EditRecord
     protected function afterSave(): void
     {
         $this->handleSlides();
-        $this->generateSeo();
+        $this->updateSeo($this->record);
         $this->sendNotifications();
         $this->publishToVk();
     }
@@ -73,7 +76,7 @@ class EditPost extends EditRecord
 
     protected function generateSeo(): void
     {
-        $seoData = (new PostSeoGenerator())->generate([
+        $seoData = app(SeoGeneratorService::class)->generate([
             'title' => $this->record->title,
             'content' => $this->record->content,
             'preview' => $this->record->preview,

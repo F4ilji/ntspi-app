@@ -15,6 +15,7 @@ class CheckpointSettingsPage extends SettingsPage
 {
     protected static ?string $slug = 'checkpoint/settings';
 
+
     protected static ?string $navigationIcon = 'heroicon-o-adjustments-horizontal';
 
     protected static string $settings = CheckpointSettings::class;
@@ -36,7 +37,7 @@ class CheckpointSettingsPage extends SettingsPage
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Settings'; // Группа навигации
+        return 'Настройки приложения'; // Группа навигации
     }
 
     public function form(Form $form): Form

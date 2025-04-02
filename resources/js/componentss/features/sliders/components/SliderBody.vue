@@ -3,7 +3,7 @@
     <!-- Слайды с изображениями -->
     <a
         :href="(!slide.settings.link_text) ? slide.link : '#'"
-        v-for="(slide, index) in slides"
+        v-for="(slide, index) in sortedSlides"
         :key="index"
         :style="{ filter: `brightness(${slide.image.shading})` }"
         class="absolute -z-10 h-full w-full before:absolute before:z-10 before:h-full before:w-full"
@@ -25,7 +25,7 @@
       <div :key="currentIndex">
         <div
             v-show="currentIndex === index"
-            v-for="(item, index) in slides"
+            v-for="(item, index) in sortedSlides"
             :key="index"
             class="mx-auto max-w-screen-md px-5 pt-[150px] pb-0 bvi-no-styles"
         >
@@ -97,7 +97,7 @@ export default {
   name: 'SliderBody',
   props: {
     slides: {
-      type: Object,
+      type: Array,
     }
   },
   data() {
@@ -105,6 +105,7 @@ export default {
       currentIndex: 0,
       intervalId: null,
       slideDuration: 5000,
+      sortedSlides: null,
     }
   },
   computed: {
@@ -144,6 +145,9 @@ export default {
     },
   },
   mounted() {
+
+    this.sortedSlides = this.slides.slice().sort((a, b) => a.sort - b.sort);
+
     // Передаем данные в Vuex после монтирования компонента
     this.updateLastSlider({
       url: this.$page.props.ziggy.location,

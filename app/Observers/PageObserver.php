@@ -26,7 +26,7 @@ class PageObserver
     /**
      * Handle the Page "updated" event.
      */
-    public function updated(Page $page)
+    public function updated(Page $page): void
     {
         $this->pageCacheService->clearCache($page);
     }
@@ -34,7 +34,7 @@ class PageObserver
     /**
      * Handle the Page "deleted" event.
      */
-    public function deleted(Page $page)
+    public function deleted(Page $page): void
     {
         $this->pageCacheService->clearAllCacheByModel();
     }

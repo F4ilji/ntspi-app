@@ -10,13 +10,15 @@ use App\Services\Filament\Domain\Posts\PostNotificationService;
 use App\Services\Filament\Domain\Posts\PostSeoGenerator;
 use App\Services\Filament\Domain\Posts\PostSliderService;
 use App\Services\Filament\Domain\Posts\VkPostPublisher;
+use App\Services\Filament\Domain\Seo\SeoGeneratorService;
+use App\Services\Filament\Traits\SeoGenerate;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreatePost extends CreateRecord
 {
-    protected static string $resource = PostResource::class;
+    use SeoGenerate;
 
-    protected array $seoData;
+    protected static string $resource = PostResource::class;
     protected array $publicationAgreements;
 
     protected array $slideData;
@@ -45,7 +47,7 @@ class CreatePost extends CreateRecord
     protected function afterCreate(): void
     {
         $this->handleSlides();
-        $this->generateSeo();
+        $this->createSeo($this->record);
         $this->sendNotifications();
         $this->publishToVk();
     }
@@ -63,15 +65,6 @@ class CreatePost extends CreateRecord
         (new PostSliderService($sliderDTO, $this->record))->create();
     }
 
-    protected function generateSeo(): void
-    {
-        $seoData = (new PostSeoGenerator())->generate([
-            'title' => $this->record->title,
-            'content' => $this->record->content,
-            'preview' => $this->record->preview,
-        ]);
-        $this->record->seo()->create($seoData);
-    }
 
     protected function sendNotifications(): void
     {

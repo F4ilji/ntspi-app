@@ -3,15 +3,16 @@ import {Head, Link} from "@inertiajs/vue3";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
 import BasicFooter from "@/footers/BasicFooter.vue";
+import AcademicJournalsListBreadcrumbs
+  from "@/componentss/features/academicJournals/components/AcademicJournalsListBreadcrumbs.vue.vue";
 
 export default {
   name: "Index",
   components: {
+    AcademicJournalsListBreadcrumbs,
     BasicFooter,
     MetaTags,
 		MainPageNavBar,
-    ClientFooterDown,
-    ClientScrollTimeline,
     Link,
     Head,
   },
@@ -44,8 +45,8 @@ export default {
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
-			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
-				<div class="px-4 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto">
+			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-5 md:flex md:flex-row">
+				<div class="px-4 pb-12 sm:px-6 lg:px-8 mx-auto">
 					<div>
 						<!-- Avatar Media -->
 						<!-- End Avatar Media -->
@@ -54,6 +55,7 @@ export default {
 							<div class="space-y-5 md:space-y-4">
 								<!-- Card Section -->
 								<div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+                  <AcademicJournalsListBreadcrumbs />
 
 									<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
 										<h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Научные периодические издания НТГСПИ</h2>

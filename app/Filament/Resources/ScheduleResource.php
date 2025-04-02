@@ -3,151 +3,104 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ScheduleResource\Pages;
-use App\Filament\Resources\ScheduleResource\RelationManagers;
-use App\Helpers\ByteConverter;
-use App\Models\Category;
 use App\Models\EducationalGroup;
 use App\Models\Schedule;
-use Closure;
 use Filament\Forms;
-use Filament\Forms\Components\Builder;
-
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Livewire\Livewire;
 
 class ScheduleResource extends Resource
 {
     protected static ?string $navigationGroup = 'Расписание и группы';
-
     protected static ?string $model = Schedule::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    protected static ?string $pluralLabel = 'Расписание';
-
-
-    protected static array $weekDays = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
-    protected static array $typeWeek = ['Четная', 'Нечетная'];
-
-
-
-
+    protected static ?string $navigationIcon = 'heroicon-o-calendar';
+    protected static ?string $pluralLabel = 'Расписания';
+    protected static ?string $modelLabel = 'расписание';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make()
+                Section::make('Основные настройки')
+                    ->description('Основная информация о расписании')
+                    ->collapsible()
                     ->schema([
-                        Forms\Components\Grid::make(2)->schema([
-                            Select::make('educational_group_id')->options(EducationalGroup::all()->pluck('title', 'id'))
-                                ->live()
-                                ->label('Выбрать группу')
-                                ->required(),
-//                            TextInput::make('title')
-//                                ->live()
-//                                ->label('Заголовок')->required(),
+                        Grid::make(2)
+                            ->schema([
+                                Select::make('educational_group_id')
+                                    ->label('Учебная группа')
+                                    ->options(EducationalGroup::query()->orderBy('title')->pluck('title', 'id'))
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->live()
+                                    ->helperText('Выберите группу для которой создается расписание'),
 
-//                            Select::make('type')->options([
-//                                'schedule' => 'Обычное расписание',
-//                                'interval' => 'Временное расписание',
-//                                'exam' => 'Промежуточная аттестация',
-//                            ])->label('Тип расписания')->required()->live(),
-                            Forms\Components\Toggle::make('is_zaoch')->label('Очная|Заочная')->inline(false),
+                                Toggle::make('is_zaoch')
+                                    ->label('Форма обучения')
+                                    ->inline(false)
+                                    ->onColor('success')
+                                    ->offColor('primary')
+                                    ->helperText('Очная | Заочная')
+                                    ->afterStateHydrated(function (Toggle $component, $state) {
+                                        $component->state((bool) $state);
+                                    }),
+                            ]),
+                    ]),
 
-                        ]),
-//                        Forms\Components\Repeater::make('days')->label('')->schema([
-//                            Forms\Components\Repeater::make('form')->label('')->schema([
-//                                Forms\Components\Repeater::make('weeks')->label('')->schema([
-//                                    Forms\Components\Repeater::make('lesson_info')->label('')->schema([
-//                                        TextInput::make('title')->label('Название-пары'),
-//                                        TextInput::make('teacher')->label('Преподаватель'),
-//                                        TextInput::make('studyRoom')->label('Кабинет')
-//                                    ])->live()->maxItems(2)->collapsed()->addActionLabel('Добавить подгруппу')->columns(3)
-//                                    ->itemLabel(function (Get $get, $state) {
-//                                        static $count = 1;
-//                                        if (count($get('lesson_info')) === 1) {
-//                                            return "Общая группа";
-//                                        } else {
-//                                            $nmb = $count++ % 2 == 0 ? 2 : 1;
-//                                            return "Подгруппа " . $nmb;                                        }
-//                                    }),
-//                                ])->maxItems(2)->addActionLabel('Добавить четную/нечетную неделю')
-//                                    ->itemLabel(function (Get $get) {
-//                                    static $position = 0;
-//                                    if (count($get('weeks')) === 1) {
-//                                        return "Общая неделя";
-//                                    } else {
-//                                        $nmb = $position++ % 2 == 0 ? 0 : 1;
-//                                        return self::$typeWeek[$nmb] . " неделя";
-//                                    }
-//                                })
-//                                ->collapsed()
-//                            ])
-//                                ->maxItems(5)
-//                                ->itemLabel(function (Get $get) {
-//                                    static $count = 0;
-//                                    $maxCount = count($get('form'));
-//                                    $count = ($count++ <= $maxCount) ? $count : 1;
-//                                    return "Пара #" . $count;
-//                                })
-//                                ->addActionLabel('Добавить пару'),
-//                        ])->maxItems(6)->minItems(1)->itemLabel(function ($state) {
-//                            static $position = 0;
-//                            return self::$weekDays[$position++];
-//                        })->addActionLabel('Добавить день недели')->collapsed()->defaultItems(6)->hidden(function (callable $get) {
-//                            if ($get('type') === 'schedule' || $get('type') === 'interval') {
-//                                return false;
-//                            } else {
-//                                return true;
-//                            }
-//                        }),
-            ]),
-                Section::make()
+                Section::make('Файлы расписания')
+                    ->description('Загрузите файлы с расписанием')
+                    ->collapsible()
                     ->schema([
-                        Forms\Components\Repeater::make('file')->schema([
+                        Forms\Components\Repeater::make('file')
+                            ->label('')
+                            ->addActionLabel('Добавить файл расписания')
+                            ->schema([
+                                TextInput::make('title')
+                                    ->label('Название файла')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->placeholder('Например: "Расписание на весенний семестр 2024"')
+                                    ->helperText('Укажите понятное название файла для идентификации'),
 
-                            TextInput::make('title')
-                                ->required()
-                                ->maxLength(255)
-                                ->autofocus(),
-                            FileUpload::make('path')
-                                ->required()
-                                ->getUploadedFileNameForStorageUsing(
-                                    fn (TemporaryUploadedFile $file): string =>
-                                    str(Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '-' . Carbon::now()->timestamp ) . '.' . $file->getClientOriginalExtension())
-                                )
-                                ->acceptedFileTypes([
-                                    'application/pdf',
-                                ])
-                                ->maxSize(512000)
-                                ->disk('public')
-                                ->directory('files')
-                                ->downloadable()
-                                ->afterStateUpdated(function ($set, $state) {
-                                    $set('title', pathinfo($state?->getClientOriginalName(), PATHINFO_FILENAME));
-                                })
-                                ->visibility('public')
-                        ]),
-                    ])
+                                FileUpload::make('path')
+                                    ->label('Файл PDF')
+                                    ->required()
+                                    ->acceptedFileTypes(['application/pdf'])
+                                    ->maxSize(5120) // 5MB
+                                    ->disk('public')
+                                    ->directory('schedules')
+                                    ->downloadable()
+                                    ->openable()
+                                    ->previewable(false)
+                                    ->helperText('Только PDF файлы, макс. размер 5MB')
+                                    ->getUploadedFileNameForStorageUsing(
+                                        fn (TemporaryUploadedFile $file): string =>
+                                        str(Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '-' . Carbon::now()->timestamp) . '.' . $file->getClientOriginalExtension()
+                                        )
+                                            ->afterStateUpdated(function ($set, $state) {
+                                                $set('title', pathinfo($state?->getClientOriginalName(), PATHINFO_FILENAME));
+                                            })
+                                            ->visibility('public')),
+                            ])
+                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Новый файл')
+                            ->collapsible()
+                            ->cloneable()
+                            ->defaultItems(1),
+                    ]),
             ]);
     }
 
@@ -155,29 +108,69 @@ class ScheduleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title'),
-                Tables\Columns\TextColumn::make('type'),
+                TextColumn::make('educational_group.title')
+                    ->label('Учебная группа')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('file_count')
+                    ->label('Файлов')
+                    ->getStateUsing(fn ($record) => count($record->file ?? []))
+                    ->badge(),
+
                 IconColumn::make('is_zaoch')
-                    ->boolean(),
+                    ->label('Форма обучения')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-academic-cap')
+                    ->falseIcon('heroicon-o-building-office')
+                    ->trueColor('success')
+                    ->falseColor('primary')
+                    ->formatStateUsing(fn ($state) => $state ? 'Заочная' : 'Очная'),
+
+                TextColumn::make('updated_at')
+                    ->label('Обновлено')
+                    ->dateTime('d.m.Y H:i')
+                    ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('educational_group_id')
+                    ->label('Учебная группа')
+                    ->options(EducationalGroup::query()->orderBy('title')->pluck('title', 'id'))
+                    ->searchable(),
+
+                Tables\Filters\TernaryFilter::make('is_zaoch')
+                    ->label('Форма обучения')
+                    ->placeholder('Все')
+                    ->trueLabel('Заочная')
+                    ->falseLabel('Очная'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->iconButton()
+                    ->tooltip('Редактировать'),
+
+                Tables\Actions\ViewAction::make()
+                    ->iconButton()
+                    ->tooltip('Просмотреть'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Удалить выбранные')
+                        ->modalHeading('Удаление расписаний')
+                        ->modalDescription('Вы уверены, что хотите удалить выбранные расписания? Это действие нельзя отменить.'),
                 ]),
-            ]);
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make()
+                    ->label('Добавить расписание'),
+            ])
+            ->defaultSort('educational_group.title');
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

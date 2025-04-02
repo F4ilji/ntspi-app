@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CacheKeys;
 use App\Http\Resources\ClientBreadcrumbPage;
 use App\Http\Resources\ClientBreadcrumbSection;
 use App\Http\Resources\ClientBreadcrumbSubSection;
@@ -13,53 +14,102 @@ use App\Models\Event;
 use App\Models\EventCategory;
 use App\Models\Page;
 use App\Services\App\Breadcrumb\BreadcrumbService;
+use App\Services\App\Seo\SeoPageProvider;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class ClientEventController extends Controller
 {
-    public function __construct(private readonly BreadcrumbService $breadcrumbService){}
-
+    public function __construct(readonly SeoPageProvider $seoPageProvider){}
 
     public function index(Request $request): \Inertia\Response
     {
         $currentDate = $this->getCurrentDate($request);
+        $cacheKey = md5(serialize([$currentDate, $request->all()]));
+
+        $events = Cache::remember(
+            CacheKeys::EVENTS_PREFIX->value . $cacheKey,
+            now()->addHours(12),
+            fn() => $this->getEvents($currentDate)
+        );
+
+        $eventDates = Cache::remember(
+            CacheKeys::EVENTS_PREFIX->value . 'dates_' . $cacheKey,
+            now()->addHours(12),
+            fn() => $this->getEventDates($this->getFilters())
+        );
+
+        $categories = Cache::remember(
+            CacheKeys::EVENTS_PREFIX->value . 'categories',
+            now()->addDay(),
+            fn() => ClientEventCategoryResource::collection(EventCategory::has('events')->get())
+        );
+
         $filters = $this->getFilters();
-        $eventDates = $this->getEventDates($filters);
 
-        $events = $this->getEvents($currentDate);
-        $categories = ClientEventCategoryResource::collection(EventCategory::has('events')->get());
+        $seo = $this->seoPageProvider->getSeoForCurrentPage();
 
-        $breadcrumbs = $this->breadcrumbService->generateBreadcrumbs('client.event.index');
-
-
-        return Inertia::render('Client/Events/Index', compact('eventDates', 'events', 'currentDate', 'filters', 'categories', 'breadcrumbs'));
+        return Inertia::render('Client/Events/Index', compact(
+            'eventDates',
+            'events',
+            'currentDate',
+            'filters',
+            'categories',
+            'seo'
+        ));
     }
 
     public function show(string $slug): \Inertia\Response
     {
-        $event = new ClientEventFullResource(Event::where('slug', '=', $slug)->with('category')->first());
+        [$event, $seo] = Cache::remember(
+            CacheKeys::EVENT_PREFIX->value . $slug,
+            now()->addDay(),
+            function ($slug) {
+                $event = Event::where('slug', $slug)->with(['category', 'seo'])->first();
+                $seo = $this->seoPageProvider->getSeoForModel($event);
+                return [
+                    new ClientEventFullResource($event),
+                    $seo
+                ];
+            }
+        );
 
-        $breadcrumbs = $this->breadcrumbService->generateBreadcrumbs('client.event.index');
 
-        $seo = $event->seo ?? null;
-
-        return Inertia::render('Client/Events/Show', compact('event', 'breadcrumbs', 'seo'));
+        return Inertia::render('Client/Events/Show', compact(
+            'event',
+            'seo'
+        ));
     }
 
     public function archive(Request $request): \Inertia\Response
     {
+        $cacheKey = md5(serialize($request->all()));
+
+        $events = Cache::remember(
+            CacheKeys::EVENTS_PREFIX->value . 'archive_' . $cacheKey,
+            now()->addDay(),
+            fn() => $this->getEventsArchive()
+        );
+
+        $categories = Cache::remember(
+            CacheKeys::EVENTS_PREFIX->value . 'categories',
+            now()->addDay(),
+            fn() => ClientEventCategoryResource::collection(EventCategory::has('events')->get())
+        );
+
         $filters = $this->getFilters();
 
-        $events = $this->getEventsArchive();
-        $categories = ClientEventCategoryResource::collection(EventCategory::has('events')->get());
+        $seo = $this->seoPageProvider->getSeoForCurrentPage();
 
-        $breadcrumbs = $this->breadcrumbService->generateBreadcrumbs('client.event.archive');
-
-
-        return Inertia::render('Client/Events/Archive', compact('events', 'filters', 'categories', 'breadcrumbs'));
+        return Inertia::render('Client/Events/Archive', compact(
+            'events',
+            'filters',
+            'categories',
+            'seo'
+        ));
     }
 
     private function getCurrentDate(Request $request): array
@@ -164,7 +214,12 @@ class ClientEventController extends Controller
             ->orderBy('event_date_start')
             ->get();
 
-        $mappingDates = $events->map(function ($event) {
+        // Получаем массив без ключей
+
+
+
+        // Извлекаем уникальные даты из событий
+        return $events->map(function ($event) {
             $date = new DateTime($event->event_date_start);
             return [
                 'day' => $date->format('j'),
@@ -182,12 +237,7 @@ class ClientEventController extends Controller
                 ];
             })
             ->sortKeys() // Сортируем ключи по возрастанию
-            ->values(); // Получаем массив без ключей
-
-
-
-        // Извлекаем уникальные даты из событий
-        return $mappingDates;
+            ->values();
     }
 
     private function getFilters(): array

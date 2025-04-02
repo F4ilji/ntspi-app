@@ -24,46 +24,128 @@ class ContactWidgetResource extends Resource
 {
     protected static ?string $model = ContactWidget::class;
 
+    protected static ?string $pluralLabel = 'Контактная информация';
+
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationGroup = 'Виджеты';
+
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('')->schema([
-                    Tabs::make('Tabs')
-                        ->tabs([
-                            Tabs\Tab::make('Основная информация')
-                                ->schema([
-                                    Forms\Components\Grid::make(2)->schema([
-                                        TextInput::make('title')->label('Название ресурса')->required()
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
-                                                $set('slug', Str::slug($state));
-                                                $set('seo.title', $state);
-                                            }),
-                                        TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
-                                        Toggle::make('is_active')->default(true)->label('Активный ресурс')->inline(false),
-                                    ])
-                                ]),
-                            Tabs\Tab::make('Содержание ресурса')
-                                ->schema([
-                                    Repeater::make('content')->label('Ресурсы')->schema([
-                                        TextInput::make('title')->label('Главный заголовок столбца')->required(),
-                                        Repeater::make('items')->label('Контакты')->schema([
-                                            TextInput::make('header')->label('Заголовок')->required(),
-                                            Repeater::make('details')->label('Компонент контакта')->schema([
-                                                Forms\Components\Grid::make(2)->schema([
-                                                    TextInput::make('content')->label('содержание')->required(),
-                                                    TextInput::make('url')->label('Ссылка(Необязательно)'),
-                                                ]),
-                                            ]),
-                                        ]),
-                                    ])->collapsed()->required(),
-                                ]),
+                Forms\Components\Section::make('Ресурс')
+                    ->description('Настройка контактных ресурсов')
+                    ->collapsible()
+                    ->schema([
+                        Tabs::make('Настройки ресурса')
+                            ->persistTabInQueryString()
+                            ->columnSpanFull()
+                            ->tabs([
+                                Tabs\Tab::make('Основная информация')
+                                    ->icon('heroicon-o-information-circle')
+                                    ->schema([
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                TextInput::make('title')
+                                                    ->label('Название ресурса')
+                                                    ->placeholder('Введите название ресурса')
+                                                    ->helperText('Это название будет отображаться в интерфейсе')
+                                                    ->required()
+                                                    ->maxLength(255)
+                                                    ->live(onBlur: true)
+                                                    ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
+                                                        $set('slug', Str::slug($state));
+                                                        $set('seo.title', $state);
+                                                    })
+                                                    ->columnSpan(1),
 
-                        ]),
-                ]),
+                                                TextInput::make('slug')
+                                                    ->label('URL-адрес (Slug)')
+                                                    ->helperText('Автоматически генерируется из названия')
+                                                    ->hintIcon('heroicon-o-information-circle', tooltip: 'Изменить можно только вручную')
+                                                    ->unique(ignoreRecord: true)
+                                                    ->readOnly()
+                                                    ->required()
+                                                    ->columnSpan(1),
+
+                                                Toggle::make('is_active')
+                                                    ->label('Активность ресурса')
+                                                    ->helperText('Отключите, чтобы скрыть ресурс')
+                                                    ->default(true)
+                                                    ->inline(false)
+                                                    ->onColor('success')
+                                                    ->offColor('danger')
+                                                    ->columnSpanFull(),
+                                            ])
+                                    ]),
+
+                                Tabs\Tab::make('Содержание ресурса')
+                                    ->icon('heroicon-o-document-text')
+                                    ->schema([
+                                        Repeater::make('content')
+                                            ->label('Структура ресурса')
+                                            ->helperText('Добавьте столбцы с контактной информацией')
+                                            ->addActionLabel('Добавить столбец')
+                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Новый столбец')
+                                            ->collapsible()
+                                            ->cloneable()
+                                            ->grid(2)
+                                            ->schema([
+                                                TextInput::make('title')
+                                                    ->label('Заголовок столбца')
+                                                    ->placeholder('Например: Контакты')
+                                                    ->helperText('Основной заголовок для группы контактов')
+                                                    ->required()
+                                                    ->maxLength(255),
+
+                                                Repeater::make('items')
+                                                    ->label('Контактные блоки')
+                                                    ->helperText('Добавьте контактные блоки в этот столбец')
+                                                    ->addActionLabel('Добавить контактный блок')
+                                                    ->itemLabel(fn (array $state): ?string => $state['header'] ?? 'Новый контакт')
+                                                    ->collapsible()
+                                                    ->cloneable()
+                                                    ->schema([
+                                                        TextInput::make('header')
+                                                            ->label('Заголовок контакта')
+                                                            ->placeholder('Например: Телефон')
+                                                            ->helperText('Название контактной информации')
+                                                            ->required()
+                                                            ->maxLength(255),
+
+                                                        Repeater::make('details')
+                                                            ->label('Детали контакта')
+                                                            ->helperText('Добавьте контактные данные')
+                                                            ->addActionLabel('Добавить деталь')
+                                                            ->collapsible()
+                                                            ->cloneable()
+                                                            ->schema([
+                                                                Forms\Components\Grid::make(2)
+                                                                    ->schema([
+                                                                        TextInput::make('content')
+                                                                            ->label('Значение')
+                                                                            ->placeholder('Например: +7 (123) 456-78-90')
+                                                                            ->helperText('Основная контактная информация')
+                                                                            ->columnSpanFull()
+                                                                            ->required(),
+
+                                                                        TextInput::make('url')
+                                                                            ->label('Ссылка')
+                                                                            ->placeholder('https://example.com')
+                                                                            ->helperText('Необязательная ссылка, связанная с контактом')
+                                                                            ->url()
+                                                                            ->columnSpanFull(),
+                                                                    ])
+                                                            ])
+                                                    ])
+                                            ])
+                                            ->required(),
+                                    ]),
+                            ]),
+                    ]),
             ]);
     }
 

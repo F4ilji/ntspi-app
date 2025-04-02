@@ -3,20 +3,20 @@
 namespace App\Filament\Resources\FacultyResource\Pages;
 
 use App\Filament\Resources\FacultyResource;
+use App\Services\Filament\Traits\SeoGenerate;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Str;
 
 class EditFaculty extends EditRecord
 {
-    protected static string $resource = FacultyResource::class;
+    use SeoGenerate;
 
-    protected array $seoData;
+    protected static string $resource = FacultyResource::class;
 
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $this->seoData = $this->generateSeo($data);
         $data['search_data'] = $this->generateSearchData($data['content']);
 
         return $data;
@@ -24,7 +24,7 @@ class EditFaculty extends EditRecord
 
     protected function afterSave(): void
     {
-        $this->record->seo()->update($this->seoData);
+        $this->updateSeo($this->record);
     }
 
 

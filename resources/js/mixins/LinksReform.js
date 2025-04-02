@@ -21,26 +21,57 @@ export const linksReform = {
         clearBodyStyles() {
             const body = document.body;
             if (body.style.overflow === 'hidden') {
-                body.style.overflow = ''; // Сбрасываем overflow до значения по умолчанию
+                body.style.overflow = '';
             }
         },
+        async removeBackdropElement() {
+            const backdrop = document.querySelector('div[data-hs-overlay-backdrop-template]');
+            if (backdrop) {
+                // Добавляем анимацию исчезновения
+                backdrop.style.transition = 'opacity 0.5s ease';
+                backdrop.style.opacity = '0';
+
+                // Ждем завершения анимации
+                await new Promise(resolve => {
+                    backdrop.addEventListener('transitionend', () => {
+                        backdrop.remove();
+                        resolve();
+                    }, { once: true });
+                });
+            }
+        }
     },
     updated() {
-
-        this.clearBodyStyles();
-
         const hostname = window.location.hostname;
         const defaultLinks = Array.from(this.getDefaultLinks());
 
         const reactiveLinks = this.createReactiveLinks(defaultLinks, hostname);
 
         reactiveLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
+            link.addEventListener('click', async (event) => {
+                if (this.checkPathname(link.pathname)) return;
+
                 event.preventDefault();
                 const url = link.getAttribute('href');
-                this.$inertia.visit(url, {
-                    preserveScroll: false,
-                });
+
+                try {
+                    // Удаляем бэкдроп с анимацией перед переходом
+                    await this.removeBackdropElement();
+                    this.clearBodyStyles();
+
+                    this.$inertia.visit(url, {
+                        preserveScroll: false,
+                        onBefore: () => {
+                            // Дополнительная проверка перед переходом
+                            this.removeBackdropElement().catch(() => {});
+                            this.clearBodyStyles();
+                            return true;
+                        }
+                    });
+                } catch (e) {
+                    console.error('Error during navigation:', e);
+                    this.$inertia.visit(url); // Fallback на обычный переход
+                }
             });
         });
     }

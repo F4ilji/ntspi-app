@@ -76,12 +76,12 @@ export default {
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl py-10 md:flex md:flex-row md:py-10">
-				<div class="pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto w-full max-w-screen-lg">
+				<div class="pt-6 px-4 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto w-full max-w-screen-lg">
 					<div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
 						<h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Новости НТГСПИ</h2>
 						<p class="mt-1 text-gray-600 dark:text-neutral-400">Узнайте последние новости любимого вуза</p>
 					</div>
-					<PostListBreadcrumbs :breadcrumbs="breadcrumbs" class="px-5" />
+					<PostListBreadcrumbs :breadcrumbs="breadcrumbs" />
 					<div>
 						<HeadItemsWrapper>
 							<PostListSearch :search_filter="filters.search_filter" />
@@ -93,9 +93,9 @@ export default {
 						</HeadItemsWrapper>
 
 
-						<div v-if="hasActiveFilters" class="px-6">
+						<div>
 							<h3 class="text-sm text-gray-500 mb-4">Найдено новостей: {{ posts.meta.total }}</h3>
-							<div class="flex-wrap flex gap-3 md:items-center">
+							<div v-if="hasActiveFilters" class="flex-wrap flex gap-3 md:items-center">
 								<BasicListBadge :filters="filters" />
 							</div>
 						</div>
@@ -103,8 +103,8 @@ export default {
 						<div class="space-y-5 md:space-y-4">
 							<div class="space-y-5 md:space-y-4">
 								<div>
-									<div class="container px-4 mx-auto xl:px-5 max-w-screen-lg py-5 lg:py-8">
-										<div class="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
+									<div class="container mx-auto max-w-screen-lg py-5 lg:py-8">
+										<div class="grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
 											<template v-for="post in posts.data" :key="post.id">
 												<PostListItem :post="post" />
 											</template>

@@ -2,17 +2,42 @@
 
 namespace App\Providers;
 
+use App\Models\AcademicJournal;
+use App\Models\AdditionalEducation;
+use App\Models\ContactWidget;
+use App\Models\Department;
+use App\Models\Division;
+use App\Models\EducationalProgram;
+use App\Models\Event;
+use App\Models\Faculty;
 use App\Models\MainSection;
 use App\Models\MainSlider;
 use App\Models\Page;
+use App\Models\PageReferenceList;
 use App\Models\Post;
+use App\Models\Schedule;
+use App\Models\Slide;
 use App\Models\SubSection;
+use App\Models\User;
+use App\Observers\AcademicJournalObserver;
+use App\Observers\AdditionalEducationObserver;
+use App\Observers\ContactWidgetObserver;
+use App\Observers\DepartmentObserver;
+use App\Observers\DivisionObserver;
+use App\Observers\EducationalProgramObserver;
+use App\Observers\EventObserver;
+use App\Observers\FacultyObserver;
 use App\Observers\MainSectionObserver;
 use App\Observers\MainSliderObserver;
 use App\Observers\PageObserver;
+use App\Observers\PageReferenceListObserver;
 use App\Observers\PostObserver;
+use App\Observers\ScheduleObserver;
+use App\Observers\SlideObserver;
 use App\Observers\SubSectionObserver;
+use App\Observers\UserObserver;
 use App\Services\App\Cache\MainSliderCacheService;
+use App\Services\App\Cache\SliderCacheService;
 use Carbon\Carbon;
 use Filament\Facades\Filament;
 use Filament\Support\Facades\FilamentView;
@@ -47,7 +72,7 @@ class AppServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/path/to/views', 'checkpoint');
 
         FilamentView::registerRenderHook(TablesRenderHook::TOOLBAR_REORDER_TRIGGER_AFTER, function () {
-            (new MainSliderCacheService())->clearAllCacheByModel();
+            (new SliderCacheService())->clearAllCacheByModel();
         });
     }
 
@@ -56,7 +81,18 @@ class AppServiceProvider extends ServiceProvider
         Post::observe(PostObserver::class);
         MainSection::observe(MainSectionObserver::class);
         SubSection::observe(SubSectionObserver::class);
-        MainSlider::observe(MainSliderObserver::class);
+        Slide::observe(SlideObserver::class);
+        AcademicJournal::observe(AcademicJournalObserver::class);
+        AdditionalEducation::observe(AdditionalEducationObserver::class);
+        Department::observe(DepartmentObserver::class);
+        Division::observe(DivisionObserver::class);
+        Event::observe(EventObserver::class);
+        Faculty::observe(FacultyObserver::class);
+        User::observe(UserObserver::class);
+        EducationalProgram::observe(EducationalProgramObserver::class);
+        Schedule::observe(ScheduleObserver::class);
+        ContactWidget::observe(ContactWidgetObserver::class);
+        PageReferenceList::observe(PageReferenceListObserver::class);
     }
 
     private static function setLocaleTime() : void {
@@ -65,15 +101,17 @@ class AppServiceProvider extends ServiceProvider
     }
 
 
-    private static function registerFilamentNavigationGroups()
+    private static function registerFilamentNavigationGroups(): void
     {
         Filament::registerNavigationGroups([
+            'Виджеты',
+            'Новости и мероприятия',
             'Структура приложения',
             'Структура института',
             'Образование',
             'Расписание и группы',
-            'Новости и мероприятия',
-            'Библиотека',
+            'Наука',
+            'Settings',
         ]);
     }
 }

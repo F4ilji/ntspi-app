@@ -104,26 +104,23 @@ export default {
             </div>
             <div class="grid gap-y-10 mt-5 w-full"> <!-- Добавлен w-full -->
               <template v-for="event in events.data">
-                <Link class="group sm:flex rounded-xl w-full" :href="route('client.event.show', event.slug)"> <!-- Добавлен w-full -->
+                <div class="sm:flex rounded-xl w-full"> <!-- Добавлен w-full -->
                   <div class="grow">
                     <div class="flex flex-col h-full">
                       <div class="mb-3">
                         <p class="inline-flex mr-2 items-center gap-1.5 py-1.5 rounded-md text-[12px] text-gray-600">
                           {{ event.event_date_start }}
                         </p>
-                        <p v-if="event.category" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600">
-                          {{ event.category }}
-                        </p>
+                        <a :href="route('client.event.archive', { 'category[]': event.category.slug })" v-if="event.category" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600 hover:underline">
+                          {{ event.category.title }}
+                        </a>
                       </div>
-                      <h3 class="text-lg sm:text-2xl font-semibold text-gray-800 group-hover:text-blue-600">
+                      <Link :href="route('client.event.show', event.slug)" class="text-lg sm:text-2xl font-semibold text-gray-800 hover:text-blue-600">
                         {{ event.title }}
-                      </h3>
-                      <p class="mt-2 text-gray-600">
-                        Great news we're eager to share.
-                      </p>
+                      </Link>
                     </div>
                   </div>
-                </Link>
+                </div>
               </template>
             </div>
             <BasicPagination :links="events.links" />

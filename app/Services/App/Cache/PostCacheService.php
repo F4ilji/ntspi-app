@@ -2,59 +2,56 @@
 
 namespace App\Services\App\Cache;
 
+use App\Enums\CacheKeys;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 
 class PostCacheService extends AbstractCacheService implements CacheInterface
 {
+    private const DEFAULT_TTL = 3600;
+
     /**
-     * Очищает кеш, связанный с постом.
-     *
-     * @param mixed $entity Пост или связанная сущность
-     * @return void
+     * Clear cache for specific post
      */
     public function clearCache($entity): void
     {
-        $cacheKeyBySlug = md5($entity->slug);
-        $cacheKeyById = md5($entity->id);
-
-        Cache::forget('post_' .$cacheKeyBySlug);
-        Cache::forget('post_' .$cacheKeyById);
-
-        $this->clearCacheByPrefix('recent_posts*');
-
-    }
-
-    public function clearAllCacheByModel(): void
-    {
-        $this->clearCacheByPrefix('post_*');
-        $this->clearCacheByPrefix('posts_*');
-        $this->clearCacheByPrefix('recent_posts*');
+        $this->forgetPostCache($entity->slug, $entity->id);
+        $this->clearRecentPostsCache();
     }
 
     /**
-     * Получает кешированные данные по ключу.
-     *
-     * @param string $key Ключ кеша
-     * @return mixed
+     * Clear all cache related to posts
      */
+    public function clearAllCacheByModel(): void
+    {
+        $this->clearCacheByPrefix(CacheKeys::POST_PREFIX->value.'*');
+        $this->clearCacheByPrefix(CacheKeys::POSTS_PREFIX->value.'*');
+        $this->clearRecentPostsCache();
+    }
+
     public function getCachedData(string $key)
     {
         return Cache::get($key);
     }
 
-    /**
-     * Кеширует данные по ключу.
-     *
-     * @param string $key Ключ кеша
-     * @param mixed $data Данные для кеширования
-     * @param int $ttl Время жизни кеша в секундах
-     * @return void
-     */
-    public function cacheData(string $key, $data, int $ttl = 3600): void
+    public function cacheData(string $key, $data, int $ttl = null): void
     {
-        Cache::put($key, $data, $ttl);
+        Cache::put($key, $data, $ttl ?? self::DEFAULT_TTL);
     }
 
+    /**
+     * Forget cache for specific post by slug and id
+     */
+    private function forgetPostCache(string $slug, int $id): void
+    {
+        Cache::forget(CacheKeys::POST_PREFIX->value.md5($slug));
+        Cache::forget(CacheKeys::POST_PREFIX->value.md5($id));
+    }
 
+    /**
+     * Clear recent posts cache
+     */
+    private function clearRecentPostsCache(): void
+    {
+        $this->clearCacheByPrefix(CacheKeys::RECENT_POSTS_PREFIX->value.'*');
+    }
 }

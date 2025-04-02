@@ -2,37 +2,76 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CacheKeys;
 use App\Http\Resources\ClientAcademicJournalListResource;
-use App\Http\Resources\ClientVirtualExhibitionListResource;
 use App\Models\AcademicJournal;
 use App\Models\JournalIssue;
-use App\Models\VirtualExhibition;
-use Illuminate\Http\Request;
+use App\Services\App\Breadcrumb\BreadcrumbService;
+use App\Services\App\Seo\SeoPageProvider;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class ClientAcademicJournalController extends Controller
 {
+    public function __construct(readonly SeoPageProvider $seoPageProvider){}
+
     public function index()
     {
-        $journals = ClientAcademicJournalListResource::collection(AcademicJournal::query()->get());
+        $journals = Cache::remember(
+            CacheKeys::ACADEMIC_JOURNALS_PREFIX->value . 'list',
+            now()->addWeek(), // Кешируем на неделю, так как журналы меняются редко
+            function () {
+                return ClientAcademicJournalListResource::collection(
+                    AcademicJournal::query()->get()
+                );
+            }
+        );
 
-        return Inertia::render('Client/AcademicJournals/Index', compact('journals'));
+        $seo = $this->seoPageProvider->getSeoForCurrentPage();
+
+        return Inertia::render('Client/AcademicJournals/Index', compact('journals', 'seo'));
     }
 
     public function show(string $slug)
     {
-        $journal = new ClientAcademicJournalListResource(AcademicJournal::query()->where('slug', '=', $slug)->firstOrFail());
-        $journalIssues = JournalIssue::where('academic_journal_id', $journal->id)
-            ->groupBy('year_publication')->get();
+        // Кешируем основной журнал
+        [$journal, $seo] = Cache::remember(
+            CacheKeys::ACADEMIC_JOURNAL_PREFIX->value . $slug,
+            now()->addWeek(),
+            function () use ($slug) {
+                $journal = AcademicJournal::query()
+                    ->where('slug', $slug)
+                    ->firstOrFail();
+                $seo = $this->seoPageProvider->getSeoForModel($journal);
+                return [
+                    new ClientAcademicJournalListResource($journal),
+                    $seo
+                ];
+            }
+        );
 
-        $journals = [];
+        // Кешируем выпуски журнала, сгруппированные по годам
+        $journals = Cache::remember(
+            CacheKeys::ACADEMIC_JOURNAL_PREFIX->value . 'issues_' . $slug,
+            now()->addWeek(),
+            function () use ($journal) {
+                $journalIssues = JournalIssue::where('academic_journal_id', $journal->id)
+                    ->get()
+                    ->groupBy('year_publication');
 
-        foreach ($journalIssues as $year => $journalGroup) {
-            $journals[] = [
-                'year_publication' => $year,
-                'journalIssues' => $journalGroup
-            ];
-        }
-        return Inertia::render('Client/AcademicJournals/Show', compact('journal', 'journals'));
+                $groupedIssues = [];
+                foreach ($journalIssues as $year => $journalGroup) {
+                    $groupedIssues[] = [
+                        'year_publication' => $year,
+                        'journalIssues' => $journalGroup
+                    ];
+                }
+
+                return $groupedIssues;
+            }
+        );
+
+
+        return Inertia::render('Client/AcademicJournals/Show', compact('journal', 'journals', 'seo'));
     }
 }

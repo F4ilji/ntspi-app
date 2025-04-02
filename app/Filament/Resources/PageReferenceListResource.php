@@ -32,6 +32,9 @@ class PageReferenceListResource extends Resource
 
     protected static ?string $pluralLabel = 'Списки ресурсов';
 
+    protected static ?string $navigationGroup = 'Виджеты';
+
+
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -39,109 +42,180 @@ class PageReferenceListResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('')->schema([
-                    Tabs::make('Tabs')
-                        ->tabs([
-                            Tabs\Tab::make('Основная информация')
-                                ->schema([
-                                    Forms\Components\Grid::make(2)->schema([
-                                        TextInput::make('title')->label('Название ресурса')->required()
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
-                                                $set('slug', Str::slug($state));
-                                                $set('seo.title', $state);
-                                            }),
-                                        TextInput::make('slug')->label('Slug')->unique(ignoreRecord: true)->readOnly()->required(),
-                                        Toggle::make('is_active')->default(true)->label('Активный ресурс')->inline(false),
-                                    ])
-                                ]),
-                            Tabs\Tab::make('Содержание ресурса')
-                                ->schema([
-                                    Repeater::make('content')->label('Ресурсы')->schema([
-                                        Forms\Components\Section::make('Быстрая настройка ресурса')->schema([
-                                            Forms\Components\Grid::make()->schema([
-                                                Forms\Components\Select::make('model_select')
-                                                    ->name('')
-                                                    ->label('Выбор типа данных')
-                                                    ->options([
-                                                        'Post' => 'Новость',
-                                                        'Page' => 'Страница',
-                                                        'Event' => 'Мероприятие',
-                                                        'Custom' => 'Кастомная ссылка',
-                                                    ])
-                                                    ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set, Forms\Get $get) {
-                                                        if ($get('model_select') === 'Custom') {
-                                                            $set('model', null);
-                                                            $set('title', null);
-                                                            $set('content', null);
-                                                            $set('link', null);
-                                                        };
-                                                    })->live(onBlur: true),
-
-                                                Forms\Components\Select::make('model')
-                                                    ->label('Поиск данных')
-                                                    ->name('')
+                Forms\Components\Section::make('Ресурс')
+                    ->description('Управление контентом ресурса')
+                    ->collapsible()
+                    ->schema([
+                        Tabs::make('Настройки ресурса')
+                            ->persistTabInQueryString()
+                            ->columnSpanFull()
+                            ->tabs([
+                                Tabs\Tab::make('Основная информация')
+                                    ->icon('heroicon-o-information-circle')
+                                    ->schema([
+                                        Forms\Components\Grid::make(2)
+                                            ->schema([
+                                                TextInput::make('title')
+                                                    ->label('Название ресурса')
+                                                    ->placeholder('Введите название ресурса')
+                                                    ->helperText('Это название будет отображаться в административной панели')
+                                                    ->required()
+                                                    ->maxLength(255)
                                                     ->live(onBlur: true)
-                                                    ->searchable()
-                                                    ->live(onBlur: true)
-                                                    ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set, Forms\Get $get) {
-                                                        if ($get('model_select') === 'Post') {
-                                                            $post = Post::find($state);
-                                                            $set('title', $post->title);
-                                                            $relativeUrl = parse_url(route('client.post.show', $post->slug), PHP_URL_PATH);
-                                                            $set('link', $relativeUrl);
-                                                        };
-                                                        if ($get('model_select') === 'Page') {
-                                                            $page = Page::find($state);
-                                                            $set('title', $page->title);
-                                                            $set('link', $page->path);
-                                                        };
-                                                        if ($get('model_select') === 'Event') {
-                                                            $event = Event::find($state);
-                                                            $set('title', $event->title);
-                                                            $relativeUrl = parse_url(route('client.event.show', $event->slug), PHP_URL_PATH);
-                                                            $set('link', $relativeUrl);
-                                                        };
-
-                                                    })
-                                                    ->options(function (Forms\Get $get) {
-                                                        if ($get('model_select') === 'Post') {
-                                                            return Post::where('status', '=', 'published')->pluck('title', 'id');
-                                                        };
-                                                        if ($get('model_select') === 'Page') {
-                                                            return Page::where('title', '!=', null)->pluck('title', 'id');
-                                                        };
-                                                        if ($get('model_select') === 'Event') {
-                                                            return Event::all()->pluck('title', 'id');
-                                                        };
-                                                        if ($get('model_select') === 'Custom') {
-                                                            return [];
-                                                        };
+                                                    ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set) {
+                                                        $set('slug', Str::slug($state));
+                                                        $set('seo.title', $state);
                                                     }),
-                                            ]),
-                                        ]),
-                                        TextInput::make('title')->label('Заголовок ресурса')->required(),
-                                        FileUpload::make('image')
-                                            ->label('Изображение предпросмотра')
-                                            ->image()
-                                            ->optimize('webp')
-                                            ->resize(50)
-                                            ->disk('public')
-                                            ->directory('images')
-                                            ->imageEditor(),
-                                        Forms\Components\Grid::make(2)->schema([
-                                            Forms\Components\TextInput::make('link')
-                                                ->label('Ссылка ресурса')
-                                                ->required(),
-                                            Forms\Components\TextInput::make('link_text')
-                                                ->default('Читать')
-                                                ->label('Текст кнопки')
-                                                ->required(),
-                                        ]),
-                                    ])->collapsed()->required(),
-                                ]),
 
-                        ]),
+                                                TextInput::make('slug')
+                                                    ->label('URL-адрес (Slug)')
+                                                    ->helperText('Автоматически генерируется из названия')
+                                                    ->required()
+                                                    ->unique(ignoreRecord: true)
+                                                    ->readOnly()
+                                                    ->maxLength(255),
+
+                                                Toggle::make('is_active')
+                                                    ->label('Активность ресурса')
+                                                    ->helperText('Отключите, чтобы скрыть ресурс')
+                                                    ->default(true)
+                                                    ->inline(false)
+                                                    ->onColor('success')
+                                                    ->offColor('danger')
+                                                    ->columnSpanFull(),
+                                            ])
+                                    ]),
+
+                                Tabs\Tab::make('Содержание ресурса')
+                                    ->icon('heroicon-o-document-text')
+                                    ->schema([
+                                        Repeater::make('content')
+                                            ->label('Элементы ресурса')
+                                            ->helperText('Добавьте и настройте элементы ресурса')
+                                            ->addActionLabel('Добавить элемент')
+                                            ->collapsed()
+                                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Новый элемент')
+                                            ->required()
+                                            ->schema([
+                                                Forms\Components\Section::make('Быстрая настройка')
+                                                    ->description('Выберите тип и источник данных')
+                                                    ->collapsible()
+                                                    ->collapsed()
+                                                    ->schema([
+                                                        Forms\Components\Grid::make(2)
+                                                            ->schema([
+                                                                Forms\Components\Select::make('model_select')
+                                                                    ->label('Тип данных')
+                                                                    ->placeholder('Выберите тип данных')
+                                                                    ->helperText('Выберите тип контента для этого элемента')
+                                                                    ->options([
+                                                                        'Post' => 'Новость',
+                                                                        'Page' => 'Страница',
+                                                                        'Event' => 'Мероприятие',
+                                                                        'Custom' => 'Кастомная ссылка',
+                                                                    ])
+                                                                    ->live(onBlur: true)
+                                                                    ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set, Forms\Get $get) {
+                                                                        if ($get('model_select') === 'Custom') {
+                                                                            $set('model', null);
+                                                                            $set('title', null);
+                                                                            $set('content', null);
+                                                                            $set('link', null);
+                                                                        }
+                                                                    }),
+
+                                                                Forms\Components\Select::make('model')
+                                                                    ->label('Выбор элемента')
+                                                                    ->placeholder('Выберите элемент')
+                                                                    ->helperText(function (Forms\Get $get) {
+                                                                        if ($get('model_select') === 'Post') return 'Выберите новость';
+                                                                        if ($get('model_select') === 'Page') return 'Выберите страницу';
+                                                                        if ($get('model_select') === 'Event') return 'Выберите мероприятие';
+                                                                        return 'Доступно после выбора типа данных';
+                                                                    })
+                                                                    ->searchable()
+                                                                    ->live(onBlur: true)
+                                                                    ->afterStateUpdated(function (string $operation, string|null $state, Forms\Set $set, Forms\Get $get) {
+                                                                        if ($get('model_select') === 'Post') {
+                                                                            $post = Post::find($state);
+                                                                            if ($post) {
+                                                                                $set('title', $post->title);
+                                                                                $relativeUrl = parse_url(route('client.post.show', $post->slug), PHP_URL_PATH);
+                                                                                $set('link', $relativeUrl);
+                                                                            }
+                                                                        }
+                                                                        if ($get('model_select') === 'Page') {
+                                                                            $page = Page::find($state);
+                                                                            if ($page) {
+                                                                                $set('title', $page->title);
+                                                                                $set('link', $page->path);
+                                                                            }
+                                                                        }
+                                                                        if ($get('model_select') === 'Event') {
+                                                                            $event = Event::find($state);
+                                                                            if ($event) {
+                                                                                $set('title', $event->title);
+                                                                                $relativeUrl = parse_url(route('client.event.show', $event->slug), PHP_URL_PATH);
+                                                                                $set('link', $relativeUrl);
+                                                                            }
+                                                                        }
+                                                                    })
+                                                                    ->options(function (Forms\Get $get) {
+                                                                        if ($get('model_select') === 'Post') {
+                                                                            return Post::where('status', '=', 'published')->pluck('title', 'id');
+                                                                        }
+                                                                        if ($get('model_select') === 'Page') {
+                                                                            return Page::whereNotNull('title')->pluck('title', 'id');
+                                                                        }
+                                                                        if ($get('model_select') === 'Event') {
+                                                                            return Event::all()->pluck('title', 'id');
+                                                                        }
+                                                                        return [];
+                                                                    })
+                                                                    ->disabled(fn (Forms\Get $get) => empty($get('model_select')) || $get('model_select') === 'Custom'),
+                                                            ]),
+                                                    ]),
+
+                                                TextInput::make('title')
+                                                    ->label('Заголовок')
+                                                    ->placeholder('Введите заголовок элемента')
+                                                    ->helperText('Заголовок будет отображаться пользователям')
+                                                    ->required()
+                                                    ->maxLength(255),
+
+                                                FileUpload::make('image')
+                                                    ->label('Изображение предпросмотра')
+                                                    ->helperText('Рекомендуемый формат: PNG, JPEG, JPG')
+                                                    ->image()
+                                                    ->optimize('webp')
+                                                    ->resize(50)
+                                                    ->disk('public')
+                                                    ->directory('images')
+                                                    ->imageEditor()
+                                                    ->downloadable()
+                                                    ->openable(),
+
+                                                Forms\Components\Grid::make(2)
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('link')
+                                                            ->label('Ссылка')
+                                                            ->placeholder('https://example.com или /path')
+                                                            ->helperText('URL-адрес или относительный путь')
+                                                            ->required()
+                                                            ->maxLength(255),
+
+                                                        Forms\Components\TextInput::make('link_text')
+                                                            ->label('Текст кнопки')
+                                                            ->placeholder('Например: Читать далее')
+                                                            ->helperText('Текст для кнопки перехода')
+                                                            ->default('Читать')
+                                                            ->required()
+                                                            ->maxLength(50),
+                                                    ]),
+                                            ])
+                                            ->columnSpanFull(),
+                                    ]),
+                            ]),
                     ]),
             ]);
     }

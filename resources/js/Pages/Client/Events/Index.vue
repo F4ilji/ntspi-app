@@ -98,7 +98,7 @@ export default {
 								</div>
 
 							</div>
-              <div v-if="hasActiveFilters" class="px-6">
+              <div v-if="hasActiveFilters">
                 <h3 class="text-sm text-gray-500 mb-4">Найдено мероприятий: {{ events.data.length }}</h3>
                 <div class="flex-wrap flex gap-3 md:items-center">
                   <BasicListBadge :filters="filters" />
@@ -107,26 +107,24 @@ export default {
 						</div>
 						<div class="grid gap-y-10 mt-10">
 							<template v-for="event in events.data">
-								<Link class="group sm:flex rounded-xl" :href="route('client.event.show', event.slug)">
+								<div class="sm:flex rounded-xl">
 									<div class="grow">
 										<div class="flex flex-col h-full">
 											<div class="mb-3">
 												<p class="inline-flex mr-2 items-center gap-1.5 py-1.5 rounded-md text-[12px] text-gray-600">
 													{{ event.event_time_start }}
 												</p>
-												<p v-if="event.category" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600">
-													{{ event.category }}
-												</p>
+
+												<a :href="route('client.event.index', { 'category[]': event.category.slug })" v-if="event.category" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600 hover:underline">
+													{{ event.category.title }}
+												</a>
 											</div>
-											<h3 class="text-lg sm:text-2xl font-semibold text-gray-800 group-hover:text-blue-600">
+											<Link :href="route('client.event.show', event.slug)" class="text-lg sm:text-2xl font-semibold text-gray-800 hover:text-blue-600">
 												{{ event.title }}
-											</h3>
-											<p class="mt-2 text-gray-600">
-												Great news we're eager to share.
-											</p>
+											</Link>
 										</div>
 									</div>
-								</Link>
+								</div>
 							</template>
 						</div>
 					</div>

@@ -2,41 +2,14 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\PostStatus;
 use App\Filament\Components\Forms\PostForm;
 use App\Filament\Resources\PostResource\Pages;
-use App\Models\Category;
-use App\Models\Page;
 use App\Models\Post;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
-use Filament\Actions\DeleteAction;
-use Filament\Facades\Filament;
-use Filament\Forms;
-use Filament\Forms\Components\Builder;
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieTagsInput;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Infolists\Components\Card;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Http\File;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class PostResource extends Resource implements HasShieldPermissions
 {
@@ -59,7 +32,6 @@ class PostResource extends Resource implements HasShieldPermissions
     {
         return $table
             ->columns([
-//                Tables\Columns\TextColumn::make('id')->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->label('Дата создания')->sortable(),
                 Tables\Columns\TextColumn::make('title')->label('Заголовок')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('status')->label('Статус')->sortable()->badge(),
