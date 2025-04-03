@@ -12,10 +12,7 @@ class StaticSearchController extends Controller
     public function search(Request $request)
     {
         return app(StaticFileSearch::class)
-            ->search(
-                $request->input('search'),
-                $request->input('page', 1)
-            );
+            ->search($request);
     }
 
     public function getCategories()

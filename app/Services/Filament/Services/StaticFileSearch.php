@@ -2,7 +2,7 @@
 
 namespace App\Services\Filament\Services;
 
-use Illuminate\Http\Client\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -17,14 +17,19 @@ class StaticFileSearch
     const CACHE_TTL = 86400; // 24 часа
     const PER_PAGE = 10; // Количество результатов на страницу
 
-    public function search(string $query): array
+    public function search(Request $request): array
     {
+        $query = $request->input('search');
+        $category = $request->input('category');
+        $page = request()->input('page', 1);
+
+
         if ($query === null) {
             return [
-              'data' => null
+                'data' => []
             ];
         }
-        $page = request()->input('page', 1);
+
         try {
             $index = $this->getIndex();
             $results = [];
@@ -40,7 +45,21 @@ class StaticFileSearch
                     ];
                 }
             }
-            return $this->paginateResults($results, $page);
+
+            $categories = array_values(array_unique(array_filter(array_column($results, 'category'))));
+
+
+            if ($category !== null) {
+                $results = array_filter($results, function($item) use ($category) {
+                    return $item['category'] === $category;
+                });
+
+                // Переиндексировать массив
+                $results = array_values($results);
+            }
+
+
+            return $this->paginateResults($results, $page, $categories);
         } catch (\Exception $e) {
             Log::error('Search error: ' . $e->getMessage());
             return [
@@ -55,7 +74,7 @@ class StaticFileSearch
         }
     }
 
-    protected function paginateResults(array $results, int $page): array
+    protected function paginateResults(array $results, int $page, ?array $categories): array
     {
         $total = count($results);
         $lastPage = max(1, ceil($total / self::PER_PAGE));
@@ -71,7 +90,8 @@ class StaticFileSearch
                 'total' => $total,
                 'per_page' => self::PER_PAGE,
                 'last_page' => $lastPage
-            ]
+            ],
+            'categories' => $categories
         ];
     }
 
@@ -94,9 +114,10 @@ class StaticFileSearch
 
                 foreach ($iterator as $file) {
                     if ($file->isFile() && $this->isHtmlFile($file)) {
-                        $content = file_get_contents($file->getPathname());
+                        $html = file_get_contents($file->getPathname());
+                        [$content, $breadcrumb] = app(HtmlContentExtractorService::class)->getContent($html);
                         if ($content !== false) {
-                            $breadcrumb = app(BreadcrumbFinderService::class)->isSameCategory($content);
+                            $breadcrumb = app(BreadcrumbFinderService::class)->isSameCategory($breadcrumb);
                             $text = $this->normalizeText(strip_tags($content));
                             $index[$file->getPathname()] = [
                                 'title' => $this->getFirstH1Content($content),

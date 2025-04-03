@@ -36,6 +36,8 @@ export const helpers = {
                 locale: 'ru'
             });
         },
-
+        GET_BASE_URL() {
+            return window.location.origin + '/';
+        }
     },
 };

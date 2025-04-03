@@ -96,8 +96,8 @@ export default {
       headerFilter: false,
       underSliderHeader: true,
       logos: {
-        default: '/logos/white_ntspi_logo.svg',
-        alternate: '/logos/ntspi-logo.svg',
+        default: '/logos/ntspi_white.svg',
+        alternate: '/logos/ntspi.svg',
       },
     }
   },
@@ -113,7 +113,7 @@ export default {
         }
       }
 
-      this.headerFilter = this.scrollPosition > 50;
+      this.headerFilter = this.scrollPosition > 5;
     },
   },
   watch: {

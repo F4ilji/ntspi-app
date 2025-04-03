@@ -9,7 +9,6 @@ use App\Http\Resources\EventSearchResource;
 use App\Http\Resources\FacultySearchResource;
 use App\Http\Resources\PageSearchResource;
 use App\Http\Resources\PostSearchResource;
-use App\Http\Resources\StaticPageSearchResource;
 use App\Http\Resources\UserSearchResource;
 use App\Models\AdditionalEducation;
 use App\Models\EducationalGroup;
@@ -35,9 +34,9 @@ class SearchController extends Controller
         EducationalGroup::class => EducationGroupSearchResource::class,
         EducationalProgram::class => EducationalProgramSearchResource::class,
         Event::class => EventSearchResource::class,
-        AdditionalEducation::class => AdditionalEducationSearchResource::class,
-        User::class => UserSearchResource::class,
-        Faculty::class => FacultySearchResource::class,
+        AdditionalEducation::class => AdditionalEducationSearchResource::class, //??
+        User::class => UserSearchResource::class, //??
+        Faculty::class => FacultySearchResource::class, //??
     ];
     public function index(Request $request)
     {

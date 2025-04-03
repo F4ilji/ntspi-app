@@ -6,11 +6,11 @@
 
 
 		<div class="relative mx-auto mb-auto mt-[67px] max-w-screen-xl w-full px-4 py-10 md:flex md:flex-row md:py-10">
-			<PageSubSectionLinks v-if="!settings.hide_page_sub_section_links" :sub-section-pages="subSectionPages" :current-section="page.data.section"/>
-			<NavigateLinks v-if="!settings.hide_page_navigate_links"  :header-navs="headerNavs"/>
+			<PageSubSectionLinks v-if="!settings?.hide_page_sub_section_links" :sub-section-pages="subSectionPages" :current-section="page.data.section"/>
+			<NavigateLinks v-if="!settings?.hide_page_navigate_links"  :header-navs="headerNavs"/>
 			<div class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
 				<div class="space-y-5 md:space-y-5">
-					<PageBreadcrumbs v-if="!settings.hide_breadcrumbs" :breadcrumbs="breadcrumbs" :page-title="page.data.title"/>
+					<PageBreadcrumbs v-if="!settings?.hide_breadcrumbs" :breadcrumbs="breadcrumbs" :page-title="page.data.title"/>
 					<BasicTitle :header="page.data.title"/>
 					<div id="page-area">
 						<Builder :blocks="page.data.content"/>

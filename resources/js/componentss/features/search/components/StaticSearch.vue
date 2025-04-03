@@ -28,7 +28,7 @@
              name="hs-as-table-product-review-search"
              class="py-1 placeholder-[#8F8F8F] font-light px-2 block flex-1 w-full border-none text-lg focus:z-10 border-transparent focus:border-transparent focus:ring-0"
              placeholder="Поиск по сведениям об образовательной организации">
-      <button v-if='this.searchInput !== ""' @click="clearSearch" class="items-center flex justify-end px-2" type="button">
+      <button v-if='this.searchInput !== ""' @click="clearFilters" class="items-center flex justify-end px-2" type="button">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 hover:text-gray-300 text-gray-500 duration-150 font-bold">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
         </svg>
@@ -37,8 +37,7 @@
   </div>
   <div class="overflow-y-auto flex-1">
     <div v-for="item in result">
-
-      <a :href="item.file" target="_blank" data-hs-overlay="#hs-basic-modal" class="my-1 flex gap-3 px-2 py-2 items-center hover:bg-[#F2F2F2] rounded-lg">
+      <a :href="GET_BASE_URL() + item.file" target="_blank" data-hs-overlay="#hs-basic-modal" class="my-1 flex gap-3 px-2 py-2 items-center hover:bg-[#F2F2F2] rounded-lg">
 
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 flex-shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
@@ -76,8 +75,10 @@ import {debounce} from "lodash";
 import {Link} from "@inertiajs/vue3";
 import {ruCategories} from "@/assets/data/ruCategories.js";
 import ResultList from "@/componentss/features/search/components/ResultList.vue";
+import {helpers} from "@/mixins/Helpers.js";
 export default {
-	name: "GlobalSearch",
+  mixins: [helpers],
+  name: "GlobalSearch",
 	data() {
 		return {
 			searchInput: "",
@@ -107,9 +108,6 @@ export default {
     },
 
     search() {
-      if (!this.categories) {
-        this.getCategories()
-      }
       this.toggleLoadingState(true);
       this.debouncedSearch(this.searchInput.toLowerCase());
     },
@@ -144,9 +142,6 @@ export default {
     async executeCategory(params) {
 
       try {
-        if (params.category === null) {
-          return null;
-        }
         const response = await axios.get(route('client.search.static'), {
           params: {
             search: this.searchInput.toLowerCase(),
@@ -179,17 +174,9 @@ export default {
     updateResults(response) {
       this.paginate = response.data.meta;
       this.result = response.data.data;
-      // this.categories = response.data.result_type;
+      this.categories = response.data.categories;
     },
 
-    async getCategories() {
-      try {
-        const response = await axios.get(route('client.categories.static'));
-        this.categories = response.data;
-      } catch (error) {
-        console.error('Ошибка при загрузке категорий:', error);
-      }
-    },
 
 		toggleLoadingState(state) {
 			this.loading = state
@@ -204,8 +191,9 @@ export default {
 			return text
 		},
 
-    clearSearch() {
+    clearFilters() {
       this.searchInput = ""
+      this.selectedCategory = null
       this.search()
     }
 	},
