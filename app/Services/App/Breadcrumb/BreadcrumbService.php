@@ -19,14 +19,19 @@ class BreadcrumbService
         // Пытаемся найти index-версию маршрута
         $indexRouteName = $this->getIndexRouteName($routeName);
 
+
         if ($indexRouteName === null) {
             return null;
         }
 
 
-        // Используем index-версию, если она существует
-        $finalRouteName = Route::has($indexRouteName) ? $indexRouteName : $routeName;
 
+        // Используем index-версию, если она существует
+        $finalRouteName = Route::has($indexRouteName) ? $indexRouteName : null;
+
+        if ($finalRouteName === null) {
+            return null;
+        }
 
 
         $path = $this->generatePath($finalRouteName);
@@ -72,6 +77,7 @@ class BreadcrumbService
 
         // Заменяем последнюю часть на index
         $parts[count($parts) - 1] = 'index';
+
         return implode('.', $parts);
     }
 }

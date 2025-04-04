@@ -34,6 +34,7 @@ class ClientDepartmentController extends Controller
             }
         );
 
+
         // Кешируем список активных кафедр факультета
         $departments = Cache::remember(
             CacheKeys::DEPARTMENTS_PREFIX->value . 'active_' . $faculty->id,

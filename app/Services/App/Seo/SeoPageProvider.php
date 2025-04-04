@@ -24,7 +24,7 @@ class SeoPageProvider
             fn() => Page::where('path', $path)->first()
         );
 
-        return $page->seo?->toArray(); // Предполагается, что у модели Page есть поле `seo` (JSON или массив)
+        return $page->seo?->toArray();
     }
 
     private function getCurrentPath(): string
