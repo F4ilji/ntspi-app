@@ -53,21 +53,26 @@ class ClientFacultyController extends Controller
         );
 
         // Кешируем данные конкретного факультета
-        [$faculty, $seo] = Cache::remember(
+        $faculty = Cache::remember(
             CacheKeys::FACULTY_PREFIX->value . $slug,
             now()->addDay(),
             function () use ($slug) {
-                $faculty = Faculty::where('slug', $slug)
+                return Faculty::where('slug', $slug)
                     ->where('is_active', true)
                     ->with(['departments.faculty', 'workers.userDetail', 'seo'])
                     ->firstOrFail();
-                $seo = $this->seoPageProvider->getSeoForModel($faculty);
-                return [
-                    new FullFacultyResource($faculty),
-                    $seo
-                ];
             }
         );
+
+        $seo = Cache::remember(
+            CacheKeys::FACULTY_PREFIX->value . "SEO_" . $slug,
+            now()->addDay(),
+            function () use ($faculty) {
+                return $this->seoPageProvider->getSeoForModel($faculty);
+            }
+        );
+
+        $faculty = new FullFacultyResource($faculty);
 
 
 

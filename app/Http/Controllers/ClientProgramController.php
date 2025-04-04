@@ -28,128 +28,101 @@ class ClientProgramController extends Controller
 {
     public function __construct(readonly SeoPageProvider $seoPageProvider){}
 
-    public function index(Request $request)
+    public function index(Request $request): \Inertia\Response
     {
         $cacheKey = CacheKeys::EDUCATION_PROGRAMS_PREFIX->value . md5(serialize($request->all()));
+        $cacheKeyLevels = 'education_levels_list';
+        $cacheKeyForms = 'education_forms_list';
+        $cacheKeyBudgets = 'education_budgets_list';
+        $cacheKeySeo = 'education_programs_seo';
 
-        $data = Cache::remember($cacheKey, now()->addHours(1), function () use ($request) {
-            $activeCampaign = AdmissionCampaign::query()->where('status', 1)->first();
+        $activeCampaign = Cache::remember('active_admission_campaign', now()->addDay(), function () {
+            return AdmissionCampaign::where('status', 1)->first();
+        });
 
-            $uniqueValues = EducationalProgram::distinct()->pluck('lvl_edu');
-            $levelsEducational = $uniqueValues->mapWithKeys(function ($level) {
-                return [$level->name => $level->getLabel()];
-            });
+        $levelsEducational = Cache::remember($cacheKeyLevels, now()->addDay(), function () {
+            return EducationalProgram::distinct()->pluck('lvl_edu')
+                ->mapWithKeys(fn($level) => [$level->name => $level->getLabel()]);
+        });
 
-            $direction_studies = DirectionStudy::query()
-                ->withAdmissionCampaignByYear($activeCampaign->academic_year)
-                ->withActivePrograms()
-                ->get();
+        $formsEdu = Cache::remember($cacheKeyForms, now()->addDay(), function () {
+            return collect(FormEducation::cases())
+                ->mapWithKeys(fn($form) => [$form->name => $form->getLabel()]);
+        });
 
-            $level = request()->input('level');
-            $form = request()->input('form');
-            $budget = request()->input('budget');
+        $budgetEdu = Cache::remember($cacheKeyBudgets, now()->addDay(), function () {
+            return collect(BudgetEducation::cases())
+                ->mapWithKeys(fn($type) => [$type->name => $type->getLabel()]);
+        });
 
-            $naprs = DirectionStudyResource::collection(
+        $seo = Cache::remember($cacheKeySeo, now()->addDay(), function () {
+            return $this->seoPageProvider->getSeoForCurrentPage();
+        });
+
+        $naprs = Cache::remember($cacheKey, now()->addHours(1), function () use ($request, $activeCampaign) {
+            return DirectionStudyResource::collection(
                 DirectionStudy::query()
                     ->withAdmissionCampaignByYear($activeCampaign->academic_year)
                     ->withActivePrograms()
                     ->with('programs.admission_plans')
-                    ->when($level, function ($query) use ($level) {
-                        $query->where('lvl_edu', LevelEducational::fromName($level)->value);
-                    })
-                    ->when($form, function ($query) use ($form) {
-                        $this->applyFormFilter($query, $form);
-                    })
-                    ->when($budget, function ($query) use ($budget) {
-                        $this->applyBudgetFilter($query, $budget);
-                    })
-                    ->when(request()->input('direction'), function ($query) {
-                        $slugs = request()->input('direction');
-                        if (is_array($slugs)) {
-                            $query->whereIn('slug', $slugs);
-                        }
-                    })
+                    ->when($request->input('level'), fn($q, $level) =>
+                    $q->where('lvl_edu', LevelEducational::fromName($level)->value))
+                    ->when($request->input('form'), fn($q, $form) =>
+                    $this->applyFormFilter($q, $form))
+                    ->when($request->input('budget'), fn($q, $budget) =>
+                    $this->applyBudgetFilter($q, $budget))
+                    ->when($request->input('direction'), fn($q, $slugs) =>
+                    is_array($slugs) ? $q->whereIn('slug', $slugs) : $q)
                     ->get()
-            );
-
-            $campaignName = $this->getAdmissionCampaignName();
-            $formsEducational = FormEducation::cases();
-            $formsEducational = collect($formsEducational);
-            $formsEdu = $formsEducational->mapWithKeys(function ($formEducational) {
-                return [$formEducational->name => $formEducational->getLabel()];
-            });
-            $typesBudget = BudgetEducation::cases();
-            $typesBudget = collect($typesBudget);
-            $budgetEdu = $typesBudget->mapWithKeys(function ($typeBudget) {
-                return [$typeBudget->name => $typeBudget->getLabel()];
-            });
-
-            $filters = [
-                'level_filter' => [
-                    'type' => 'level',
-                    'value' => request()->input('level'),
-                    'param' => 'level'
-                ],
-                'budget_filter' => [
-                    'type' => 'budget',
-                    'value' => request()->input('budget'),
-                    'param' => 'budget'
-                ],
-                'formEdu_filter' => [
-                    'type' => 'form',
-                    'value' => request()->input('form'),
-                    'param' => 'form'
-                ],
-                'direction_filter' => [
-                    'type' => 'direction',
-                    'value' => request()->input('direction'),
-                    'param' => 'direction'
-                ],
-            ];
-
-            $seo = $this->seoPageProvider->getSeoForCurrentPage();
-
-
-            return compact(
-                'naprs',
-                'campaignName',
-                'levelsEducational',
-                'filters',
-                'formsEdu',
-                'budgetEdu',
-                'direction_studies',
-                'seo'
             );
         });
 
+        $data = [
+            'naprs' => $naprs,
+            'campaignName' => $this->getAdmissionCampaignName(),
+            'levelsEducational' => $levelsEducational,
+            'filters' => [
+                'level_filter' => ['type' => 'level', 'value' => $request->input('level'), 'param' => 'level'],
+                'budget_filter' => ['type' => 'budget', 'value' => $request->input('budget'), 'param' => 'budget'],
+                'formEdu_filter' => ['type' => 'form', 'value' => $request->input('form'), 'param' => 'form'],
+                'direction_filter' => ['type' => 'direction', 'value' => $request->input('direction'), 'param' => 'direction'],
+            ],
+            'formsEdu' => $formsEdu,
+            'budgetEdu' => $budgetEdu,
+            'direction_studies' => DirectionStudy::query()
+                ->withAdmissionCampaignByYear($activeCampaign->academic_year)
+                ->withActivePrograms()
+                ->get(),
+            'seo' => $seo
+        ];
 
         return Inertia::render('Client/Programs/Index', $data);
     }
-
-    public function show(string $slug)
+    public function show(string $slug): \Inertia\Response
     {
-        $cacheKey = CacheKeys::EDUCATION_PROGRAM_PREFIX->value . md5($slug);
+        $cacheKeyProgram = CacheKeys::EDUCATION_PROGRAM_PREFIX->value . md5($slug);
+        $cacheKeySeo = CacheKeys::EDUCATION_PROGRAM_PREFIX->value . 'seo_' . md5($slug);
+        $cacheKeyForms = 'education_forms_list';
 
-        $data = Cache::remember($cacheKey, now()->addHours(1), function () use ($slug) {
-            $program = new EducationalProgramFullResource(
-                $programModel = EducationalProgram::query()
-                    ->where('slug', $slug)
-                    ->with(['admission_plans', 'directionStudy', 'seo'])
-                    ->firstOrFail()
-            );
-
-            $formsEducational = BudgetEducation::cases();
-            $formsEducational = collect($formsEducational);
-            $formsEdu = $formsEducational->mapWithKeys(function ($formEducational) {
-                return [$formEducational->value => $formEducational->getLabel()];
-            });
-
-            $seo = $this->seoPageProvider->getSeoForModel($programModel);
-
-            return compact('program', 'formsEdu', 'seo');
+        $programModel = Cache::remember($cacheKeyProgram, now()->addHours(1), function () use ($slug) {
+            return EducationalProgram::query()
+                ->where('slug', $slug)
+                ->with(['admission_plans', 'directionStudy', 'seo'])
+                ->firstOrFail();
         });
 
-        return Inertia::render('Client/Programs/Show', $data);
+        $formsEdu = Cache::remember($cacheKeyForms, now()->addDay(), function () {
+            return collect(BudgetEducation::cases())
+                ->mapWithKeys(fn($form) => [$form->value => $form->getLabel()]);
+        });
+
+        $seo = Cache::remember($cacheKeySeo, now()->addHours(1), function () use ($programModel) {
+            return $this->seoPageProvider->getSeoForModel($programModel);
+        });
+
+        $program = new EducationalProgramFullResource($programModel);
+
+        return Inertia::render('Client/Programs/Show', compact('program', 'formsEdu', 'seo'));
     }
 
     private function getAdmissionCampaignName(): string

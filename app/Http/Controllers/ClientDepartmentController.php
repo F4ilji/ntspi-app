@@ -35,6 +35,7 @@ class ClientDepartmentController extends Controller
         );
 
 
+
         // Кешируем список активных кафедр факультета
         $departments = Cache::remember(
             CacheKeys::DEPARTMENTS_PREFIX->value . 'active_' . $faculty->id,
@@ -49,12 +50,11 @@ class ClientDepartmentController extends Controller
             }
         );
 
-        // Кешируем полные данные кафедры с отношениями
-        [$department, $seo] = Cache::remember(
+        $departmentModel = Cache::remember(
             CacheKeys::DEPARTMENT_PREFIX->value . $cacheKey,
             now()->addDay(),
             function () use ($departmentSlug) {
-                $department = Department::query()
+                return Department::query()
                     ->where('slug', $departmentSlug)
                     ->where('is_active', true)
                     ->with([
@@ -64,17 +64,20 @@ class ClientDepartmentController extends Controller
                         'programs.directionStudy',
                         'seo'
                     ])
-                    ->first();
-
-                $seo = $this->seoPageProvider->getSeoForModel($department);
-                return [
-                    new DepartmentResource($department),
-                    $seo
-                ];
+                    ->firstOrFail();
             }
         );
 
-        // Кешируем сгруппированные направления
+        $seo = Cache::remember(
+            CacheKeys::DEPARTMENT_PREFIX->value . 'seo_' . $cacheKey,
+            now()->addDay(),
+            function () use ($departmentModel) {
+                return $this->seoPageProvider->getSeoForModel($departmentModel);
+            }
+        );
+
+        $department = new DepartmentResource($departmentModel);
+
         $directions = Cache::remember(
             CacheKeys::DEPARTMENT_PREFIX->value . 'directions_' . $cacheKey,
             now()->addDay(),

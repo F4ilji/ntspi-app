@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CacheKeys;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ClientPostListResource;
 use App\Http\Resources\ClientTagResource;
@@ -138,28 +139,25 @@ class ClientPostController extends Controller
         $cacheKey = 'post_' . md5($slug);
 
         // Пытаемся получить данные из кеша
-        $data = Cache::remember($cacheKey, now()->addHours(1), function () use ($slug) {
-            // Получаем пост
-            $post = Post::where('slug', $slug)
+        $postData = Cache::remember(
+            CacheKeys::POST_PREFIX->value . $slug,
+            now()->addHours(1),
+            fn() => Post::where('slug', $slug)
                 ->where('publish_at', '<', Carbon::now())
-                ->firstOrFail();
+                ->firstOrFail()
+        );
 
-            // Преобразуем пост в ресурс
-            $postResource = new PostResource($post);
+        $seo = Cache::remember(
+            CacheKeys::POST_PREFIX->value . 'seo_' . $slug,
+            now()->addHours(1),
+            fn() => $this->seoPageProvider->getSeoForModel($postData)
+        );
 
-            // SEO-данные
-            $seo = $this->seoPageProvider->getSeoForModel($post);
-
-            // Возвращаем данные для кеширования
-            return [
-                'post' => $postResource,
-                'seo' => $seo,
-            ];
-        });
+        $post = new PostResource($postData);
 
 
         // Возвращаем ответ с использованием кешированных данных
-        return Inertia::render('Client/Posts/Show', $data);
+        return Inertia::render('Client/Posts/Show', compact(''));
     }
 
 

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SubSectionResource\RelationManagers;
 
 use App\Filament\Components\Forms\PageForm;
+use App\Models\Page;
 use App\Models\SubSection;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -18,12 +19,10 @@ class PagesRelationManager extends RelationManager
 
     protected static ?string $title = 'Страницы';
 
-
     public function form(Form $form): Form
     {
         return PageForm::getForm($form);
     }
-
 
     public function table(Table $table): Table
     {
@@ -36,86 +35,49 @@ class PagesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()->mutateFormDataUsing(function ($data) {
-                    $subSection = SubSection::find($data['sub_section_id']);
-
-
-                    if ($subSection == null) {
-                        $data['path'] = $data['slug'];
-                    } elseif($subSection->mainSection == null) {
-                        $data['path'] =  $subSection->slug . '/' . $data['slug'];
-                    } else {
-                        $data['path'] = $subSection->mainSection->slug . '/' . $subSection->slug . '/' . $data['slug'];
-                    }
-                    unset($data['sub_section_id']);
-
-
-
-
-                    $result = "";
-                    foreach ($data['content'] as $block) {
-                        $result .= $this->getDataFromBlocks($block);
-                    }
-
-                    // Удаляем лишние пробелы и переносы строк
-                    $result = preg_replace('/\s+/', ' ', $result);
-                    $result = trim($result);
-
-
-                    // Приводим текст к нижнему регистру
-                    $data['search_data'] = strtolower($result);
-
-                    return $data;
-                }),
-                Tables\Actions\AssociateAction::make(),
+                Tables\Actions\CreateAction::make(),
+                Tables\Actions\Action::make('associate')
+                    ->label('Прикрепить страницу')
+                    ->color('success')
+                    ->searchable()
+                    ->preload()
+                    ->button()
+                    ->form([
+                        Forms\Components\Select::make('recordId')
+                            ->label('Страница')
+                            ->options(Page::whereNull('sub_section_id')->whereNotNull('title')->pluck('title', 'id'))
+                            ->required(),
+                    ])
+                    ->action(function (array $data): void {
+                        $page = Page::find($data['recordId']);
+                        $page->section()->associate($this->getOwnerRecord());
+                        $page->save(); // Вызовет наблюдатели
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DetachAction::make(),
+                Tables\Actions\Action::make('detach')
+                    ->label('Открепить')
+                    ->color('danger')
+                    ->icon('heroicon-o-x-mark')
+                    ->action(function (Page $record) {
+                        $record->section()->dissociate();
+                        $record->save(); // Вызовет наблюдатели
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DetachBulkAction::make(),
+                    Tables\Actions\Action::make('bulkDetach')
+                        ->label('Открепить выбранные')
+                        ->color('danger')
+                        ->icon('heroicon-o-x-mark')
+                        ->action(function ($records) {
+                            $records->each(function (Page $record) {
+                                $record->section()->dissociate();
+                                $record->save(); // Вызовет наблюдатели для каждой записи
+                            });
+                        }),
                 ]),
             ]);
     }
-
-
-    private function getDataFromBlocks($block) : string
-    {
-        $data = "";
-        switch ($block['type']) {
-            case 'paragraph':
-                $data .= strip_tags($block['data']['content']) . " ";
-                break;
-            case 'heading':
-                $data .= strip_tags($block['data']['content']) . " ";
-                break;
-            case 'files':
-                foreach ($block['data']['file'] as $file) {
-                    $data .= $file['title'] . " ";
-                }
-                break;
-            case 'person':
-                $data .= $block['data']['name'] . " ";
-                break;
-            case 'stepper':
-                $data .= $block['data']['step_name'] . " ";
-                foreach ($block['data']['steps'] as $step) {
-                    $data .= $step['title'] . " ";
-                    $data .= strip_tags($step['content']) . " ";
-                }
-                break;
-            case 'tabs':
-                foreach ($block['data']['tab'] as $item) {
-                    foreach ($item['content'] as $block) {
-                        $data .= $this->getDataFromBlocks($block);
-                    };
-                };
-                break;
-
-        }
-        return $data;
-    }
-
 }

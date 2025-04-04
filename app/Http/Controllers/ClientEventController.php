@@ -64,18 +64,25 @@ class ClientEventController extends Controller
 
     public function show(string $slug): \Inertia\Response
     {
-        [$event, $seo] = Cache::remember(
+        $eventModel = Cache::remember(
             CacheKeys::EVENT_PREFIX->value . $slug,
             now()->addDay(),
-            function ($slug) {
-                $event = Event::where('slug', $slug)->with(['category', 'seo'])->first();
-                $seo = $this->seoPageProvider->getSeoForModel($event);
-                return [
-                    new ClientEventFullResource($event),
-                    $seo
-                ];
+            function () use ($slug) {
+                return Event::where('slug', $slug)
+                    ->with(['category', 'seo'])
+                    ->firstOrFail();
             }
         );
+
+        $seo = Cache::remember(
+            CacheKeys::EVENT_PREFIX->value . 'seo_' . $slug,
+            now()->addDay(),
+            function () use ($eventModel) {
+                return $this->seoPageProvider->getSeoForModel($eventModel);
+            }
+        );
+
+        $event = new ClientEventFullResource($eventModel);
 
 
         return Inertia::render('Client/Events/Show', compact(

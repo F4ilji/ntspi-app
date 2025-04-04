@@ -15,11 +15,11 @@ class ClientAcademicJournalController extends Controller
 {
     public function __construct(readonly SeoPageProvider $seoPageProvider){}
 
-    public function index()
+    public function index(): \Inertia\Response
     {
         $journals = Cache::remember(
             CacheKeys::ACADEMIC_JOURNALS_PREFIX->value . 'list',
-            now()->addWeek(), // Кешируем на неделю, так как журналы меняются редко
+            now()->addWeek(),
             function () {
                 return ClientAcademicJournalListResource::collection(
                     AcademicJournal::query()->get()
@@ -32,23 +32,29 @@ class ClientAcademicJournalController extends Controller
         return Inertia::render('Client/AcademicJournals/Index', compact('journals', 'seo'));
     }
 
-    public function show(string $slug)
+    public function show(string $slug): \Inertia\Response
     {
-        // Кешируем основной журнал
-        [$journal, $seo] = Cache::remember(
+        $journalData = Cache::remember(
             CacheKeys::ACADEMIC_JOURNAL_PREFIX->value . $slug,
             now()->addWeek(),
             function () use ($slug) {
-                $journal = AcademicJournal::query()
+                return AcademicJournal::query()
                     ->where('slug', $slug)
                     ->firstOrFail();
-                $seo = $this->seoPageProvider->getSeoForModel($journal);
-                return [
-                    new ClientAcademicJournalListResource($journal),
-                    $seo
-                ];
             }
         );
+
+        $seo = Cache::remember(
+            CacheKeys::ACADEMIC_JOURNAL_PREFIX->value . 'seo_' . $slug,
+            now()->addWeek(),
+            function () use ($journalData) {
+                return $this->seoPageProvider->getSeoForModel($journalData);
+            }
+        );
+
+        $journal = new ClientAcademicJournalListResource($journalData);
+
+
 
         // Кешируем выпуски журнала, сгруппированные по годам
         $journals = Cache::remember(
