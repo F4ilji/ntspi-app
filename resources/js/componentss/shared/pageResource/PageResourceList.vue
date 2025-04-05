@@ -31,7 +31,7 @@
 					</div>
 					<div class="p-4 md:p-5">
 						<p class="mt-2 text-xs uppercase text-gray-600">{{ item.model_select }}</p>
-						<h3 class="mt-2 text-lg font-medium text-gray-800 group-hover:text-blue-600">{{ item.title }}</h3>
+						<h3 class="mt-2 text-lg font-medium text-gray-800 group-hover:text-primary-hover">{{ item.title }}</h3>
 						<p class="mt-2 text-xs text-gray-600">{{ item.link_text }}</p>
 					</div>
 				</a>
@@ -59,7 +59,7 @@ export default {
 		return {
 			resource: null,
 			loading: true,
-			colors: ['from-primaryBlue', 'from-primaryRed'],
+			colors: ['from-primary', 'from-secondary'],
 		}
 	},
 	methods: {

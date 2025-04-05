@@ -64,12 +64,10 @@ export default {
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
 			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
-				<div class="px-0 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto w-full max-w-screen-md">
+				<div class="px-0 pt-6 lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto w-full max-w-screen-2xl">
 					<div>
-
 						<div class="space-y-5 md:space-y-4">
 							<div class="space-y-5 md:space-y-4">
-
 								<div>
 									<div class="container mx-auto xl:px-5 max-w-screen-lg py-5 lg:py-8">
 										<div class="space-y-10">

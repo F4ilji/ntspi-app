@@ -39,12 +39,12 @@ export default {
 <style>
 
 .paragraph-container a {
-	@apply text-secondAzure;
+	@apply text-primary-lighter;
 	@apply underline;
 }
 
 .paragraph-container a:hover {
-	@apply text-secondDarkBlue;
+	@apply text-primary-dark;
 	@apply underline;
 }
 

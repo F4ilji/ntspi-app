@@ -32,12 +32,12 @@
 						<div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
 						<ul class="max-h-[70vh] space-y-1.5 overflow-hidden py-2 text-sm">
 							<li v-if="division.data.workers.length > 0" class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'persons', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'persons' }"
+								<a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'persons', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'persons' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#persons">Состав</a>
 							</li>
 							<li v-if="division.data.description.length > 0" class="anchor-li">
-								<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'description' }"
+								<a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'description' }"
 									 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 									 href="#description">Описание</a>
 							</li>
@@ -227,7 +227,7 @@ export default {
 
 
 .paragraph-container a {
-	@apply text-[#1E57A3];
+	@apply text-primary;
 	@apply underline;
 }
 

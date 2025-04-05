@@ -12,8 +12,9 @@
 			</template>
 		</div>
 
+
     <div class="flex justify-center">
-				<a :href="route('client.post.index')" class="group mt-3 inline-flex items-center gap-x-1 text-sm font-semibold text-primaryBlue">
+				<a :href="route('client.post.index')" class="group mt-3 inline-flex items-center gap-x-1 text-sm font-semibold text-primary">
 					Все новости
 					<svg class="flex-shrink-0 size-4 transition ease-in-out group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
 				</a>
@@ -42,15 +43,15 @@
 												</div>
 												<span class=" block first-letter:uppercase">{{ event.event_date_start.month }}</span>
 												<div class="flex">
-													<span class="bg-[#E9F2FE] text-sm text-blue-600 px-2 py-1 rounded block">Начало - {{ event.event_date_start.time }}</span>
+													<span class="bg-[#E9F2FE] text-sm text-primary px-2 py-1 rounded block">Начало - {{ event.event_date_start.time }}</span>
 												</div>
 											</div>
 
 										</div>
 										<div class="flex gap-2">
-											<span v-if="event.is_online === 1" class="bg-[#E9F2FE] text-sm text-blue-600 px-2 py-1 rounded block">Онлайн</span>
+											<span v-if="event.is_online === 1" class="bg-[#E9F2FE] text-sm text-primary px-2 py-1 rounded block">Онлайн</span>
 											<div v-if="event.is_online === 0">
-												<span class="bg-[#E9F2FE] text-sm text-blue-600 px-2 py-1 rounded block">{{ event.address }}</span>
+												<span class="bg-[#E9F2FE] text-sm text-primary px-2 py-1 rounded block">{{ event.address }}</span>
 											</div>
 
 										</div>
@@ -92,9 +93,9 @@
 				<div class="grid sm:grid-cols-2 lg:grid-cols-2 gap-6">
 					<template v-for="(level, index) in educations.admission_campaign">
 						<Link :href="route('client.program.index', {level: LevelEducational[index].name})">
-							<div class="group flex flex-col h-full bg-white hover:opacity-70 hover:border-secondDarkBlue duration-300 border border-gray-200 shadow-sm rounded-xl">
+							<div class="group flex flex-col h-full bg-white hover:opacity-70 hover:border-primary-dark duration-300 border border-gray-200 shadow-sm rounded-xl">
 								<div class="p-4 md:p-6">
-        			<span class="block mb-1 text-xs font-semibold uppercase text-blue-600">
+        			<span class="block mb-1 text-xs font-semibold uppercase text-primary">
 								{{ LevelEducational[index].type_label }}
        				 </span>
 									<h3 class="text-3xl font-semibold text-gray-800">
@@ -106,23 +107,23 @@
 								</div>
 								<div class="mt-auto p-4 md:p-6 grid grid-cols-2 lg:grid-cols-3 sm:space-y-0">
 									<div class="pb-4">
-										<p class="text-2xl font-semibold text-blue-600">{{ level.total_programs }}</p>
+										<p class="text-2xl font-semibold text-primary">{{ level.total_programs }}</p>
 										<p class="mt-1 text-sm text-gray-500">Программ</p>
 									</div>
 									<div class="pb-4">
-										<p class="text-2xl font-semibold text-blue-600">{{ level.places.och_count }}</p>
+										<p class="text-2xl font-semibold text-primary">{{ level.places.och_count }}</p>
 										<p class="mt-1 text-sm text-gray-500">Очных</p>
 									</div>
 									<div class="pb-4">
-										<p class="text-2xl font-semibold text-blue-600">{{ level.places.zaoch_count }}</p>
+										<p class="text-2xl font-semibold text-primary">{{ level.places.zaoch_count }}</p>
 										<p class="mt-1 text-sm text-gray-500">Заочных</p>
 									</div>
 									<div class="pb-4">
-										<p class="text-2xl font-semibold text-blue-600">{{ level.places.budget_places }}</p>
+										<p class="text-2xl font-semibold text-primary">{{ level.places.budget_places }}</p>
 										<p class="mt-1 text-sm text-gray-500">Бюджетных</p>
 									</div>
 									<div class="pb-4">
-										<p class="text-2xl font-semibold text-blue-600">{{ level.places.non_budget_places }}</p>
+										<p class="text-2xl font-semibold text-primary">{{ level.places.non_budget_places }}</p>
 										<p class="mt-1 text-sm text-gray-500">Платных</p>
 									</div>
 
@@ -132,9 +133,9 @@
 
 					</template>
 					<Link :href="route('client.additionalEducation.index')">
-						<div class="group flex flex-col h-full bg-white hover:opacity-70 hover:border-secondDarkBlue duration-300 border border-gray-200 shadow-sm rounded-xl">
+						<div class="group flex flex-col h-full bg-white hover:opacity-70 hover:border-primary-dark duration-300 border border-gray-200 shadow-sm rounded-xl">
 							<div class="p-4 md:p-6">
-        			<span class="block mb-1 text-xs font-semibold uppercase text-blue-600">
+        			<span class="block mb-1 text-xs font-semibold uppercase text-primary">
 								Доп. образование
        				 </span>
 								<h3 class="text-3xl font-semibold text-gray-800">
@@ -146,11 +147,11 @@
 							</div>
 							<div class="mt-auto p-4 md:p-6 grid grid-cols-2 lg:grid-cols-3">
 								<div class="pb-4">
-									<p class="text-2xl font-semibold text-blue-600">{{ educations.additional_education.educations_count }}</p>
+									<p class="text-2xl font-semibold text-primary">{{ educations.additional_education.educations_count }}</p>
 									<p class="mt-1 text-sm text-gray-500">Программ</p>
 								</div>
 								<div class="pb-4">
-									<p class="text-2xl font-semibold text-blue-600">{{ educations.additional_education.categories_count }}</p>
+									<p class="text-2xl font-semibold text-primary">{{ educations.additional_education.categories_count }}</p>
 									<p class="mt-1 text-sm text-gray-500">Направлений</p>
 								</div>
 

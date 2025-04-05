@@ -7,13 +7,11 @@
 			<div>
 				<ul class="px-0.5 last-of-type:mb-0 mb-8">
 					<li v-for="page in subSectionPages.data" :key="page.id" class="my-1.5 flex">
-						<a :class="{'text-white font-normal bg-primaryBlue border': isSameRoute(page.path), 'text-gray-600 hover:text-[#2C6288]': !isSameRoute(page.path) }"
+						<a :class="{'text-white font-normal bg-primary border': isSameRoute(page.path), 'text-gray-600 hover:text-[#2C6288]': !isSameRoute(page.path) }"
 							 :href="(page.is_url) ? page.path : route('page.view', page.path) + '/'"
 							 class="duration-300 flex gap-x-2 w-full rounded-md cursor-pointer items-center px-2 py-1.5 text-left text-sm">
-							<BasicIcon class="w-4" :name="page.icon" />
-									{{
-								page.title
-							}}
+							<BasicIcon v-if="page.icon" class="w-4" :name="page.icon" />
+									{{ page.title }}
 						</a>
 					</li>
 				</ul>
@@ -54,8 +52,6 @@ export default {
 		},
 	},
 	mounted() {
-		// console.log(IconsMap)
-
 	},
 
 

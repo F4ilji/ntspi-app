@@ -33,27 +33,27 @@
 					<div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
 					<ul class="max-h-[70vh] space-y-1.5 overflow-hidden py-2 text-sm">
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'workers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'workers' }"
+							<a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'workers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'workers' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#workers">Сотрудники кафедры</a>
 						</li>
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'teachers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'teachers' }"
+							<a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'teachers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'teachers' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#teachers">Преподаватели кафедры</a>
 						</li>
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'external-teachers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'external-teachers' }"
+							<a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'external-teachers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'external-teachers' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#external-teachers">Внешние совместители</a>
 						</li>
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'programs', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'programs' }"
+							<a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'programs', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'programs' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#programs">Программы</a>
 						</li>
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'description' }"
+							<a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'description' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#description">Описание</a>
 						</li>
@@ -110,7 +110,7 @@
 								<div id="hs-basic-with-title-and-arrow-stretched-collapse-three" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" role="region" aria-labelledby="hs-basic-with-title-and-arrow-stretched-heading-three">
 									<ul class="list-disc list-outside space-y-3 ps-5 text-lg text-gray-800 dark:text-neutral-200">
 										<li v-for="program in direction" class="ps-2">
-											<Link :href="route('client.program.show', program.id)" class="text-base text-blue-600 decoration-2 hover:underline focus:outline-none focus:underline font-medium dark:text-blue-500">{{ program.name }}</Link>
+											<Link :href="route('client.program.show', program.id)" class="text-base text-primary decoration-2 hover:underline focus:outline-none focus:underline font-medium dark:text-blue-500">{{ program.name }}</Link>
 										</li>
 									</ul>
 								</div>
@@ -278,7 +278,7 @@ export default {
 
 
 .paragraph-container a {
-	@apply text-[#1E57A3];
+	@apply text-primary;
 	@apply underline;
 }
 

@@ -52,25 +52,21 @@ class ClientAdditionalEducationController extends Controller
             CacheKeys::ADDITIONAL_EDUCATIONAL_PROGRAMS_PREFIX->value . $cacheKey,
             now()->addDay(),
             function () use ($request) {
-                return AdditionalEducationCategoryResource::collection(
-                    AdditionalEducationCategory::query()
-                        ->WithActivePrograms()
-                        ->where('is_active', true)
-                        ->when($request->direction, fn ($q, $direction) =>
-                        $q->whereHas('direction', fn ($query) => $query->where('slug', $direction))
-                        )
-                        ->when($request->form, fn ($query, $form) =>
-                        $query->whereHas('additionalEducations', fn ($q) =>
-                        $q->where('form_education', FormEducation::fromName($form))
-                        )
-                            ->when($request->category, fn ($query) =>
-                            is_array($request->category)
-                                ? $query->whereIn('slug', $request->category)
-                                : $query
+                $query = AdditionalEducationCategory::query()
+                    ->WithActivePrograms()
+                    ->where('is_active', true)
+                    ->when($request->direction, function ($q, $direction) use ($request) {
+                        return $q->whereHas('direction', fn($query) => $query->where('slug', $direction))
+                            ->when($request->form, fn($query, $form) => $query->whereHas('additionalEducations', fn($q) => $q->where('form_education', FormEducation::fromName($form))
                             )
-                            ->has('additionalEducations')
-                            ->get()
-                        ));
+                                ->when($request->category, fn($query) => is_array($request->category)
+                                    ? $query->whereIn('slug', $request->category)
+                                    : $query->where('slug', $request->category)
+                                )
+                                ->has('additionalEducations'));
+                    });
+
+                return AdditionalEducationCategoryResource::collection($query->get());
             }
         );
 
@@ -124,7 +120,6 @@ class ClientAdditionalEducationController extends Controller
 
         $seo = $this->seoPageProvider->getSeoForCurrentPage();
 
-
         return Inertia::render('Client/Additional-educations/Index', compact(
             'directionAdditionalEducations',
             'additionalEducations',
@@ -134,6 +129,7 @@ class ClientAdditionalEducationController extends Controller
             'seo'
         ));
     }
+
     public function show(string $slug): \Inertia\Response
     {
         $additionalEducationModel = Cache::remember(

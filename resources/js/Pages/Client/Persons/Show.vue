@@ -167,7 +167,7 @@ export default {
 
 
 .paragraph-container a {
-	@apply text-[#1E57A3];
+	@apply text-primary;
 	@apply underline;
 }
 

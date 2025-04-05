@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-	<footer class="w-full bg-[#1A5AAF] py-10 mx-auto">
+	<footer class="w-full bg-primary py-10 mx-auto">
 		<!-- Grid -->
 		<!-- End Grid -->
 

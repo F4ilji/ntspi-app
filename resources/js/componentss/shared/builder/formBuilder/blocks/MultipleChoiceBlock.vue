@@ -7,7 +7,7 @@
 						type="checkbox"
 						:name="block.data.name_field + '[]'"
 						:value="column.name_field"
-						class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+						class="shrink-0 mt-0.5 border-gray-200 rounded text-primary focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
 						:id="column.name_field + '-id'">
 				<label :for="column.name_field + '-id'" class="text-sm text-gray-500 ms-3">{{ column.title_field }}</label>
 			</div>

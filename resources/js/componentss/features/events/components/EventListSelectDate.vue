@@ -78,7 +78,7 @@ export default {
 }
 
 .active-button {
-	@apply bg-blue-600 text-white;
+	@apply bg-primary text-white;
 }
 
 </style>

@@ -106,7 +106,7 @@ export default {
 					<template v-for="schedule in schedules.data" :key="schedule.id">
 						<div class="hs-accordion hs-accordion-active:border-gray-200 bg-white border-b dark:hs-accordion-active:border-gray-700 dark:bg-gray-800 dark:border-transparent"
 							 id="hs-active-bordered-heading-one">
-							<button class="hs-accordion-toggle hs-accordion-active:text-blue-600 inline-flex justify-between items-center gap-x-3 w-full font-semibold text-start text-gray-800 py-4 px-5 hover:text-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400 dark:focus:outline-none dark:focus:text-gray-400"
+							<button class="hs-accordion-toggle hs-accordion-active:text-primary inline-flex justify-between items-center gap-x-3 w-full font-semibold text-start text-gray-800 py-4 px-5 hover:text-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:hs-accordion-active:text-blue-500 dark:text-gray-200 dark:hover:text-gray-400 dark:focus:outline-none dark:focus:text-gray-400"
 									aria-controls="hs-basic-active-bordered-collapse-one">
 								{{ schedule.name }}
 								<svg class="hs-accordion-active:hidden block w-3.5 h-3.5"

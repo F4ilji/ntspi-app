@@ -25,7 +25,7 @@ class ClientPostController extends Controller
 {
     public function __construct(readonly SeoPageProvider $seoPageProvider){}
 
-    public function index(Request $request)
+    public function index(Request $request): \Inertia\Response
     {
         // Кешируем список тегов
         $tagIds = Cache::remember('tag_ids', now()->addHours(), function () {
@@ -37,12 +37,10 @@ class ClientPostController extends Controller
                 ->pluck('tag_id');
         });
 
-        // Кешируем теги
         $tags = Cache::remember('tags', now()->addHours(1), function () use ($tagIds) {
             return \Spatie\Tags\Tag::whereIn('id', $tagIds)->get();
         });
 
-        // Кешируем посты с учетом фильтров
         $cacheKey = 'posts_' . md5(serialize($request->all()));
         $posts = Cache::remember($cacheKey, now()->addHours(1), function () use ($request) {
             return ClientPostListResource::collection(Post::query()
@@ -74,12 +72,10 @@ class ClientPostController extends Controller
                 ->withQueryString());
         });
 
-        // Кешируем категории
         $categories = Cache::remember('categories', now()->addHours(48), function () {
             return CategoryResource::collection(Category::has('posts')->get());
         });
 
-        // Кешируем контент категорий
         $categoriesContent = [];
         if ($request->input('category')) {
             foreach ($request->input('category') as $item) {
@@ -133,12 +129,8 @@ class ClientPostController extends Controller
         return Inertia::render('Client/Posts/Index', compact('filters', 'posts', 'categories', 'tags', 'seo'));
     }
 
-    public function show(Request $request, $slug)
+    public function show(Request $request, $slug): \Inertia\Response
     {
-        // Уникальный ключ для кеширования
-        $cacheKey = 'post_' . md5($slug);
-
-        // Пытаемся получить данные из кеша
         $postData = Cache::remember(
             CacheKeys::POST_PREFIX->value . $slug,
             now()->addHours(1),
@@ -157,7 +149,7 @@ class ClientPostController extends Controller
 
 
         // Возвращаем ответ с использованием кешированных данных
-        return Inertia::render('Client/Posts/Show', compact(''));
+        return Inertia::render('Client/Posts/Show', compact('post', 'seo'));
     }
 
 

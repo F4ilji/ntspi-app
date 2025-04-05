@@ -27,7 +27,7 @@ export default {
 	computed: {
 		linkClass() {
 			return {
-				'translate-x-2 text-[#135aae]': this.isActive,
+				'translate-x-2 text-primary-light': this.isActive,
 				'bg-transperant text-gray-600 hover:text-gray-900': !this.isActive
 			};
 		}

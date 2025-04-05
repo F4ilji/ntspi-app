@@ -10,7 +10,7 @@
 				<div class="flex flex-col ml-3">
 					<div v-for="item in categories" :key="item.id">
 						<input v-model="category" :value="item.slug" @change="filter"
-									 type="checkbox" class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+									 type="checkbox" class="shrink-0 mt-0.5 border-gray-200 rounded text-primary focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
 									 :id="'inp' + item.id">
 						<label :for="'inp' + item.id" class="text-sm text-gray-500 ms-3 dark:text-neutral-400">{{ item.name }}</label>
 					</div>

@@ -7,7 +7,7 @@
 				</div>
 				<div class="relative last:after:hidden after:absolute after:top-7 after:bottom-0 after:start-3.5 after:w-px after:-translate-x-[0.5px] after:bg-gray-200">
 					<div class="relative z-10 size-7 flex justify-center items-center">
-						<div class="size-2 rounded-full bg-primaryBlue"></div>
+						<div class="size-2 rounded-full bg-primary"></div>
 					</div>
 				</div>
 				<div class="grow max-w-[70%] pt-0.5 pb-8 overflow-wrap break-words">
@@ -58,12 +58,12 @@ export default {
 <style>
 
 .step-content a {
-	@apply text-secondAzure;
+	@apply text-primary-lighter;
 	@apply underline;
 }
 
 .step-content a:hover {
-	@apply text-secondDarkBlue;
+	@apply text-primary-dark;
 	@apply underline;
 }
 

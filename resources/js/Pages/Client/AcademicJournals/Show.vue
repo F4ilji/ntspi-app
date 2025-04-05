@@ -169,7 +169,7 @@ export default {
 																		<p class="text-sm text-gray-500">
 																			{{ item.year_publication }}
 																		</p>
-																		<h3 class="group-hover:text-blue-600 font-semibold text-gray-800">
+																		<h3 class="group-hover:text-primary-hover font-semibold text-gray-800">
 																			{{ item.title }}
 																		</h3>
 																	</div>
@@ -205,7 +205,7 @@ export default {
 <style>
 
 .paragraph-container a {
-	@apply text-[#1E57A3];
+	@apply text-primary;
 	@apply underline;
 }
 

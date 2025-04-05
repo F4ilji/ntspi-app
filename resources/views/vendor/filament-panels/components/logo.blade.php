@@ -1,2 +1,2 @@
-<img src="{{ asset('logos/ntspi-logo.svg') }}" alt="Logo" class="h-10">
+<img src="{{ asset('logos/ntspi.svg') }}" alt="Logo" class="h-12">
 

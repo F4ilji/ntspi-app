@@ -14,7 +14,7 @@
 									:id="'nav-section-btn-' + section.slug"
 									type="button"
 									:class="!underSliderHeader ? 'text-white' : 'text-black'"
-									class="duration-300 flex items-center w-full hover:text-primaryBlue font-medium hs-dropdown-open:mb-4 md:hs-dropdown-open:mb-0">
+									class="duration-300 flex items-center w-full hover:text-primary-hover font-medium hs-dropdown-open:mb-4 md:hs-dropdown-open:mb-0">
 								{{ section.title }}
 								<svg class="flex-shrink-0 ms-2 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
 										 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -40,7 +40,7 @@
 													</div>
 													<template v-for="page in subsection.pages" :key="page.id">
 														<a
-																:class="{ 'text-[#135aae] hover:text-gray-800 font-semibold': IS_SAME_ROUTE(page.path), 'text-gray-800 hover:text-[#2C6288]': !IS_SAME_ROUTE(page.path) }"
+																:class="{ 'text-primary-light hover:text-gray-800 font-semibold': IS_SAME_ROUTE(page.path), 'text-gray-800 hover:text-[#2C6288]': !IS_SAME_ROUTE(page.path) }"
 																class="flex items-center gap-x-2"
 																:href="(page.is_url) ? page.path : route('page.view', page.path) + '/'">
 															<div class="grow">

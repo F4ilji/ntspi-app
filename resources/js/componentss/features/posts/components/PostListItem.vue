@@ -27,14 +27,14 @@
                         <div>
                           <div v-if="post.category" class="flex gap-3 bvi-hide">
                             <a :href="route('client.post.index', { 'category[]': post.category.slug })">
-                                <span class="inline-block text-xs font-medium tracking-wider uppercase mt-5 text-blue-600">
+                                <span class="inline-block text-xs font-medium tracking-wider uppercase mt-5 text-primary">
                                     {{ post.category ? post.category.title : "Новости" }}
                                 </span>
                             </a>
                           </div>
 													<div v-else class="flex gap-3">
 														<span>
-                                <span class="inline-block text-xs font-medium tracking-wider uppercase mt-5 text-blue-600">
+                                <span class="inline-block text-xs font-medium tracking-wider uppercase mt-5 text-primary">
                                     Новости
                                 </span>
 														</span>

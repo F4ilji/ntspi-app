@@ -2,7 +2,7 @@
 		<!--Фильтр-->
 		<button type="button"
 						aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-offcanvas-example" data-hs-overlay="#hs-offcanvas-example"
-						class="flex w-full py-2 px-4 items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-primaryBlue focus:text-white disabled:opacity-50 disabled:pointer-events-none">
+						class="flex w-full py-2 px-4 items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-primary focus:text-white disabled:opacity-50 disabled:pointer-events-none">
 			<BasicIcon class="shrink-0 size-4" name="settings" />
 			<span>Фильтры</span>
 		</button>

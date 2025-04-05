@@ -172,7 +172,7 @@ export default {
 													type="button"
 													:disabled="favoriteGroups?.length === 0 || loading"
 													:class="
-															filters.favorite_filter.value !== null ? 'bg-primaryBlue text-white hover:bg-secondDarkBlue': 'text-gray-700 hover:bg-gray-100',
+															filters.favorite_filter.value !== null ? 'bg-primary text-white hover:bg-primary-dark': 'text-gray-700 hover:bg-gray-100',
 															loading ? 'animate-pulse' : ''
 															"
 													class="flex w-full py-2 px-4 items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
@@ -217,7 +217,7 @@ export default {
 														</transition>
 
 													</button>
-													<button class="hs-accordion-toggle hs-accordion-active:text-blue-600 inline-flex justify-between items-center gap-x-3 w-full font-semibold text-start text-gray-800 hover:text-gray-500 disabled:opacity-50 disabled:pointer-events-none" aria-expanded="false" aria-controls="hs-basic-active-bordered-collapse-one">
+													<button class="hs-accordion-toggle hs-accordion-active:text-primary inline-flex justify-between items-center gap-x-3 w-full font-semibold text-start text-gray-800 hover:text-gray-500 disabled:opacity-50 disabled:pointer-events-none" aria-expanded="false" aria-controls="hs-basic-active-bordered-collapse-one">
 														<span class="flex items-center gap-x-2">{{ educationalGroup.data.title }}</span>
 														<svg class="hs-accordion-active:hidden block size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 															<path d="M5 12h14"></path>

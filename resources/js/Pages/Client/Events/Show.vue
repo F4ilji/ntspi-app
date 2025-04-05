@@ -76,15 +76,15 @@ export default {
                     <div class="flex items-center flex-wrap gap-2 text-sm">
                       <a :href="route('client.event.index', { 'is_online': 'online' })"
                          v-if="event.data.is_online === 1"
-                         class="inline-flex items-center py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] hover:underline text-blue-600">
+                         class="inline-flex items-center py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] hover:underline text-primary">
                         Онлайн
                       </a>
                       <a :href="route('client.event.index', { 'category[]': event.data.category.slug })"
                          v-if="event.data.category"
-                         class="inline-flex items-center py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] hover:underline text-blue-600">
+                         class="inline-flex items-center py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] hover:underline text-primary">
                         {{ event.data.category.title }}
                       </a>
-                      <div class="inline-flex items-center py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600">
+                      <div class="inline-flex items-center py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-primary">
                         <span>Дата начала: {{ event.data.event_date_start }}, {{ event.data.event_time_start }}</span>
                       </div>
                       <div class="md:flex md:items-center md:justify-center w-full md:w-auto">

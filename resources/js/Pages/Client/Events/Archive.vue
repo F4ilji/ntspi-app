@@ -111,11 +111,11 @@ export default {
                         <p class="inline-flex mr-2 items-center gap-1.5 py-1.5 rounded-md text-[12px] text-gray-600">
                           {{ event.event_date_start }}
                         </p>
-                        <a :href="route('client.event.archive', { 'category[]': event.category.slug })" v-if="event.category" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-blue-600 hover:underline">
+                        <a :href="route('client.event.archive', { 'category[]': event.category.slug })" v-if="event.category" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-[#E9F2FE] text-primary hover:underline">
                           {{ event.category.title }}
                         </a>
                       </div>
-                      <Link :href="route('client.event.show', event.slug)" class="text-lg sm:text-2xl font-semibold text-gray-800 hover:text-blue-600">
+                      <Link :href="route('client.event.show', event.slug)" class="text-lg sm:text-2xl font-semibold text-gray-800 hover:text-primary-hover">
                         {{ event.title }}
                       </Link>
                     </div>

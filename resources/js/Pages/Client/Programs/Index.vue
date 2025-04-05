@@ -120,7 +120,7 @@ export default {
 															</h1>
 															<template v-for="program in napr.programs" :key="program.id">
 																<Link
-																		class="block text-[#1E57A3] hover:text-blue-600 duration-200 text-sm underline underline-offset-2 py-1"
+																		class="block text-primary hover:text-primary-hover duration-200 text-sm underline underline-offset-2 py-1"
 																		:href="route('client.program.show', program.slug)">{{ program.name }}
 																</Link>
 															</template>

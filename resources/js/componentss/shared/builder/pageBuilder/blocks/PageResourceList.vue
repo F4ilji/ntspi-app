@@ -58,7 +58,7 @@
 					</div>
 					<div class="p-4 md:p-5 flex flex-col flex-grow">
 						<!-- <p class="mt-2 text-xs uppercase text-gray-600">{{ item.model_select }}</p> -->
-						<h3 class="my-2 text-lg font-medium text-gray-800 group-hover:text-blue-600">
+						<h3 class="my-2 text-lg font-medium text-gray-800 group-hover:text-primary-hover">
 							{{ textLimit(item.title, 40) }}
 						</h3>
 						<p class="text-xs text-gray-600 mt-auto group-hover:text-gray-900">
@@ -92,7 +92,7 @@ export default {
 		return {
 			resource: null,
 			loading: true,
-			colors: ['from-primaryBlue', 'from-primaryRed'],
+			colors: ['from-primary', 'from-secondary'],
 		}
 	},
 	methods: {

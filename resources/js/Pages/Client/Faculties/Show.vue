@@ -34,17 +34,17 @@
 					<div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
 					<ul class="max-h-[70vh] space-y-1.5 overflow-hidden py-2 text-sm">
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'persons', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'persons' }"
+							<a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'persons', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'persons' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#persons">Состав</a>
 						</li>
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'department', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'department' }"
+							<a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'department', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'department' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#department">Кафедры факультета</a>
 						</li>
 						<li class="anchor-li">
-							<a :class="{ 'translate-x-2 text-[#135aae]' : currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'description' }"
+							<a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'description' }"
 								 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
 								 href="#description">Описание</a>
 						</li>
@@ -102,7 +102,7 @@
 									<div class="p-4 md:p-5">
 										<div class="flex justify-between items-center gap-x-3">
 											<div class="grow">
-												<h3 class="group-hover:text-blue-600 font-semibold text-gray-800">
+												<h3 class="group-hover:text-primary-hover font-semibold text-gray-800">
 													{{ department.title }}
 												</h3>
 											</div>

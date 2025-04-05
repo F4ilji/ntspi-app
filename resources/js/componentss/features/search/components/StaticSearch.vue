@@ -3,18 +3,18 @@
     			<div v-if="result !== null && result.length !== 0" class="relative px-3 pt-5 gap-2 justify-start items-center flex flex-wrap hide-scrollbar">
     				<button @click="categorySort(null)"
     								:class="{
-      									'bg-blue-50': selectedCategory === null,
-      									'text-blue-500': selectedCategory === null,
-      									'border-blue-300': selectedCategory === null,
+  									'bg-blue-50': selectedCategory === null,
+  									'text-primary': selectedCategory === null,
+  									'border-primary-lighter': selectedCategory === null,
       									'animate-pulse': loading === true
     									}"
     								class="hover:bg-gray-50 duration-150 border border-[#EAEAEA] rounded font-light text-[13px] px-2 py-0.5" type="button">Все</button>
     				<template v-for="category in categories">
     					<button @click="categorySort(category)"
     									:class="{
-      									'bg-blue-50': selectedCategory === category,
-      									'text-blue-500': selectedCategory === category,
-      									'border-blue-300': selectedCategory === category,
+  									'bg-blue-50': selectedCategory === category,
+  									'text-primary': selectedCategory === category,
+  									'border-primary-lighter': selectedCategory === category,
       									'animate-pulse': loading === true
     									}"
     									class="hover:bg-gray-50 duration-150 border border-[#EAEAEA] rounded font-light text-[13px] px-2 py-0.5" type="button">

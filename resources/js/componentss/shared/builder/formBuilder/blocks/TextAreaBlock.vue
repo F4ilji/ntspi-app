@@ -26,7 +26,7 @@
 			<p v-if="!error" class="text-sm text-gray-500" id="hs-input-helper-text">
 				{{ block.data.description }}
 			</p>
-			<p class="text-sm text-primaryBlue">{{ textarea.length }} / {{ block.data.rules.max }}</p>
+			<p class="text-sm text-primary">{{ textarea.length }} / {{ block.data.rules.max }}</p>
 		</div>
 
 		<p v-for="item in error" class="text-sm text-red-600 mt-2" id="hs-validation-name-error-helper">{{ item }}</p>

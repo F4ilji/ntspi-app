@@ -1,7 +1,7 @@
 <!-- NavLink.vue -->
 <template>
   <div class="flex items-center gap-x-10 gap-y-4 flex-wrap">
-    <PersonAvatarBlock v-if="person.data.details.photo" :photo="person.data.details.photo" />
+    <PersonAvatarBlock v-if="person.data?.details.photo" :photo="person.data.details.photo" />
     <div class="grow">
       <h1 class="text-2xl font-medium text-gray-800 dark:text-neutral-200">
         {{ person.data.name }}
@@ -113,7 +113,7 @@ export default {
 	computed: {
 		linkClass() {
 			return {
-				'translate-x-2 text-[#135aae]': this.isActive,
+				'translate-x-2 text-primary-light': this.isActive,
 				'bg-transperant text-gray-600 hover:text-gray-900': !this.isActive
 			};
 		}

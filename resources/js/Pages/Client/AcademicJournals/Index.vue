@@ -67,7 +67,7 @@ export default {
 												<div class="p-4 md:p-5 w-full">
 													<div class="flex justify-between items-center gap-x-3">
 														<div class="grow">
-															<h3 class="group-hover:text-blue-600 font-semibold text-gray-800">
+															<h3 class="group-hover:text-primary-hover font-semibold text-gray-800">
 																{{ journal.title }}
 															</h3>
 														</div>
