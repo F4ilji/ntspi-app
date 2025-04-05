@@ -5,6 +5,12 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig({
     build: {
         manifest: "manifest.json",
+        minify: 'terser', // Включаем минификатор Terser
+        terserOptions: {
+            compress: {
+                drop_console: true, // Удаляем все console.log
+            },
+        },
     },
     plugins: [
         laravel({

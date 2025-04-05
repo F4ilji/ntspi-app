@@ -71,7 +71,7 @@ export default {
 						<!-- End Avatar Media -->
 						<!-- Content -->
 						<div class="space-y-5 md:space-y-8">
-              <AcademicJournalsItemBreadcrumbs class="max-w-4xl px-2 xl:px-5 md:w-4/5 mx-auto" :title="journal.data.title" />
+              <AcademicJournalsItemBreadcrumbs :title="journal.data.title" />
 							<AcademicJournalsTitle class="text-center" :header="journal.data.title" />
 							<div>
 								<nav class="flex flex-col md:flex-row justify-center gap-x-6" aria-label="Tabs" role="tablist" aria-orientation="horizontal">
