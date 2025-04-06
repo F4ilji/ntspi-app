@@ -22,6 +22,9 @@ class JournalsRelationManager extends RelationManager
     protected static ?string $modelLabel = 'выпуск';
     protected static ?string $pluralModelLabel = 'выпуски';
 
+    protected static ?string $title = 'Выпуски журнала';
+
+
     public function form(Form $form): Form
     {
         return $form
@@ -43,11 +46,11 @@ class JournalsRelationManager extends RelationManager
                         'application/vnd.openxmlformats-officedocument.presentationml.presentation',
                         'application/zip'
                     ])
-                    ->maxSize(512000)
+                    ->maxSize(256000)
                     ->disk('public')
                     ->directory('files')
                     ->downloadable()
-                    ->helperText('Максимальный размер файла: 512MB. Допустимые форматы: PDF, DOCX, XLSX, PPTX, ZIP')
+                    ->helperText('Максимальный размер файла: 256MB. Допустимые форматы: PDF, DOCX, XLSX, PPTX, ZIP')
                     ->openable(),
 
 
