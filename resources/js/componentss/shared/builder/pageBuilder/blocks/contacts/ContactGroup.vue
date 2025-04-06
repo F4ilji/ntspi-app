@@ -1,6 +1,6 @@
 <template>
 	<div class="space-y-3">
-		<h2 class="font-semibold text-[#1A5AAF] text-lg">{{ title }}</h2>
+		<h2 class="font-semibold text-primary text-lg">{{ title }}</h2>
 		<div v-for="(item, index) in items" :key="index">
 			<h3 class="font-semibold md:mb-2 mb-1">{{ item.header }}</h3>
 			<div class="font-light">

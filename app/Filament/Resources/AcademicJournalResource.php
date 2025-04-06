@@ -105,17 +105,17 @@ class AcademicJournalResource extends Resource
                                                 TextInput::make('name')
                                                     ->label('ФИО')
                                                     ->required()
-                                                    ->maxLength(100)
+                                                    ->maxLength(255)
                                                     ->placeholder('Иванов Иван Иванович'),
                                                 TextInput::make('academicTitle')
                                                     ->label('Учёная степень')
                                                     ->required()
-                                                    ->maxLength(50)
+                                                    ->maxLength(255)
                                                     ->placeholder('д.т.н., профессор'),
                                                 TextInput::make('position')
                                                     ->label('Должность')
                                                     ->required()
-                                                    ->maxLength(100)
+                                                    ->maxLength(255)
                                                     ->placeholder('Главный научный сотрудник'),
                                                 TextInput::make('institution')
                                                     ->label('Учреждение')
@@ -137,17 +137,17 @@ class AcademicJournalResource extends Resource
                                                 TextInput::make('name')
                                                     ->label('ФИО')
                                                     ->required()
-                                                    ->maxLength(100)
+                                                    ->maxLength(255)
                                                     ->placeholder('Петров Петр Петрович'),
                                                 TextInput::make('academicTitle')
                                                     ->label('Учёная степень')
                                                     ->required()
-                                                    ->maxLength(50)
+                                                    ->maxLength(255)
                                                     ->placeholder('к.ф.-м.н., доцент'),
                                                 TextInput::make('position')
                                                     ->label('Должность')
                                                     ->required()
-                                                    ->maxLength(100)
+                                                    ->maxLength(255)
                                                     ->placeholder('Доцент кафедры'),
                                                 TextInput::make('institution')
                                                     ->label('Учреждение')

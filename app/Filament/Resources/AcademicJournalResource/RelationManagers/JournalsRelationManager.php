@@ -37,20 +37,18 @@ class JournalsRelationManager extends RelationManager
                     ->label('Файл выпуска')
                     ->required()
                     ->acceptedFileTypes([
-                        'application/pdf' => 'PDF',
-                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'DOCX',
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'XLSX',
-                        'application/vnd.openxmlformats-officedocument.presentationml.presentation' => 'PPTX',
-                        'application/zip' => 'ZIP',
+                        'application/pdf',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                        'application/zip'
                     ])
                     ->maxSize(512000)
                     ->disk('public')
-                    ->directory('journals/files')
+                    ->directory('files')
                     ->downloadable()
-                    ->visibility('public')
                     ->helperText('Максимальный размер файла: 512MB. Допустимые форматы: PDF, DOCX, XLSX, PPTX, ZIP')
-                    ->openable()
-                    ->previewable(false),
+                    ->openable(),
 
 
                 TextInput::make('year_publication')

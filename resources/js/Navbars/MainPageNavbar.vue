@@ -86,9 +86,6 @@ export default {
     sections: {
       type: Object,
     },
-    sliderRef: {
-      default: true
-    },
   },
   data() {
     return {

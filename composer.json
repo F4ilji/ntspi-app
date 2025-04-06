@@ -24,6 +24,7 @@
         "laravel/tinker": "^2.8",
         "mohamedsabil83/filament-forms-tinyeditor": "^2.3",
         "nesbot/carbon": "^2.71",
+        "opcodesio/log-viewer": "^3.15",
         "predis/predis": "^2.3",
         "protonemedia/laravel-cross-eloquent-search": "^3.4",
         "pxlrbt/filament-excel": "^2.3",

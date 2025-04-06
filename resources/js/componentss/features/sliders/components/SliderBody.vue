@@ -64,21 +64,26 @@
         <div class="">
           <div class="flex space-x-3 items-center justify-between">
             <button @click="prev" class="bg-gray-200 w-8 h-8 hover:bg-gray-300 text-gray-800 font-bold rounded-full">
-              <svg class="w-4 h-4 mx-auto my-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg class="w-4 h-4 mx-auto my-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                   xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
               </svg>
             </button>
 
             <div class="flex space-x-3 w-[200px] items-center font-semibold text-xl text-white">
               <span>{{ currentIndex + 1 }}</span>
-              <div class="flex w-full h-1 bg-gray-200 rounded-full overflow-hidden" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                <div class="flex flex-col justify-center rounded-full overflow-hidden bg-secondary text-xs text-white text-center whitespace-nowrap transition-all duration-500 ease-in-out" :style="{ 'width': `${progressBarStep}%` }"></div>
+              <div class="flex w-full h-1 bg-gray-200 rounded-full overflow-hidden" role="progressbar"
+                   aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <div
+                    class="flex flex-col justify-center rounded-full overflow-hidden bg-secondary text-xs text-white text-center whitespace-nowrap transition-all duration-500 ease-in-out"
+                    :style="{ 'width': `${progressBarStep}%` }"></div>
               </div>
               <span>{{ slides.length }}</span>
             </div>
 
             <button @click="next" class="bg-gray-200 w-8 h-8 hover:bg-gray-300 text-gray-800 font-bold rounded-full">
-              <svg class="w-4 h-4 mx-auto my-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg class="w-4 h-4 mx-auto my-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                   xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19l7-7-7-7"></path>
               </svg>
             </button>
@@ -90,7 +95,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import {mapActions} from "vuex";
 import axios from "axios";
 
 export default {
