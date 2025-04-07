@@ -70,7 +70,8 @@ export default {
 						<!-- Avatar Media -->
 						<!-- End Avatar Media -->
 						<!-- Content -->
-						<div class="space-y-5 md:space-y-8">
+
+            <div class="container max-w-6xl px-2 xl:px-5 lg:py-4 mx-auto space-y-5 md:space-y-8">
               <AcademicJournalsItemBreadcrumbs :title="journal.data.title" />
 							<AcademicJournalsTitle class="text-center" :header="journal.data.title" />
 							<div>
@@ -94,7 +95,7 @@ export default {
 
 								</nav>
 							</div>
-							<div class="container max-w-4xl px-2 xl:px-5 lg:py-4 md:w-4/5 mx-auto">
+							<div class="">
 								<div id="horizontal-alignment-1" role="tabpanel" aria-labelledby="horizontal-alignment-item-1">
 									<Builder :blocks="journal.data.main_info" />
 								</div>

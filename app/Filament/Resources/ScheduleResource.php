@@ -124,8 +124,7 @@ class ScheduleResource extends Resource
                     ->trueIcon('heroicon-o-academic-cap')
                     ->falseIcon('heroicon-o-building-office')
                     ->trueColor('success')
-                    ->falseColor('primary')
-                    ->formatStateUsing(fn ($state) => $state ? 'Заочная' : 'Очная'),
+                    ->falseColor('primary'),
 
                 TextColumn::make('updated_at')
                     ->label('Обновлено')

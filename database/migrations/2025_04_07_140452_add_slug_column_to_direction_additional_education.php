@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('direction_additional_education', function (Blueprint $table) {
-            $table->id();
-            $table->string('title')->unique();
-            $table->boolean('is_active');
-            $table->timestamps();
+        Schema::table('direction_additional_education', function (Blueprint $table) {
+            $table->string('slug')->unique()->nullable()->after('title');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('direction_additional_education');
+        Schema::table('direction_additional_education', function (Blueprint $table) {
+            $table->dropColumn('slug');
+        });
     }
 };

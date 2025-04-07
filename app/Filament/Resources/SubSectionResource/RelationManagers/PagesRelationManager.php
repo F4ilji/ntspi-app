@@ -39,12 +39,12 @@ class PagesRelationManager extends RelationManager
                 Tables\Actions\Action::make('associate')
                     ->label('Прикрепить страницу')
                     ->color('success')
-                    ->searchable()
-                    ->preload()
                     ->button()
                     ->form([
                         Forms\Components\Select::make('recordId')
                             ->label('Страница')
+                            ->searchable()
+                            ->preload()
                             ->options(Page::whereNull('sub_section_id')->whereNotNull('title')->pluck('title', 'id'))
                             ->required(),
                     ])

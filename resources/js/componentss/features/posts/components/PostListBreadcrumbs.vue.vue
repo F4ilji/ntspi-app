@@ -3,63 +3,45 @@
 		<div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
 			<div class="grow">
 				<div class="grid sm:flex sm:justify-between sm:items-center gap-2">
-					<BreadcrumbsWrapper v-if="breadcrumbs">
-						<li class="text-sm">
-							<Link :href="route('index')" class="flex items-center text-gray-500 hover:text-primary-hover" href="/">
-								<BasicIcon class="size-5" name="home" />
-							</Link>
-						</li>
-						<li v-if="breadcrumbs.mainSection" class="text-sm">
+					<BreadcrumbsWrapper>
+            <li class="text-sm">
+              <Link :href="route('index')" class="flex items-center text-gray-500 hover:text-primary-hover" href="/">
+                <BasicIcon class="size-5" name="home" />
+              </Link>
+            </li>
+            <li v-if="breadcrumbs?.mainSection.data.title" class="text-sm">
 							<span class="flex items-center text-gray-500 hover:text-primary-hover cursor-pointer" @click.prevent="handleSectionClick(breadcrumbs.mainSection)">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
-										 width="16" height="16"
-										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     width="16" height="16"
+                     viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
-											stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 							</svg>
-								{{ textLimit(breadcrumbs.mainSection.data.title, 25) }}
+								{{ TEXT_LIMIT(breadcrumbs.mainSection.data.title, 25) }}
 							</span>
-						</li>
-						<li v-if="breadcrumbs.subSection" class="text-sm">
+            </li>
+            <li v-if="breadcrumbs?.subSection.data.title" class="text-sm">
 							<span class="flex items-center text-gray-500 hover:text-primary-hover cursor-pointer" @click.prevent="handleSubSectionClick(breadcrumbs.mainSection, breadcrumbs.subSection)">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
-										 width="16" height="16"
-										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     width="16" height="16"
+                     viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
-												stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
 								</svg>
-								{{ textLimit(breadcrumbs.subSection.data.title, 25) }}
+								{{ TEXT_LIMIT(breadcrumbs.subSection.data.title, 25) }}
 							</span>
-						</li>
-						<li class="text-sm">
-							<Link :href="route('client.post.index')" class="flex items-center text-gray-500 hover:text-primary-hover">
-								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
-										 width="16" height="16"
-										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
-												stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-								</svg>
-								{{ textLimit('Новости', 30) }}
-							</Link>
-						</li>
-					</BreadcrumbsWrapper>
-					<BreadcrumbsWrapper v-else>
-						<li class="text-sm">
-							<Link :href="route('index')" class="flex items-center text-gray-500 hover:text-primary-hover" href="/">
-								<BasicIcon class="size-5" name="home" />
-							</Link>
-						</li>
-						<li class="text-sm">
-							<Link :href="route('client.post.index')" class="flex items-center text-gray-500 hover:text-primary-hover">
-								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
-										 width="16" height="16"
-										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
-												stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-								</svg>
-								{{ textLimit('Новости', 30) }}
-							</Link>
-						</li>
+            </li>
+            <li class="text-sm">
+              <Link :href="route('client.post.index')" class="flex items-center text-gray-500 hover:text-primary-hover">
+                <svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
+                     width="16" height="16"
+                     viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 1L10.6869 7.16086C10.8637 7.35239 10.8637 7.64761 10.6869 7.83914L5 14"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                {{ TEXT_LIMIT('Новости', 30) }}
+              </Link>
+            </li>
 					</BreadcrumbsWrapper>
 				</div>
 			</div>
@@ -69,25 +51,14 @@
 
 <script>
 import {Link} from "@inertiajs/vue3";
-import slugify from "slugify";
 import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
 import BreadcrumbsWrapper from "@/componentss/ui/wrappers/BreadcrumbsWrapper.vue";
+import {helpers} from "@/mixins/Helpers.js";
 export default {
-	name: "PostListBreadcrumbs",
+  mixins: [helpers],
+  name: "PostListBreadcrumbs",
 	components: {BreadcrumbsWrapper, BasicIcon, Link},
-	data() {
-		return {
-		}
-	},
 	methods: {
-		textLimit(text, symbols) {
-			if (text.length > symbols) {
-				let LimitedText
-				LimitedText = text.substring(0, symbols)
-				return LimitedText + "..."
-			}
-			return text
-		},
 		isMobileDevice() {
 			return window.innerWidth < 1024; // Задайте порог для мобильных устройств
 		},
