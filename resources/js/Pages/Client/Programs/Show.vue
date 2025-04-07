@@ -9,6 +9,7 @@ import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
 import BasicTitle from "@/componentss/ui/titles/BasicTitle.vue";
 import ProgramItemBreadcrumbs from "@/componentss/features/educationalPrograms/components/ProgramItemBreadcrumbs.vue";
 import ProgramTitle from "@/componentss/features/educationalPrograms/components/ProgramTitle.vue";
+import BudgetEducation from "@/Enum/BudgetEducation.js";
 
 
 export default {
@@ -16,6 +17,9 @@ export default {
   computed: {
     EducationForm() {
       return EducationForm
+    },
+    BudgetForm() {
+      return BudgetEducation
     }
   },
   components: {
@@ -112,9 +116,10 @@ export default {
 														<template v-for="admissionPlan in program.data.admissionPlans">
 															<template v-for="contest in admissionPlan.contests">
 																<div class="border rounded my-2 py-1">
-																	<span class="text-gray-500 text-[14px]">{{ EducationForm.fromValue(parseInt(contest.form_education)).label }}</span>
-																	<p class="mt-1 text-gray-600">{{ contest.position_count }} мест <span class="text-gray-400 text-[12px]">{{ formsEdu[contest.financing_source] }}</span></p>
-																</div>
+                                  <span class="text-gray-500 text-[14px]">{{ EducationForm.fromValue(contest.form_education).label }}</span>
+                                  <p v-for="place in contest.places" class="mt-1 text-gray-600"> {{ place.count }} мест <span class="text-gray-400 text-[12px]">{{ BudgetForm.fromValue(place.form_budget).label  }}</span></p>
+
+                                </div>
 															</template>
 														</template>
 													</div>

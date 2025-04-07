@@ -8,6 +8,9 @@ enum CacheKeys: string {
     case RECENT_POSTS_PREFIX = 'recent_posts_';
     case POSTS_PREFIX = 'posts_';
     case EDUCATION_PROGRAM_PREFIX = 'education_program_';
+    case ADMISSION_CAMPAIGNS_PREFIX = 'admission_campaigns_';
+    case DIRECTION_STUDIES = 'direction_studies_';
+    case ADMISSION_PLANS = 'admission_plans_';
     case EDUCATION_PROGRAMS_PREFIX = 'education_programs_';
     case ADDITIONAL_EDUCATIONAL_PROGRAM_PREFIX = 'additional_education_program_';
     case ADDITIONAL_EDUCATIONAL_PROGRAMS_PREFIX = 'additional_education_programs_';

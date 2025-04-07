@@ -28,11 +28,7 @@ class ClientAdditionalEducationController extends Controller
 
     public function index(Request $request): \Inertia\Response
     {
-        $cacheKey = md5(serialize([
-            'direction' => $request->input('direction'),
-            'form' => $request->input('form'),
-            'category' => $request->input('category'),
-        ]));
+        $cacheKey = md5(serialize($request->all()));
 
         // Основные данные (кешируются)
         $directionAdditionalEducations = Cache::remember(
@@ -53,6 +49,7 @@ class ClientAdditionalEducationController extends Controller
             now()->addDay(),
             function () use ($request) {
                 $query = AdditionalEducationCategory::query()
+                    ->has('additionalEducations')
                     ->WithActivePrograms()
                     ->where('is_active', true)
                     ->when($request->direction, function ($q, $direction) use ($request) {

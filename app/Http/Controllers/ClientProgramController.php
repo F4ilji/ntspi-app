@@ -6,21 +6,14 @@ use App\Enums\BudgetEducation;
 use App\Enums\CacheKeys;
 use App\Enums\FormEducation;
 use App\Enums\LevelEducational;
-use App\Http\Resources\CampaignDegreeResource;
-use App\Http\Resources\ClientNavigationResource;
 use App\Http\Resources\DirectionStudyResource;
 use App\Http\Resources\EducationalProgramFullResource;
-use App\Http\Resources\MainSectionResource;
 use App\Models\AdmissionCampaign;
-use App\Models\AdmissionPlan;
-use App\Models\CampaignDegree;
 use App\Models\DirectionStudy;
 use App\Models\EducationalProgram;
-use App\Models\MainSection;
 use App\Services\App\Seo\SeoPageProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -36,7 +29,7 @@ class ClientProgramController extends Controller
         $cacheKeyBudgets = 'education_budgets_list';
         $cacheKeySeo = 'education_programs_seo';
 
-        $activeCampaign = Cache::remember('active_admission_campaign', now()->addDay(), function () {
+        $activeCampaign = Cache::remember(CacheKeys::ADMISSION_CAMPAIGNS_PREFIX->value, now()->addDay(), function () {
             return AdmissionCampaign::where('status', 1)->first();
         });
 
@@ -58,13 +51,14 @@ class ClientProgramController extends Controller
         $seo = Cache::remember($cacheKeySeo, now()->addDay(), function () {
             return $this->seoPageProvider->getSeoForCurrentPage();
         });
+        ;
 
-        $naprs = Cache::remember($cacheKey, now()->addHours(1), function () use ($request, $activeCampaign) {
+        $naprs = Cache::remember($cacheKey, now()->addHours(), function () use ($request, $activeCampaign) {
             return DirectionStudyResource::collection(
                 DirectionStudy::query()
                     ->withAdmissionCampaignByYear($activeCampaign->academic_year)
                     ->withActivePrograms()
-                    ->with('programs.admission_plans')
+//                    ->with('programs.admission_plans')
                     ->when($request->input('level'), fn($q, $level) =>
                     $q->where('lvl_edu', LevelEducational::fromName($level)->value))
                     ->when($request->input('form'), fn($q, $form) =>
@@ -76,6 +70,7 @@ class ClientProgramController extends Controller
                     ->get()
             );
         });
+
 
         $data = [
             'naprs' => $naprs,

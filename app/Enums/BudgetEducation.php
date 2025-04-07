@@ -7,8 +7,8 @@ use Filament\Support\Contracts\HasColor;
 
 enum BudgetEducation: int implements HasLabel, HasColor
 {
-    case budget_quantity_position = 1; // Очная форма обучения
-    case non_budget_quantity_position = 2; // Заочная форма обучения
+    case budget_quantity_position = 1;
+    case non_budget_quantity_position = 2;
 
     public static function fromName(string $name): ?self {
         return match ($name) {

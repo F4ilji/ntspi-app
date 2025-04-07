@@ -4,8 +4,11 @@ namespace App\Providers;
 
 use App\Models\AcademicJournal;
 use App\Models\AdditionalEducation;
+use App\Models\AdmissionCampaign;
+use App\Models\AdmissionPlan;
 use App\Models\ContactWidget;
 use App\Models\Department;
+use App\Models\DirectionStudy;
 use App\Models\Division;
 use App\Models\EducationalProgram;
 use App\Models\Event;
@@ -21,8 +24,11 @@ use App\Models\SubSection;
 use App\Models\User;
 use App\Observers\AcademicJournalObserver;
 use App\Observers\AdditionalEducationObserver;
+use App\Observers\AdmissionCampaignObserver;
+use App\Observers\AdmissionPlanObserver;
 use App\Observers\ContactWidgetObserver;
 use App\Observers\DepartmentObserver;
+use App\Observers\DirectionStudyObserver;
 use App\Observers\DivisionObserver;
 use App\Observers\EducationalProgramObserver;
 use App\Observers\EventObserver;
@@ -93,6 +99,9 @@ class AppServiceProvider extends ServiceProvider
         Schedule::observe(ScheduleObserver::class);
         ContactWidget::observe(ContactWidgetObserver::class);
         PageReferenceList::observe(PageReferenceListObserver::class);
+        AdmissionPlan::observe(AdmissionCampaignObserver::class);
+        AdmissionCampaign::observe(AdmissionCampaignObserver::class);
+        DirectionStudy::observe(AdmissionCampaignObserver::class);
     }
 
     private static function setLocaleTime() : void {

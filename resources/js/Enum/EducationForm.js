@@ -9,7 +9,7 @@ class EducationForm {
     }
 
     static fromValue(value) {
-        return Object.values(this).find(item => item.value === value) || null;
+        return Object.values(this).find(item => item.value == value) || null;
     }
 
 

@@ -102,9 +102,9 @@ export default {
 											<div class="flex items-center gap-x-2">
 												<ProgramLevelEduFilter :levels="levelsEducational" :level_filter="filters.level_filter" />
                         <BasicListFilter>
-                          <BudgetFilter :budget_filter="filters.budget_filter" :types_budget="budgetEdu" />
+                          <BudgetFilter :budget_filter="filters.budget_filter" :budgets="budgetEdu" />
                           <DirectionFilter :direction_studies="direction_studies" :direction_filter="filters.direction_filter" />
-                          <FormEducationalFilter :formEdu_filter="filters.formEdu_filter" :forms_educational="formsEdu" />
+                          <FormEducationalFilter :formEdu_filter="filters.formEdu_filter" :forms="formsEdu" />
                         </BasicListFilter>
 											</div>
 										</div>
