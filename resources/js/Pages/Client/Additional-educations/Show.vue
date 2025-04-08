@@ -171,7 +171,7 @@ export default {
 
 										<div v-if="additionalEducation.data.content.length > 0">
 											<h2 class="text-xl font-bold md:text-2xl">О программе</h2>
-											<div class="py-4 px-5">
+											<div class="py-4">
 												<Builder :blocks="additionalEducation.data.content" />
 											</div>
 										</div>

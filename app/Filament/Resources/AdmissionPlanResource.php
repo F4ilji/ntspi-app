@@ -6,26 +6,17 @@ use App\Enums\BudgetEducation;
 use App\Enums\EducationalProgramStatus;
 use App\Enums\FormEducation;
 use App\Filament\Resources\AdmissionPlanResource\Pages;
-use App\Filament\Resources\AdmissionPlanResource\RelationManagers;
-use App\Filament\Resources\EducationalProgramResource\RelationManagers\AdmissionPlansRelationManager;
 use App\Models\AdmissionCampaign;
 use App\Models\AdmissionPlan;
 use App\Models\EducationalProgram;
-use Filament\Forms;
-use Filament\Forms\Components\Builder;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class AdmissionPlanResource extends Resource
 {
@@ -87,29 +78,39 @@ class AdmissionPlanResource extends Resource
                 TextInput::make('title')
                     ->label('Название предмета')
                     ->required()
+                    ->columnSpanFull()
                     ->maxLength(100)
                     ->placeholder('Например: Математика')
                     ->helperText('Название вступительного испытания'),
 
-                Select::make('type_exam')
-                    ->label('Тип испытания')
-                    ->required()
-                    ->options([
-                        'ege' => 'ЕГЭ',
-                        'internal_test' => 'Внутреннее испытание',
-                    ])
-                    ->native(false)
-                    ->placeholder('Выберите тип')
-                    ->helperText('Тип вступительного испытания'),
+                Repeater::make('exam')->schema([
+                    Select::make('type_exam')
+                        ->label('Тип испытания')
+                        ->required()
+                        ->options([
+                            'ege' => 'ЕГЭ',
+                            'internal_test' => 'Внутреннее испытание',
+                        ])
+                        ->native(false)
+                        ->placeholder('Выберите тип')
+                        ->helperText('Тип вступительного испытания'),
 
-                TextInput::make('min_score')
-                    ->label('Минимальный балл')
-                    ->required()
-                    ->numeric()
-                    ->minValue(0)
-                    ->maxValue(100)
-                    ->placeholder('Укажите минимальный балл')
-                    ->helperText('Минимальный проходной балл'),
+                    TextInput::make('min_score')
+                        ->label('Минимальный балл')
+                        ->required()
+                        ->numeric()
+                        ->minValue(0)
+                        ->maxValue(100)
+                        ->placeholder('Укажите минимальный балл')
+                        ->helperText('Минимальный проходной балл'),
+                ])
+                    ->collapsible()
+                    ->collapsed()
+                    ->label('Вид встпутиельного испытания')
+                    ->addActionLabel('Добавить вид экзамена')
+                    ->maxItems(2)
+                    ->columnSpanFull(),
+
             ])
             ->columns(3)
             ->maxItems(10)
@@ -168,8 +169,10 @@ class AdmissionPlanResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultGroup('admissionCampaign.academic_year')
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('educationalProgram.name')->label('Программа'),
+                Tables\Columns\TextColumn::make('admissionCampaign.academic_year')->label('Приемная компания'),
             ])
             ->filters([
                 //
