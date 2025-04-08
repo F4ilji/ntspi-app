@@ -20,6 +20,11 @@ export default {
     },
     BudgetForm() {
       return BudgetEducation
+    },
+  },
+  methods: {
+    typeExam(type) {
+      return (type === 'ege' ? 'ЕГЭ' : 'ВИ')
     }
   },
   components: {
@@ -146,7 +151,7 @@ export default {
 															<ol class="list-decimal list-inside">
 																<template v-for="admissionPlan in program.data.admissionPlans">
 																	<template v-for="exam in admissionPlan.exams">
-																		<li>{{ exam.title }} <span class="text-gray-400 text-[14px]">({{ (exam.type_exam === 'ege' ? 'ЕГЭ' : 'ВИ') }}, минимальный балл: {{ exam.min_score }})</span></li>
+																		<li>{{ exam.title }} <span v-for="ex in exam.exam" class="text-gray-400 text-[14px]">({{ typeExam(ex.type_exam) }}, минимальный балл: {{ ex.min_score }}) </span></li>
 																	</template>
 																</template>
 															</ol>
