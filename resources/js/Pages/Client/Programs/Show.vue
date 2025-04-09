@@ -10,6 +10,7 @@ import BasicTitle from "@/componentss/ui/titles/BasicTitle.vue";
 import ProgramItemBreadcrumbs from "@/componentss/features/educationalPrograms/components/ProgramItemBreadcrumbs.vue";
 import ProgramTitle from "@/componentss/features/educationalPrograms/components/ProgramTitle.vue";
 import BudgetEducation from "@/Enum/BudgetEducation.js";
+import TypeExam from "@/Enum/TypeExam.js";
 
 
 export default {
@@ -21,10 +22,28 @@ export default {
     BudgetForm() {
       return BudgetEducation
     },
+    TypeExam() {
+      return TypeExam
+    },
   },
   methods: {
-    typeExam(type) {
-      return (type === 'ege' ? 'ЕГЭ' : 'ВИ')
+    groupExamsByPriority(exams) {
+      return exams.reduce((groups, exam) => {
+        if (!groups[exam.priority]) {
+          groups[exam.priority] = [];
+        }
+        groups[exam.priority].push(exam);
+        return groups;
+      }, {});
+    },
+    groupContestsByFormEducation(contests) {
+      return contests.reduce((groups, contest) => {
+        if (!groups[contest.form_education]) {
+          groups[contest.form_education] = [];
+        }
+        groups[contest.form_education].push(contest);
+        return groups;
+      }, {});
     }
   },
   components: {
@@ -119,10 +138,12 @@ export default {
 													<div class="mt-3">
 														<h3 class="text-lg font-semibold text-gray-800">Количество мест на прием</h3>
 														<template v-for="admissionPlan in program.data.admissionPlans">
-															<template v-for="contest in admissionPlan.contests">
+															<template v-for="(contests, form) in groupContestsByFormEducation(admissionPlan.contests)">
 																<div class="border rounded my-2 py-1">
-                                  <span class="text-gray-500 text-[14px]">{{ EducationForm.fromValue(contest.form_education).label }}</span>
-                                  <p v-for="place in contest.places" class="mt-1 text-gray-600"> {{ place.count }} мест <span class="text-gray-400 text-[12px]">{{ BudgetForm.fromValue(place.form_budget).label  }}</span></p>
+                                  <span class="text-gray-500 text-[14px]">{{ EducationForm.fromValue(form).label }}</span>
+                                  <template v-for="contest in contests">
+                                    <p class="mt-1 text-gray-600"> {{ contest.places.count }} мест <span class="text-gray-400 text-[12px]">{{ BudgetForm.fromValue(contest.places.form_budget).label  }}</span></p>
+                                  </template>
 
                                 </div>
 															</template>
@@ -148,14 +169,22 @@ export default {
 													</button>
 													<div id="hs-basic-bordered-collapse-two" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-bordered-heading-two">
 														<div class="pb-4 px-5">
-															<ol class="list-decimal list-inside">
-																<template v-for="admissionPlan in program.data.admissionPlans">
-																	<template v-for="exam in admissionPlan.exams">
-																		<li>{{ exam.title }} <span v-for="ex in exam.exam" class="text-gray-400 text-[14px]">({{ typeExam(ex.type_exam) }}, минимальный балл: {{ ex.min_score }}) </span></li>
-																	</template>
-																</template>
-															</ol>
-														</div>
+                              <ol class="list-decimal list-inside">
+                                <template v-for="admissionPlan in program.data.admissionPlans">
+                                  <template v-for="(exams, priority) in groupExamsByPriority(admissionPlan.exams)">
+                                    <li>
+                                      <template v-for="(exam, index) in exams">
+                                        {{ exam.title }}
+                                        <span v-for="ex in exam.types" class="text-gray-400 text-[14px]">
+            ({{ TypeExam.fromValue(ex.type).label }}, минимальный балл: {{ ex.min_ball }})
+          </span>
+                                        <span class="text-gray-400 text-[14px] uppercase" v-if="index !== exams.length - 1"><br> или </span>
+                                      </template>
+                                    </li>
+                                  </template>
+                                </template>
+                              </ol>
+                            </div>
 													</div>
 												</div>
 

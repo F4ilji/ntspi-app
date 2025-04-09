@@ -45,7 +45,8 @@ class BreadcrumbService
         ];
     }
 
-    private function generatePath(string $routeName): ?string
+
+    private function generatePath(?string $routeName): string|null
     {
         if ($routeName === 'page.view') {
             return request()->path();

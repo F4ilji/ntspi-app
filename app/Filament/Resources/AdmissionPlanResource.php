@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enums\BudgetEducation;
 use App\Enums\EducationalProgramStatus;
 use App\Enums\FormEducation;
+use App\Enums\TypeExam;
 use App\Filament\Resources\AdmissionPlanResource\Pages;
 use App\Models\AdmissionCampaign;
 use App\Models\AdmissionPlan;
@@ -82,20 +83,23 @@ class AdmissionPlanResource extends Resource
                     ->maxLength(100)
                     ->placeholder('Например: Математика')
                     ->helperText('Название вступительного испытания'),
+                TextInput::make('priority')
+                    ->label('Приоритет предмета')
+                    ->required()
+                    ->numeric()
+                    ->columnSpanFull()
+                    ->maxLength(10),
 
-                Repeater::make('exam')->schema([
-                    Select::make('type_exam')
+                Repeater::make('types')->schema([
+                    Select::make('type')
                         ->label('Тип испытания')
                         ->required()
-                        ->options([
-                            'ege' => 'ЕГЭ',
-                            'internal_test' => 'Внутреннее испытание',
-                        ])
+                        ->options(TypeExam::class)
                         ->native(false)
                         ->placeholder('Выберите тип')
                         ->helperText('Тип вступительного испытания'),
 
-                    TextInput::make('min_score')
+                    TextInput::make('min_ball')
                         ->label('Минимальный балл')
                         ->required()
                         ->numeric()
@@ -134,37 +138,32 @@ class AdmissionPlanResource extends Resource
                     ->placeholder('Выберите форму')
                     ->columnSpanFull()
                     ->helperText('Форма обучения для данной группы'),
+                Section::make()->schema([
+                    Select::make('places.form_budget')
+                        ->label('Форма финансирования')
+                        ->options(BudgetEducation::class)
+                        ->required()
+                        ->native(false)
+                        ->placeholder('Выберите тип')
+                        ->helperText('Бюджетные или платные места'),
 
-                Repeater::make('places')
-                    ->label('Места')
-                    ->schema([
-                        Select::make('form_budget')
-                            ->label('Форма финансирования')
-                            ->options(BudgetEducation::class)
-                            ->required()
-                            ->native(false)
-                            ->placeholder('Выберите тип')
-                            ->helperText('Бюджетные или платные места'),
-
-                        TextInput::make('count')
-                            ->label('Количество мест')
-                            ->required()
-                            ->numeric()
-                            ->minValue(0)
-                            ->placeholder('Укажите количество')
-                            ->helperText('Количество доступных мест'),
-                    ])
-                    ->columnSpanFull()
-                    ->maxItems(2)
-                    ->addActionLabel('Добавить тип мест')
+                    TextInput::make('places.count')
+                        ->label('Количество мест')
+                        ->required()
+                        ->numeric()
+                        ->minValue(0)
+                        ->placeholder('Укажите количество')
+                        ->helperText('Количество доступных мест'),
+                ]),
             ])
             ->columns(2)
-            ->maxItems(3)
+            ->maxItems(4) // Adjust if needed based on your actual requirements
             ->collapsible()
             ->collapsed()
             ->addActionLabel('Добавить группу')
             ->helperText('Добавьте группы с условиями поступления');
     }
+
 
     public static function table(Table $table): Table
     {
@@ -186,6 +185,9 @@ class AdmissionPlanResource extends Resource
                 ]),
             ]);
     }
+
+
+
 
     public static function getRelations(): array
     {

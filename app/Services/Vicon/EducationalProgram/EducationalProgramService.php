@@ -20,7 +20,7 @@ class EducationalProgramService
             $programs = array_merge($programs, $data->rows);
         }
         foreach ($programs as $program) {
-            array_push($programsUuid, $program->uuid);
+            $programsUuid[] = $program->uuid;
         }
         return $programsUuid;
     }

@@ -18,14 +18,15 @@ class CreateEducationalProgram implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $educatinalProgramService;
 
     /**
      * Create a new job instance.
      */
+
+    private EducationalProgramService $educatinalProgramService;
     public function __construct()
     {
-        $this->educatinalProgramService = new EducationalProgramService();
+        $this->educatinalProgramService = app(EducationalProgramService::class);
     }
 
     /**

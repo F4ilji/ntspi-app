@@ -22,32 +22,32 @@ class ListAdmissionCampaigns extends ListRecords
                 ->action(function () {
                     // Отправляем запрос в фоновом режиме
                     $this->js(<<<JS
-                        fetch('/api/get-data', {
+                        fetch('/api/get-edu-program-data', {
                             method: 'GET',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            },
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            }
                         })
                             .then(response => response.json())
-                            .then(data => {
+                            .then(() => {
                                 // Показываем уведомление об успешном завершении
                                 window.dispatchEvent(new CustomEvent('filament-notify', {
                                     detail: {
                                         type: 'success',
                                         title: 'Данные обновлены',
-                                        body: 'Данные успешно обновлены.',
-                                    },
+                                        body: 'Данные успешно обновлены.'
+                                    }
                                 }));
                             })
-                            .catch(error => {
+                            .catch(() => {
                                 // Показываем уведомление об ошибке
                                 window.dispatchEvent(new CustomEvent('filament-notify', {
                                     detail: {
                                         type: 'danger',
                                         title: 'Ошибка',
-                                        body: 'Произошла ошибка при обновлении данных.',
-                                    },
+                                        body: 'Произошла ошибка при обновлении данных.'
+                                    }
                                 }));
                             });
                     JS);

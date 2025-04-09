@@ -8,12 +8,6 @@ use App\Services\Vicon\EducationalProgram\EducationalProgramService;
 
 class UpdateEduDataApiController extends Controller
 {
-    private $programService;
-
-    public function __construct()
-    {
-        $this->programService = new EducationalProgramService();
-    }
 
     public function index()
     {

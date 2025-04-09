@@ -9,17 +9,12 @@ use App\Http\Controllers\ClientWidgetPageController;
 use App\Http\Controllers\ClientWidgetPageReferenceListController;
 use App\Http\Controllers\ClientWidgetPostController;
 use App\Http\Controllers\ClientWidgetSliderController;
-use App\Http\Controllers\IconController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\StaticSearchController;
+use App\Http\Controllers\UpdateAdmissionPlansDataApiController;
 use App\Http\Controllers\UpdateEduDataApiController;
-use App\Http\Controllers\VkAuthController;
-use App\Http\Controllers\VkPostController;
 use App\Models\AdmissionCampaign;
-use App\Services\Vicon\DirectionStudy\DirectionStudyService;
 use App\Services\VK\VkAuthService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/getAcademicYear', function () {
@@ -59,8 +54,11 @@ Route::middleware('ensure.browser')->group(function () {
     Route::get('/widget/get-slider/{slug}', [ClientWidgetSliderController::class, 'show'])->name('client.widget.slider.show');
 });
 
+
 Route::middleware(['auth', 'superadmin'])->group(function () {
-    Route::get('/get-data', [UpdateEduDataApiController::class, 'index']);
+    Route::get('/get-edu-program-data', [UpdateEduDataApiController::class, 'index']);
+    Route::get('/get-admission-plans-data', [UpdateAdmissionPlansDataApiController::class, 'index']);
+
 
     Route::get('/login/vk', [VkAuthService::class, 'redirectToProvider'])->name('vk.login');
     Route::get('/login/vk/callback', [VkAuthService::class, 'handleProviderCallback'])->name('vk.callback');
