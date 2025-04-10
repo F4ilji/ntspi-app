@@ -1,14 +1,13 @@
 <template>
-	<div class="w-full h-[67px] fixed pointer-events-none bvi-no-styles" id="visor"></div>
-
+  <NavigateVisor />
 	<nav class="order-last hidden w-56 shrink-0 lg:block">
 		<div v-if="headerNavs.length > 0" class="sticky top-[100px] h-[calc(100vh-121px)]">
 			<div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
 			<ul class="max-h-[70vh] space-y-1.5 overflow-hidden py-2 text-sm">
 				<li class="anchor-li" v-for="pageNav in headerNavs" :key="pageNav.id">
-					<a :class="{ 'translate-x-2 text-primary' : currentNavSection === generateSlug(pageNav.text), 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== generateSlug(pageNav.text) }"
+					<a :class="{ 'translate-x-2 text-primary' : currentNavSection === 'anchor-link-' + generateSlug(pageNav.text), 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'anchor-link-' + generateSlug(pageNav.text) }"
 						 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-						 :href="'#' + generateSlug(pageNav.text)">{{ pageNav.text }}</a>
+						 :href="'#anchor-link-' + generateSlug(pageNav.text)">{{ pageNav.text }}</a>
 				</li>
 				<transition name="fade">
 					<li class="anchor-li flex items-center py-2 border-t" v-if="scrollTop" @click.prevent="scrollToTop">
@@ -28,10 +27,11 @@
 <script>
 import { Link } from "@inertiajs/vue3";
 import slugify from "slugify";
+import NavigateVisor from "@/componentss/shared/visor/NavigateVisor.vue";
 
 export default {
 	name: "NavigateLinks",
-	components: { Link },
+	components: {NavigateVisor, Link },
 	data() {
 		return {
 			currentNavSection: null,
@@ -39,14 +39,6 @@ export default {
 		};
 	},
 	methods: {
-		textLimit(text, symbols) {
-			if (text.length > symbols) {
-				let LimitedText;
-				LimitedText = text.substring(0, symbols);
-				return LimitedText + "...";
-			}
-			return text;
-		},
 		generateSlug(text) {
 			return slugify(text, {
 				lower: true,

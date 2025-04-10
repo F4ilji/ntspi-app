@@ -14,7 +14,7 @@ class HeadingBlock implements BlockSchema
             TextInput::make('id')
                 ->hidden()
                 ->integer()
-                ->default(rand(2335235, 324634264263426)),
+                ->default('anchor-link-' . base64_encode(rand(2335235, 324634264263426))),
             TextInput::make('content')
                 ->label('Текст заголовка')
                 ->placeholder('Введите текст заголовка')

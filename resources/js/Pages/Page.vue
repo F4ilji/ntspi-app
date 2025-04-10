@@ -1,26 +1,27 @@
 <template>
 	<MetaTags :seo="seo" />
 
-	<div class="flex flex-col h-screen justify-between">
-		<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 
+  <MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 
-		<div class="relative mx-auto mb-auto mt-[67px] max-w-screen-xl w-full px-4 py-10 md:flex md:flex-row md:py-10">
-			<PageSubSectionLinks v-if="!settings?.hide_page_sub_section_links" :sub-section-pages="subSectionPages" :current-section="page.data.section"/>
-			<NavigateLinks v-if="!settings?.hide_page_navigate_links"  :header-navs="headerNavs"/>
-			<div class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
-				<div class="space-y-5 md:space-y-5">
-					<PageBreadcrumbs v-if="!settings?.hide_breadcrumbs" :breadcrumbs="breadcrumbs" :page-title="page.data.title"/>
-					<BasicTitle :header="page.data.title"/>
-					<div id="page-area">
-						<Builder :blocks="page.data.content"/>
-					</div>
-				</div>
-			</div>
-		</div>
+  <BasicPageWrapper>
+    <div class="relative mx-auto mb-auto mt-[67px] max-w-screen-xl w-full px-4 py-10 md:flex md:flex-row md:py-10">
+      <PageSubSectionLinks v-if="!settings?.hide_page_sub_section_links" :sub-section-pages="subSectionPages" :current-section="page.data.section"/>
+      <NavigateLinks v-if="!settings?.hide_page_navigate_links"  :header-navs="headerNavs"/>
+      <div class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
+        <div class="space-y-5 md:space-y-5">
+          <PageBreadcrumbs v-if="!settings?.hide_breadcrumbs" :breadcrumbs="breadcrumbs" :page-title="page.data.title"/>
+          <BasicTitle :header="page.data.title"/>
+          <div id="page-area">
+            <Builder :blocks="page.data.content"/>
+          </div>
+        </div>
+      </div>
+    </div>
 
-		<BasicFooter />
-	</div>
+    <BasicFooter />
+  </BasicPageWrapper>
+
 
 
 </template>
@@ -37,6 +38,16 @@ import BasicTitle from "@/componentss/ui/titles/BasicTitle.vue";
 import PageSubSectionLinks from "@/componentss/features/pages/components/PageSubSectionLinks.vue";
 import PageBreadcrumbs from "@/componentss/features/pages/components/PageBreadcrumbs.vue";
 import NavigateLinks from "@/componentss/shared/navigate/NavigateLinks.vue";
+import CategoryFilter from "@/componentss/shared/filter/filters/CategoryFilter.vue";
+import BasicPageContainer from "@/componentss/ui/templates/BasicPageContainer.vue";
+import BasicPageWrapper from "@/componentss/ui/wrappers/BasicPageWrapper.vue";
+import BasicListBadge from "@/componentss/shared/badge/BasicListBadge.vue";
+import EventArchiveListBreadcrumbs from "@/componentss/features/events/components/EventArchiveListBreadcrumbs.vue";
+import BasicPagination from "@/componentss/shared/paginate/BasicPagination.vue";
+import IsOnlineFilter from "@/componentss/shared/filter/filters/IsOnlineFilter.vue";
+import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
+import EventListSearch from "@/componentss/features/events/components/EventListSearch.vue";
+import SortingByFilter from "@/componentss/shared/filter/filters/SortingByFilter.vue";
 
 
 export default {
@@ -70,6 +81,16 @@ export default {
 		}
 	},
 	components: {
+    SortingByFilter,
+    EventListSearch,
+    BasicListFilter,
+    IsOnlineFilter,
+    BasicPagination,
+    EventArchiveListBreadcrumbs,
+    BasicListBadge,
+    BasicPageWrapper,
+    BasicPageContainer,
+    CategoryFilter,
     NavigateLinks,
     BasicTitle,
     Builder,

@@ -1,30 +1,31 @@
 <template>
 	<MetaTags :seo="seo" />
 
-
-	<div class="flex flex-col h-screen">
-		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
-
-		<main class="flex-grow">
-			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
-
-				<NavigateLinks :header-navs="headerNavs" />
+  <MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 
 
-				<section class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
-					<div class="w-full mx-auto sm:px-6 lg:px-8">
+  <BasicPageWrapper>
+    <main class="flex-grow">
+      <div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
 
-						<PersonBreadcrumbs class="mb-4" :person-name="person.data.name" />
+        <NavigateLinks :header-navs="headerNavs" />
+        <section class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
+          <div class="w-full mx-auto sm:px-6 lg:px-8">
 
-						<InfoSection :person="person" />
+            <PersonBreadcrumbs class="mb-4" :person-name="person.data.name" />
 
-					</div>
-				</section>
-			</div>
-		</main>
+            <InfoSection :person="person" />
 
-		<BasicFooter />
-	</div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <BasicFooter />
+  </BasicPageWrapper>
+
+
+
 
 
 </template>
@@ -41,6 +42,16 @@ import NavigateLinks from "@/componentss/shared/navigate/NavigateLinks.vue";
 import PersonBreadcrumbs from "@/componentss/features/persons/components/PersonBreadcrumbs.vue";
 import BasicFooter from "@/footers/BasicFooter.vue";
 import InfoSection from "@/componentss/features/persons/components/sections/InfoSection.vue";
+import CategoryFilter from "@/componentss/shared/filter/filters/CategoryFilter.vue";
+import BasicPageContainer from "@/componentss/ui/templates/BasicPageContainer.vue";
+import BasicPageWrapper from "@/componentss/ui/wrappers/BasicPageWrapper.vue";
+import BasicListBadge from "@/componentss/shared/badge/BasicListBadge.vue";
+import EventArchiveListBreadcrumbs from "@/componentss/features/events/components/EventArchiveListBreadcrumbs.vue";
+import BasicPagination from "@/componentss/shared/paginate/BasicPagination.vue";
+import IsOnlineFilter from "@/componentss/shared/filter/filters/IsOnlineFilter.vue";
+import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
+import EventListSearch from "@/componentss/features/events/components/EventListSearch.vue";
+import SortingByFilter from "@/componentss/shared/filter/filters/SortingByFilter.vue";
 
 
 export default {
@@ -63,6 +74,16 @@ export default {
 	},
 
 	components: {
+    SortingByFilter,
+    EventListSearch,
+    BasicListFilter,
+    IsOnlineFilter,
+    BasicPagination,
+    EventArchiveListBreadcrumbs,
+    BasicListBadge,
+    BasicPageWrapper,
+    BasicPageContainer,
+    CategoryFilter,
     InfoSection,
     BasicFooter,
     NavigateLinks,

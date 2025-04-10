@@ -1,6 +1,6 @@
 <template>
 	<div >
-		<h2 :id="generateSlug(block.data.content)" class="font-bold text-xl">{{ block.data.content }}</h2>
+		<h2 :id="'anchor-link-' + generateSlug(block.data.content)" class="font-bold text-xl">{{ block.data.content }}</h2>
 	</div>
 </template>
 

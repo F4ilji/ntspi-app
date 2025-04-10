@@ -14,10 +14,18 @@ import LevelEduFilter from "@/componentss/features/additionalEducationPrograms/c
 import CategoryFilter from "@/componentss/shared/filter/filters/CategoryFilter.vue";
 import BasicListBadge from "@/componentss/shared/badge/BasicListBadge.vue";
 import FormEducationalFilter from "@/componentss/shared/filter/filters/FormEducationalFilter.vue";
+import AdditionalProgramItemBreadcrumbs
+  from "@/componentss/features/additionalEducationPrograms/components/AdditionalProgramItemBreadcrumbs.vue";
+import BasicPageContainer from "@/componentss/ui/templates/BasicPageContainer.vue";
+import BasicPageWrapper from "@/componentss/ui/wrappers/BasicPageWrapper.vue";
+import BackButton from "@/componentss/ui/buttons/BackButton.vue";
+import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
+import ProgramTitle from "@/componentss/features/educationalPrograms/components/ProgramTitle.vue";
 
 export default {
   name: "Index",
   components: {
+    ProgramTitle, Builder, BackButton, BasicPageWrapper, BasicPageContainer, AdditionalProgramItemBreadcrumbs,
     BasicListBadge,
     AdditionalProgramBadge,
     FormEducationalFilter, CategoryFilter,
@@ -96,60 +104,52 @@ export default {
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 
 
-	<div class="flex flex-col h-screen">
-		<main class="flex-grow">
-			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:py-10">
-				<div class="">
-					<div class="">
-						<div class="space-y-5 md:space-y-4">
-							<AdditionalProgramTitle class="text-center" header="Дополнительное образование" />
-							<div class="space-y-5 md:space-y-4 mx-auto max-w-3xl w-full">
-								<div>
-									<div class="">
-										<div class="my-10 w-full">
-                      <AdditionalProgramListBreadcrumbs :breadcrumbs="breadcrumbs" />
-											<div class="flex items-center gap-x-2">
-												<LevelEduFilter :directions="directionAdditionalEducations" :direction_filter="filters.direction_filter" />
-                        <BasicListFilter>
-                          <FormEducationalFilter :forms="forms_education" :formEdu_filter="filters.form_education_filter" />
-                          <CategoryFilter :categories="categories" :category_filter="filters.category_filter" />
-                        </BasicListFilter>
-											</div>
-										</div>
-                    <div v-if="hasActiveFilters" class="px-1">
-                      <h3 class="text-sm text-gray-500 mb-4">Найдено программ: {{ additionalEducations.data.length }}</h3>
-                      <div class="flex-wrap flex gap-3 md:items-center">
-                        <BasicListBadge :filters="filters" />
-                      </div>
-                    </div>									</div>
-									<div class="container py-5 lg:py-4">
-										<div class="w-full mx-auto flex flex-wrap lg:justify-between">
-											<template v-for="educations in transformToColumns(additionalEducations.data)">
-												<div class="flex flex-col">
-													<template v-for="education in educations">
-														<div style="height: max-content" class="px-1">
-															<h1 class="text-brand-primary mb-2 mt-2 text-lg font-semibold upper tracking-tight dark:text-white lg:text-md lg:leading-tight">
-																{{ education.title }}
-															</h1>
-															<template v-for="program in education.additionalEducations" :key="program.id">
-																<Link class="block text-primary hover:text-primary-hover duration-200 text-sm underline underline-offset-2 py-1" :href="route('client.additionalEducation.show', program.slug)">{{ program.title }}</Link>
-															</template>
-														</div>
-													</template>
-												</div>
-											</template>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</main>
+  <BasicPageWrapper>
+    <BasicPageContainer>
+      <div class="space-y-5 md:space-y-4">
+        <AdditionalProgramTitle class="text-center" header="Дополнительное образование" />
+        <div class="space-y-5 md:space-y-4 mx-auto max-w-3xl w-full">
+          <div class="my-10 w-full">
+            <AdditionalProgramListBreadcrumbs :breadcrumbs="breadcrumbs" />
+            <div class="flex items-center gap-x-2">
+              <LevelEduFilter :directions="directionAdditionalEducations" :direction_filter="filters.direction_filter" />
+              <BasicListFilter>
+                <FormEducationalFilter :forms="forms_education" :formEdu_filter="filters.form_education_filter" />
+                <CategoryFilter :categories="categories" :category_filter="filters.category_filter" />
+              </BasicListFilter>
+            </div>
+          </div>
+          <div v-if="hasActiveFilters" class="px-1">
+            <h3 class="text-sm text-gray-500 mb-4">Найдено программ: {{ additionalEducations.data.length }}</h3>
+            <div class="flex-wrap flex gap-3 md:items-center">
+              <BasicListBadge :filters="filters" />
+            </div>
+          </div>
+          <div class="container py-5 lg:py-4">
+            <div class="w-full mx-auto flex flex-wrap md:justify-between">
+              <template v-for="educations in transformToColumns(additionalEducations.data)">
+                <div class="flex flex-col">
+                  <template v-for="education in educations">
+                    <div style="height: max-content" class="px-1">
+                      <h1 class="text-brand-primary mb-2 mt-2 text-lg font-semibold upper tracking-tight dark:text-white lg:text-md lg:leading-tight">
+                        {{ education.title }}
+                      </h1>
+                      <template v-for="program in education.additionalEducations" :key="program.id">
+                        <Link class="block text-primary hover:text-primary-hover duration-200 text-sm underline underline-offset-2 py-1" :href="route('client.additionalEducation.show', program.slug)">{{ program.title }}</Link>
+                      </template>
+                    </div>
+                  </template>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </BasicPageContainer>
+    <BasicFooter />
+  </BasicPageWrapper>
 
-		<BasicFooter />
-	</div>
+
 </template>
 
 <style scoped></style>

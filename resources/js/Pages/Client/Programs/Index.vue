@@ -10,10 +10,15 @@ import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
 import ProgramListBreadcrumbs from "@/componentss/features/educationalPrograms/components/ProgramListBreadcrumbs.vue";
 import BasicFooter from "@/footers/BasicFooter.vue";
 import ProgramLevelEduFilter from "@/componentss/features/educationalPrograms/components/ProgramLevelEduFilter.vue";
+import BasicPageContainer from "@/componentss/ui/templates/BasicPageContainer.vue";
+import AcademicJournalsListBreadcrumbs
+  from "@/componentss/features/academicJournals/components/AcademicJournalsListBreadcrumbs.vue.vue";
+import BasicPageWrapper from "@/componentss/ui/wrappers/BasicPageWrapper.vue";
 
 export default {
   name: "Index",
   components: {
+    BasicPageWrapper, AcademicJournalsListBreadcrumbs, BasicPageContainer,
     ProgramLevelEduFilter,
     FormEducationalFilter,
     DirectionFilter,
@@ -86,60 +91,53 @@ export default {
 
 	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 
+  <BasicPageWrapper>
+    <BasicPageContainer>
+      <div class="space-y-5 md:space-y-4">
+        <ProgramTitle class="text-center" :header="this.campaignName" />
+        <div class="space-y-5 md:space-y-4 mx-auto max-w-3xl w-full">
+          <div>
+            <div class="">
+              <div class="my-10 w-full">
+                <ProgramListBreadcrumbs />
+                <div class="flex items-center gap-x-2">
+                  <ProgramLevelEduFilter :levels="levelsEducational" :level_filter="filters.level_filter" />
+                  <BasicListFilter>
+                    <BudgetFilter :budget_filter="filters.budget_filter" :budgets="budgetEdu" />
+                    <DirectionFilter :direction_studies="direction_studies" :direction_filter="filters.direction_filter" />
+                    <FormEducationalFilter :formEdu_filter="filters.formEdu_filter" :forms="formsEdu" />
+                  </BasicListFilter>
+                </div>
+              </div>
+            </div>
+            <div class="container py-5 lg:py-4">
+              <div class="w-full mx-auto flex flex-wrap lg:justify-between">
+                <template v-for="naprs in transformToColumns(this.naprs.data)">
+                  <div class="flex flex-col">
+                    <template v-for="napr in naprs">
+                      <div style="height: max-content" class="px-4">
+                        <h1 class="text-brand-primary mb-2 mt-2 text-lg font-semibold upper tracking-tight dark:text-white lg:text-md lg:leading-tight">
+                          {{ napr.name }}
+                        </h1>
+                        <template v-for="program in napr.programs" :key="program.id">
+                          <Link
+                              class="block text-primary hover:text-primary-hover duration-200 text-sm underline underline-offset-2 py-1"
+                              :href="route('client.program.show', program.slug)">{{ program.name }}
+                          </Link>
+                        </template>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </BasicPageContainer>
+    <BasicFooter />
+  </BasicPageWrapper>
 
-	<div class="flex flex-col h-screen">
-		<main class="flex-grow">
-			<div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:py-10">
-				<div class="">
-					<div class="">
-						<div class="space-y-5 md:space-y-4">
-							<ProgramTitle class="text-center" :header="this.campaignName" />
-							<div class="space-y-5 md:space-y-4 mx-auto max-w-3xl w-full">
-								<div>
-									<div class="">
-										<div class="my-10 w-full">
-											<ProgramListBreadcrumbs />
-											<div class="flex items-center gap-x-2">
-												<ProgramLevelEduFilter :levels="levelsEducational" :level_filter="filters.level_filter" />
-                        <BasicListFilter>
-                          <BudgetFilter :budget_filter="filters.budget_filter" :budgets="budgetEdu" />
-                          <DirectionFilter :direction_studies="direction_studies" :direction_filter="filters.direction_filter" />
-                          <FormEducationalFilter :formEdu_filter="filters.formEdu_filter" :forms="formsEdu" />
-                        </BasicListFilter>
-											</div>
-										</div>
-									</div>
-									<div class="container py-5 lg:py-4">
-										<div class="w-full mx-auto flex flex-wrap lg:justify-between">
-											<template v-for="naprs in transformToColumns(this.naprs.data)">
-												<div class="flex flex-col">
-													<template v-for="napr in naprs">
-														<div style="height: max-content" class="px-4">
-															<h1 class="text-brand-primary mb-2 mt-2 text-lg font-semibold upper tracking-tight dark:text-white lg:text-md lg:leading-tight">
-																{{ napr.name }}
-															</h1>
-															<template v-for="program in napr.programs" :key="program.id">
-																<Link
-																		class="block text-primary hover:text-primary-hover duration-200 text-sm underline underline-offset-2 py-1"
-																		:href="route('client.program.show', program.slug)">{{ program.name }}
-																</Link>
-															</template>
-														</div>
-													</template>
-												</div>
-											</template>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</main>
-
-		<BasicFooter />
-	</div>
 
 </template>
 

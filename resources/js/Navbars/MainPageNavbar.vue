@@ -130,7 +130,6 @@ export default {
   computed: {
     ...mapGetters(['lastSlider', 'isBviActive']),
     currentLogo() {
-      console.log(this.isBviActive)
       if (this.isBviActive) {
         return this.logos.default
       }

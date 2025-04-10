@@ -11,11 +11,31 @@ import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
 import BasicFooter from "@/footers/BasicFooter.vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
 import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import CategoryFilter from "@/componentss/shared/filter/filters/CategoryFilter.vue";
+import BasicPageContainer from "@/componentss/ui/templates/BasicPageContainer.vue";
+import BasicPageWrapper from "@/componentss/ui/wrappers/BasicPageWrapper.vue";
+import BasicListBadge from "@/componentss/shared/badge/BasicListBadge.vue";
+import EventArchiveListBreadcrumbs from "@/componentss/features/events/components/EventArchiveListBreadcrumbs.vue";
+import BasicPagination from "@/componentss/shared/paginate/BasicPagination.vue";
+import IsOnlineFilter from "@/componentss/shared/filter/filters/IsOnlineFilter.vue";
+import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
+import EventListSearch from "@/componentss/features/events/components/EventListSearch.vue";
+import SortingByFilter from "@/componentss/shared/filter/filters/SortingByFilter.vue";
 
 
 export default {
 	name: "Show",
 	components: {
+    SortingByFilter,
+    EventListSearch,
+    BasicListFilter,
+    IsOnlineFilter,
+    BasicPagination,
+    EventArchiveListBreadcrumbs,
+    BasicListBadge,
+    BasicPageWrapper,
+    BasicPageContainer,
+    CategoryFilter,
     MetaTags,
     MainPageNavBar,
     BasicFooter,
@@ -64,50 +84,41 @@ export default {
 
 	<ScrollTimeline />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
-	<div class="flex flex-col h-screen">
-		<main class="flex-grow">
-			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
-				<div class="max-w-3xl lg:pt-10 pb-12 sm:px-6 lg:px-8 mx-auto w-full">
-					<div>
-						<div class="space-y-5 md:space-y-10">
-							<div class="space-y-3">
-								<PostItemBreadcrumbs :breadcrumbs="breadcrumbs" :post-title="post.data.title" />
-								<BackButton link="client.post.index" title="Все новости"/>
-								<BasicTitle :header="post.data.title"/>
-							</div>
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
+  <BasicPageWrapper>
+    <BasicPageContainer breakpoint="md">
+      <div class="space-y-5 md:space-y-10">
+        <div class="space-y-3">
+          <BackButton link="client.post.index" title="Все новости"/>
+          <PostItemBreadcrumbs :breadcrumbs="breadcrumbs" :post-title="post.data.title" />
+          <BasicTitle :header="post.data.title"/>
+        </div>
 
-							<div class="flex space-x-3 text-gray-500 ">
-								<div class="flex items-center gap-3">
-									<div class="md:flex md:items-center space-y-2 md:space-y-0 md:space-x-4 text-sm">
-										<PostAuthorsList :authors="post.data.authors"/>
-										<time class="block text-gray-500">Опубликовано {{ post.data.created_post }}
-										</time>
-										<PostTimeRead :time="post.data.reading_time"/>
-									</div>
-								</div>
-							</div>
-							<Builder :blocks="blocks"/>
+        <div class="flex space-x-3 text-gray-500 ">
+          <div class="flex items-center gap-3">
+            <div class="md:flex md:items-center space-y-2 md:space-y-0 md:space-x-4 text-sm">
+              <PostAuthorsList :authors="post.data.authors"/>
+              <time class="block text-gray-500">Опубликовано {{ post.data.created_post }}
+              </time>
+              <PostTimeRead :time="post.data.reading_time"/>
+            </div>
+          </div>
+        </div>
+        <Builder :blocks="blocks"/>
 
 
-							<div>
-								<PostGallery v-if="post.data.gallery.length > 1" :title="post.data.title" :images="post.data.gallery"/>
-							</div>
-							<div>
-								<a :href="route('client.post.index', { 'tag[]': tag.slug })" v-for="tag in post.data.tags" class="m-1 inline-flex items-center gap-1.5 py-2 px-3 rounded-full text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" href="#">
-									{{ tag.name }}
-								</a>
-							</div>
-						</div>
-
-					</div>
-				</div>
-
-
-			</div>
-		</main>
-		<BasicFooter />
-	</div>
+        <div>
+          <PostGallery v-if="post.data.gallery.length > 1" :title="post.data.title" :images="post.data.gallery"/>
+        </div>
+        <div>
+          <a :href="route('client.post.index', { 'tag[]': tag.slug })" v-for="tag in post.data.tags" class="m-1 inline-flex items-center gap-1.5 py-2 px-3 rounded-full text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" href="#">
+            {{ tag.name }}
+          </a>
+        </div>
+      </div>
+    </BasicPageContainer>
+    <BasicFooter />
+  </BasicPageWrapper>
 </template>
 
 <style>
