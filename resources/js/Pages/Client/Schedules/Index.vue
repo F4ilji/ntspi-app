@@ -9,6 +9,7 @@ import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
 import BasicFooter from "@/footers/BasicFooter.vue";
 import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
 import FormEducationalFilter from "@/componentss/shared/filter/filters/FormEducationalFilter.vue";
+import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
 
 
 export default {
@@ -22,6 +23,7 @@ export default {
 		};
 	},
 	components: {
+    MetaTags,
     FormEducationalFilter,
     BasicListFilter,
     BasicFooter,
@@ -40,7 +42,10 @@ export default {
 		},
 		schedulesByFaculty: {
 			type: Object
-		}
+		},
+    seo: {
+      type: Object
+    }
 	},
 	methods: {
 		search: debounce(function () {
@@ -53,18 +58,28 @@ export default {
 				replace: true,
 			});
 		}, 300),
-		toggleFavorite(group) {
-			const index = this.favoriteGroups.findIndex(g => g === group);
-			if (index === -1) {
-				this.favoriteGroups.push(group);
-			} else {
-				this.favoriteGroups.splice(index, 1);
-			}
-			localStorage.setItem('favoriteGroups', JSON.stringify(this.favoriteGroups));
-		},
-		isFavorite(group) {
-			return this.favoriteGroups.some(g => g === group);
-		},
+    toggleFavorite(group) {
+      if (!this.favoriteGroups) {
+        this.favoriteGroups = [];
+      }
+
+      const index = this.favoriteGroups.findIndex(g => g === group);
+      if (index === -1) {
+        this.favoriteGroups.push(group);
+      } else {
+        this.favoriteGroups.splice(index, 1);
+      }
+
+      localStorage.setItem('favoriteGroups', JSON.stringify(this.favoriteGroups));
+    },
+
+    isFavorite(group) {
+      // Если favoriteGroups не существует или не является массивом, возвращаем false
+      if (!Array.isArray(this.favoriteGroups)) {
+        return false;
+      }
+      return this.favoriteGroups.some(g => g === group);
+    },
 		toggleShowFavorites() {
 			this.loading = true; // Включаем состояние загрузки
 
@@ -97,7 +112,7 @@ export default {
 				method: 'get',
 				preserveState: true,
 				data: {
-					favorite: (this.favoriteGroups.length !== 0) ? this.favoriteGroups : "",
+					favorite: (this.favoriteGroups?.length !== 0) ? this.favoriteGroups : "",
 				},
 				onFinish: callback, // Вызываем колбэк после завершения запроса
 			});
@@ -123,12 +138,15 @@ export default {
 
 			});
 		},
-	},
+  },
+  computed: {
+  },
 };
 </script>
 
 <template>
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+  <MetaTags :seo="this.seo" />
+	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
@@ -159,7 +177,6 @@ export default {
 															id="hs-search-article-1"
 															class="py-2.5 px-4 block w-full border-transparent rounded-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100"
 															placeholder="Поиск"
-															:disabled="filters.favorite_filter.value !== null"
 													>
 												</div>
 											</div>
@@ -170,7 +187,7 @@ export default {
 											<button
 													@click="toggleShowFavorites"
 													type="button"
-													:disabled="favoriteGroups?.length === 0 || loading"
+													:disabled="loading"
 													:class="
 															filters.favorite_filter.value !== null ? 'bg-primary text-white hover:bg-primary-dark': 'text-gray-700 hover:bg-gray-100',
 															loading ? 'animate-pulse' : ''
@@ -192,9 +209,8 @@ export default {
 
 					<div class="mx-auto max-w-2xl hs-accordion-group grid gap-3">
 						<div class="space-y-4">
-							<transition-group name="fade">
-								<template v-for="(faculty, title) in schedulesByFaculty">
-									<div class="">
+              <template v-for="(faculty, title) in schedulesByFaculty">
+									<div>
 										<h2 class="text-center text-gray-800 font-medium">{{ title }}</h2>
 										<hr class="mt-2 mb-4">
 										<template v-for="educationalGroup in faculty" :key="educationalGroup.data.id">
@@ -245,7 +261,15 @@ export default {
 										</template>
 									</div>
 								</template>
-							</transition-group>
+              <div v-if="schedulesByFaculty.length === 0">
+                <div class="h-full flex flex-col items-center justify-center gap-1">
+                  <p class="font-light">Извините, ничего не найдено</p>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-gray-700">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+                  </svg>
+                </div>
+              </div>
+
 						</div>
 					</div>
 				</article>
@@ -276,7 +300,6 @@ export default {
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
-	transform: translateY(30px);
 }
 
 .gg-enter-active,

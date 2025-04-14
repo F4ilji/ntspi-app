@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\FormEducation;
 use App\Filament\Resources\ScheduleResource\Pages;
 use App\Models\EducationalGroup;
 use App\Models\Schedule;
@@ -48,16 +49,6 @@ class ScheduleResource extends Resource
                                     ->required()
                                     ->live()
                                     ->helperText('Выберите группу для которой создается расписание'),
-
-                                Toggle::make('is_zaoch')
-                                    ->label('Форма обучения')
-                                    ->inline(false)
-                                    ->onColor('success')
-                                    ->offColor('primary')
-                                    ->helperText('Очная | Заочная')
-                                    ->afterStateHydrated(function (Toggle $component, $state) {
-                                        $component->state((bool) $state);
-                                    }),
                             ]),
                     ]),
 
@@ -91,10 +82,11 @@ class ScheduleResource extends Resource
                                         fn (TemporaryUploadedFile $file): string =>
                                         str(Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '-' . Carbon::now()->timestamp) . '.' . $file->getClientOriginalExtension()
                                         )
-                                            ->afterStateUpdated(function ($set, $state) {
-                                                $set('title', pathinfo($state?->getClientOriginalName(), PATHINFO_FILENAME));
-                                            })
-                                            ->visibility('public')),
+                                    )
+                                    ->afterStateUpdated(function ($set, $state) {
+                                        $set('title', pathinfo($state?->getClientOriginalName(), PATHINFO_FILENAME));
+                                    })
+                                    ->visibility('public'),
                             ])
                             ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Новый файл')
                             ->collapsible()
@@ -108,7 +100,7 @@ class ScheduleResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('educational_group.title')
+                TextColumn::make('educationalGroup.title')
                     ->label('Учебная группа')
                     ->sortable()
                     ->searchable(),
@@ -118,13 +110,11 @@ class ScheduleResource extends Resource
                     ->getStateUsing(fn ($record) => count($record->file ?? []))
                     ->badge(),
 
-                IconColumn::make('is_zaoch')
-                    ->label('Форма обучения')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-academic-cap')
-                    ->falseIcon('heroicon-o-building-office')
-                    ->trueColor('success')
-                    ->falseColor('primary'),
+                TextColumn::make('educationalGroup.education_form_id')
+                    ->formatStateUsing(fn ($state) => FormEducation::tryFrom($state)->getLabel())
+                    ->color(fn ($state) => FormEducation::tryFrom($state)?->getColor())
+                    ->badge()
+                    ->label('Форма обучения'),
 
                 TextColumn::make('updated_at')
                     ->label('Обновлено')
@@ -163,8 +153,7 @@ class ScheduleResource extends Resource
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()
                     ->label('Добавить расписание'),
-            ])
-            ->defaultSort('educational_group.title');
+            ]);
     }
 
     public static function getRelations(): array

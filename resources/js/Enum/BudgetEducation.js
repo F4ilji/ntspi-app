@@ -101,6 +101,10 @@ class EducationForm {
             this.DETAILED_TARGET_QUOTA
         ];
     }
+
+    getName() {
+        return this.name;
+    }
 }
 
 export default EducationForm;

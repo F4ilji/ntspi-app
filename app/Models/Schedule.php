@@ -15,14 +15,14 @@ class Schedule extends Model
         'file' => 'array',
     ];
 
-    public function subSchedules()
-    {
-        return $this->hasMany(SubSchedule::class);
-    }
-
     public function faculty()
     {
         return $this->belongsTo(Faculty::class);
+    }
+
+    public function educationalGroup(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(EducationalGroup::class);
     }
 
 

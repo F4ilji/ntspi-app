@@ -14,10 +14,12 @@ import BasicPageContainer from "@/componentss/ui/templates/BasicPageContainer.vu
 import AcademicJournalsListBreadcrumbs
   from "@/componentss/features/academicJournals/components/AcademicJournalsListBreadcrumbs.vue.vue";
 import BasicPageWrapper from "@/componentss/ui/wrappers/BasicPageWrapper.vue";
+import BasicListBadge from "@/componentss/shared/badge/BasicListBadge.vue";
 
 export default {
   name: "Index",
   components: {
+    BasicListBadge,
     BasicPageWrapper, AcademicJournalsListBreadcrumbs, BasicPageContainer,
     ProgramLevelEduFilter,
     FormEducationalFilter,
@@ -32,10 +34,10 @@ export default {
     Link,
     Head,
   },
-  data() {
-    return {
-
-    };
+  computed: {
+    hasActiveFilters() {
+      return this.filters.budget_filter.value || this.filters.direction_filter.value || this.filters.formEdu_filter.value;
+    }
   },
   props: {
 		campaignName: {
@@ -98,7 +100,7 @@ export default {
         <div class="space-y-5 md:space-y-4 mx-auto max-w-3xl w-full">
           <div>
             <div class="">
-              <div class="my-10 w-full">
+              <div class="mt-10 mb-5 w-full">
                 <ProgramListBreadcrumbs />
                 <div class="flex items-center gap-x-2">
                   <ProgramLevelEduFilter :levels="levelsEducational" :level_filter="filters.level_filter" />
@@ -110,7 +112,15 @@ export default {
                 </div>
               </div>
             </div>
-            <div class="container py-5 lg:py-4">
+
+            <div class="mb-5">
+<!--              <h3 class="text-sm text-gray-500 mb-4">Найдено программ: {{ naprs.meta.total }}</h3>-->
+              <div v-if="hasActiveFilters" class="flex-wrap flex gap-3 md:items-center">
+                <BasicListBadge :filters="filters" />
+              </div>
+            </div>
+
+            <div class="container">
               <div class="w-full mx-auto flex flex-wrap lg:justify-between">
                 <template v-for="naprs in transformToColumns(this.naprs.data)">
                   <div class="flex flex-col">

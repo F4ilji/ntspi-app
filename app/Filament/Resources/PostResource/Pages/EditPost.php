@@ -30,7 +30,7 @@ class EditPost extends EditRecord
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $post = Post::query()->with(['seo', 'slide'])->find($data['id']);
-        $data['slide'] = $post->slide->toArray() ?? null;
+        $data['slide'] = $post->slide ? $post->slide->toArray() : null;
         return $data;
     }
 

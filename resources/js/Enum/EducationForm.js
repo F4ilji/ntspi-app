@@ -12,8 +12,6 @@ class EducationForm {
         return Object.values(this).find(item => item.value == value) || null;
     }
 
-
-    // Метод для получения имени
     getName() {
         return this.name;
     }

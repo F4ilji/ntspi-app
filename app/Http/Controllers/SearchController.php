@@ -77,7 +77,7 @@ class SearchController extends Controller
             $resources = $this->sortResourcesByCategory($resources, $request->query('category'));
         }
 
-        $paginate_data = $this->createPaginate($resources, $request, 10);
+        $paginate_data = $this->createPaginate($resources, $request, 7);
 
         $sortedData = $this->sortByType($paginate_data['paginator'], $req);
 
@@ -114,14 +114,24 @@ class SearchController extends Controller
     private function getMatches(string $haystack, string $needle): array
     {
         $matches = [];
+//        while (($offset = mb_strpos($haystack, $needle, $offset, 'UTF-8')) !== false) {
+//            $left = max(0, $offset - 50);
+//            $right = min(mb_strlen($haystack, 'UTF-8'), $offset + 100);
+//            $excerpt = mb_substr($haystack, $left, $right - $left, 'UTF-8');
+//            $matches[] = $excerpt;
+//            $offset += mb_strlen($needle, 'UTF-8');
+//        }
+
         $offset = 0;
-        while (($offset = mb_strpos($haystack, $needle, $offset, 'UTF-8')) !== false) {
-            $left = max(0, $offset - 50);
-            $right = min(mb_strlen($haystack, 'UTF-8'), $offset + 100);
-            $excerpt = mb_substr($haystack, $left, $right - $left, 'UTF-8');
-            $matches[] = $excerpt;
-            $offset += mb_strlen($needle, 'UTF-8');
+        if (($offset = mb_strpos($haystack, $needle, $offset, 'UTF-8')) !== false) {
+            for ($i = 0; 1 > count($matches); $i++) {
+                $left = max(0, $offset - 50);
+                $right = min(mb_strlen($haystack, 'UTF-8'), $offset + 100);
+                $excerpt = mb_substr($haystack, $left, $right - $left, 'UTF-8');
+                $matches[] = $excerpt;
+            }
         }
+
         return $matches;
     }
 

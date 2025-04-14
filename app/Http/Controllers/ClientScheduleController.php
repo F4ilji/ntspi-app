@@ -39,14 +39,11 @@ class ClientScheduleController extends Controller
             ->get());
 
         $schedulesByFaculty = $educationalGroups->groupBy(function ($group) {
-            return $group->faculty->title; // Предполагаем, что у факультета есть поле 'name'
+            return $group->faculty->title;
         });
 
         $schedulesByFaculty = $schedulesByFaculty->toArray();
 
-        if ($request->has('favorite') && empty($request->input('favorite'))) {
-            $schedulesByFaculty = [];
-        }
 
 
         $forms_education = [];
@@ -55,11 +52,6 @@ class ClientScheduleController extends Controller
         }
 
         $filters = [
-            'direction_filter' => [
-                'type' => 'direction',
-                'value' => request()->input('direction'),
-                'param' => 'direction'
-            ],
             'form_education_filter' => [
                 'type' => 'form',
                 'value' => request()->input('form'),

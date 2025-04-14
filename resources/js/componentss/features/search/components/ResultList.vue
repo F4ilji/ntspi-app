@@ -5,6 +5,7 @@
 			 class="px-2 font-light duration-300">
 		<template v-for="(elements, tag) in result">
 			<component
+          class="rounded-none"
 					v-for="(item, index) in elements"
 					:key="index"
 					:is="getComponent(tag)"
@@ -36,6 +37,7 @@ import ResultFacultyItem from "@/componentss/features/search/components/Items/Re
 import ResultEducationalGroupItem from "@/componentss/features/search/components/Items/ResultEducationalGroupItem.vue";
 import ResultAdditionalEducationItem
   from "@/componentss/features/search/components/Items/ResultAdditionalEducationItem.vue";
+import BasicResultItem from "@/componentss/features/search/components/Items/BasicResultItem.vue";
 
 
 export default {
@@ -50,7 +52,9 @@ export default {
 		PreSearchLinkList,
 		ResultPersonItem,
 		ResultFacultyItem,
-		Link},
+		Link,
+    BasicResultItem
+  },
 	data() {
 		return {
 		}
@@ -67,6 +71,7 @@ export default {
 				User: 'ResultPersonItem',
 				Faculty: 'ResultFacultyItem'
 			};
+
 			return componentMap[type] || null;
 		},
 	},

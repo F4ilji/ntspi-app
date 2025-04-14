@@ -65,6 +65,11 @@ class EducationalGroupResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('faculty');
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -81,14 +86,11 @@ class EducationalGroupResource extends Resource
                     ->searchable()
                     ->description(fn ($record) => $record->faculty->title ?? ''),
 
-                BadgeColumn::make('education_form_id')
+                TextColumn::make('education_form_id')
                     ->label('Форма обучения')
-                    ->formatStateUsing(fn ($state) => FormEducation::tryFrom($state)?->label())
-                    ->color(fn ($state) => match($state) {
-                        FormEducation::FULL_TIME->value => 'success',
-                        FormEducation::PART_TIME->value => 'warning',
-                        default => 'gray',
-                    })
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => FormEducation::tryFrom($state)?->getLabel())
+                    ->color(fn ($state) => FormEducation::tryFrom($state)?->getColor())
                     ->sortable(),
 
                 TextColumn::make('created_at')
@@ -97,6 +99,7 @@ class EducationalGroupResource extends Resource
                     ->sortable()
                     ->toggleable(),
             ])
+
             ->filters([
                 Tables\Filters\SelectFilter::make('faculty_id')
                     ->label('Факультет')

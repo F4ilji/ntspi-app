@@ -9,6 +9,7 @@ use App\Enums\LevelEducational;
 use App\Http\Resources\DirectionStudyResource;
 use App\Http\Resources\EducationalProgramFullResource;
 use App\Models\AdmissionCampaign;
+use App\Models\AdmissionPlan;
 use App\Models\DirectionStudy;
 use App\Models\EducationalProgram;
 use App\Services\App\Seo\SeoPageProvider;
@@ -39,19 +40,33 @@ class ClientProgramController extends Controller
         });
 
         $formsEdu = Cache::remember($cacheKeyForms, now()->addDay(), function () {
-            return collect(FormEducation::cases())
-                ->mapWithKeys(fn($form) => [$form->name => $form->getLabel()]);
+            return AdmissionPlan::distinct()
+                ->pluck('contests')
+                ->flatten(1)
+                ->filter(fn ($item) => isset($item['form_education']))
+                ->pluck('form_education')
+                ->unique()
+                ->map(fn ($item) => FormEducation::tryFrom((int)$item))
+                ->filter()
+                ->mapWithKeys(fn ($form) => [$form->name => $form->getLabel()]);
         });
 
+
         $budgetEdu = Cache::remember($cacheKeyBudgets, now()->addDay(), function () {
-            return collect(BudgetEducation::cases())
-                ->mapWithKeys(fn($type) => [$type->name => $type->getLabel()]);
+            return AdmissionPlan::distinct()
+                ->pluck('contests')
+                ->flatten(1)
+                ->filter(fn ($item) => isset($item['places']['form_budget']))
+                ->pluck('places.form_budget')
+                ->unique()
+                ->map(fn ($item) => BudgetEducation::tryFrom($item))
+                ->filter()
+                ->mapWithKeys(fn ($form) => [$form->name => $form->getLabel()]);
         });
 
         $seo = Cache::remember($cacheKeySeo, now()->addDay(), function () {
             return $this->seoPageProvider->getSeoForCurrentPage();
         });
-        ;
 
         $naprs = Cache::remember($cacheKey, now()->addHours(), function () use ($request, $activeCampaign) {
             return DirectionStudyResource::collection(
@@ -144,16 +159,16 @@ class ClientProgramController extends Controller
             }]);
     }
 
-    private function applyBudgetFilter($query, $budget)
+    private function applyBudgetFilter($query, $budget): void
     {
         $budgetValue = Str::of(BudgetEducation::fromName($budget)->value)->toString();
 
         $query->whereHas('programs.admission_plans', function ($query) use ($budgetValue) {
-            $query->whereJsonContains('contests', ['financing_source' => $budgetValue]);
+            $query->where('contests', 'like', '%"form_budget":"'.$budgetValue.'"%');
         })
             ->with(['programs' => function ($query) use ($budgetValue) {
                 $query->whereHas('admission_plans', function ($query) use ($budgetValue) {
-                    $query->whereJsonContains('contests', ['financing_source' => $budgetValue]);
+                    $query->where('contests', 'like', '%"form_budget":"'.$budgetValue.'"%');
                 });
             }]);
     }

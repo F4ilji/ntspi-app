@@ -13,6 +13,7 @@ import CategoryBadge from "@/componentss/shared/badge/badges/CategoryBadge.vue";
 import TagBadge from "@/componentss/shared/badge/badges/TagBadge.vue";
 import SortingByBadge from "@/componentss/shared/badge/badges/SortingByBadge.vue";
 import IsOnlineBadge from "@/componentss/shared/badge/badges/IsOnlineBadge.vue";
+import EduBudgetBadge from "@/componentss/shared/badge/badges/EduBudgetBadge.vue";
 export default {
   name: "BasicListBadge",
   components: {
@@ -21,7 +22,8 @@ export default {
     CategoryBadge,
     TagBadge,
     SortingByBadge,
-    IsOnlineBadge
+    IsOnlineBadge,
+    EduBudgetBadge
   },
   data() {
     return {
@@ -34,7 +36,8 @@ export default {
         category: 'CategoryBadge',
         tag: 'TagBadge',
         sort: 'SortingByBadge',
-        is_online: 'IsOnlineBadge'
+        is_online: 'IsOnlineBadge',
+        budget: 'EduBudgetBadge'
       };
       return componentMap[type] || null;
     },

@@ -8,29 +8,41 @@
 		</svg>
 		<span class="text-sm">{{ item.data.title }}</span>
 	</div>
-	<template v-for="schedule in item.data.schedules">
-		<div class="mb-2">
-			<div class="flex gap-3 px-2 items-center hover:bg-[#F2F2F2] rounded-lg">
-				<Link href="/"
-							class="ml-[8px] flex h-12 w-full items-center gap-2 overflow-hidden border-l border-gray-200 px-4 pl-[22px] text-sm text-gray-900 md:h-10">
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-							 stroke="currentColor" class="w-5 h-5 flex-shrink-0">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h16.5"/>
-					</svg>
-					<p class="truncate">{{ schedule.title }}</p>
-				</Link>
-			</div>
-		</div>
-	</template>
+
+  <div class="border-b w-full">
+    <div v-if="item.tag === 'EducationalGroup'"  class="rounded-lg hover:bg-[#F2F2F2] my-1 px-4 w-full flex items-center">
+      <BasicIcon name="post_search" class="w-5 h-5 flex-shrink-0 text-gray-500" />
+      <div class="px-4 space-y-1 py-2">
+        <p class="text-sm">{{ item.data.title }}</p>
+        <p class="text-xs text-gray-500">{{ item.data.created_post }}</p>
+        <template v-for="schedule in item.data.schedules">
+          <div class="mb-2">
+            <div class="flex gap-3 px-2 items-center hover:bg-[#F2F2F2] rounded-lg">
+              <Link href="/"
+                    class="ml-[8px] flex h-12 w-full items-center gap-2 overflow-hidden border-l border-gray-200 px-4 pl-[22px] text-sm text-gray-900 md:h-10">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                     stroke="currentColor" class="w-5 h-5 flex-shrink-0">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h16.5"/>
+                </svg>
+                <p class="truncate">{{ schedule.title }}</p>
+              </Link>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+
 
 </template>
 
 <script>
 import {Link} from "@inertiajs/vue3";
+import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
 
 export default {
 	name: "ResultEducationalGroupItem",
-	components: {Link},
+	components: {BasicIcon, Link},
 	data() {
 		return {
 			selectedCategory: 'All',
