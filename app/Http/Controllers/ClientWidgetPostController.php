@@ -39,7 +39,7 @@ class ClientWidgetPostController extends Controller
 
         return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($id) {
             return new PostThumbnailResource(
-                Post::query()->with('category')->find($id)
+                Post::query()->with('category')->find($id)->firstOrFail()
             );
         });
     }

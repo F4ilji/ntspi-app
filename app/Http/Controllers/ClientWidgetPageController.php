@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 
 class ClientWidgetPageController extends Controller
 {
-    public function single(int $id)
+    public function single(int $id): \Illuminate\Http\JsonResponse
     {
         $cacheKey = 'page_' . md5($id);
 
@@ -18,7 +18,7 @@ class ClientWidgetPageController extends Controller
         $page = Cache::remember($cacheKey, now()->addHours(1), function () use ($id) {
             return Page::where('id', '=', $id)
                 ->with('section.pages.section', 'section.mainSection')
-                ->first();
+                ->firstOrFail();
         });
 
         if (isset($page->section)) {

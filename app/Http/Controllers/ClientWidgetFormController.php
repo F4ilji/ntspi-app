@@ -15,7 +15,7 @@ class ClientWidgetFormController extends Controller
 {
     public function single(string $id)
     {
-        return new ClientFormResource(CustomForm::query()->where('status', CustomFormStatus::PUBLISHED)->where('form_id', $id)->first());
+        return new ClientFormResource(CustomForm::query()->where('status', CustomFormStatus::PUBLISHED)->where('form_id', $id)->firstOrFail());
     }
 
     public function submit(int $id, Request $request)

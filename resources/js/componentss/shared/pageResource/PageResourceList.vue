@@ -9,7 +9,7 @@
 		</div>
 	</div>
 
-	<div v-else-if="!loading & resource">
+	<div v-else-if="!loading && resource">
 
 		<!-- Card Blog -->
 		<div class="px-0 py-10 sm:px-2 lg:py-14 mx-auto">

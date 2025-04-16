@@ -18,7 +18,7 @@ class ClientWidgetSliderController extends Controller
                 ->with(['slides' => function($query) {
                     $query->where('is_active', true);
                 }])
-                ->first();
+                ->firstOrFail();
 
             return $slider ?: null;
         });

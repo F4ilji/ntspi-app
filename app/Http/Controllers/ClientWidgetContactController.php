@@ -19,7 +19,7 @@ class ClientWidgetContactController extends Controller
                 return new ClientContactWidgetResource(
                     ContactWidget::query()
                         ->where('slug', $slug)
-                        ->first()
+                        ->firstOrFail()
                 );
             }
         );

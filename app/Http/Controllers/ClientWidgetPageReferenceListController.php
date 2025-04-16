@@ -19,7 +19,7 @@ class ClientWidgetPageReferenceListController extends Controller
                 return new ClientPageReferenceListResource(
                     PageReferenceList::query()
                         ->where('slug', $slug)
-                        ->first()
+                        ->firstOrFail()
                 );
             }
         );
