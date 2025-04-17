@@ -28,7 +28,7 @@ class PageObserver
      */
     public function updated(Page $page): void
     {
-        $this->pageCacheService->clearCache($page);
+        $this->pageCacheService->clearAllCacheByModel();
     }
 
     /**

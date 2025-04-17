@@ -49,7 +49,6 @@ use Filament\Facades\Filament;
 use Filament\Support\Facades\FilamentView;
 use Filament\Tables\View\TablesRenderHook;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Sleep;
@@ -73,7 +72,6 @@ class AppServiceProvider extends ServiceProvider
         self::setObserversByModel();
         self::setLocaleTime();
         Model::preventLazyLoading(!app()->isProduction());
-//        URL::forceScheme('https');
         self::registerFilamentNavigationGroups();
         $this->loadViewsFrom(__DIR__.'/path/to/views', 'checkpoint');
 

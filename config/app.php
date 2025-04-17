@@ -171,6 +171,7 @@ return [
         App\Providers\Filament\AdminPanelProvider::class,
         App\Providers\Filament\DashboardPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
+        \App\Providers\ForceHttpsServiceProvider::class,
     ])->toArray(),
 
     /*

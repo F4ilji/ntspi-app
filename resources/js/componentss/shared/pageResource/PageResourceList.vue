@@ -24,16 +24,15 @@
 			<div class="flex overflow-x-auto space-x-6 mb-10 lg:mb-14 p-4">
 				<!-- Card -->
 
-				<a v-for="item in resource.data.content" class="group flex-shrink-0 w-64 flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition" :href="item.link">
-					<div class="aspect-w-16 aspect-h-9">
-						<img v-if="item.image" class="w-full backdrop-blur-xl object-cover rounded-t-xl h-[150px]" :src="'/storage/' + item.image" alt="Blog Image">
-						<div v-else :class="randomBgClass()" class="w-full object-cover rounded-t-xl h-[150px] bg-gradient-to-tr" />
+				<a v-for="item in resource.data.content" class="group flex-shrink-0 w-64 flex flex-col bg-white border shadow-sm rounded-xl focus:outline-none focus:shadow-md transition" :href="item.link">
+					<div class="aspect-w-16 aspect-h-9 p-3 rounded-xl m-1 group-hover:bg-gray-100">
+						<img v-if="item.image" class="w-full backdrop-blur-xl rounded-xl object-cover h-[150px]" :src="'/storage/' + item.image" alt="Blog Image">
+						<div v-else :class="randomBgClass()" class="w-full rounded-xl object-cover h-[150px] bg-gradient-to-tr" />
 					</div>
-					<div class="p-4 md:p-5">
-						<p class="mt-2 text-xs uppercase text-gray-600">{{ item.model_select }}</p>
-						<h3 class="mt-2 text-lg font-medium text-gray-800 group-hover:text-primary-hover">{{ item.title }}</h3>
+					<div class="px-5 pb-4">
+						<h3 class="mt-2 truncate text-base font-medium text-gray-800 group-hover:text-primary-hover">{{ item.title }}</h3>
 						<p class="mt-2 text-xs text-gray-600">{{ item.link_text }}</p>
-					</div>
+          </div>
 				</a>
 
 

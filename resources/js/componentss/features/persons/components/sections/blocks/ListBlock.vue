@@ -1,7 +1,7 @@
 <!-- NavLink.vue -->
 <template>
 	<div>
-		<h2 :id="generateSlug(nameList)" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
+		<h2 :id="'anchor-link-' + generateSlug(nameList)" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
 			{{ nameList }}
 		</h2>
 		<ul class="list-disc ms-6 mt-3 space-y-1.5">
