@@ -37,14 +37,6 @@ export default {
 		}
 	},
 	methods: {
-		textLimit(text, symbols) {
-			if (text.length > symbols) {
-				let LimitedText
-				LimitedText = text.substring(0, symbols)
-				return LimitedText + "..."
-			}
-			return text
-		},
 		isSameRoute(route) {
 			if (this.$page.props.ziggy.location === this.$page.props.ziggy.url + '/' + route) {
 				return true
