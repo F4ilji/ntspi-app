@@ -23,7 +23,8 @@ class SeoPageProvider
             now()->addHours(1),
             fn() => Page::where('path', $path)->first()
         );
-        if ($page) {
+
+        if ($page && $page->seo) {
             return $page->seo->toArray();
         }
 
