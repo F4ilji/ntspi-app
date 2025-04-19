@@ -14,7 +14,7 @@ class PostDataProcessor
      * @param array $data
      * @return array
      */
-    public function process(array $data): array
+    public function process(array $data, $operation): array
     {
         // Удаляем ненужные данные
         unset($data['publication']);
@@ -23,7 +23,14 @@ class PostDataProcessor
         $data['preview_text'] = $this->setPreviewText($data);
 
         // Устанавливаем время публикации
-        $data['publish_at'] = $this->setPublishDateTime($data['publish_setting'], $data['status']);
+        if ($data['publish_setting']['publish_after'] === true) {
+            $data['publish_at'] = $this->setPublishDateTimeInFuture($data['publish_setting']);
+        }
+
+        if (($data['status'] === PostStatus::PUBLISHED->value || PostStatus::PUBLISHED) && $operation === 'create') {
+            $data['publish_at'] = $this->setPublishDateTime();
+        }
+
         unset($data['publish_setting']);
 
         // Генерируем данные для поиска
@@ -63,20 +70,16 @@ class PostDataProcessor
      * @param string $status
      * @return Carbon|null
      */
-    private function setPublishDateTime(array $publishSetting, $status): ?Carbon
+    private function setPublishDateTime(): ?Carbon
+    {
+        return Carbon::now();
+    }
+
+    private function setPublishDateTimeInFuture(array $publishSetting): ?Carbon
     {
         if ($publishSetting['publish_after'] === true) {
             return Carbon::parse($publishSetting['publish_at']);
         }
-
-        if ($status === PostStatus::PUBLISHED->value) {
-            return Carbon::now();
-        }
-
-        if ($status === PostStatus::PUBLISHED) {
-            return Carbon::now();
-        }
-
 
         return null;
     }

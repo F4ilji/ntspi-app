@@ -49,7 +49,7 @@ class EditPost extends EditRecord
 
     protected function processPostData(array $data): array
     {
-        return (new PostDataProcessor())->process($data);
+        return (new PostDataProcessor())->process($data, 'edit');
     }
 
     protected function afterSave(): void

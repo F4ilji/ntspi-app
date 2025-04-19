@@ -32,13 +32,13 @@ class ImportApiDataPost implements ShouldQueue
     {
         try {
             // Получаем первую страницу данных
-            $response = Http::get('https://crawdad-fresh-bream.ngrok-free.app/api/posts')->object();
+            $response = Http::get(env('TRANSFER_PROXY_URL') . '/api/posts')->object();
             $last_page = $response->last_page;
             Log::info('Last page: ' . $last_page);
 
             // Проходим по всем страницам
             for ($page = 1; $page <= $last_page; $page++) {
-                $response = Http::get("https://crawdad-fresh-bream.ngrok-free.app/api/posts?page=$page")->object();
+                $response = Http::get(env('TRANSFER_PROXY_URL') . "/api/posts?page=$page")->object();
                 $results = $response->data;
 
                 // Обрабатываем каждую запись
@@ -70,6 +70,8 @@ class ImportApiDataPost implements ShouldQueue
 
                         // Обработка контента поста
                         $content = strip_tags($post->DETAIL_TEXT, '<a>');
+
+                        $readingTime = $this->calculateReadingTime($content);
                         $contentData = [
                             [
                                 'type' => 'paragraph',
@@ -83,22 +85,25 @@ class ImportApiDataPost implements ShouldQueue
                         $slug = $this->generateSlug($post->NAME);
 
                         // Создание нового поста
-                        Post::create([
-                            'id' => $post->ID,
-                            'title' => $post->NAME,
-                            'slug' => $slug,
-                            'preview_text' => strip_tags($post->PREVIEW_TEXT),
-                            'authors' => ['Без автора'],
-                            'content' => $contentData, // Преобразуем в JSON
-                            'status' => 'published',
-                            'images' => $imagePaths, // Сохраняем пути к изображениям
-                            'search_data' => $content, // Преобразуем в JSON
-                            'reading_time' => 2,
-                            'user_id' => 1,
-                            'publish_at' => $post->DATE_CREATE,
-                            'created_at' => $post->DATE_CREATE,
-                            'updated_at' => $post->DATE_CREATE,
-                        ]);
+                        Post::firstOrCreate(
+                            ['id' => $post->ID], // Условие поиска по ID
+                            [
+                                'title' => $post->NAME,
+                                'slug' => $slug,
+                                'preview_text' => strip_tags($post->PREVIEW_TEXT),
+                                'authors' => ['Без автора'],
+                                'content' => $contentData, // Преобразуем в JSON
+                                'status' => 'published',
+                                'images' => $imagePaths, // Сохраняем пути к изображениям
+                                'preview' => $imagePaths[0],
+                                'search_data' => strip_tags($content), // Преобразуем в JSON
+                                'reading_time' => $readingTime,
+                                'user_id' => 1,
+                                'publish_at' => $post->DATE_CREATE,
+                                'created_at' => $post->DATE_CREATE,
+                                'updated_at' => $post->DATE_CREATE,
+                            ]
+                        );
                     } catch (\Exception $e) {
                         Log::error('Error importing post ID: ' . $post->ID . ' - ' . $e->getMessage());
                     }
@@ -109,7 +114,7 @@ class ImportApiDataPost implements ShouldQueue
         }
     }
 
-    private function generateSlug($name)
+    private function generateSlug($name): string
     {
         $slug = Str::slug($name);
         $originalSlug = $slug;
@@ -121,6 +126,13 @@ class ImportApiDataPost implements ShouldQueue
         }
 
         return $slug;
+    }
+
+    private function calculateReadingTime(string $text): int
+    {
+        $wordCount = str_word_count($text, 0, "АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя");
+        $wordsPerMinute = 120; // Средняя скорость чтения
+        return max(1, round($wordCount / $wordsPerMinute));
     }
 
 }

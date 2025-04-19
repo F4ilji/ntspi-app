@@ -113,14 +113,12 @@ class PostForm
                                                             ->helperText('Активируйте для публикации в указанное время'),
                                                         DateTimePicker::make('publish_setting.publish_at')
                                                             ->label('Дата и время публикации')
-                                                            ->native(false)
                                                             ->displayFormat('d/m/Y H:i')
                                                             ->seconds(false)
-                                                            ->minutesStep(15)
                                                             ->helperText('Выберите дату и время публикации')
                                                             ->required(fn (Forms\Get $get) => $get('publish_setting.publish_after'))
                                                             ->disabled(fn (Forms\Get $get) => !$get('publish_setting.publish_after'))
-                                                            ->minDate(now())
+                                                            ->native(true)
                                                             ->maxDate(now()->addMonth()),
                                                     ]),
                                             ]),

@@ -14,7 +14,7 @@ class SeoPageProvider
     {
         return $model->seo?->toArray();
     }
-    public function getSeoForCurrentPage(): ?array
+    public function getSeoForCurrentPage(): array|null
     {
         $path = $this->getCurrentPath();
 
@@ -23,8 +23,11 @@ class SeoPageProvider
             now()->addHours(1),
             fn() => Page::where('path', $path)->first()
         );
+        if ($page) {
+            return $page->seo->toArray();
+        }
 
-        return $page->seo?->toArray();
+        return null;
     }
 
     private function getCurrentPath(): string

@@ -115,7 +115,7 @@ export default {
                     <PostListItem :post="post" />
                   </template>
                 </div>
-                <BasicPagination :links="posts.links" />
+                <BasicPagination :links="posts.meta" />
               </div>
             </div>
           </div>

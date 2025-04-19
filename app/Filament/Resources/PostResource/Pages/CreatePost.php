@@ -41,7 +41,7 @@ class CreatePost extends CreateRecord
 
     protected function processPostData(array $data): array
     {
-        return (new PostDataProcessor())->process($data);
+        return (new PostDataProcessor())->process($data, 'create');
     }
 
     protected function afterCreate(): void

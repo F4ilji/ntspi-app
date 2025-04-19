@@ -68,9 +68,11 @@ class ClientPostController extends Controller
                     return $query->withAnyTags($slugsArray);
                 })
                 ->orderBy('publish_at', $request->input('sort', 'desc'))
-                ->paginate(6)
-                ->withQueryString());
+                ->paginate(9)
+                ->withQueryString()
+            );
         });
+
 
         $categories = Cache::remember('categories', now()->addHours(48), function () {
             return CategoryResource::collection(Category::has('posts')->get());

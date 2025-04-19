@@ -9,20 +9,21 @@ trait SeoGenerate
 {
     public function createSeo($record): void
     {
-        $record->seo()->create($this->generateSeo($record));
+        $seo = $this->generateSeoData($record);
+        $record->seo()->create($seo);
     }
 
     public function updateSeo($record): void
     {
         if ($record->seo()->exists()) {
-            $record->seo()->update($this->generateSeo($record));
+            $record->seo()->update($this->generateSeoData($record));
         } else {
             $this->createSeo($record);
         }
     }
 
 
-    private function generateSeo($record) {
+    private function generateSeoData($record) {
         return app(SeoGeneratorService::class)->generate([
             'title' => $record->title,
             'content' => $record instanceof SeoDescriptionInterface
