@@ -24,6 +24,7 @@ class VkPostPublisher
                 $images = $this->generateImageLinksForVk($post->images);
                 $publishDate = $post->publish_at > now() ? $post->publish_at->timestamp : null;
 
+
                 dispatch(new CreateVkPost($post->title, $text, $images, $post->id, $publishDate));
             }
         }

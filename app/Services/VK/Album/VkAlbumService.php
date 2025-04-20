@@ -45,10 +45,12 @@ class VkAlbumService
 
         // Загрузка изображений из URL
         foreach ($images as $imageUrl) {
+            $fullPath = public_path($imageUrl);
             $localFile = tempnam(sys_get_temp_dir(), 'img_') . '.webp';
-            file_put_contents($localFile, file_get_contents($imageUrl));
+            file_put_contents($localFile, file_get_contents($fullPath));
             $localFiles[] = $localFile;
         }
+
 
         // Подготовка данных для отправки
         $postFields = [];
