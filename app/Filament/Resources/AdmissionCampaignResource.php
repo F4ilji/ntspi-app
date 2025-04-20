@@ -128,8 +128,6 @@ class AdmissionCampaignResource extends Resource
                                             ]),
                                     ]),
                             ])
-                            ->itemLabel(fn (array $state): ?string =>
-                                LevelEducational::tryFrom($state['edu_name'] ?? '')?->getLabel() ?? 'Новый уровень')
                             ->collapsible()
                             ->cloneable()
                             ->columnSpanFull(),

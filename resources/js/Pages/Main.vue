@@ -22,7 +22,6 @@ import Slider from "@/componentss/features/sliders/Slider.vue";
 import PostListItem from "@/componentss/features/posts/components/PostListItem.vue";
 import BasicFooter from "@/footers/BasicFooter.vue";
 import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
-import Cookies from "js-cookie";
 import PageResourceList from "@/componentss/shared/pageResource/PageResourceList.vue";
 import ContactSectionBlock from "@/componentss/shared/contactSection/ContactSectionBlock.vue";
 import EventListItem from "@/componentss/features/events/components/EventListItem.vue";
@@ -34,12 +33,6 @@ import EducationSection from "@/componentss/features/mainPage/EducationSection.v
 
 export default {
 	name: "Main",
-	computed: {
-		LevelEducational() {
-			return LevelEducational
-		}
-	},
-
 	props: {
 		posts: {
 			type: Object,
@@ -47,14 +40,8 @@ export default {
 		events: {
 			type: Object,
 		},
-		sliders: {
-			type: Object,
-		},
 		educations: {
 			type: Object,
-		},
-		icons: {
-			type: String,
 		},
 		seo: {
 			type: Object,
@@ -65,7 +52,6 @@ export default {
     EducationSection,
     EventSection,
     PostSection,
-    EventListItem,
     MetaTags,
     BasicFooter,
     PostListItem,
@@ -75,20 +61,6 @@ export default {
 		MainPageNavBar,
 		Head,
 		Link,
-
-
 	},
-
-	methods: {
-		Cookies,
-	},
-
-
 }
-
-
 </script>
-
-<style scoped>
-
-</style>

@@ -81,11 +81,17 @@
 import { debounce } from "lodash";
 import {Link} from "@inertiajs/vue3";
 import PostListItem from "@/componentss/features/posts/components/PostListItem.vue";
+import LevelEducational from "@/Enum/LevelEducational.js";
 
 export default {
 	name: "EducationSection",
   components: {PostListItem, Link},
-	props: {
+  computed: {
+    LevelEducational() {
+      return LevelEducational
+    }
+  },
+  props: {
     educations: {
       type: Object,
       required: true
