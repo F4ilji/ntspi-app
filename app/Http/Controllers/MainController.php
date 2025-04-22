@@ -49,7 +49,7 @@ class MainController extends Controller
 
         $educations = $this->getEducationsData();
 
-        $posts = Cache::remember('recent_posts', now()->addHour(), function () {
+        $posts = Cache::remember('posts_recent', now()->addHour(), function () {
             return $this->getRecentPosts();
         });
 

@@ -1,6 +1,6 @@
 <template>
 	<div class="flex justify-between items-center">
-		<div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
+		<div class="flex w-full sm:items-center truncate text-ellipsis gap-x-5 sm:gap-x-3">
 			<div class="grow">
 				<div class="grid sm:flex sm:justify-between sm:items-center gap-2">
 					<BreadcrumbsWrapper v-if="breadcrumbs">

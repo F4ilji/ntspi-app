@@ -32,6 +32,8 @@ class AccessCheck
             abort($registeredRoute->code);
         }
 
+        $request->merge(['settings_page' => $registeredRoute->settings]);
+
         // Если все проверки пройдены, продолжаем выполнение запроса
         return $next($request);
     }

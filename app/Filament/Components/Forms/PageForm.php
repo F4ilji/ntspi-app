@@ -5,6 +5,7 @@ namespace App\Filament\Components\Forms;
 use App\Enums\CustomFormStatus;
 use App\Enums\PostStatus;
 use App\Filament\Components\Forms\ItemForm\Pages\ContentBuilderItem;
+use App\Models\CustomForm;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Section;
@@ -142,6 +143,12 @@ class PageForm
                                                     ->label('Скрыть хлебные крошки')
                                                     ->helperText('Скрывает навигационную цепочку вверху страницы')
                                                     ->columnSpan(1),
+                                                Select::make('settings.custom_form')->label('Прикрепить форму для страницы')
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->options(CustomForm::query()
+                                                    ->where('status', CustomFormStatus::PUBLISHED)->pluck('title', 'form_id'))
+                                                    ->columnSpanFull()
                                             ])
                                             ->columns(2),
                                     ]),

@@ -88,7 +88,6 @@ class AdditionalEducationResource extends Resource
 
                                         TextInput::make('qualification')
                                             ->label('Выдаваемый документ')
-                                            ->required()
                                             ->maxLength(255)
                                             ->placeholder('Например: "Удостоверение о повышении квалификации"')
                                             ->columnSpanFull()

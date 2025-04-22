@@ -29,7 +29,7 @@
           </h2>
         </div>
         <!-- Card -->
-        <div class="mt-5 p-4 relative z-1000 bg-white border rounded-xl sm:mt-10 md:p-10">
+        <div class="mt-5 p-4 relative z-1000 bg-white md:border rounded-xl sm:mt-10 md:p-10">
           <form @submit="submitForm">
             <component
                 v-for="(block, index) in blocks.data.columns"

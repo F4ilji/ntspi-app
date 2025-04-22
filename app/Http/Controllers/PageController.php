@@ -37,6 +37,7 @@ class PageController extends Controller
                 ->first();
         });
 
+
         if ($page === null) {
             abort(404);
         }
@@ -50,6 +51,7 @@ class PageController extends Controller
         if ($page->code != 200) {
             abort($page->code);
         }
+
 
         return Inertia::render('Page', compact('page', 'subSectionPages', 'seo'));
     }

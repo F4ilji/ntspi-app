@@ -23,8 +23,9 @@ class FormTimePeriodMiddleware
             abort(Response::HTTP_NOT_FOUND, 'Form not found');
         }
 
+
         if (!isset($form->settings['period'])) {
-            abort(Response::HTTP_BAD_REQUEST, 'Invalid form settings');
+            return $next($request);
         }
 
         $period = $form->settings['period'];
