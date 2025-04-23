@@ -76,23 +76,16 @@ export default {
 
 			return dividedArrays.reverse();
 		},
-		textLimit(text, symbols) {
-			if (text.length > symbols) {
-				let LimitedText
-				LimitedText = text.substring(0, symbols)
-				return LimitedText + "..."
-			}
-			return text
-		},
-
-
-
-
   },
   computed: {
     hasActiveFilters() {
       return this.filters.category_filter.value || this.filters.form_education_filter.value
-    }
+    },
+    totalPrograms() {
+      return this.additionalEducations.data.reduce((total, item) => {
+        return total + (item.additionalEducations?.length || 0);
+      }, 0);
+    },
   },
 };
 </script>
@@ -106,9 +99,9 @@ export default {
 
   <BasicPageWrapper>
     <BasicPageContainer>
-      <div class="space-y-5 md:space-y-4">
+      <div class="space-y-3">
         <AdditionalProgramTitle class="text-center" header="Дополнительное образование" />
-        <div class="space-y-5 md:space-y-4 mx-auto max-w-3xl w-full">
+        <div class="space-y-3 mx-auto max-w-3xl w-full">
           <div class="my-10 w-full">
             <AdditionalProgramListBreadcrumbs :breadcrumbs="breadcrumbs" />
             <div class="flex items-center gap-x-2">
@@ -119,13 +112,13 @@ export default {
               </BasicListFilter>
             </div>
           </div>
-          <div v-if="hasActiveFilters" class="px-1">
-            <h3 class="text-sm text-gray-500 mb-4">Найдено программ: {{ additionalEducations.data.length }}</h3>
-            <div class="flex-wrap flex gap-3 md:items-center">
+          <div class="px-1">
+            <h3 class="text-sm text-gray-500 mb-4">Найдено программ: {{ totalPrograms }}</h3>
+            <div v-if="hasActiveFilters" class="flex-wrap flex gap-3 md:items-center">
               <BasicListBadge :filters="filters" />
             </div>
           </div>
-          <div class="container py-5 lg:py-4">
+          <div class="">
             <div class="w-full mx-auto flex flex-wrap md:justify-between">
               <template v-for="educations in transformToColumns(additionalEducations.data)">
                 <div class="flex flex-col">
