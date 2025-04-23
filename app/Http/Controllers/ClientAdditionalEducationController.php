@@ -52,6 +52,14 @@ class ClientAdditionalEducationController extends Controller
                     ->has('additionalEducations')
                     ->WithActivePrograms()
                     ->where('is_active', true)
+                    ->when($request->input('form'), function ($q, $form) {
+                        $q->whereHas('additionalEducations', function ($q) use ($form) {
+                            $q->where('form_education', FormEducation::fromName($form)->value);
+                        });
+                    })
+                    ->when($request->input('category'), function($q, $slugs) {
+                        $q->whereIn('slug', $slugs);
+                    })
                     ->when($request->direction, function ($q, $direction) use ($request) {
                         return $q->whereHas('direction', fn($query) => $query->where('slug', $direction))
                             ->when($request->form, fn($query, $form) => $query->whereHas('additionalEducations', fn($q) => $q->where('form_education', FormEducation::fromName($form))

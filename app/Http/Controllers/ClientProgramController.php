@@ -81,7 +81,7 @@ class ClientProgramController extends Controller
                     ->when($request->input('budget'), fn($q, $budget) =>
                     $this->applyBudgetFilter($q, $budget))
                     ->when($request->input('direction'), fn($q, $slugs) =>
-                    is_array($slugs) ? $q->whereIn('slug', $slugs) : $q)
+                        is_array($slugs) ? $q->whereIn('slug', $slugs) : $q)
                     ->get()
             );
         });
