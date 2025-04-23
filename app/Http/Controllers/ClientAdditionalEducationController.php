@@ -50,26 +50,23 @@ class ClientAdditionalEducationController extends Controller
             function () use ($request) {
                 $query = AdditionalEducationCategory::query()
                     ->has('additionalEducations')
-                    ->WithActivePrograms()
-                    ->where('is_active', true)
-                    ->when($request->input('form'), function ($q, $form) {
-                        $formValue = FormEducation::fromName($form)->value;
-                        $q->whereHas('additionalEducations', fn ($q) => $q->where('form_education', $formValue))
-                            ->with(['additionalEducations' => fn ($q) => $q->where('form_education', $formValue)]);
-                    })
-                    ->when($request->input('category'), function($q, $slugs) {
-                        $q->whereIn('slug', $slugs);
-                    })
-                    ->when($request->direction, function ($q, $direction) use ($request) {
-                        return $q->whereHas('direction', fn($query) => $query->where('slug', $direction))
-                            ->when($request->form, fn($query, $form) => $query->whereHas('additionalEducations', fn($q) => $q->where('form_education', FormEducation::fromName($form))
-                            )
-                                ->when($request->category, fn($query) => is_array($request->category)
-                                    ? $query->whereIn('slug', $request->category)
-                                    : $query->where('slug', $request->category)
-                                )
-                                ->has('additionalEducations'));
-                    });
+                    ->withActivePrograms()
+                    ->where('is_active', true);
+
+                if ($request->has('form')) {
+                    $formValue = FormEducation::fromName($request->form)->value;
+                    $query->whereHas('additionalEducations', fn ($q) => $q->where('form_education', $formValue))
+                        ->with(['additionalEducations' => fn ($q) => $q->where('form_education', $formValue)]);
+                }
+
+                if ($request->has('category')) {
+                    $slugs = is_array($request->category) ? $request->category : [$request->category];
+                    $query->whereIn('slug', $slugs);
+                }
+
+                if ($request->has('direction')) {
+                    $query->whereHas('direction', fn($q) => $q->where('slug', $request->direction));
+                }
 
                 return AdditionalEducationCategoryResource::collection($query->get());
             }
