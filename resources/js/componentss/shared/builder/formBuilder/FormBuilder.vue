@@ -1,24 +1,23 @@
 <template>
-  <div v-if="success" class="bg-teal-50 border-t-2 border-teal-500 rounded-lg p-4 dark:bg-teal-800/30" role="alert" tabindex="-1" aria-labelledby="hs-bordered-success-style-label">
-    <div class="flex">
-      <div class="shrink-0">
-        <span class="inline-flex justify-center items-center size-8 rounded-full border-4 border-teal-100 bg-teal-200 text-teal-800 dark:border-teal-900 dark:bg-teal-800 dark:text-teal-400">
-          <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
-            <path d="m9 12 2 2 4-4"></path>
+  <div v-if="success" class="relative flex flex-col bg-white shadow-lg rounded-xl dark:bg-neutral-900">
+    <div class="pb-10 px-5 text-center overflow-y-auto">
+      <!-- Icon -->
+      <span class="mb-4 inline-flex justify-center items-center size-11 rounded-full border-4 border-green-50 bg-green-100 text-green-500 dark:bg-green-700 dark:border-green-600 dark:text-green-100">
+          <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"/>
           </svg>
         </span>
-      </div>
-      <div class="ms-3">
-        <h3 id="hs-bordered-success-style-label" class="text-gray-800 font-semibold dark:text-white">
-          Успешно отправлено!
-        </h3>
-        <p class="text-sm text-gray-700 dark:text-neutral-400">
-          {{ message }}
-        </p>
-      </div>
+      <!-- End Icon -->
+
+      <h3 id="hs-task-created-alert-label" class="mb-8 text-xl font-bold text-gray-800 dark:text-neutral-200">
+        Успех!
+      </h3>
+      <p class="text-gray-500 dark:text-neutral-500">
+        {{ message }}
+      </p>
     </div>
   </div>
+
 
   <div v-else>
     <div class="max-w-[85rem] py-5 sm:px-6 lg:px-8 lg:py-7 mx-auto">
