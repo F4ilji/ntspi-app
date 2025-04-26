@@ -84,7 +84,7 @@ export default {
 
 	<ScrollTimeline />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
+	<MainPageNavBar :sections="$page.props.navigation" />
   <BasicPageWrapper>
     <BasicPageContainer breakpoint="md">
       <div class="space-y-5 md:space-y-10">

@@ -25,7 +25,7 @@ export default {
 			required: true,
 		},
 		items: {
-			type: Array,
+			type: Object,
 			required: true,
 		},
 	},

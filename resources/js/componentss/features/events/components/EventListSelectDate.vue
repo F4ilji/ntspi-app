@@ -56,7 +56,7 @@ export default {
 
 	props: {
 		dates: {
-			type: Array,
+			type: Object,
 		},
 		currentDate: {
 			type: String,

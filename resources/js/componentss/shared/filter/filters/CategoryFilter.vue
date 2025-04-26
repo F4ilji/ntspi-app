@@ -40,88 +40,87 @@
 import {Link} from "@inertiajs/vue3";
 import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
 import {debounce} from "lodash";
+
 export default {
-	name: "CategoryFilter",
-	components: {
-		BasicIcon,
-		Link
-	},
-	data() {
-		return {
-			category_slug: this.category_filter.value || [],
-			searchTerm: '',
-			filteredItems: this.categories.data, // Изначально все элементы
-			}
-	},
-	methods: {
-		filter: debounce(function () {
-			let url = new URL(window.location.href);
-			// Создаем массив для хранения всех ключей, которые нужно удалить
-			const keysToDelete = [];
+  name: "CategoryFilter",
+  components: {
+    BasicIcon,
+    Link
+  },
+  data() {
+    return {
+      category_slug: this.category_filter.value || [],
+      searchTerm: '',
+    }
+  },
+  methods: {
+    filter: debounce(function () {
+      let url = new URL(window.location.href);
+      const keysToDelete = [];
 
-			// Перебираем все параметры и добавляем ключи, начинающиеся с 'category', в массив
-			for (const [key] of url.searchParams) {
-				if (key.startsWith('category')) {
-					keysToDelete.push(key);
-				}
-			}
-			// Удаляем все ключи из массива
-			keysToDelete.forEach(key => url.searchParams.delete(key));
-			url.searchParams.delete('page');
-			let newUrl = url.toString();
-			this.$inertia.visit(newUrl, {
-				method: 'get',
-				preserveState: true,
-				data: {
-					category: this.category_slug,
-				},
-			});
-		}, 500),
-		clearFilter() {
-			let url = new URL(window.location.href);
-			// Создаем массив для хранения всех ключей, которые нужно удалить
-			const keysToDelete = [];
+      for (const [key] of url.searchParams) {
+        if (key.startsWith('category')) {
+          keysToDelete.push(key);
+        }
+      }
 
-			// Перебираем все параметры и добавляем ключи, начинающиеся с 'category', в массив
-			for (const [key] of url.searchParams) {
-				if (key.startsWith('category')) {
-					keysToDelete.push(key);
-				}
-			}
-			// Удаляем все ключи из массива
-			keysToDelete.forEach(key => url.searchParams.delete(key));
-			this.category_slug = [];
-			this.searchTerm = ''; // Сбросить поле поиска
-			let newUrl = url.toString();
-			this.$inertia.visit(newUrl, {
-				method: 'get',
-				preserveState: true,
-			});
-		},
-	},
-	computed: {
-		filteredItems() {
-			if (!this.searchTerm) {
-				return this.categories.data; // Возвращаем все элементы, если ничего не введено
-			}
-			const term = this.searchTerm.toLowerCase(); // Приводим к нижнему регистру для нечувствительности к регистру
-			return this.categories.data.filter(item =>
-					item.title.toLowerCase().includes(term) // Фильтруем по заголовку
-			);
-		}
-	},
-	props: {
-		categories: {
-			type: Object,
-		},
-		category_filter: {
-			type: Object,
-		},
-	},
+      keysToDelete.forEach(key => url.searchParams.delete(key));
+      url.searchParams.delete('page');
+      let newUrl = url.toString();
+
+      this.$inertia.visit(newUrl, {
+        method: 'get',
+        preserveState: true,
+        data: {
+          category: this.category_slug,
+        },
+      });
+    }, 500),
+
+    clearFilter() {
+      let url = new URL(window.location.href);
+      const keysToDelete = [];
+
+      for (const [key] of url.searchParams) {
+        if (key.startsWith('category')) {
+          keysToDelete.push(key);
+        }
+      }
+
+      keysToDelete.forEach(key => url.searchParams.delete(key));
+      this.category_slug = [];
+      this.searchTerm = '';
+      let newUrl = url.toString();
+
+      this.$inertia.visit(newUrl, {
+        method: 'get',
+        preserveState: true,
+      });
+    },
+  },
+  computed: {
+    filteredItems() {
+      if (!this.searchTerm) {
+        return this.categories.data;
+      }
+      const term = this.searchTerm.toLowerCase();
+      return this.categories.data.filter(item =>
+          item.title.toLowerCase().includes(term)
+      );
+    }
+  },
+  props: {
+    categories: {
+      type: Object,
+      required: true // Добавляем required для ясности
+    },
+    category_filter: {
+      type: Object,
+      default: () => ({ value: [] }) // Добавляем значение по умолчанию
+    },
+  }
 }
-
 </script>
-
 
 <style scoped>
 

@@ -79,7 +79,7 @@ export default {
 </script>
 
 <template>
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+	<MainPageNavBar :sections="$page.props.navigation" />
 
 
 

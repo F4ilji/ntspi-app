@@ -2,7 +2,7 @@
 
 	<MetaTags :seo="seo" />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
+	<MainPageNavBar :sections="$page.props.navigation" />
 
   <BasicPageWrapper>
     <div class="relative mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">

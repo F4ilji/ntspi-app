@@ -39,17 +39,12 @@ export default {
     Link,
     Head,
   },
-  data() {
-    return {
-
-    };
-  },
   props: {
     posts: {
         type: Object,
     },
     filters: {
-        type: Array,
+        type: Object,
     },
     categories: {
         type: Object,
@@ -79,7 +74,7 @@ export default {
 <template>
 	<MetaTags :seo="seo" />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+	<MainPageNavBar :sections="$page.props.navigation" />
 
   <BasicPageWrapper>
     <BasicPageContainer>

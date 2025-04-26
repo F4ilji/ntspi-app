@@ -146,8 +146,10 @@ class ClientAdditionalEducationController extends Controller
             fn() => $this->seoPageProvider->getSeoForModel($additionalEducationModel)
         );
 
-        if (array_key_exists('custom_form', request()->input('settings_page'))) {
-            $form = request()->input('settings_page')['custom_form'];
+        $settingsPage = request()->attributes->get('settings_page') ?? [];
+
+        if (array_key_exists('custom_form', $settingsPage)) {
+            $form = $settingsPage['custom_form'];
         } else {
             $form = null;
         }

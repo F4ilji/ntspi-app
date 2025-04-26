@@ -26,7 +26,8 @@ import {defineAsyncComponent} from "vue";
 
 
 export default {
-	name: 'SearchModal',
+  inheritAttrs: false,
+  name: 'SearchModal',
 	props: {
 		open_id: {
 			type: String,

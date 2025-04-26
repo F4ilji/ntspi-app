@@ -51,16 +51,16 @@ export default {
 			type: String,
 		},
 		eventDates: {
-			type: Array,
+			type: Object,
 		},
 		navigation: {
 			type: Object,
 		},
 		filters: {
-			type: Array,
+			type: Object,
 		},
 		categories: {
-			type: Array,
+			type: Object,
 		},
 		breadcrumbs: {
 			type: Object
@@ -81,7 +81,7 @@ export default {
 <template>
 	<MetaTags :seo="seo" />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+	<MainPageNavBar :sections="$page.props.navigation" />
 
   <BasicPageWrapper>
     <BasicPageContainer breakpoint="md">
@@ -129,7 +129,7 @@ export default {
             </div>
           </template>
         </div>
-        <BasicPagination :links="events.links" />
+        <BasicPagination v-if="events.links.next" :links="events.links" />
       </div>
 
     </BasicPageContainer>

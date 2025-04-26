@@ -80,7 +80,7 @@ export default {
 <template>
 	<MetaTags :seo="seo" />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
+	<MainPageNavBar :sections="$page.props.navigation" />
 
 
   <BasicPageWrapper>

@@ -59,7 +59,7 @@ export default {
 	},
 	props: {
 		blocks: {
-			type: Array,
+			type: Object,
 			required: true,
 		},
 	},

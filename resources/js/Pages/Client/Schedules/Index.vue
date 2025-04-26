@@ -146,7 +146,7 @@ export default {
 
 <template>
   <MetaTags :seo="this.seo" />
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
+	<MainPageNavBar :sections="$page.props.navigation" />
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">

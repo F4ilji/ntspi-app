@@ -40,19 +40,19 @@ export default {
 			type: Object,
 		},
 		currentDate: {
-			type: String,
+			type: Object,
 		},
 		eventDates: {
-			type: Array,
+			type: Object,
 		},
 		navigation: {
 			type: Object,
 		},
 		filters: {
-			type: Array,
+			type: Object,
 		},
 		categories: {
-			type: Array,
+			type: Object,
 		},
 		breadcrumbs: {
 			type: Object
@@ -72,7 +72,7 @@ export default {
 <template>
 	<MetaTags :seo="seo" />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+	<MainPageNavBar :sections="$page.props.navigation" />
 
   <BasicPageWrapper>
     <BasicPageContainer breakpoint="md">

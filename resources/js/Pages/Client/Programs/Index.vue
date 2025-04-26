@@ -44,22 +44,22 @@ export default {
 			type: String,
     },
 		levelsEducational: {
-			type: Array,
+			type: Object,
 		},
 		naprs: {
-			type: Array
+			type: Object,
 		},
 		filters: {
-			type: Array,
+			type: Object,
 		},
 		formsEdu: {
-			type: Array,
+			type: Object,
 		},
 		budgetEdu: {
-			type: Array,
+			type: Object,
 		},
 		direction_studies: {
-			type: Array,
+			type: Object,
 		},
 		seo: {
 			type: Object,
@@ -91,7 +91,7 @@ export default {
 <template>
 	<MetaTags :seo="seo" />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
+	<MainPageNavBar :sections="$page.props.navigation" />
 
   <BasicPageWrapper>
     <BasicPageContainer>

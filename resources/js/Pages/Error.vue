@@ -6,7 +6,7 @@
 
 
 	<div class="flex flex-col h-screen justify-between">
-		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+		<MainPageNavBar :sections="$page.props.navigation" />
 		<div class="max-w-[50rem] flex flex-col mx-auto size-full">
 			<!-- ========== HEADER ========== -->
 			<!-- ========== END HEADER ========== -->

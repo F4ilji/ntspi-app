@@ -63,10 +63,10 @@ export default {
   },
   props: {
     program: {
-      type: Array,
+      type: Object,
     },
 		formsEdu: {
-			type: Array
+			type: Object
 		},
 		seo: {
 			type: Object,
@@ -78,7 +78,7 @@ export default {
 <template>
 	<MetaTags :seo="seo" />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
+	<MainPageNavBar :sections="$page.props.navigation" />
 
   <BasicPageWrapper>
     <BasicPageContainer>

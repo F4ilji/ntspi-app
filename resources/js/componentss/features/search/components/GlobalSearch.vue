@@ -28,7 +28,7 @@
 							 name="hs-as-table-product-review-search"
 							 class="py-1 placeholder-[#8F8F8F] font-light px-2 block flex-1 w-full border-none text-lg focus:z-10 border-transparent focus:border-transparent focus:ring-0"
 							 placeholder="Поиск по сайту">
-        <button v-if='this.searchInput !== ""' @click="clearSearch" class="items-center flex justify-end px-2" type="button">
+        <button v-if='searchInput !== ""' @click="clearSearch" class="items-center flex justify-end px-2" type="button">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 hover:text-gray-300 text-gray-500 duration-150 font-bold">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
           </svg>
@@ -178,11 +178,6 @@ export default {
       this.search()
     }
 	},
-	props: {
-		open_id: {
-			type: String,
-		}
-	}
 
 }
 </script>

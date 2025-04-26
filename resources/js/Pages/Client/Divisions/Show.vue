@@ -2,7 +2,7 @@
 	<MetaTags :seo="seo" />
 
 	<div class="flex flex-col h-screen">
-		<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+		<MainPageNavBar :sections="$page.props.navigation" />
 
 		<main class="flex-grow">
 			<div class="relative  mb-auto mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">

@@ -53,7 +53,7 @@ export default {
 	},
 	props: {
 		block: {
-			type: Array,
+			type: Object,
 		},
 	},
 	methods: {

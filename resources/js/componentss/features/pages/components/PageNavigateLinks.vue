@@ -103,7 +103,7 @@ export default {
 	},
 	props: {
 		headerNavs: {
-			type: Array,
+			type: Object,
 		},
 	},
 };

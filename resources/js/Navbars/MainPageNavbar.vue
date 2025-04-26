@@ -1,5 +1,5 @@
 <template>
-  <header :class="[
+  <header v-bind="$attrs" :class="[
       { 'header-filter': headerFilter },
       { 'under-slider-bg': underSliderHeader },
       isBviActive ? 'static' : 'fixed top-0 left-0 right-0'
@@ -11,8 +11,6 @@
           <Link class="flex-none text-xl font-semibold"
                 :href="route('index')" aria-label="NTSPI">
             <img :key="currentLogo" class="max-w-[300px] transition-all duration-300" :src="currentLogo" alt="Логотип">
-
-
           </Link>
           <div class="lg:hidden">
             <button :class="{ 'text-black border-gray-500': underSliderHeader, 'text-white border-gray-200': !underSliderHeader }"
@@ -48,12 +46,11 @@
 
   <MobileNavbar v-if="sections" :sections="sections" />
   <SearchModal open_id="open-search-modal">
-    <ClientGlobalSearch :open_id="open_id" />
+    <ClientGlobalSearch />
   </SearchModal>
   <SearchModal open_id="open-search-sveden-modal">
-    <ClientStaticSearch :open_id="open_id" />
+    <ClientStaticSearch />
   </SearchModal>
-
 </template>
 
 <script>
@@ -61,12 +58,13 @@ import { Link } from "@inertiajs/vue3";
 import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
 import MobileNavbar from "@/Navbars/MobileNavbar.vue";
 import DesktopNavBar from "@/Navbars/DesktopNavBar.vue";
-import { mapGetters, mapActions } from "vuex";
 import SearchModal from "@/componentss/shared/modals/SearchModal.vue";
 import { helpers } from "@/mixins/Helpers.js";
-import {defineAsyncComponent} from "vue";
+import ClientGlobalSearch from "@/componentss/features/search/components/GlobalSearch.vue";
+import ClientStaticSearch from "@/componentss/features/search/components/StaticSearch.vue";
 
 export default {
+  inheritAttrs: false,
   mixins: [helpers],
   name: 'MainPageNavBar',
   components: {
@@ -75,16 +73,13 @@ export default {
     MobileNavbar,
     BasicIcon,
     Link,
-    ClientGlobalSearch: defineAsyncComponent(() =>
-        import('@/componentss/features/search/components/GlobalSearch.vue')
-    ),
-    ClientStaticSearch: defineAsyncComponent(() =>
-        import('@/componentss/features/search/components/StaticSearch.vue')
-    ),
+    ClientGlobalSearch,
+    ClientStaticSearch,
   },
   props: {
     sections: {
       type: Object,
+      default: () => ({}),
     },
   },
   data() {
@@ -102,7 +97,8 @@ export default {
     handleScroll() {
       this.scrollPosition = window.pageYOffset;
 
-      if (this.lastSlider) {
+      // Используем Vuex только если $store доступен
+      if (this.$store && this.lastSlider) {
         const slider = this.lastSlider;
         if (this.IS_SAME_ROUTE(slider.url)) {
           const isSliderVisible = slider.top <= this.scrollPosition && slider.bottom >= this.scrollPosition;
@@ -111,33 +107,55 @@ export default {
       }
 
       this.headerFilter = this.scrollPosition > 5;
-    },
+    }
   },
   watch: {
     lastSlider(newVal) {
+      // Если Vuex не используется, просто игнорируем
+      if (!this.$store) return;
       if (this.IS_SAME_ROUTE(newVal?.url)) {
         this.underSliderHeader = newVal.bottom < 0;
       }
-    },
+    }
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll);
-    this.initializeBvi();
+
+    // Вызываем action, только если на клиенте и $store доступен
+    if (typeof window !== 'undefined' && this.$store && this.initializeBvi) {
+      this.initializeBvi();
+    }
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleScroll);
   },
   computed: {
-    ...mapGetters(['lastSlider', 'isBviActive']),
+
+    lastSlider() {
+      if (this.$store && this.$store.getters && this.$store.getters.lastSlider) {
+        return this.$store.getters.lastSlider;
+      }
+      return null;
+    },
+
+    isBviActive() {
+      // Для SSR возвращаем false по умолчанию
+      if (typeof window === 'undefined') return false;
+      return this.$store?.getters?.isBviActive ?? false;
+    },
+
     currentLogo() {
       if (this.isBviActive) {
-        return this.logos.default
+        return this.logos.default;
       }
       return this.underSliderHeader ? this.logos.alternate : this.logos.default;
-    },
+    }
   },
   created() {
-    this.initializeBvi = mapActions(['initializeBvi']).initializeBvi;
+    // Инициализацию Vuex экшенов проводим, только если $store есть
+    if (this.$store && this.$store.dispatch) {
+      this.initializeBvi = () => this.$store.dispatch('initializeBvi');
+    }
   }
 }
 </script>

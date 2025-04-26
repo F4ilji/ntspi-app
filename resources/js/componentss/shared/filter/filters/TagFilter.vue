@@ -51,7 +51,6 @@ export default {
     return {
       tag_slug: this.tag_filter.value || [],
       searchTerm: '',
-      filteredItems: this.tags, // Изначально все элементы
     }
   },
   methods: {

@@ -40,7 +40,7 @@ export default {
 
 	props: {
 		authors: {
-			type: Array,
+			type: Object,
 		},
 	},
 }

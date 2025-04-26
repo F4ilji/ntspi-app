@@ -43,7 +43,7 @@ export default {
   },
   props: {
 		journals: {
-        type: Array,
+        type: Object,
     },
 		seo: {
 			type: Object,
@@ -62,7 +62,7 @@ export default {
 	<MetaTags :seo="seo" />
 
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation" />
+	<MainPageNavBar :sections="$page.props.navigation" />
 
   <BasicPageWrapper>
     <BasicPageContainer>

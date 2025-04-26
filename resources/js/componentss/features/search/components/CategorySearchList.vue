@@ -48,7 +48,7 @@ export default {
 	},
 	props: {
 		categories: {
-			type: Array,
+			type: Object,
 		},
 		search: {
 			type: String,

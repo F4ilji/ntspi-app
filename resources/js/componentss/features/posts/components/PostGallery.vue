@@ -94,7 +94,7 @@ export default {
 
 	props: {
 		images: {
-			type: Array,
+			type: Object,
 		},
 		title: {
 			type: String,

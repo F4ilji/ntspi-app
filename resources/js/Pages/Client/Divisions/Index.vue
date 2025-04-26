@@ -24,7 +24,7 @@ export default {
   },
   props: {
 		divisions: {
-        type: Array,
+        type: Object,
     },
 		seo: {
 			type: Object,
@@ -42,7 +42,7 @@ export default {
 <template>
 	<MetaTags :seo="seo" />
 
-	<MainPageNavBar class="border-b" :sections="$page.props.navigation"></MainPageNavBar>
+	<MainPageNavBar :sections="$page.props.navigation" />
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">

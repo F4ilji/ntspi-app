@@ -15,7 +15,10 @@ use App\Http\Controllers\MainController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PersonController;
 
+use App\Models\Post;
 use App\Services\App\Search\StaticFileSearch;
+use App\Services\Filament\Domain\Posts\VkPostPublisher;
+use App\Services\VK\VkAuthService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +26,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('signed')->get('invitation/{invitation}/accept', \App\Livewire\AcceptInvitation::class)
     ->name('invitation.accept');
-
 
 
 Route::middleware('access-check')->group(function () {

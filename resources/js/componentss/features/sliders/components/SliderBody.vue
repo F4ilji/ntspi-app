@@ -102,7 +102,7 @@ export default {
   name: 'SliderBody',
   props: {
     slides: {
-      type: Array,
+      type: Object,
     }
   },
   data() {

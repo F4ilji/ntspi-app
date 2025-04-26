@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 
+
 export default defineConfig({
     build: {
         manifest: "manifest.json",
@@ -41,7 +42,7 @@ export default defineConfig({
         }
     },
     ssr: {
-        noExternal: ['lodash', 'bvi', 'preline'],
+        noExternal: ['lodash', 'bvi', 'preline', 'vue3-yandex-smartcaptcha', 'vuex'],
     },
 });
 
