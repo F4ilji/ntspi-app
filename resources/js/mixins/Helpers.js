@@ -61,6 +61,13 @@ export const helpers = {
                 return process.env.APP_URL || '/';  // Используем env-переменную на сервере
             }
             return window.location.origin + '/';
+        },
+
+        GET_BASE_STORAGE_URL() {
+            if (typeof window === 'undefined') {
+                return process.env.APP_URL || '/storage/';  // Используем env-переменную на сервере
+            }
+            return window.location.origin + '/storage/';
         }
     }
 };

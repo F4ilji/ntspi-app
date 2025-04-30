@@ -23,6 +23,9 @@ services:
     restart: always
     ports:
       - '5173'
+    depends_on:
+      db:
+        condition: service_healthy
 
   php-queue-worker:
     restart: always
@@ -33,6 +36,9 @@ services:
       - ./:/var/www
     container_name: ntspi-php-queue
     command: php artisan queue:work --tries=3 --timeout=90 --sleep=3
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     image: mysql:8.0
@@ -47,6 +53,11 @@ services:
       - MYSQL_PASSWORD=secret
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
 
   redis-cache:
     image: redis:7.4.2

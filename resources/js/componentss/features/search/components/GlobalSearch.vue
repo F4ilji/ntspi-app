@@ -36,7 +36,7 @@
 			</div>
 		</div>
 	<div class="overflow-y-auto flex-1">
-		<ResultList class="h-full" :result="result" :loading="loading" :selected-category="selectedCategory" />
+		<ResultList ref="resultListRef" class="h-full" :result="result" :loading="loading" :selected-category="selectedCategory" />
 	</div>
 	<nav v-if="paginate && result.length !== 0" class="bg-white border border-gray-100 flex items-center gap-x-1 fixed bottom-4 w-[200px] justify-center left-0 right-0 mx-auto py-2 rounded-xl " aria-label="Pagination">
 		<button @click="prev(paginate.prev_page)" :disabled="!paginate.prev_page || loading === true" type="button" class="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-2 text-sm rounded-lg text-gray-800 hover:bg-gray-100 focus:outline-none disabled:opacity-50 disabled:pointer-events-none" aria-label="Previous">
@@ -84,7 +84,17 @@ export default {
 		Link,
 	},
 	methods: {
-		ruCategories() {
+    scrollToTop() {
+      this.$nextTick(() => {
+        const resultList = this.$refs.resultListRef;
+        if (resultList && resultList.$refs.content) {
+          const contentElement = resultList.$refs.content;
+          console.log('Scroll element:', contentElement);
+          contentElement.scrollTop = 0;
+        }
+      });
+    },
+    ruCategories() {
 			return ruCategories
 		},
     categorySort: function(category) {
@@ -135,6 +145,7 @@ export default {
         this.updateResults(response);
       } finally {
         this.toggleLoadingState(false);
+        this.scrollToTop();
       }
     },
 
@@ -150,6 +161,7 @@ export default {
         this.updateResults(response);
       } finally {
         this.toggleLoadingState(false);
+        this.scrollToTop();
       }
     },
 

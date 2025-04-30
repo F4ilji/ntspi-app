@@ -1,8 +1,8 @@
 <template>
 	<PreSearchLinkList v-if="result === null" class="px-2 font-light" />
-	<div v-else-if="result.length !== 0"
+	<div ref="content" v-else-if="result.length !== 0"
 			 :class="{'filter pointer-events-none': loading === true}"
-			 class="px-2 font-light duration-300">
+			 class="px-2 font-light duration-300 overflow-y-auto">
 		<template v-for="(elements, tag) in result">
 			<component
           class="rounded-none"

@@ -28,7 +28,7 @@
 					</button>
 				</div>
 				<div class="p-4 overflow-y-auto">
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 px-10 py-5">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 md:px-10 md:py-5">
             <div v-for="(image, index) in images" class="group block relative overflow-hidden rounded-lg aspect-square">
               <img
                   loading="lazy"
