@@ -5,7 +5,7 @@
       <div class="px-4 space-y-1 py-2">
         <p class="text-sm">{{ item.data.title }}</p>
         <div v-if="item.matches.length !== 0" class="">
-          <p class="truncate text-[13px] text-gray-500">{{ item.matches[0] }}</p>
+          <p class="text-[13px] text-gray-500 text-ellipsis">{{ item.matches[0] }}</p>
         </div>
       </div>
     </a>

@@ -71,8 +71,14 @@
 
             <div class="flex space-x-3 w-[200px] items-center font-semibold text-xl text-white">
               <span>{{ currentIndex + 1 }}</span>
-              <div class="flex w-full h-1 bg-gray-200 rounded-full overflow-hidden" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                <div class="flex flex-col justify-center rounded-full overflow-hidden bg-primary text-xs text-white text-center whitespace-nowrap transition-all duration-500 ease-in-out" :style="{ 'width': `${progressBarStep}%` }"></div>
+              <div class="flex w-full h-1 bg-gray-200 rounded-full overflow-hidden"
+                   role="progressbar"
+                   aria-valuenow="25"
+                   aria-valuemin="0"
+                   aria-valuemax="100"
+                   aria-label="Прогресс заполнения формы">
+                <div class="flex flex-col justify-center rounded-full overflow-hidden bg-primary text-xs text-white text-center whitespace-nowrap transition-all duration-500 ease-in-out"
+                     :style="{ 'width': `${progressBarStep}%` }"></div>
               </div>
               <span>{{ slides.length }}</span>
             </div>

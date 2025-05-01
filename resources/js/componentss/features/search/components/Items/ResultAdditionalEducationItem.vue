@@ -1,6 +1,6 @@
 <template>
   <div class="border-b w-full">
-    <a v-if="item.tag === 'additionalEducation'" :href="route('client.additionalEducation.show', item.data.slug)" target="_blank" class="rounded-lg hover:bg-[#F2F2F2] my-1 px-4 w-full flex items-center">
+    <a v-if="item.tag === 'AdditionalEducation'" :href="route('client.additionalEducation.show', item.data.slug)" target="_blank" class="rounded-lg hover:bg-[#F2F2F2] my-1 px-4 w-full flex items-center">
       <BasicIcon name="additional_education_search" class="w-5 h-5 flex-shrink-0 text-gray-500" />
       <div class="px-4 space-y-1 py-2">
         <p class="text-sm">{{ item.data.title }}</p>

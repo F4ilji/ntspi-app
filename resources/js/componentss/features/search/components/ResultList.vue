@@ -2,7 +2,7 @@
 	<PreSearchLinkList v-if="result === null" class="px-2 font-light" />
 	<div ref="content" v-else-if="result.length !== 0"
 			 :class="{'filter pointer-events-none': loading === true}"
-			 class="px-2 font-light duration-300 overflow-y-auto">
+			 class="px-2 font-light duration-300 overflow-y-auto last:pb-[120px]">
 		<template v-for="(elements, tag) in result">
 			<component
           class="rounded-none"
@@ -66,7 +66,7 @@ export default {
 				Page: 'ResultPageItem',
 				Event: 'ResultEventItem',
 				EducationalProgram: 'ResultEducationalProgramItem',
-				AdditionalEducational: 'ResultAdditionalEducationItem',
+        AdditionalEducation: 'ResultAdditionalEducationItem',
 				EducationalGroup: 'ResultEducationalGroupItem',
 				User: 'ResultPersonItem',
 				Faculty: 'ResultFacultyItem'
