@@ -38,32 +38,6 @@ class CreateDivision extends CreateRecord
 
         return strtolower($result);
     }
-    private function getFirstBlockByName(string $name, array $content) : array|null
-    {
-        $data = null;
-        foreach ($content as $block) {
-            $data = ($block['type'] === $name) ? $block : null;
-            break;
-        }
-        return $data;
-    }
-
-    private function getBlockBySeoActiveState(string $name, array $content) : array|null
-    {
-        $data = [];
-        foreach ($content as $block) {
-            if ($block['type'] === $name) {
-                $data[] = $block;
-            }
-        }
-        $block = null;
-        foreach ($data as $item) {
-            if ($item['data']['seo_active'] === true) {
-                $block = $item;
-            }
-        }
-        return $block;
-    }
 
     private function getDataFromBlocks($block) : string
     {

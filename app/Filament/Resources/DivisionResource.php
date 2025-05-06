@@ -90,7 +90,7 @@ class DivisionResource extends Resource
                                 Tabs\Tab::make('Контент')
                                     ->icon('heroicon-o-document-text')
                                     ->schema([
-                                        ContentBuilderItem::getItem('content')
+                                        ContentBuilderItem::getItem('description')
                                     ]),
                             ]),
                     ]),

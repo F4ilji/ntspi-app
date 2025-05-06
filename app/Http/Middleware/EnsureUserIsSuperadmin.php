@@ -2,9 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Ship\Requests\Request;
 use Closure;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserIsSuperadmin
@@ -16,9 +17,10 @@ class EnsureUserIsSuperadmin
      */
     public function handle(Request $request, Closure $next)
     {
-        // Проверяем, что пользователь аутентифицирован и имеет роль superadmin
         if (!Auth::check() || !Auth::user()->hasRole('super_admin')) {
-            return response('Access denied. You do not have permission to access this route.', 403);
+            return Inertia::render('Error', ['status' => 403])
+                ->toResponse($request)
+                ->setStatusCode(403);
         }
 
         return $next($request);

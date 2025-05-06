@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\Services\App\Seo\SeoDescriptionInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Division extends Model
+class Division extends Model implements SeoDescriptionInterface
 {
     use HasFactory;
 
@@ -23,5 +24,10 @@ class Division extends Model
     public function workers()
     {
         return $this->belongsToMany(User::class, 'division_user')->withPivot(['administrativePosition', 'sort', 'service_email', 'service_phone', 'cabinet']);
+    }
+
+    public function getSeoDescription(): array
+    {
+        return $this->description;
     }
 }
