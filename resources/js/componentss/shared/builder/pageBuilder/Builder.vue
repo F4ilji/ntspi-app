@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div v-if="isServer && serverSideBuilder">
+    <component :is="serverSideBuilder" :blocks="blocks" />
+  </div>
+  <div v-else>
     <transition name="fade" mode="out-in">
       <PageSkeleton v-if="loading" key="skeleton" />
       <div class="space-y-6" v-else key="content">
@@ -17,13 +20,16 @@
 <script>
 import { defineAsyncComponent } from 'vue';
 import PageSkeleton from "@/componentss/shared/builder/pageBuilder/skeletons/PageSkeleton.vue";
+import ServerSideBuilder from "@/componentss/shared/builder/pageBuilder/ServerSideBuilder.vue";
 
 export default {
 	name: "Builder",
-	components: {PageSkeleton},
+	components: {ServerSideBuilder, PageSkeleton},
 	data() {
 		return {
 			loading: true,
+      isServer: typeof window === 'undefined',
+      serverSideBuilder: null,
       componentMap: {
         heading: () => import('@/componentss/shared/builder/pageBuilder/blocks/HeadingBlock.vue'),
         paragraph: () => import('@/componentss/shared/builder/pageBuilder/blocks/ParagraphBlock.vue'),
@@ -42,7 +48,7 @@ export default {
         contact: () => import('@/componentss/shared/builder/pageBuilder/blocks/contacts/ContactSectionBlock.vue'),
         slider: () => import('@/componentss/features/sliders/shared/SliderBlock.vue')
       },
-		};
+    };
 	},
 	methods: {
 		async loadAllComponents() {
@@ -64,6 +70,11 @@ export default {
 		},
 	},
 	async created() {
+    if (this.isServer) {
+      // Динамически импортируем только на сервере
+      const module = await import('@/componentss/shared/builder/pageBuilder/ServerSideBuilder.vue');
+      this.serverSideBuilder = module.default;
+    }
 		await this.loadAllComponents(); // Загрузить все компоненты при создании
 	},
 }
