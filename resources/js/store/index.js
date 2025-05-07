@@ -35,7 +35,7 @@ export default createStore({
         updateLastSlider({ commit }, value) {
             commit('setLastSlider', value);
         },
-        initializeBvi(context) {  // Получаем весь context
+        initializeBvi(context) {
             if (!context.state.bvi) {
                 const bviInstance = new isvek.Bvi(context.state.bviSettings);
                 context.commit('setBviInstance', bviInstance);

@@ -135,7 +135,7 @@ export default {
 		Link,
 	},
 	methods: {
-    ...mapActions(['toggleBvi'])
+    ...mapActions(['toggleBvi', 'initializeBvi'])
 	},
 
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Ship\Requests\Request;
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;

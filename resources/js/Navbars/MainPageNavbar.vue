@@ -122,8 +122,8 @@ export default {
     window.addEventListener('scroll', this.handleScroll);
 
     // Вызываем action, только если на клиенте и $store доступен
-    if (typeof window !== 'undefined' && this.$store && this.initializeBvi) {
-      this.initializeBvi();
+    if (typeof window !== 'undefined' && this.$store && this.$store.dispatch('initializeBvi')) {
+      this.$store.dispatch('initializeBvi');
     }
   },
   beforeDestroy() {

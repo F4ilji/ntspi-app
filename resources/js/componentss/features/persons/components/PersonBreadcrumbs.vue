@@ -32,7 +32,7 @@
 							</span>
 						</li>
 						<li class="text-sm">
-							<Link :href="$page.props.ziggy.location" class="flex items-center text-gray-500 hover:text-primary-hover">
+							<Link :href="$page.url" class="flex items-center text-gray-500 hover:text-primary-hover">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
 										 width="16" height="16"
 										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,7 +56,7 @@
 							</Link>
 						</li>
 						<li class="text-sm">
-							<Link :href="$page.props.ziggy.location" class="flex items-center text-gray-500 hover:text-primary-hover">
+							<Link :href="$page.url" class="flex items-center text-gray-500 hover:text-primary-hover">
 								<svg class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400"
 										 width="16" height="16"
 										 viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
