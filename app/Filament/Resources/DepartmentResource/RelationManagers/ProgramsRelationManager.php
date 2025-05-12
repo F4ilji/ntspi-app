@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DepartmentResource\RelationManagers;
 
+use App\Services\App\Cache\DepartmentCacheService;
 use App\Ship\Enums\Education\EducationalProgramStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -72,6 +73,9 @@ class ProgramsRelationManager extends RelationManager
                             ->searchable()
                             ->columnSpanFull()
                     )
+                    ->before(function () {
+                        app(DepartmentCacheService::class)->clearAllCacheByModel();
+                    })
             ])
             ->actions([
 

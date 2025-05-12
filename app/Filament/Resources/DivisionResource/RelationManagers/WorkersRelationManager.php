@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DivisionResource\RelationManagers;
 
+use App\Services\App\Cache\DivisionCacheService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -145,7 +146,11 @@ class WorkersRelationManager extends RelationManager
                                     ->helperText('Номер кабинета в подразделении'),
                             ])
                             ->columns(2),
-                    ]),
+                    ])
+                    ->before(function () {
+                        app(DivisionCacheService::class)->clearAllCacheByModel();
+                    })
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make()

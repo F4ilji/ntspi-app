@@ -73,7 +73,7 @@
         <div class="space-y-5 md:space-y-5">
 
           <div class="flex justify-between items-center mb-6">
-            <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
+            <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3 truncate">
               <div class="grow">
                 <div class="grid sm:flex sm:justify-between sm:items-center gap-2">
                   <DepartmentItemBreadcrumbs :faculty="department.data.faculty" :department-title="department.data.title" />

@@ -158,7 +158,7 @@ class FacultyResource extends Resource
     {
         return [
             WorkersRelationManager::class,
-            DepartmentsRelationManager::class,
+//            DepartmentsRelationManager::class,
         ];
     }
 

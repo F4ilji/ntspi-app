@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DepartmentResource\RelationManagers;
 
+use App\Services\App\Cache\DepartmentCacheService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -136,6 +137,9 @@ class TeachersRelationManager extends RelationManager
                             ->columns(1),
                     ])
                     ->modalSubmitActionLabel('Добавить')
+                    ->before(function () {
+                        app(DepartmentCacheService::class)->clearAllCacheByModel();
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make()

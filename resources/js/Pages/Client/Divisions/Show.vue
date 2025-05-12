@@ -57,7 +57,7 @@
 				<main class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
 					<div class="space-y-5 md:space-y-5">
 						<div class="flex justify-between items-center mb-6">
-							<div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
+							<div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3 truncate">
 								<div class="grow">
 									<div class="grid sm:flex sm:justify-between sm:items-center gap-2">
 										<DivisionItemBreadcrumbs :division-title="division.data.title" />
