@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Faculty;
+use App\Containers\InstituteStructure\Models\Faculty;
 use App\Services\App\Cache\FacultyCacheService;
 
 class FacultyObserver

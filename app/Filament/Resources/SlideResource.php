@@ -2,12 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\AppStructure\Models\Page;
+use App\Containers\Article\Models\Post;
+use App\Containers\Event\Models\Event;
+use App\Containers\Widget\Models\Slide;
 use App\Filament\Resources\SlideResource\Pages;
-use App\Models\Event;
-use App\Models\Page;
-use App\Models\Post;
-use App\Models\Slide;
-use App\Models\Slider;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\DateTimePicker;
@@ -18,7 +17,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-
 use Illuminate\Support\Carbon;
 
 class SlideResource extends Resource

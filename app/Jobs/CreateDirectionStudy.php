@@ -2,8 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Enums\LevelEducational;
-use App\Models\DirectionStudy;
+use App\Containers\Education\Models\DirectionStudy;
 use App\Services\Vicon\DirectionStudy\DirectionStudyService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

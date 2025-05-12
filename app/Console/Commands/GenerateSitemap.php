@@ -2,23 +2,22 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\EducationalProgramStatus;
-use App\Enums\PostStatus;
-use App\Models\AcademicJournal;
-use App\Models\AdditionalEducation;
-use App\Models\Department;
-use App\Models\Division;
-use App\Models\EducationalProgram;
-use App\Models\Event;
-use App\Models\Faculty;
-use App\Models\LibraryNews;
-use App\Models\Page;
-use App\Models\Post;
-use App\Models\User;
-use App\Models\VirtualExhibition;
-use Illuminate\Console\Command;
+use App\Containers\AdditionalEducation\Models\AdditionalEducation;
+use App\Containers\AppStructure\Models\Page;
+use App\Containers\Article\Enums\PostStatus;
+use App\Containers\Article\Models\Post;
+use App\Containers\Education\Models\EducationalProgram;
+use App\Containers\Event\Models\Event;
+use App\Containers\InstituteStructure\Models\Department;
+use App\Containers\InstituteStructure\Models\Division;
+use App\Containers\InstituteStructure\Models\Faculty;
+use App\Containers\User\Models\User;
+use App\Ship\Enums\Education\EducationalProgramStatus;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
+
+use Illuminate\Console\Command;
+
 
 class GenerateSitemap extends Command
 {

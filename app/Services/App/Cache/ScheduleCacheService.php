@@ -2,8 +2,8 @@
 
 namespace App\Services\App\Cache;
 
-use App\Enums\CacheKeys;
-use App\Models\Schedule;
+use App\Containers\Schedule\Models\Schedule;
+use App\Ship\Enums\CacheKeys;
 use Illuminate\Support\Facades\Cache;
 
 class ScheduleCacheService extends AbstractCacheService implements CacheInterface
@@ -33,11 +33,6 @@ class ScheduleCacheService extends AbstractCacheService implements CacheInterfac
         Cache::put($key, $data, $ttl ?? self::DEFAULT_TTL);
     }
 
-
-    private function forgetScheduleCache(int $id): void
-    {
-        Cache::forget($this->getCacheKey($id));
-    }
 
     private function clearAllSchedulesCache(): void
     {

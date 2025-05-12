@@ -8,6 +8,7 @@ services:
     ports:
       - "80:80"
     container_name: ntspi-nginx
+    restart: always
     depends_on:
       - app
     env_file:

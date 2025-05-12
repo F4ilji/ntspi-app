@@ -2,20 +2,15 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\AppStructure\Models\MainSection;
 use App\Filament\Resources\MainSectionResource\Pages;
 use App\Filament\Resources\MainSectionResource\RelationManagers;
-use App\Models\MainSection;
-use App\Models\SubSection;
-use App\Services\Filament\Icon\ArrayToCollectionService;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Guava\FilamentIconPicker\Forms\IconPicker;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
 class MainSectionResource extends Resource

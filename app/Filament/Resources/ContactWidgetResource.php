@@ -2,10 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\Widget\Models\ContactWidget;
 use App\Filament\Resources\ContactWidgetResource\Pages;
-use App\Filament\Resources\ContactWidgetResource\RelationManagers;
-use App\Models\ContactWidget;
-use App\Models\Page;
 use Filament\Forms;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Tabs;
@@ -16,8 +14,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
 class ContactWidgetResource extends Resource

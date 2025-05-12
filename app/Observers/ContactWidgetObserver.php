@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\ContactWidget;
+use App\Containers\Widget\Models\ContactWidget;
 use App\Services\App\Cache\ContactWidgetCacheService;
 
 class ContactWidgetObserver

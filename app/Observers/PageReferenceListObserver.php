@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\PageReferenceList;
+use App\Containers\Widget\Models\PageReferenceList;
 use App\Services\App\Cache\PageReferenceListCacheService;
 
 class PageReferenceListObserver

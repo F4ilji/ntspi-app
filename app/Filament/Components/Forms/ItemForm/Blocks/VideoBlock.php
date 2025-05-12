@@ -2,15 +2,8 @@
 
 namespace App\Filament\Components\Forms\ItemForm\Blocks;
 
-use App\Filament\Components\Forms\ItemForm\Blocks\BlockSchema;
-use App\Helpers\ByteConverter;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class VideoBlock implements BlockSchema
 {

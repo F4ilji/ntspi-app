@@ -2,8 +2,8 @@
 
 namespace App\Services\App\Cache;
 
-use App\Enums\CacheKeys;
-use App\Models\AcademicJournal;
+use App\Containers\Science\Models\AcademicJournal;
+use App\Ship\Enums\CacheKeys;
 use Illuminate\Support\Facades\Cache;
 
 class AcademicJournalCacheService extends AbstractCacheService implements CacheInterface

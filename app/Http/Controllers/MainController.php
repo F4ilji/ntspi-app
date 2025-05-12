@@ -2,36 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\EducationalProgramStatus;
-use App\Enums\LevelEducational;
-use App\Enums\PostStatus;
-use App\Http\Resources\AdditionalEducationResource;
-use App\Http\Resources\ClientMainSliderResource;
-use App\Http\Resources\ClientNavigationResource;
-use App\Http\Resources\EventThumbnailResource;
-use App\Http\Resources\MainSectionResource;
-use App\Http\Resources\PostResource;
-use App\Http\Resources\PostThumbnailResource;
-use App\Models\AdditionalEducation;
-use App\Models\AdditionalEducationCategory;
-use App\Models\AdmissionCampaign;
-use App\Models\DirectionStudy;
-use App\Models\EducationalProgram;
-use App\Models\Event;
-use App\Models\MainSection;
-use App\Models\MainSlider;
-use App\Models\Page;
-use App\Models\Post;
-use App\Services\Filament\Icon\ArrayToCollectionService;
-use App\Services\Vicon\EducationalProgram\EducationalProgramService;
+use App\Containers\AdditionalEducation\Models\AdditionalEducation;
+use App\Containers\AdditionalEducation\Models\AdditionalEducationCategory;
+use App\Containers\AppStructure\Models\Page;
+use App\Containers\Article\Enums\PostStatus;
+use App\Containers\Article\Models\Post;
+use App\Containers\Education\Models\AdmissionCampaign;
+use App\Containers\Event\Models\Event;
+use App\Containers\Event\UI\WEB\Transformers\EventThumbnailResource;
+use App\Containers\Widget\UI\API\Transformers\PostThumbnailResource;
+use App\Ship\Enums\Education\LevelEducational;
 use Carbon\Carbon;
 use DateTime;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 class MainController extends Controller

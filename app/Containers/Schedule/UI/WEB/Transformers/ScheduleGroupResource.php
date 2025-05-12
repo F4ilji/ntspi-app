@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Containers\Schedule\UI\WEB\Transformers;
+
+
+use App\Ship\Resources\JsonResource;
+
+class ScheduleGroupResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray($request): array
+    {
+        return [
+            'id' => $this->id,
+            'file' => $this->file,
+        ];
+    }
+}

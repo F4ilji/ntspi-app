@@ -2,8 +2,8 @@
 
 namespace App\Services\App\Cache;
 
-use App\Enums\CacheKeys;
-use App\Models\User;
+use App\Ship\Enums\CacheKeys;
+use App\Containers\User\Models\User;
 use Illuminate\Support\Facades\Cache;
 
 class UserCacheService extends AbstractCacheService implements CacheInterface

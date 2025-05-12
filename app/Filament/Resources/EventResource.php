@@ -2,15 +2,14 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\Event\Models\Event;
+use App\Containers\Event\Models\EventCategory;
 use App\Filament\Components\Forms\ItemForm\Pages\ContentBuilderItem;
 use App\Filament\Resources\EventResource\Pages;
-use App\Models\Event;
-use App\Models\EventCategory;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\Tabs;

@@ -2,18 +2,15 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\AppStructure\Models\SubSection;
 use App\Filament\Resources\SubSectionResource\Pages;
 use App\Filament\Resources\SubSectionResource\RelationManagers;
-use App\Models\Page;
-use App\Models\SubSection;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
 class SubSectionResource extends Resource

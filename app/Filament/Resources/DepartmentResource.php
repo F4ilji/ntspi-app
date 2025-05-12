@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\InstituteStructure\Models\Department;
+use App\Containers\InstituteStructure\Models\Faculty;
 use App\Filament\Components\Forms\ItemForm\Pages\ContentBuilderItem;
 use App\Filament\Resources\DepartmentResource\Pages;
 use App\Filament\Resources\DepartmentResource\RelationManagers;
-use App\Models\Department;
-use App\Models\Faculty;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;

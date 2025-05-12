@@ -2,14 +2,14 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\BudgetEducation;
-use App\Enums\EducationalProgramStatus;
-use App\Enums\FormEducation;
-use App\Enums\TypeExam;
+use App\Containers\Education\Enums\TypeExam;
+use App\Containers\Education\Models\AdmissionCampaign;
+use App\Containers\Education\Models\AdmissionPlan;
+use App\Containers\Education\Models\EducationalProgram;
 use App\Filament\Resources\AdmissionPlanResource\Pages;
-use App\Models\AdmissionCampaign;
-use App\Models\AdmissionPlan;
-use App\Models\EducationalProgram;
+use App\Ship\Enums\Education\BudgetEducation;
+use App\Ship\Enums\Education\EducationalProgramStatus;
+use App\Ship\Enums\Education\FormEducation;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;

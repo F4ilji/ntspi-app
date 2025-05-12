@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\AdditionalEducation\Models\DirectionAdditionalEducation;
 use App\Filament\Resources\DirectionAdditionalEducationResource\Pages;
-use App\Models\DirectionAdditionalEducation;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;

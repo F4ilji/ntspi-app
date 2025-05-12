@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\EducationalProgram;
+use App\Containers\Education\Models\EducationalProgram;
 use App\Services\App\Cache\EducationalProgramCacheService;
 
 class EducationalProgramObserver

@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\Article\Models\Post;
 use App\Filament\Components\Forms\PostForm;
 use App\Filament\Resources\PostResource\Pages;
-use App\Models\Post;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;

@@ -2,7 +2,7 @@
 
 namespace App\Services\App\Cache;
 
-use App\Enums\CacheKeys;
+use App\Ship\Enums\CacheKeys;
 use Illuminate\Support\Facades\Cache;
 
 class SubSectionCacheService extends AbstractCacheService implements CacheInterface

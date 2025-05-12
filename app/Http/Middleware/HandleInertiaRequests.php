@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Resources\ClientNavigationResource;
-use App\Models\MainSection;
+use App\Containers\AppStructure\Models\MainSection;
+use App\Containers\AppStructure\UI\API\Transformers\NavigationResource;
 use App\Services\App\Breadcrumb\BreadcrumbService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -23,7 +23,7 @@ class HandleInertiaRequests extends Middleware
     {
         // Навигация (кешированная)
         $navigation = Cache::remember('navigation', now()->addHours(1), function () {
-            return ClientNavigationResource::collection(
+            return NavigationResource::collection(
                 MainSection::with('subSections.pages.section')
                     ->orderBy('sort', 'asc')
                     ->get()

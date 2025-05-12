@@ -1,5 +1,5 @@
 <template>
-  <div role="status" class="space-y-2.5 animate-pulse w-full">
+  <div class="space-y-2.5 animate-pulse w-full">
     <div v-for="slide in 16" :key="slide" class="flex items-center w-full">
       <div
           class="h-2.5 rounded-full"

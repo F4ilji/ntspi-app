@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\AcademicJournal;
+use App\Containers\Science\Models\AcademicJournal;
 use App\Services\App\Cache\AcademicJournalCacheService;
 
 class AcademicJournalObserver

@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\FormEducation;
+use App\Containers\AdditionalEducation\Models\AdditionalEducation;
+use App\Containers\AdditionalEducation\Models\AdditionalEducationCategory;
 use App\Filament\Components\Forms\ItemForm\Pages\ContentBuilderItem;
 use App\Filament\Resources\AdditionalEducationResource\Pages;
-use App\Models\AdditionalEducation;
-use App\Models\AdditionalEducationCategory;
+use App\Ship\Enums\Education\FormEducation;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;

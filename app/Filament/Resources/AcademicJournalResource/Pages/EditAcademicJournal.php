@@ -6,7 +6,6 @@ use App\Filament\Resources\AcademicJournalResource;
 use App\Services\Filament\Traits\SeoGenerate;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
-use Illuminate\Support\Str;
 
 class EditAcademicJournal extends EditRecord
 {

@@ -52,17 +52,15 @@ import SortingByFilter from "@/componentss/shared/filter/filters/SortingByFilter
 
 export default {
 	name: "Page",
-	data() {
-		return {
-			headerNavs: this.page.data.content.filter(block => block.type === 'heading').map(block => ({
-				id: block.data.id,
-				text: block.data.content
-			})),
-			settings: this.page.data.settings
-		}
-	},
-
-
+  data() {
+    return {
+      headerNavs: (this.page?.data?.content || []).filter(block => block?.type === 'heading').map(block => ({
+        id: block?.data?.id,
+        text: block?.data?.content
+      })),
+      settings: this.page?.data?.settings || {}
+    }
+  },
 	props: {
 		navigation: {
 			type: Object,

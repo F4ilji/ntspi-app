@@ -1,19 +1,17 @@
 <template>
-  <div v-if="isServer && serverSideBuilder">
-    <component :is="serverSideBuilder" :blocks="blocks" />
-  </div>
-  <div v-else>
-    <transition name="fade" mode="out-in">
-      <PageSkeleton v-if="loading" key="skeleton" />
-      <div class="space-y-6" v-else key="content">
-        <component
-            v-for="(block, index) in blocks"
-            :key="index"
-            :is="getComponent(block.type)"
-            :block="block"
-        />
-      </div>
-    </transition>
+  <transition name="fade" mode="out-in">
+    <PageSkeleton v-if="loading" key="skeleton" />
+    <div class="space-y-6" v-else key="content">
+      <component
+          v-for="(block, index) in blocks"
+          :key="index"
+          :is="getComponent(block.type)"
+          :block="block"
+      />
+    </div>
+  </transition>
+  <div v-if="isServer">
+    <ServerSideBuilder :blocks="blocks" />
   </div>
 </template>
 
@@ -23,11 +21,11 @@ import PageSkeleton from "@/componentss/shared/builder/pageBuilder/skeletons/Pag
 import ServerSideBuilder from "@/componentss/shared/builder/pageBuilder/ServerSideBuilder.vue";
 
 export default {
-	name: "Builder",
-	components: {ServerSideBuilder, PageSkeleton},
-	data() {
-		return {
-			loading: true,
+  name: "Builder",
+  components: {ServerSideBuilder, PageSkeleton},
+  data() {
+    return {
+      loading: true,
       isServer: typeof window === 'undefined',
       serverSideBuilder: null,
       componentMap: {
@@ -49,34 +47,34 @@ export default {
         slider: () => import('@/componentss/features/sliders/shared/SliderBlock.vue')
       },
     };
-	},
-	methods: {
-		async loadAllComponents() {
-			// Создайте массив промисов для загрузки всех компонентов
-			const promises = Object.values(this.componentMap).map(load => load());
+  },
+  methods: {
+    async loadAllComponents() {
+      // Создайте массив промисов для загрузки всех компонентов
+      const promises = Object.values(this.componentMap).map(load => load());
 
-			// Дождитесь завершения всех загрузок
-			await Promise.all(promises);
-			this.loading = false; // Установите флаг загрузки в false
-		},
-		getComponent(type) {
-			return defineAsyncComponent(this.componentMap[type] || null);
-		},
-	},
-	props: {
-		blocks: {
-			type: Object,
-			required: true,
-		},
-	},
-	async created() {
+      // Дождитесь завершения всех загрузок
+      await Promise.all(promises);
+      this.loading = false; // Установите флаг загрузки в false
+    },
+    getComponent(type) {
+      return defineAsyncComponent(this.componentMap[type] || null);
+    },
+  },
+  props: {
+    blocks: {
+      type: Object,
+      required: true,
+    },
+  },
+  async created() {
     if (this.isServer) {
       // Динамически импортируем только на сервере
       const module = await import('@/componentss/shared/builder/pageBuilder/ServerSideBuilder.vue');
       this.serverSideBuilder = module.default;
     }
-		await this.loadAllComponents(); // Загрузить все компоненты при создании
-	},
+    await this.loadAllComponents(); // Загрузить все компоненты при создании
+  },
 }
 </script>
 

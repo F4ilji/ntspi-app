@@ -2,19 +2,15 @@
 
 namespace App\Jobs;
 
-use App\Enums\LevelEducational;
-use App\Models\AdmissionCampaign;
-use App\Models\DirectionStudy;
-use App\Models\EducationalProgram;
+use App\Containers\Education\Models\AdmissionCampaign;
+use App\Containers\Education\Models\EducationalProgram;
 use App\Services\Vicon\DirectionStudy\AdmissionPlanService;
-use App\Services\Vicon\EducationalProgram\EducationalProgramService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class CreateAdmissionPlan implements ShouldQueue
 {

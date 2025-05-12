@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Division;
+use App\Containers\InstituteStructure\Models\Division;
 use App\Services\App\Cache\DivisionCacheService;
 
 class DivisionObserver

@@ -2,13 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Http\Resources\ClientBreadcrumbPage;
-use App\Http\Resources\ClientBreadcrumbSection;
-use App\Http\Resources\ClientBreadcrumbSubSection;
-use App\Models\Page;
+use App\Containers\AppStructure\Models\Page;
+use App\Ship\Resources\Breadcrumb\ClientBreadcrumbPage;
+use App\Ship\Resources\Breadcrumb\ClientBreadcrumbSection;
+use App\Ship\Resources\Breadcrumb\ClientBreadcrumbSubSection;
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class GenerateBreadcrumbs
 {

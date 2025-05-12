@@ -2,8 +2,8 @@
 
 namespace App\Services\App\Cache;
 
-use App\Enums\CacheKeys;
-use App\Models\Faculty;
+use App\Ship\Enums\CacheKeys;
+use App\Containers\InstituteStructure\Models\Faculty;
 use Illuminate\Support\Facades\Cache;
 
 class FacultyCacheService extends AbstractCacheService implements CacheInterface

@@ -2,39 +2,15 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\CustomFormStatus;
-use App\Enums\PostStatus;
+
+use App\Containers\AppStructure\Models\Page;
 use App\Filament\Components\Forms\PageForm;
 use App\Filament\Resources\PageResource\Pages;
 use App\Filament\Resources\PageResource\RelationManagers\SectionRelationManager;
-use App\Helpers\ByteConverter;
-use App\Models\Category;
-use App\Models\CustomForm;
-use App\Models\MainSection;
-use App\Models\Page;
-use App\Models\Post;
-use App\Models\SubSection;
-use Filament\Forms\Components\Builder;
-use Filament\Forms;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieTagsInput;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
-use Symfony\Component\Finder\Finder;
 
 class PageResource extends Resource
 {

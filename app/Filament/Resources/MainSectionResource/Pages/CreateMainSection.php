@@ -3,9 +3,6 @@
 namespace App\Filament\Resources\MainSectionResource\Pages;
 
 use App\Filament\Resources\MainSectionResource;
-use App\Models\MainSection;
-use App\Models\SubSection;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateMainSection extends CreateRecord

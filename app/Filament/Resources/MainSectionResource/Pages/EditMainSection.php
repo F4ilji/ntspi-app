@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\MainSectionResource\Pages;
 
+use App\Containers\AppStructure\Models\SubSection;
 use App\Filament\Resources\MainSectionResource;
-use App\Models\SubSection;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 

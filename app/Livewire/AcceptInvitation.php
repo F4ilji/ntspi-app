@@ -2,22 +2,19 @@
 
 namespace App\Livewire;
 
-use App\Models\AcceptedInvitation;
-use App\Models\Invitation;
-use App\Models\User;
+use App\Containers\User\Models\AcceptedInvitation;
+use App\Containers\User\Models\Invitation;
+use App\Containers\User\Models\User;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Form;
 use Filament\Pages\Concerns\InteractsWithFormActions;
-use Filament\Pages\Dashboard;
 use Filament\Pages\SimplePage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
-use Livewire\Component;
-use function Laravel\Prompts\password;
 
 class AcceptInvitation extends SimplePage
 {

@@ -2,13 +2,10 @@
 
 namespace App\Filament\Resources\PageResource\Pages;
 
+use App\Containers\AppStructure\Models\SubSection;
 use App\Filament\Resources\PageResource;
-use App\Models\SubSection;
-use App\Services\Filament\Domain\Seo\SeoGeneratorService;
 use App\Services\Filament\Traits\SeoGenerate;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Support\Str;
 
 class CreatePage extends CreateRecord
 {

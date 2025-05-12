@@ -2,8 +2,8 @@
 
 namespace App\Services\App\Cache;
 
-use App\Enums\CacheKeys;
-use App\Models\ContactWidget;
+use App\Containers\Widget\Models\ContactWidget;
+use App\Ship\Enums\CacheKeys;
 use Illuminate\Support\Facades\Cache;
 
 class ContactWidgetCacheService extends AbstractCacheService implements CacheInterface

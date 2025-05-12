@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Mail\CustomFormResponseMail;
-use App\Models\CustomFormResponse;
+use App\Containers\Widget\Mails\CustomFormResponseMail;
+use App\Containers\Widget\Models\CustomFormResponse;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

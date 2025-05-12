@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Tag;
+use App\Containers\Article\Models\Tag;
 use App\Services\App\Cache\TagCacheService;
 
 class TagObserver

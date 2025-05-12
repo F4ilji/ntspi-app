@@ -2,12 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Enums\LevelEducational;
-use App\Models\DirectionStudy;
-use App\Services\Vicon\DirectionStudy\DirectionStudyService;
 use App\Services\VK\VkService;
 use Carbon\Carbon;
-use Filament\Notifications\Notification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,14 +11,11 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use VK\Client\VKApiClient;
+
 
 class CreateVkPost implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-
 
     /**
      * Create a new job instance.

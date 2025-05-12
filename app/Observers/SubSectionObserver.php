@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\SubSection;
+use App\Containers\AppStructure\Models\SubSection;
 use Illuminate\Support\Facades\Cache;
 
 class SubSectionObserver

@@ -2,9 +2,6 @@
 
 namespace App\Filament\Resources\AcademicJournalResource\RelationManagers;
 
-use App\Models\AcademicJournal;
-use Filament\Forms;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -13,7 +10,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class JournalsRelationManager extends RelationManager
 {

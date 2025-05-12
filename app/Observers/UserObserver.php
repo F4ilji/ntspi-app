@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\User;
+use App\Containers\User\Models\User;
 use App\Services\App\Cache\UserCacheService;
 
 class UserObserver

@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\Science\Models\AcademicJournal;
+use App\Containers\Science\Models\JournalIssue;
 use App\Filament\Resources\JournalIssueResource\Pages;
-use App\Filament\Resources\JournalIssueResource\RelationManagers;
-use App\Models\AcademicJournal;
-use App\Models\JournalIssue;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Toggle;
@@ -13,8 +12,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class JournalIssueResource extends Resource
 {

@@ -2,7 +2,7 @@
 
 namespace App\Services\Filament\Domain\Posts;
 
-use App\Enums\PostStatus;
+use App\Containers\Article\Enums\PostStatus;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
@@ -14,7 +14,7 @@ class PostDataProcessor
      * @param array $data
      * @return array
      */
-    public function process(array $data, $operation): array
+    public function processCreate(array $data): array
     {
         // Удаляем ненужные данные
         unset($data['publication']);
@@ -22,13 +22,13 @@ class PostDataProcessor
         // Устанавливаем текст для предпросмотра
         $data['preview_text'] = $this->setPreviewText($data);
 
+        if (($data['status'] === PostStatus::PUBLISHED->value)) {
+            $data['publish_at'] = $this->setPublishDateTime();
+        }
+
         // Устанавливаем время публикации
         if ($data['publish_setting']['publish_after'] === true) {
             $data['publish_at'] = $this->setPublishDateTimeInFuture($data['publish_setting']);
-        }
-
-        if (($data['status'] === PostStatus::PUBLISHED->value || PostStatus::PUBLISHED) && $operation === 'create') {
-            $data['publish_at'] = $this->setPublishDateTime();
         }
 
         unset($data['publish_setting']);
@@ -42,6 +42,36 @@ class PostDataProcessor
         // Устанавливаем ID текущего пользователя
         $data['user_id'] = auth()->id();
 
+
+        return $data;
+    }
+
+    public function processUpdate(array $data): array
+    {
+        // Удаляем ненужные данные
+        unset($data['publication']);
+
+        // Устанавливаем текст для предпросмотра
+        $data['preview_text'] = $this->setPreviewText($data);
+
+
+        if (!$data['publish_at'] && ($data['status'] === PostStatus::PUBLISHED->value)) {
+            $data['publish_at'] = $this->setPublishDateTime();
+        }
+
+        // Устанавливаем время публикации
+        if ((isset($data['publish_setting']['publish_after']) && $data['publish_setting']['publish_after']) ||
+            (isset($data['publish_setting']['publish_at']) && $data['publish_setting']['publish_at'])) {
+            $data['publish_at'] = $this->setPublishDateTimeInFuture($data['publish_setting']);
+        }
+
+        unset($data['publish_setting']);
+
+        // Генерируем данные для поиска
+        $data['search_data'] = $this->generateSearchData($data['content']);
+
+        // Рассчитываем время чтения
+        $data['reading_time'] = $this->calculateReadingTime($data['search_data']);
 
         return $data;
     }
@@ -77,7 +107,7 @@ class PostDataProcessor
 
     private function setPublishDateTimeInFuture(array $publishSetting): ?Carbon
     {
-        if ($publishSetting['publish_after'] === true) {
+        if (!empty($publishSetting['publish_at'])) {
             return Carbon::parse($publishSetting['publish_at']);
         }
 

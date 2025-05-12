@@ -36,14 +36,14 @@ export default {
                 url.searchParams.delete('search');
                 let newUrl = url.toString();
                 this.$inertia.visit(newUrl,{
-				    method: 'get',
-				preserveState: true,
-				replace: true,
-			    });
+				          method: 'get',
+				          preserveState: true,
+				          replace: true,
+			          });
             } else {
-            let url = new URL(window.location.href);
-            url.searchParams.delete('page');
-            let newUrl = url.toString();
+                let url = new URL(window.location.href);
+                url.searchParams.delete('page');
+                let newUrl = url.toString();
 			this.$inertia.visit(newUrl,{
 				method: 'get',
 				data: {

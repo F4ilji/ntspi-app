@@ -2,8 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Enums\PostStatus;
-use App\Models\Post;
+use App\Containers\Article\Models\Post;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

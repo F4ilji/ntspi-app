@@ -2,8 +2,8 @@
 
 namespace App\Filament\Components\Forms\ItemForm\Blocks;
 
-use App\Enums\CustomFormStatus;
-use App\Models\CustomForm;
+use App\Containers\Widget\Enums\CustomFormStatus;
+use App\Containers\Widget\Models\CustomForm;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;

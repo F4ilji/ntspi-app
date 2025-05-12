@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\MainSection;
+use App\Containers\AppStructure\Models\MainSection;
 use Illuminate\Support\Facades\Cache;
 
 class MainSectionObserver

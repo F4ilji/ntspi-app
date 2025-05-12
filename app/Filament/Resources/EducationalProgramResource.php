@@ -2,19 +2,14 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\EducationalProgramStatus;
-use App\Enums\LevelEducational;
+use App\Containers\Education\Models\EducationalProgram;
 use App\Filament\Components\Forms\ItemForm\Pages\ContentBuilderItem;
 use App\Filament\Resources\EducationalProgramResource\Pages;
 use App\Filament\Resources\EducationalProgramResource\RelationManagers\AdmissionPlansRelationManager;
-use App\Models\EducationalProgram;
-use Filament\Forms;
+use App\Ship\Enums\Education\EducationalProgramStatus;
+use App\Ship\Enums\Education\LevelEducational;
 use Filament\Forms\Components\Builder;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;

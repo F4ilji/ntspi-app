@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources\PostResource\Pages;
 
+use App\Containers\Article\Enums\PostStatus;
+use App\Containers\Article\Models\Post;
 use App\Dto\MainSliderDTO;
-use App\Enums\PostStatus;
 use App\Filament\Resources\PostResource;
-use App\Models\Post;
 use App\Services\Filament\Domain\Posts\PostDataProcessor;
 use App\Services\Filament\Domain\Posts\PostNotificationService;
-use App\Services\Filament\Domain\Posts\PostSeoGenerator;
 use App\Services\Filament\Domain\Posts\PostSliderService;
 use App\Services\Filament\Domain\Posts\VkPostPublisher;
 use App\Services\Filament\Domain\Seo\SeoGeneratorService;
@@ -16,6 +15,7 @@ use App\Services\Filament\Traits\SeoGenerate;
 use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\DB;
 
 class EditPost extends EditRecord
 {
@@ -27,8 +27,15 @@ class EditPost extends EditRecord
 
     protected array $slideData;
 
+
     protected function mutateFormDataBeforeFill(array $data): array
     {
+        if ($data['publish_at']) {
+            $data['publish_setting']['publish_after'] = true;
+            $data['publish_setting']['publish_at'] = $data['publish_at'];
+        }
+        $data['publication']['vk'] = true;
+        $data['publication']['telegram'] = true;
         $post = Post::query()->with(['seo', 'slide'])->find($data['id']);
         $data['slide'] = $post->slide ? $post->slide->toArray() : null;
         return $data;
@@ -36,6 +43,7 @@ class EditPost extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        $data['publish_at'] = $this->record->publish_at;
         $this->extractAdditionalData($data);
         return $this->processPostData($data);
     }
@@ -49,7 +57,7 @@ class EditPost extends EditRecord
 
     protected function processPostData(array $data): array
     {
-        return (new PostDataProcessor())->process($data, 'edit');
+        return (new PostDataProcessor())->processUpdate($data);
     }
 
     protected function afterSave(): void
@@ -97,7 +105,12 @@ class EditPost extends EditRecord
 
     protected function publishToVk(): void
     {
-        (new VkPostPublisher())->publish($this->publicationAgreements, $this->record);
+        $postRelation = DB::table('posts_vk_posts')->select()->where('post_id', $this->record->id)->first();
+        if($postRelation){
+            (new VkPostPublisher())->update($this->publicationAgreements, $this->record);
+        } else {
+            (new VkPostPublisher())->publish($this->publicationAgreements, $this->record);
+        }
     }
 
     protected function getHeaderActions(): array

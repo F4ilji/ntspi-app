@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Page;
+use App\Containers\AppStructure\Models\Page;
 use App\Services\App\Cache\PageCacheService;
 use Illuminate\Support\Facades\Cache;
 

@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\SliderResource\RelationManagers;
 
-use App\Models\Event;
-use App\Models\Page;
-use App\Models\Post;
+use App\Containers\Event\Models\Event;
+use App\Containers\AppStructure\Models\Page;
+use App\Containers\Article\Models\Post;
 use Filament\Forms;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\DateTimePicker;

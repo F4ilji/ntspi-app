@@ -35,6 +35,7 @@ class FacultyFactory extends Factory
             'slug' => $slug,
             'content' => $content,
             'abbreviation' => $abbreviation,
+            'is_active' => $this->faker->boolean(100),
             'created_at' => now(),
             'updated_at' => now(),
         ];

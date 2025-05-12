@@ -2,8 +2,8 @@
 
 namespace App\Services\App\Cache;
 
-use App\Enums\CacheKeys;
-use App\Models\Page;
+use App\Ship\Enums\CacheKeys;
+use App\Containers\AppStructure\Models\Page;
 use Illuminate\Support\Facades\Cache;
 
 class PageCacheService extends AbstractCacheService implements CacheInterface

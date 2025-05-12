@@ -2,8 +2,8 @@
 
 namespace App\Filament\Components\Forms\ItemForm\Blocks;
 
-use App\Enums\PostStatus;
-use App\Models\Post;
+use App\Containers\Article\Enums\PostStatus;
+use App\Containers\Article\Models\Post;
 use Filament\Forms\Components\Select;
 
 class PostItemBlock implements BlockSchema

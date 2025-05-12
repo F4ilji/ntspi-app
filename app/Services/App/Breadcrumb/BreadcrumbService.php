@@ -2,10 +2,10 @@
 
 namespace App\Services\App\Breadcrumb;
 
-use App\Http\Resources\ClientBreadcrumbPage;
-use App\Http\Resources\ClientBreadcrumbSection;
-use App\Http\Resources\ClientBreadcrumbSubSection;
-use App\Models\Page;
+use App\Containers\AppStructure\Models\Page;
+use App\Ship\Resources\Breadcrumb\ClientBreadcrumbPage;
+use App\Ship\Resources\Breadcrumb\ClientBreadcrumbSection;
+use App\Ship\Resources\Breadcrumb\ClientBreadcrumbSubSection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 

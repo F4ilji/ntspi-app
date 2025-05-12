@@ -2,21 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\FormEducation;
+use App\Containers\Schedule\Models\EducationalGroup;
+use App\Containers\Schedule\Models\Schedule;
 use App\Filament\Resources\ScheduleResource\Pages;
-use App\Models\EducationalGroup;
-use App\Models\Schedule;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;

@@ -2,9 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\MainSlider;
-use App\Models\Slide;
-use App\Services\App\Cache\MainSliderCacheService;
+use App\Containers\Widget\Models\Slide;
 use App\Services\App\Cache\SliderCacheService;
 
 class SlideObserver

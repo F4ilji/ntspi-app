@@ -3,8 +3,8 @@
 namespace App\Filament\Components\Forms\ItemForm\Blocks;
 
 use App\Filament\Components\Forms\ItemForm\Blocks\BlockSchema;
-use App\Helpers\ByteConverter;
-use App\Models\Page;
+use App\Ship\Helpers\ByteConverter;
+use App\Containers\AppStructure\Models\Page;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;

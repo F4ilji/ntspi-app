@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\PostResource\Pages;
 
-use App\Enums\PostStatus;
+use App\Containers\Article\Enums\PostStatus;
+use App\Containers\Article\Models\Post;
 use App\Filament\Resources\PostResource;
-use App\Models\Post;
 use Filament\Actions;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;

@@ -2,18 +2,14 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\User\Models\AcceptedInvitation;
 use App\Filament\Resources\AcceptedInvitationResource\Pages;
-use App\Filament\Resources\AcceptedInvitationResource\RelationManagers;
-use App\Models\AcceptedInvitation;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AcceptedInvitationResource extends Resource implements HasShieldPermissions
 {

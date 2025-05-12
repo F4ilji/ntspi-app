@@ -2,7 +2,7 @@
 
 namespace App\Services\App\Cache;
 
-use App\Models\Division;
+use App\Containers\InstituteStructure\Models\Division;
 use Illuminate\Support\Facades\Cache;
 
 class DivisionCacheService extends AbstractCacheService implements CacheInterface

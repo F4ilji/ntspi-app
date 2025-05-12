@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\InstituteStructure\Models\Division;
 use App\Filament\Components\Forms\ItemForm\Pages\ContentBuilderItem;
 use App\Filament\Resources\DivisionResource\Pages;
 use App\Filament\Resources\DivisionResource\RelationManagers;
-use App\Models\Division;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Builder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Tabs;

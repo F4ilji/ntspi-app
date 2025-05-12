@@ -2,10 +2,8 @@
 
 namespace App\Observers;
 
+use App\Containers\Widget\Models\CustomFormResponse;
 use App\Jobs\SendFormResponseMail;
-use App\Mail\CustomFormResponseMail;
-use App\Models\CustomFormResponse;
-use Illuminate\Support\Facades\Mail;
 
 class CustomFormResponseObserver
 {

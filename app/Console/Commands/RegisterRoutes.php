@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
+use App\Containers\AppStructure\Models\Page;
 use Illuminate\Support\Facades\Route;
-use App\Models\Page;
+use Illuminate\Console\Command;
+
 
 
 class RegisterRoutes extends Command

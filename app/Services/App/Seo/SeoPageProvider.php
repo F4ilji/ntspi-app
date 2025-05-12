@@ -2,8 +2,8 @@
 
 namespace App\Services\App\Seo;
 
-use App\Enums\CacheKeys;
-use App\Models\Page;
+use App\Containers\AppStructure\Models\Page;
+use App\Ship\Enums\CacheKeys;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;

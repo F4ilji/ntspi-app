@@ -2,8 +2,8 @@
 
 namespace App\Services\App\Cache;
 
-use App\Enums\CacheKeys;
-use App\Models\Event;
+use App\Ship\Enums\CacheKeys;
+use App\Containers\Event\Models\Event;
 use Illuminate\Support\Facades\Cache;
 
 class EventCacheService extends AbstractCacheService implements CacheInterface

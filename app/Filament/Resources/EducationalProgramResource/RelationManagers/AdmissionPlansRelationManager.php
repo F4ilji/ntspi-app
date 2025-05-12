@@ -2,11 +2,9 @@
 
 namespace App\Filament\Resources\EducationalProgramResource\RelationManagers;
 
-use App\Enums\BudgetEducation;
-use App\Enums\FormEducation;
-use App\Models\AdmissionCampaign;
-use Filament\Forms;
-use Filament\Forms\Components\Grid;
+use App\Containers\Education\Models\AdmissionCampaign;
+use App\Ship\Enums\Education\BudgetEducation;
+use App\Ship\Enums\Education\FormEducation;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;

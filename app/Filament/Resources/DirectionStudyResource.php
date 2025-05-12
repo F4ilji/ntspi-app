@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\LevelEducational;
+use App\Containers\Education\Models\DirectionStudy;
 use App\Filament\Resources\DirectionStudyResource\Pages;
-use App\Models\DirectionStudy;
+use App\Ship\Enums\Education\LevelEducational;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;

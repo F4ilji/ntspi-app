@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Department;
+use App\Containers\InstituteStructure\Models\Department;
 use App\Services\App\Cache\DepartmentCacheService;
 
 class DepartmentObserver

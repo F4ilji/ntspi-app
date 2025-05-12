@@ -2,38 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\CustomFormStatus;
-use App\Enums\PostStatus;
+
+use App\Containers\Science\Models\AcademicJournal;
 use App\Filament\Components\Forms\ItemForm\Pages\ContentBuilderItem;
 use App\Filament\Resources\AcademicJournalResource\Pages;
-use App\Filament\Resources\AcademicJournalResource\RelationManagers;
 use App\Filament\Resources\AcademicJournalResource\RelationManagers\JournalsRelationManager;
-use App\Helpers\ByteConverter;
-use App\Models\AcademicJournal;
-use App\Models\Category;
-use App\Models\CustomForm;
-use App\Models\Page;
-use App\Models\Post;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Builder;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class AcademicJournalResource extends Resource
 {

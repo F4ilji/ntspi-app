@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\EventCategory;
+use App\Containers\Event\Models\EventCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

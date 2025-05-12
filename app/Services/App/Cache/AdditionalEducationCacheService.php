@@ -2,8 +2,8 @@
 
 namespace App\Services\App\Cache;
 
-use App\Enums\CacheKeys;
-use App\Models\AdditionalEducation;
+use App\Containers\AdditionalEducation\Models\AdditionalEducation;
+use App\Ship\Enums\CacheKeys;
 use Illuminate\Support\Facades\Cache;
 
 class AdditionalEducationCacheService extends AbstractCacheService implements CacheInterface

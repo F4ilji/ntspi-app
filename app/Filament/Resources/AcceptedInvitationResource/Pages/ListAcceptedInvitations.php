@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources\AcceptedInvitationResource\Pages;
 
+use App\Containers\User\Mails\InvitationMail;
+use App\Containers\User\Models\Invitation;
 use App\Filament\Resources\AcceptedInvitationResource;
-use App\Mail\InvitationMail;
-use App\Models\Invitation;
-use App\Models\User;
-use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
+use App\Containers\User\Models\User;
 use Filament\Actions;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;

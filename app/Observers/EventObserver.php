@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Event;
+use App\Containers\Event\Models\Event;
 use App\Services\App\Cache\EventCacheService;
 
 class EventObserver

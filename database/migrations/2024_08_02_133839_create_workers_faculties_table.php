@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Faculty;
-use App\Models\User;
+use App\Containers\InstituteStructure\Models\Faculty;
+use App\Containers\User\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

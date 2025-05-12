@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\Widget\Models\Slider;
 use App\Filament\Resources\SliderResource\Pages;
 use App\Filament\Resources\SliderResource\RelationManagers;
-use App\Models\Slider;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;

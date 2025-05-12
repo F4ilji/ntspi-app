@@ -2,8 +2,8 @@
 
 namespace App\Services\Filament\Traits;
 
-use App\Services\App\Seo\SeoDescriptionInterface;
 use App\Services\Filament\Domain\Seo\SeoGeneratorService;
+use App\Ship\Contracts\SeoDescriptionInterface;
 
 trait SeoGenerate
 {

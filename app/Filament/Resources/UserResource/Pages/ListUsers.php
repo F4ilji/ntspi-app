@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\UserResource\Pages;
 
+use App\Containers\User\Mails\InvitationMail;
+use App\Containers\User\Models\Invitation;
 use App\Filament\Resources\UserResource;
-use App\Mail\InvitationMail;
-use App\Models\Invitation;
-use App\Models\User;
+use App\Containers\User\Models\User;
 use Filament\Actions;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;

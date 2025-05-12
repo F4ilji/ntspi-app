@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\CustomForm;
+use App\Containers\Widget\Models\CustomForm;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;

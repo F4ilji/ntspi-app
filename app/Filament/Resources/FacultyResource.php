@@ -2,24 +2,14 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\CustomFormStatus;
-use App\Enums\PostStatus;
+use App\Containers\InstituteStructure\Models\Faculty;
 use App\Filament\Components\Forms\ItemForm\Pages\ContentBuilderItem;
 use App\Filament\Resources\FacultyResource\Pages;
 use App\Filament\Resources\FacultyResource\RelationManagers\DepartmentsRelationManager;
 use App\Filament\Resources\FacultyResource\RelationManagers\WorkersRelationManager;
-use App\Models\Category;
-use App\Models\CustomForm;
-use App\Models\Faculty;
-use App\Models\Page;
-use App\Models\PageReferenceList;
-use App\Models\Post;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Builder;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;

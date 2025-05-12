@@ -2,15 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Enums\PostStatus;
-use App\Models\Category;
-use App\Models\User;
+use App\Containers\Article\Enums\PostStatus;
+use App\Containers\Article\Models\Category;
+use App\Containers\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Post>
- */
 class PostFactory extends Factory
 {
     /**
@@ -54,6 +51,7 @@ class PostFactory extends Factory
             'status' => $status,
             'authors' => $authors,
             'images' => $images,
+            'preview' => null,
             'search_data' => $search_data,
             'reading_time' => $reading_time,
             'category_id' => $category_id,

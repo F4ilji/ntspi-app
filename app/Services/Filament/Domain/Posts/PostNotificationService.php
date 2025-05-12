@@ -2,10 +2,10 @@
 
 namespace App\Services\Filament\Domain\Posts;
 
+use App\Containers\Article\Models\Post;
+use App\Containers\User\Models\Role;
+use App\Containers\User\Models\User;
 use App\Filament\Resources\PostResource;
-use App\Models\Post;
-use App\Models\Role;
-use App\Models\User;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 

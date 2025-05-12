@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Category;
+use App\Containers\Article\Models\Category;
 use App\Services\App\Cache\CategoryCacheService;
 
 class CategoryObserver

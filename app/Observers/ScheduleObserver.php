@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Models\Schedule;
+use App\Containers\Schedule\Models\Schedule;
 use App\Services\App\Cache\ScheduleCacheService;
 
 class ScheduleObserver

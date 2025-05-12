@@ -2,14 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\AppStructure\Models\Page;
 use App\Filament\Resources\UrlLinkResource\Pages;
-use App\Filament\Resources\UrlLinkResource\RelationManagers;
-use App\Models\Page;
-use App\Models\UrlLink;
 use Filament\Forms;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -18,10 +13,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\Builder;
-
-use Illuminate\Support\Str;
 
 class UrlLinkResource extends Resource
 {

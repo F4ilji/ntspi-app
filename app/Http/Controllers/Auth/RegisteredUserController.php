@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Containers\User\Models\User;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

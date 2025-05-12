@@ -62,7 +62,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
                 FilamentSpatieLaravelBackupPlugin::make()->usingPage(Backups::class),
-                CheckpointPlugin::make(),
+//                CheckpointPlugin::make(),
             ]);
     }
 }

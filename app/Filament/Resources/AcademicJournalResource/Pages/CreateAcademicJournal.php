@@ -4,9 +4,7 @@ namespace App\Filament\Resources\AcademicJournalResource\Pages;
 
 use App\Filament\Resources\AcademicJournalResource;
 use App\Services\Filament\Traits\SeoGenerate;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Support\Str;
 
 class CreateAcademicJournal extends CreateRecord
 {

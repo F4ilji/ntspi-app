@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\AdditionalEducation\Models\AdditionalEducationCategory;
+use App\Containers\AdditionalEducation\Models\DirectionAdditionalEducation;
 use App\Filament\Resources\AdditionalEducationCategoryResource\Pages;
-use App\Models\AdditionalEducationCategory;
-use App\Models\DirectionAdditionalEducation;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;

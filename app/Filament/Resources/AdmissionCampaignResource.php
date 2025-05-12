@@ -2,11 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\AdmissionCampaignStatus;
-use App\Enums\LevelEducational;
+use App\Containers\Education\Models\AdmissionCampaign;
 use App\Filament\Resources\AdmissionCampaignResource\Pages;
-use App\Models\AdmissionCampaign;
-use Filament\Forms;
+use App\Ship\Enums\Education\AdmissionCampaignStatus;
+use App\Ship\Enums\Education\LevelEducational;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;

@@ -2,15 +2,13 @@
 
 namespace App\Filament\Resources\PostResource\Pages;
 
+use App\Containers\Article\Enums\PostStatus;
 use App\Dto\MainSliderDTO;
-use App\Enums\PostStatus;
 use App\Filament\Resources\PostResource;
 use App\Services\Filament\Domain\Posts\PostDataProcessor;
 use App\Services\Filament\Domain\Posts\PostNotificationService;
-use App\Services\Filament\Domain\Posts\PostSeoGenerator;
 use App\Services\Filament\Domain\Posts\PostSliderService;
 use App\Services\Filament\Domain\Posts\VkPostPublisher;
-use App\Services\Filament\Domain\Seo\SeoGeneratorService;
 use App\Services\Filament\Traits\SeoGenerate;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -41,7 +39,7 @@ class CreatePost extends CreateRecord
 
     protected function processPostData(array $data): array
     {
-        return (new PostDataProcessor())->process($data, 'create');
+        return (new PostDataProcessor())->processCreate($data);
     }
 
     protected function afterCreate(): void

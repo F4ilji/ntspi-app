@@ -2,10 +2,9 @@
 
 namespace App\Services\Filament\Domain\Posts;
 
+use App\Containers\Widget\Models\Slide;
 use App\Dto\MainSliderDTO;
-use App\Models\MainSlider;
-use App\Models\Post;
-use App\Models\Slide;
+use App\Containers\Article\Models\Post;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 

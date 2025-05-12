@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\EducationalProgramResource\Pages;
 
-use App\Enums\EducationalProgramStatus;
-use App\Enums\PostStatus;
+use App\Containers\Education\Models\EducationalProgram;
 use App\Filament\Resources\EducationalProgramResource;
-use App\Models\EducationalProgram;
+use App\Ship\Enums\Education\EducationalProgramStatus;
 use Filament\Actions;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;

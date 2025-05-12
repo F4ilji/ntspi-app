@@ -2,11 +2,8 @@
 
 namespace App\Observers;
 
-use App\Models\Post;
+use App\Containers\Article\Models\Post;
 use App\Services\App\Cache\PostCacheService;
-use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redirect;
 
 class PostObserver
 {

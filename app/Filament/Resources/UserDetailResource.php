@@ -2,19 +2,13 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\User\Models\UserDetail;
 use App\Filament\Components\Forms\UserDetailForm;
 use App\Filament\Resources\UserDetailResource\Pages;
-use App\Filament\Resources\UserDetailResource\RelationManagers;
-use App\Models\UserDetail;
-use Filament\Forms;
-use Filament\Forms\Components\Tabs;
 use Filament\Forms\Form;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserDetailResource extends Resource
 {

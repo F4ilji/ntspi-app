@@ -17,14 +17,12 @@
 <script>
 import {Head, Link} from "@inertiajs/vue3";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
-import LevelEducational from "../Enum/LevelEducational.js";
 import Slider from "@/componentss/features/sliders/Slider.vue";
 import PostListItem from "@/componentss/features/posts/components/PostListItem.vue";
 import BasicFooter from "@/footers/BasicFooter.vue";
 import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
 import PageResourceList from "@/componentss/shared/pageResource/PageResourceList.vue";
 import ContactSectionBlock from "@/componentss/shared/contactSection/ContactSectionBlock.vue";
-import EventListItem from "@/componentss/features/events/components/EventListItem.vue";
 import PostSection from "@/componentss/features/mainPage/PostSection.vue";
 import EventSection from "@/componentss/features/mainPage/EventSection.vue";
 import EducationSection from "@/componentss/features/mainPage/EducationSection.vue";

@@ -2,14 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\Widget\Models\PageReferenceList;
 use App\Filament\Resources\PageReferenceListResource\Pages;
-use App\Filament\Resources\PageReferenceListResource\RelationManagers;
-use App\Models\Event;
-use App\Models\Page;
-use App\Models\PageReferenceList;
-use App\Models\Post;
 use Filament\Forms;
-use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Tabs;
@@ -20,8 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 use Illuminate\Support\Str;
 
 class PageReferenceListResource extends Resource

@@ -65,7 +65,7 @@
             <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
               <div class="grow">
                 <div class="grid sm:flex sm:justify-between sm:items-center gap-2">
-                  <FacultyItemBreadcrumbs :faculty-title="faculty.data.title" />
+                  <FacultyItemBreadcrumbs :faculty-title="faculty.data.shortTitle" />
                 </div>
               </div>
             </div>
