@@ -58,6 +58,9 @@ class ClientDepartmentController extends Controller
                     ->where('is_active', true)
                     ->with([
                         'faculty',
+                        'workers' => fn ($query) => $query->orderBy('sort', 'asc'),
+                        'teachers' => fn ($query) => $query->orderBy('sort', 'asc'),
+                        'programs' => fn ($query) => $query->orderBy('sort', 'asc'),
                         'workers.userDetail',
                         'teachers.userDetail',
                         'programs.directionStudy',

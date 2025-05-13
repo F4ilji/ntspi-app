@@ -72,16 +72,18 @@
 
 						<div id="page-area" class="space-y-5 md:space-y-5">
 
-							<h2 v-if="division.data.workers.length > 0" id="persons" class="font-bold text-xl">Состав</h2>
+							<h2 v-if="division.data.workers.length > 0" :id="'anchor-link-' + generateSlug('Состав')" class="font-bold text-xl">Состав</h2>
 							<template v-for="worker in division.data.workers">
 								<DivisionWorkerCard :worker="worker" />
 							</template>
 
 
 
-							<h2 v-if="division.data.description.length > 0" id="description" class="font-bold text-xl">Описание</h2>
+							<h2 :id="'anchor-link-' + generateSlug('Описание')" v-if="division.data.description.length > 0" class="font-bold text-xl">Описание</h2>
 
-							<Builder :blocks="division.data.description" />
+              <div class="space-y-3 md:space-y-4">
+                <Builder :blocks="division.data.description" />
+              </div>
 
 						</div>
 
@@ -118,7 +120,8 @@ export default {
 		return {
 			scrollTop: false,
 			currentNavSection: null,
-		}
+      headerNavs: []
+    }
 	},
 
 	props: {
@@ -203,11 +206,20 @@ export default {
           break; // Выходим из цикла, если нашли видимый заголовок
         }
       }
+    },
+    extractH2Headers() {
+      const h2Elements = document.querySelectorAll('h2'); // выбираем все h2 на странице
+      this.headerNavs = Array.from(h2Elements).map(h2 => ({
+        id: h2.id,           // id заголовка
+        text: h2.textContent // содержимое заголовка
+      }));
     }
 
 
 	},
 	mounted() {
+    this.extractH2Headers()
+
     window.addEventListener("scroll", this.handleScroll);
 
     window.addEventListener("scroll", this.onScroll)
@@ -224,74 +236,5 @@ export default {
 </script>
 
 <style>
-
-
-.paragraph-container a {
-	@apply text-primary;
-	@apply underline;
-}
-
-.paragraph-container p {
-	@apply mb-2
-}
-
-
-
-@keyframes fade {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-
-.fade-enter-active,
-.fade-leave-active {
-	transition: all 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-}
-
-@keyframes grow-progress {
-	from { transform: scaleX(0); }
-	to { transform: scaleX(1); }
-}
-
-#progress {
-	height: 2px;
-	background: #26ACB8;
-	z-index: 10000;
-
-	transform-origin: 0 50%;
-	animation: grow-progress auto linear;
-	animation-timeline: scroll();
-}
-
-
-.active {
-	color: blue !important;
-}
-
-.example-initial-animation {
-	animation: initial-animation 2s ease;
-}
-
-@keyframes initial-animation {
-	0% {
-		transform: rotate(0deg);
-	}
-
-	50% {
-		transform: rotate(360deg);
-	}
-
-	100% {
-		transform: rotate(0deg);
-	}
-}
 
 </style>

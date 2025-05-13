@@ -166,7 +166,13 @@ class TeachersRelationManager extends RelationManager
                 AttachAction::make()
                     ->label('Добавить преподавателя'),
             ])
-            ->defaultSort('name')
+            ->defaultSort('sort')
+            ->reorderable('sort')
             ->deferLoading();
+    }
+
+    protected function canReorder(): bool
+    {
+        return true;
     }
 }

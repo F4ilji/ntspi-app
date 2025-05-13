@@ -85,20 +85,19 @@
           <BasicTitle :header="department.data.title" />
 
           <div id="page-area" class="space-y-5 md:space-y-5">
-            <h2 id="workers" class="font-bold text-xl">Сотрудники кафедры</h2>
-
+            <h2 v-if="department.data.workers.length > 0" :id="'anchor-link-' + generateSlug('Сотрудники кафедры')" class="font-bold text-xl">Сотрудники кафедры</h2>
             <template v-for="worker in department.data.workers">
               <DepartmentWorkerCard :worker="worker" />
             </template>
-            <h2 id="teachers" class="font-bold text-xl">Преподаватели кафедры</h2>
+
+            <h2 v-if="department.data.teachers.length > 0" :id="'anchor-link-' + generateSlug('Преподаватели кафедры')" class="font-bold text-xl">Преподаватели кафедры</h2>
             <template v-for="teacher in department.data.teachers">
               <DepartmentTeacherCard :teacher="teacher" />
             </template>
-            <h2 id="external-teachers" class="font-bold text-xl">Внешние совместители</h2>
 
-            <h2 id="programs" class="font-bold text-xl">Программы</h2>
+<!--            <h2 id="external-teachers" class="font-bold text-xl">Внешние совместители</h2>-->
 
-
+            <h2 v-if="directions" :id="'anchor-link-' + generateSlug('Программы')" class="font-bold text-xl">Программы</h2>
 
             <div class="hs-accordion-group">
               <div v-for="(direction, index) in directions" class="hs-accordion hs-accordion-active:bg-gray-100 rounded-xl px-4 py-6" id="hs-basic-with-title-and-arrow-stretched-heading-three">
@@ -119,7 +118,7 @@
 
             </div>
 
-            <h2 id="description" class="font-bold text-xl">Описание</h2>
+            <h2 v-if="department.data.content.length > 0" :id="'anchor-link-' + generateSlug('Описание')" class="font-bold text-xl">Описание</h2>
 
 
             <div class="space-y-3 md:space-y-4">
@@ -173,7 +172,8 @@ export default {
 		return {
 			scrollTop: false,
 			currentNavSection: null,
-		}
+      headerNavs: []
+    }
 	},
 	
 	props: {
@@ -245,10 +245,18 @@ export default {
 		scrollToTop() {
 			window.scrollTo(0, 0)
 		},
+    extractH2Headers() {
+      const h2Elements = document.querySelectorAll('h2'); // выбираем все h2 на странице
+      this.headerNavs = Array.from(h2Elements).map(h2 => ({
+        id: h2.id,           // id заголовка
+        text: h2.textContent // содержимое заголовка
+      }));
+    }
 
 
 	},
 	mounted() {
+    this.extractH2Headers()
 		window.addEventListener("scroll", this.onScroll)
 
 		// this.editorImages = this.blocksWithSlideNumber.filter(block => block.type === 'image').map(block => block.data.file.url);
@@ -296,74 +304,5 @@ export default {
 </script>
 
 <style>
-
-
-.paragraph-container a {
-	@apply text-primary;
-	@apply underline;
-}
-
-.paragraph-container p {
-	@apply mb-2
-}
-
-
-
-@keyframes fade {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-
-.fade-enter-active,
-.fade-leave-active {
-	transition: all 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-}
-
-@keyframes grow-progress {
-	from { transform: scaleX(0); }
-	to { transform: scaleX(1); }
-}
-
-#progress {
-	height: 2px;
-	background: #26ACB8;
-	z-index: 10000;
-
-	transform-origin: 0 50%;
-	animation: grow-progress auto linear;
-	animation-timeline: scroll();
-}
-
-
-.active {
-	color: blue !important;
-}
-
-.example-initial-animation {
-	animation: initial-animation 2s ease;
-}
-
-@keyframes initial-animation {
-	0% {
-		transform: rotate(0deg);
-	}
-
-	50% {
-		transform: rotate(360deg);
-	}
-
-	100% {
-		transform: rotate(0deg);
-	}
-}
 
 </style>

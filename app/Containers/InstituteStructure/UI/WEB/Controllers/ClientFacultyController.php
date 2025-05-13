@@ -61,7 +61,11 @@ class ClientFacultyController extends Controller
             function () use ($slug) {
                 return Faculty::where('slug', $slug)
                     ->where('is_active', true)
-                    ->with(['departments.faculty', 'workers', 'seo'])
+                    ->with(['departments.faculty',
+                        'workers' => fn ($query) => $query->orderBy('sort', 'asc'),
+                        'workers.userDetail',
+                        'seo'
+                    ])
                     ->firstOrFail();
             }
         );

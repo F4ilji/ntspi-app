@@ -18,6 +18,8 @@ use App\Containers\InstituteStructure\Models\Faculty;
 use App\Containers\Schedule\Models\Schedule;
 use App\Containers\Science\Models\AcademicJournal;
 use App\Containers\User\Models\User;
+use App\Containers\User\Models\UserDetail;
+use App\Containers\User\Observers\UserDetailObserver;
 use App\Containers\Widget\Models\ContactWidget;
 use App\Containers\Widget\Models\PageReferenceList;
 use App\Containers\Widget\Models\Slide;
@@ -90,6 +92,7 @@ class AppServiceProvider extends ServiceProvider
         Event::observe(EventObserver::class);
         Faculty::observe(FacultyObserver::class);
         User::observe(UserObserver::class);
+        UserDetail::observe(UserDetailObserver::class);
         EducationalProgram::observe(EducationalProgramObserver::class);
         Schedule::observe(ScheduleObserver::class);
         ContactWidget::observe(ContactWidgetObserver::class);

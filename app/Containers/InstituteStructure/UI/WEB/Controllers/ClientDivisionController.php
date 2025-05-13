@@ -38,7 +38,15 @@ class ClientDivisionController extends Controller
         });
 
         $divisionData = Cache::remember(CacheKeys::DIVISION_PREFIX->value . $slug, now()->addDay(), function () use ($slug) {
-            return Division::with(['workers.userDetail', 'seo'])->where('is_active', true)->where('slug', $slug)->firstOrFail();
+            return Division::query()
+                ->with([
+                    'workers' => fn ($query) => $query->orderBy('sort', 'asc'),
+                    'workers.userDetail',
+                    'seo'
+                ])
+                ->where('is_active', true)
+                ->where('slug', $slug)
+                ->firstOrFail();
         });
 
         $seo = $this->seoPageProvider->getSeoForModel($divisionData);

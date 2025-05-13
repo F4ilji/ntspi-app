@@ -166,7 +166,13 @@ class WorkersRelationManager extends RelationManager
                 AttachAction::make()
                     ->label('Добавить сотрудника'),
             ])
-            ->defaultSort('name')
+            ->reorderable('sort')
+            ->defaultSort('sort')
             ->deferLoading();
+    }
+
+    protected function canReorder(): bool
+    {
+        return true;
     }
 }

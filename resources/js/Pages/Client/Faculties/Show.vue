@@ -27,37 +27,7 @@
         </nav>
       </div>
 
-      <nav class="order-last hidden w-56 shrink-0 lg:block">
-        <div class="sticky top-[110px] h-[calc(100vh-110px)]">
-          <div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
-          <ul class="max-h-[70vh] space-y-1.5 overflow-hidden py-2 text-sm">
-            <li class="anchor-li">
-              <a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'persons', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'persons' }"
-                 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-                 href="#persons">Состав</a>
-            </li>
-            <li class="anchor-li">
-              <a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'department', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'department' }"
-                 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-                 href="#department">Кафедры факультета</a>
-            </li>
-            <li class="anchor-li">
-              <a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'description' }"
-                 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-                 href="#description">Описание</a>
-            </li>
-
-            <transition name="fade">
-              <li class="anchor-li flex items-center py-2 border-t" v-if="scrollTop" @click.prevent="scrollToTop">
-                <button class="bg-transperant text-gray-600 cursor-pointer hover:text-gray-900 duration-300 block px-2 leading-[1.6] rounded-md">К началу</button>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[17px] text-gray-600">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </li>
-            </transition>
-          </ul>
-        </div>
-      </nav>
+      <NavigateLinks :header-navs="headerNavs" />
 
       <article class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
         <div class="space-y-5 md:space-y-5">
@@ -77,25 +47,15 @@
 
           <div id="page-area" class="space-y-5 md:space-y-5">
 
-            <h2 id="persons" class="font-bold text-xl">Состав</h2>
-
-
+            <h2 :id="'anchor-link-' + generateSlug('Состав')" v-if="faculty.data.workers.length > 0" class="font-bold text-xl">Состав</h2>
             <template v-for="worker in faculty.data.workers">
               <FacultyWorkerCard :worker="worker" />
             </template>
 
 
-            <!-- End FAQ -->
-
-
-
-            <h2 id="department" class="font-bold text-xl">Кафедры факультета</h2>
-
-            <!-- Card Section -->
-            <!-- Grid -->
+            <h2 :id="'anchor-link-' + generateSlug('Кафедры факультета')" v-if="faculty.data.departments.length > 0" class="font-bold text-xl">Кафедры факультета</h2>
             <div class="grid sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-2 gap-3 sm:gap-6">
               <template v-for="department in faculty.data.departments">
-
                 <Link :href="route('client.department.show', { facultySlug: faculty.data.slug, departmentSlug: department.slug })" class="flex justify-center items-center bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition">
                   <div class="p-4 md:p-5">
                     <div class="flex justify-between items-center gap-x-3">
@@ -111,11 +71,9 @@
                   </div>
                 </Link>
               </template>
-
             </div>
 
-            <h2 id="description" class="font-bold text-xl">Описание</h2>
-
+            <h2 v-if="faculty.data.content.length > 0" :id="'anchor-link-' + generateSlug('Описание')" class="font-bold text-xl">Описание</h2>
 
             <div class="space-y-3 md:space-y-4">
               <Builder :blocks="faculty.data.content "/>
@@ -159,6 +117,7 @@ import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
 import EventListSearch from "@/componentss/features/events/components/EventListSearch.vue";
 import SortingByFilter from "@/componentss/shared/filter/filters/SortingByFilter.vue";
 import NavigateVisor from "@/componentss/shared/visor/NavigateVisor.vue";
+import NavigateLinks from "@/componentss/shared/navigate/NavigateLinks.vue";
 
 
 export default {
@@ -167,7 +126,8 @@ export default {
 		return {
 			scrollTop: false,
 			currentNavSection: null,
-		}
+      headerNavs: []
+    }
 	},
 	
 	props: {
@@ -183,6 +143,7 @@ export default {
 	},
 
 	components: {
+    NavigateLinks,
     NavigateVisor,
     SortingByFilter,
     EventListSearch,
@@ -232,11 +193,20 @@ export default {
 		scrollToTop() {
 			window.scrollTo(0, 0)
 		},
+    extractH2Headers() {
+      const h2Elements = document.querySelectorAll('h2'); // выбираем все h2 на странице
+      this.headerNavs = Array.from(h2Elements).map(h2 => ({
+        id: h2.id,           // id заголовка
+        text: h2.textContent // содержимое заголовка
+      }));
+    }
 
 
 	},
 	mounted() {
-		window.addEventListener("scroll", this.onScroll)
+    this.extractH2Headers();
+
+    window.addEventListener("scroll", this.onScroll)
 
 		window.addEventListener("scroll", () => {
 			const headings = document.querySelectorAll('h2');
@@ -281,65 +251,5 @@ export default {
 </script>
 
 <style>
-
-
-
-
-@keyframes fade {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-
-.fade-enter-active,
-.fade-leave-active {
-	transition: all 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-}
-
-@keyframes grow-progress {
-	from { transform: scaleX(0); }
-	to { transform: scaleX(1); }
-}
-
-#progress {
-	height: 2px;
-	background: #26ACB8;
-	z-index: 10000;
-
-	transform-origin: 0 50%;
-	animation: grow-progress auto linear;
-	animation-timeline: scroll();
-}
-
-
-.active {
-	color: blue !important;
-}
-
-.example-initial-animation {
-	animation: initial-animation 2s ease;
-}
-
-@keyframes initial-animation {
-	0% {
-		transform: rotate(0deg);
-	}
-
-	50% {
-		transform: rotate(360deg);
-	}
-
-	100% {
-		transform: rotate(0deg);
-	}
-}
 
 </style>

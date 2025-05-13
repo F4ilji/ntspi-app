@@ -181,4 +181,9 @@ class WorkersRelationManager extends RelationManager
             ->paginated([10, 25, 50, 100])
             ->striped();
     }
+
+    protected function canReorder(): bool
+    {
+        return true;
+    }
 }

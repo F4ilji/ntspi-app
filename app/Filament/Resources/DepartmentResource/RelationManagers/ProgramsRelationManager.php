@@ -103,4 +103,9 @@ class ProgramsRelationManager extends RelationManager
             ->deferLoading()
             ->persistFiltersInSession();
     }
+
+    protected function canReorder(): bool
+    {
+        return true;
+    }
 }

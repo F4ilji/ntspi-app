@@ -50,6 +50,7 @@ class WorkersRelationManager extends RelationManager
                             ->maxLength(10)
                             ->placeholder('Например: 305а')
                             ->helperText('Номер кабинета для приема'),
+
                     ])
             ]);
     }
@@ -57,9 +58,9 @@ class WorkersRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('name')
             ->reorderable('sort')
             ->defaultSort('sort')
+            ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('ФИО')
@@ -75,23 +76,21 @@ class WorkersRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('service_email')
                     ->label('Почта')
                     ->searchable()
-                    ->icon('heroicon-o-envelope')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->icon('heroicon-o-envelope'),
 
                 Tables\Columns\TextColumn::make('service_phone')
                     ->label('Телефон')
                     ->searchable()
-                    ->icon('heroicon-o-phone')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->icon('heroicon-o-phone'),
 
                 Tables\Columns\TextColumn::make('cabinet')
                     ->label('Кабинет')
                     ->searchable()
-                    ->icon('heroicon-o-home-modern')
-                    ->toggleable(isToggledHiddenByDefault: false),
-            ])
-            ->filters([
-                //
+                    ->icon('heroicon-o-home-modern'),
+//                Tables\Columns\TextColumn::make('sort')
+//                    ->label('Сортировка')
+//                    ->toggleable(isToggledHiddenByDefault: false),
+
             ])
             ->headerActions([
                 AttachAction::make()
@@ -164,5 +163,10 @@ class WorkersRelationManager extends RelationManager
             ->emptyStateHeading('Нет сотрудников')
             ->emptyStateDescription('Добавьте сотрудников, используя кнопку выше')
             ->emptyStateIcon('heroicon-o-user-group');
+    }
+
+    protected function canReorder(): bool
+    {
+        return true;
     }
 }
