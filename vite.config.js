@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import path from 'path'
+
 
 
 export default defineConfig({
@@ -19,7 +22,6 @@ export default defineConfig({
             ssr: 'resources/js/ssr.js',
             refresh: true,
         }),
-
         vue({
             template: {
                 transformAssetUrls: {
@@ -27,6 +29,14 @@ export default defineConfig({
                     includeAbsolute: false,
                 },
             },
+        }),
+        createSvgIconsPlugin({
+            // Specify the icon folder to be cached
+            iconDirs: [path.resolve(process.cwd(), 'resources/js/assets/icons/svg')],
+
+            symbolId: 'icon-[name]',
+
+            customDomId: '__svg__icons__dom__',
         }),
     ],
     server: {
