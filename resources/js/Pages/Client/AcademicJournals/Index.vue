@@ -16,10 +16,15 @@ import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
 import AdditionalProgramTitle
   from "@/componentss/features/additionalEducationPrograms/components/AdditionalProgramTitle.vue";
 import FormEducationalFilter from "@/componentss/shared/filter/filters/FormEducationalFilter.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 export default {
   name: "Index",
   components: {
+    BaseBreadcrumbs,
+    BasicIcon, BreadcrumbsItem,
     FormEducationalFilter,
     AdditionalProgramTitle,
     BasicListFilter,
@@ -47,13 +52,10 @@ export default {
     },
 		seo: {
 			type: Object,
-		}
-  },
-  methods: {
-
-  },
-
-	mounted() {
+		},
+    breadcrumbs: {
+      type: Object
+    }
   }
 };
 </script>
@@ -70,8 +72,9 @@ export default {
         <div class="max-w-2xl text-center mx-auto mb-10 lg:mb-14">
           <h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Научные периодические издания НТГСПИ</h2>
         </div>
-        <!-- Grid -->
-        <AcademicJournalsListBreadcrumbs />
+        <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+          <BreadcrumbsItem title="Научные журналы" :url="route('client.academicJournals.index')" />
+        </BaseBreadcrumbs>
         <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-6">
           <template v-for="journal in journals.data">
             <Link :href="route('client.academicJournals.show', journal.slug)" class="group flex items-center bg-white border shadow-sm rounded-xl hover:shadow-md focus:outline-none focus:shadow-md transition" >

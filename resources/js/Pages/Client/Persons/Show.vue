@@ -12,7 +12,9 @@
         <section class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
           <div class="w-full mx-auto sm:px-6 lg:px-8">
 
-            <PersonBreadcrumbs class="mb-4" :person-name="person.data.name" />
+            <BaseBreadcrumbs class="mb-4" :breadcrumbs="breadcrumbs">
+              <BreadcrumbsItem :title="person.data.name" :url="$page.url" />
+            </BaseBreadcrumbs>
 
             <InfoSection :person="person" />
 
@@ -52,6 +54,8 @@ import IsOnlineFilter from "@/componentss/shared/filter/filters/IsOnlineFilter.v
 import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
 import EventListSearch from "@/componentss/features/events/components/EventListSearch.vue";
 import SortingByFilter from "@/componentss/shared/filter/filters/SortingByFilter.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 
 export default {
@@ -70,10 +74,14 @@ export default {
 		},
 		seo: {
 			type: Object,
-		}
+		},
+    breadcrumbs: {
+      type: Object
+    }
 	},
 
 	components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     SortingByFilter,
     EventListSearch,
     BasicListFilter,
@@ -186,73 +194,5 @@ export default {
 
 <style>
 
-
-.paragraph-container a {
-	@apply text-primary;
-	@apply underline;
-}
-
-.paragraph-container p {
-	@apply mb-2
-}
-
-
-
-@keyframes fade {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-
-.fade-enter-active,
-.fade-leave-active {
-	transition: all 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-}
-
-@keyframes grow-progress {
-	from { transform: scaleX(0); }
-	to { transform: scaleX(1); }
-}
-
-#progress {
-	height: 2px;
-	background: #26ACB8;
-	z-index: 10000;
-
-	transform-origin: 0 50%;
-	animation: grow-progress auto linear;
-	animation-timeline: scroll();
-}
-
-
-.active {
-	color: blue !important;
-}
-
-.example-initial-animation {
-	animation: initial-animation 2s ease;
-}
-
-@keyframes initial-animation {
-	0% {
-		transform: rotate(0deg);
-	}
-
-	50% {
-		transform: rotate(360deg);
-	}
-
-	100% {
-		transform: rotate(0deg);
-	}
-}
 
 </style>

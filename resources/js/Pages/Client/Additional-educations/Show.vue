@@ -15,11 +15,14 @@ import BasicPageWrapper from "@/componentss/ui/wrappers/BasicPageWrapper.vue";
 import ProgramItemBreadcrumbs from "@/componentss/features/educationalPrograms/components/ProgramItemBreadcrumbs.vue";
 import FormBlock from "@/componentss/shared/builder/pageBuilder/blocks/FormBlock.vue";
 import FormBuilder from "@/componentss/shared/builder/formBuilder/FormBuilder.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
 
 
 export default {
   name: "Show",
   components: {
+    BasicIcon, BreadcrumbsItem,
     FormBuilder,
     FormBlock,
     ProgramItemBreadcrumbs, BasicPageWrapper, BasicPageContainer,
@@ -76,7 +79,12 @@ export default {
     <BasicPageContainer>
       <div class="space-y-3">
         <BackButton link="client.additionalEducation.index" title="Все программы"/>
-        <AdditionalProgramItemBreadcrumbs class="pb-4" :breadcrumbs="breadcrumbs" :additional-education-title="additionalEducation.data.title" />
+        <BreadcrumbsItem :breadcrumbs="breadcrumbs">
+          <Link :href="$page.url" class="flex items-center text-gray-500 hover:text-primary-light">
+            <BasicIcon class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400" name="breadcrumb-tag" />
+            {{ additionalEducation.data.title }}
+          </Link>
+        </BreadcrumbsItem>
         <ProgramTitle :header="additionalEducation.data.title" class="text-center" />
       </div>
 

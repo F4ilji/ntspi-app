@@ -16,11 +16,14 @@ import BackButton from "@/componentss/ui/buttons/BackButton.vue";
 import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
 import BasicTitle from "@/componentss/ui/titles/BasicTitle.vue";
 import EventItemBreadcrumbs from "@/componentss/features/events/components/EventItemBreadcrumbs.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 
 export default {
 	name: "Index",
 	components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     EventItemBreadcrumbs, BasicTitle, Builder, BackButton, BasicPageWrapper, BasicPageContainer,
     BasicListBadge,
     CategoryFilter,
@@ -77,7 +80,9 @@ export default {
   <BasicPageWrapper>
     <BasicPageContainer breakpoint="md">
       <div>
-        <EventListBreadcrumbs :breadcrumbs="breadcrumbs" />
+        <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+          <BreadcrumbsItem title="Мероприятия" :url="route('client.event.index')" />
+        </BaseBreadcrumbs>
         <div class="space-y-5 md:space-y-4">
           <div class="flex items-center w-full justify-center">
             <h1 class="block text-brand-primary text-center mb-3 mt-2 mr-4 text-3xl font-semibold tracking-tight dark:text-white lg:text-[40px] lg:leading-tight">

@@ -61,6 +61,10 @@
 								<div class="grow">
 									<div class="grid sm:flex sm:justify-between sm:items-center gap-2">
 										<DivisionItemBreadcrumbs :division-title="division.data.title" />
+                    <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+                      <BreadcrumbsItem title="Подразделения института" :url="route('client.division.index')" />
+                      <BreadcrumbsItem :title="division.data.title" :url="$page.url" />
+                    </BaseBreadcrumbs>
 									</div>
 								</div>
 							</div>
@@ -112,6 +116,8 @@ import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
 import DivisionWorkerCard from "@/componentss/features/divisions/components/DivisionWorkerCard.vue";
 import BasicFooter from "@/footers/BasicFooter.vue";
 import DivisionItemBreadcrumbs from "@/componentss/features/divisions/components/DivisionItemBreadcrumbs.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 
 export default {
@@ -133,10 +139,14 @@ export default {
 		},
 		seo: {
 			type: Object,
-		}
+		},
+    breadcrumbs: {
+      type: Object
+    }
 	},
 
 	components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     BasicFooter,
     DivisionWorkerCard,
     Builder,

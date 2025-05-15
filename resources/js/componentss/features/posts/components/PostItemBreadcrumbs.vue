@@ -1,6 +1,6 @@
 <template>
 	<div class="flex justify-between pb-4 items-center">
-		<div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3">
+		<div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3 truncate mask-fade">
 			<div class="grow">
 				<div class="grid sm:flex sm:justify-between sm:items-center gap-2">
 					<BreadcrumbsWrapper v-if="breadcrumbs">
@@ -53,7 +53,7 @@
 								{{ textLimit(postTitle, 60) }}
 							</Link>
 						</li>
-					</BreadcrumbsWrapper>
+					</BreadcrumbsWrapper >
 					<BreadcrumbsWrapper v-else>
 						<li class="text-sm">
 							<Link :href="route('index')" class="flex items-center text-gray-500 hover:text-primary-hover" href="/">
@@ -203,7 +203,8 @@ export default {
 
 
 <style scoped>
-
-
-
+.mask-fade {
+  mask-image: linear-gradient(to right, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+}
 </style>

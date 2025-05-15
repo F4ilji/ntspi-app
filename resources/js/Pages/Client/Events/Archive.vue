@@ -20,11 +20,14 @@ import BackButton from "@/componentss/ui/buttons/BackButton.vue";
 import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
 import BasicTitle from "@/componentss/ui/titles/BasicTitle.vue";
 import EventItemBreadcrumbs from "@/componentss/features/events/components/EventItemBreadcrumbs.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 
 export default {
 	name: "Archive",
 	components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     EventItemBreadcrumbs, BasicTitle, Builder, BackButton, BasicPageWrapper, BasicPageContainer,
     BasicPagination,
     SortingByFilter,
@@ -86,7 +89,10 @@ export default {
   <BasicPageWrapper>
     <BasicPageContainer breakpoint="md">
       <div>
-        <EventArchiveListBreadcrumbs :breadcrumbs="breadcrumbs" />
+        <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+          <BreadcrumbsItem title="Мероприятия" :url="route('client.event.index')" />
+          <BreadcrumbsItem title="Архив" :url="route('client.event.archive')" />
+        </BaseBreadcrumbs>
         <div class="space-y-5 md:space-y-4">
           <div class="flex items-center w-full justify-center">
             <h1 class="block text-brand-primary text-center mb-3 mt-2 mr-4 text-3xl font-semibold tracking-tight lg:text-[35px] lg:leading-tight">

@@ -4,7 +4,7 @@
 	<MainPageNavBar :sections="$page.props.navigation" />
   <Slider class="bvi-hide" slider-id="quos-velit-quisquam" />
 
-	<section class="max-w-screen-xl w-full mx-auto px-4 py-3 pb-10">
+  <section class="max-w-screen-xl w-full mx-auto px-4 py-3 pb-10">
     <PostSection :posts="posts" />
     <EducationSection :educations="educations" />
   </section>
@@ -26,8 +26,8 @@ import ContactSectionBlock from "@/componentss/shared/contactSection/ContactSect
 import PostSection from "@/componentss/features/mainPage/PostSection.vue";
 import EventSection from "@/componentss/features/mainPage/EventSection.vue";
 import EducationSection from "@/componentss/features/mainPage/EducationSection.vue";
-
-
+import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
+import SvgIcon from "@/componentss/ui/icons/SvgIcon.vue";
 
 export default {
 	name: "Main",
@@ -47,6 +47,8 @@ export default {
 	},
 
 	components: {
+    SvgIcon,
+    BasicIcon,
     EducationSection,
     EventSection,
     PostSection,

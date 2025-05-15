@@ -31,7 +31,7 @@
 								:class="(HAS_ACTIVE_PAGE(section) ? 'text-primary bg-gray-100' : 'text-gray-700')"
 								type="button"
 								class="hs-accordion-toggle hs-accordion-active:text-primary w-full text-start flex items-center gap-x-3 py-2 px-2.5 text-sm rounded-lg focus:outline-none" aria-expanded="true" aria-controls="users-accordion">
-							<BasicIcon class="w-4" name="line" />
+							<BasicIcon class="w-4 h-4" name="line" />
 							{{ section.title }}
 							<svg class="flex-shrink-0 hs-accordion-active:block ms-auto hidden size-4 text-gray-600 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
 							<svg class="flex-shrink-0 hs-accordion-active:hidden ms-auto block size-4 text-gray-600 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
@@ -52,14 +52,14 @@
 									</button>
 
 									<div class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden" role="region" :aria-labelledby="'nav-accordion-' + subSection.slug">
-										<ul class="pt-2 ps-2">
-											<li v-for="page in subSection.pages">
+										<ul class="pt-2">
+											<li class="mb-1.5" v-for="page in subSection.pages">
 												<a
 														:href="(page.is_url) ? page.path : route('page.view', page.path) + '/'"
 														class="flex items-center gap-x-3 py-2 px-2.5 text-sm rounded-lg hover:bg-gray-[#EFEFEF] focus:outline-none focus:bg-gray-100"
 														:class="(IS_SAME_ROUTE(page.path) ? 'text-primary bg-white border border-[#E4E4E7]' : 'text-gray-700')"
 												>
-													<BasicIcon v-if="page.icon" class="w-4" :name="page.icon" />
+													<BasicIcon v-if="page.icon" class="w-4 h-4" :name="page.icon" />
 													{{ page.title }}
 												</a>
 											</li>
@@ -75,27 +75,27 @@
 						<Link :href="route('client.schedule.index')"
 									:class="(IS_SAME_ROUTE(route('client.schedule.index')) ? 'text-primary bg-white border border-[#E4E4E7]' : 'text-gray-700')"
 									class="flex items-center gap-x-3 py-2 px-2.5 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300" href="#">
-							<BasicIcon class="w-4" name="schedule" />
+							<BasicIcon class="w-4 h-4" name="schedule" />
 							Расписание
 						</Link>
 					</li>
 <!--					<li>-->
 <!--						<a class="flex items-center gap-x-3 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-300" href="#">-->
-<!--							<BasicIcon class="w-4" name="eye" />-->
+<!--							<BasicIcon class="w-4 h-4" name="eye" />-->
 <!--							Режим для слабовидящих-->
 <!--						</a>-->
 <!--					</li>-->
 					<li>
 						<button aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-full-screen-modal-below-md" data-hs-overlay="#open-search-modal"
 							 class="flex items-center gap-x-3 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 w-full">
-							<BasicIcon class="w-4" name="search" />
+							<BasicIcon class="w-4 h-4" name="search" />
 							Поиск
 						</button>
 					</li>
           <li>
             <button aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-full-screen-modal-below-md" data-hs-overlay="#open-search-sveden-modal"
                     class="flex items-center gap-x-3 py-2 px-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-100 w-full">
-              <BasicIcon class="w-4" name="search" />
+              <BasicIcon class="w-4 h-4" name="search" />
               Поиск по СОО
             </button>
           </li>

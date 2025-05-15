@@ -35,7 +35,10 @@
             <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3 truncate">
               <div class="grow">
                 <div class="grid sm:flex sm:justify-between sm:items-center gap-2">
-                  <FacultyItemBreadcrumbs :faculty-title="faculty.data.shortTitle" />
+                  <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+                    <BreadcrumbsItem title="Факультеты" :url="route('client.faculty.index')" />
+                    <BreadcrumbsItem :title="faculty.data.shortTitle" :url="$page.url" />
+                  </BaseBreadcrumbs>
                 </div>
               </div>
             </div>
@@ -118,6 +121,8 @@ import EventListSearch from "@/componentss/features/events/components/EventListS
 import SortingByFilter from "@/componentss/shared/filter/filters/SortingByFilter.vue";
 import NavigateVisor from "@/componentss/shared/visor/NavigateVisor.vue";
 import NavigateLinks from "@/componentss/shared/navigate/NavigateLinks.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 
 export default {
@@ -139,10 +144,14 @@ export default {
 		},
 		seo: {
 			type: Object,
-		}
+		},
+    breadcrumbs: {
+      type: Object
+    }
 	},
 
 	components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     NavigateLinks,
     NavigateVisor,
     SortingByFilter,

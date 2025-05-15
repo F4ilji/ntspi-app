@@ -19,9 +19,12 @@ import EventArchiveListBreadcrumbs from "@/componentss/features/events/component
 import BasicPagination from "@/componentss/shared/paginate/BasicPagination.vue";
 import IsOnlineFilter from "@/componentss/shared/filter/filters/IsOnlineFilter.vue";
 import EventListSearch from "@/componentss/features/events/components/EventListSearch.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 export default {
   name: "Index",
   components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     WhenVisible,
     EventListSearch, IsOnlineFilter, BasicPagination, EventArchiveListBreadcrumbs, BasicPageWrapper, BasicPageContainer,
     BasicListBadge,
@@ -86,7 +89,9 @@ export default {
         <h2 class="text-2xl font-bold md:text-4xl md:leading-tight dark:text-white">Новости НТГСПИ</h2>
         <p class="mt-1 text-gray-600 dark:text-neutral-400">Узнайте последние новости любимого вуза</p>
       </div>
-      <PostListBreadcrumbs :breadcrumbs="breadcrumbs" />
+      <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+        <BreadcrumbsItem title="Новости" :url="route('client.post.index')" />
+      </BaseBreadcrumbs>
       <div>
         <HeadItemsWrapper>
           <PostListSearch :search_filter="filters.search_filter" />

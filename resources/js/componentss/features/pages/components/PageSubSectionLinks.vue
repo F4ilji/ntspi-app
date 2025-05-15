@@ -10,7 +10,7 @@
 						<a :class="{'text-white font-normal bg-primary border': isSameRoute(page.path), 'text-gray-600 hover:text-[#2C6288]': !isSameRoute(page.path) }"
 							 :href="(page.is_url) ? page.path : route('page.view', page.path) + '/'"
 							 class="duration-300 flex gap-x-2 w-full rounded-md cursor-pointer items-center px-2 py-1.5 text-left text-sm">
-							<BasicIcon v-if="page.icon" class="w-4" :name="page.icon" />
+							<BasicIcon v-if="page.icon" class="w-4 h-4" :name="page.icon" />
 									{{ page.title }}
 						</a>
 					</li>

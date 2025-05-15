@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Containers\Schedule\Models\EducationalGroup;
 use App\Containers\Schedule\Models\Schedule;
 use App\Filament\Resources\ScheduleResource\Pages;
+use App\Ship\Enums\Education\FormEducation;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;

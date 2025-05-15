@@ -16,10 +16,13 @@ import IsOnlineFilter from "@/componentss/shared/filter/filters/IsOnlineFilter.v
 import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
 import EventListSearch from "@/componentss/features/events/components/EventListSearch.vue";
 import SortingByFilter from "@/componentss/shared/filter/filters/SortingByFilter.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 export default {
   name: "Index",
   components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     SortingByFilter,
     EventListSearch,
     BasicListFilter,
@@ -49,14 +52,11 @@ export default {
     },
 		seo: {
 			type: Object,
-		}
+		},
+    breadcrumbs: {
+      type: Object
+    }
   },
-  methods: {
-
-  },
-
-	mounted() {
-  }
 };
 </script>
 
@@ -71,6 +71,9 @@ export default {
           bottom-text="Информация о наших факультетах и кафедрах"
           header="Факультеты и кафедры" />
       <FacultyListBreadcrumbs />
+      <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+        <BreadcrumbsItem title="Факультеты" :url="route('client.faculty.index')" />
+      </BaseBreadcrumbs>
 
       <!-- Grid -->
       <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-6">

@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Containers\AppStructure\Models\Page;
+use App\Containers\Article\Models\Post;
+use App\Containers\Event\Models\Event;
 use App\Containers\Widget\Models\PageReferenceList;
 use App\Filament\Resources\PageReferenceListResource\Pages;
 use Filament\Forms;
@@ -17,6 +20,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 use Illuminate\Support\Str;
+use TomatoPHP\FilamentIcons\Components\IconPicker;
 
 class PageReferenceListResource extends Resource
 {
@@ -177,17 +181,42 @@ class PageReferenceListResource extends Resource
                                                     ->required()
                                                     ->maxLength(255),
 
-                                                FileUpload::make('image')
-                                                    ->label('Изображение предпросмотра')
-                                                    ->helperText('Рекомендуемый формат: PNG, JPEG, JPG')
-                                                    ->image()
-                                                    ->optimize('webp')
-                                                    ->resize(50)
-                                                    ->disk('public')
-                                                    ->directory('images')
-                                                    ->imageEditor()
-                                                    ->downloadable()
-                                                    ->openable(),
+                                                // Новый блок для выбора между изображением и иконкой
+                                                Forms\Components\Section::make('Графическое представление')
+                                                    ->description('Выберите тип графического представления')
+                                                    ->collapsible()
+                                                    ->schema([
+                                                        Forms\Components\Radio::make('visual_type')
+                                                            ->label('Тип представления')
+                                                            ->options([
+                                                                'image' => 'Изображение',
+                                                                'icon' => 'Иконка',
+                                                            ])
+                                                            ->default('image')
+                                                            ->dehydrated(false)
+                                                            ->live()
+                                                            ->inline(),
+
+                                                        FileUpload::make('image')
+                                                            ->label('Изображение предпросмотра')
+                                                            ->helperText('Рекомендуемый формат: PNG, JPEG, JPG')
+                                                            ->image()
+                                                            ->optimize('webp')
+                                                            ->resize(50)
+                                                            ->disk('public')
+                                                            ->directory('images')
+                                                            ->imageEditor()
+                                                            ->downloadable()
+                                                            ->openable()
+                                                            ->visible(fn (Forms\Get $get): bool => $get('visual_type') === 'image'),
+
+                                                        IconPicker::make('icon')
+                                                            ->label('Иконка')
+                                                            ->default('heroicon-o-academic-cap')
+                                                            ->helperText('Выберите иконку для отображения')
+                                                            ->columns(6)
+                                                            ->visible(fn (Forms\Get $get): bool => $get('visual_type') === 'icon'),
+                                                    ]),
 
                                                 Forms\Components\Grid::make(2)
                                                     ->schema([
@@ -213,7 +242,6 @@ class PageReferenceListResource extends Resource
                     ]),
             ]);
     }
-
     public static function table(Table $table): Table
     {
         return $table

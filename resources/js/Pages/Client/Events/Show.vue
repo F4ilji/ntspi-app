@@ -11,10 +11,13 @@ import BasicPageContainer from "@/componentss/ui/templates/BasicPageContainer.vu
 import BasicPageWrapper from "@/componentss/ui/wrappers/BasicPageWrapper.vue";
 import ProgramTitle from "@/componentss/features/educationalPrograms/components/ProgramTitle.vue";
 import ProgramItemBreadcrumbs from "@/componentss/features/educationalPrograms/components/ProgramItemBreadcrumbs.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 export default {
 	name: "Show",
 	components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     ProgramItemBreadcrumbs, ProgramTitle, BasicPageWrapper, BasicPageContainer,
     MetaTags,
     BasicFooter,
@@ -68,7 +71,10 @@ export default {
       <div class="space-y-5 md:space-y-10">
         <div class="space-y-3">
           <BackButton link="client.event.index" title="Все мероприятия" />
-          <EventItemBreadcrumbs :breadcrumbs="breadcrumbs" :event-title="event.data.title" />
+          <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+            <BreadcrumbsItem title="Мероприятия" :url="route('client.event.index')" />
+            <BreadcrumbsItem :title="event.data.title" :url="$page.url" />
+          </BaseBreadcrumbs>
           <BasicTitle :header="event.data.title" />
         </div>
 

@@ -15,10 +15,13 @@ import AcademicJournalsListBreadcrumbs
   from "@/componentss/features/academicJournals/components/AcademicJournalsListBreadcrumbs.vue.vue";
 import BasicPageWrapper from "@/componentss/ui/wrappers/BasicPageWrapper.vue";
 import BasicListBadge from "@/componentss/shared/badge/BasicListBadge.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 export default {
   name: "Index",
   components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     BasicListBadge,
     BasicPageWrapper, AcademicJournalsListBreadcrumbs, BasicPageContainer,
     ProgramLevelEduFilter,
@@ -63,7 +66,10 @@ export default {
 		},
 		seo: {
 			type: Object,
-		}
+		},
+    breadcrumbs: {
+      type: Object
+    }
   },
   methods: {
 		transformToColumns(originalArray) {
@@ -102,6 +108,9 @@ export default {
             <div class="">
               <div class="mt-10 mb-5 w-full">
                 <ProgramListBreadcrumbs />
+                <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+                  <BreadcrumbsItem title="Образовательные программы" :url="route('client.program.index')" />
+                </BaseBreadcrumbs>
                 <div class="flex items-center gap-x-2">
                   <ProgramLevelEduFilter :levels="levelsEducational" :level_filter="filters.level_filter" />
                   <BasicListFilter>

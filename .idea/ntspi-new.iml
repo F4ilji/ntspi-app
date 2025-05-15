@@ -6,7 +6,6 @@
       <sourceFolder url="file://$MODULE_DIR$/database/factories" isTestSource="false" packagePrefix="Database\Factories\" />
       <sourceFolder url="file://$MODULE_DIR$/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" packagePrefix="Tests\" />
-      <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/brick/math" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/carbonphp/carbon-doctrine-types" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
@@ -155,7 +154,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/html-sanitizer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/awcodes/filament-tiptap-editor" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/mohamedsabil83/filament-forms-tinyeditor" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/rahmanramsi/filament-editorjs" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/scrivo/highlight.php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/shiki-php" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ueberdosis/tiptap-php" />
@@ -184,6 +182,20 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/yepsua/filament-range-field" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/tomatophp/console-helpers" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/tomatophp/filament-icons" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/imangazaliev/didom" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/opcodesio/log-viewer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/opcodesio/mail-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/alxdorosenco/porto-for-laravel" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/calebporzio/sushi" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/filament/spatie-laravel-settings-plugin" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-common" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/type-resolver" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpstan/phpdoc-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/shuvroroy/filament-spatie-laravel-backup" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/db-dumper" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-backup" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-settings" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-signal-aware-command" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Containers\Article\Models\Post;
+use App\Services\Filament\Traits\SeoGenerate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,7 +15,7 @@ use Illuminate\Support\Str;
 
 class ImportApiDataPost implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, SeoGenerate;
 
     /**
      * Create a new job instance.
@@ -83,26 +84,31 @@ class ImportApiDataPost implements ShouldQueue
                         // Генерация уникального slug
                         $slug = $this->generateSlug($post->NAME);
 
+                        $author = $this->extractAuthor($post->DETAIL_TEXT ?? '');
+                        $authors = $author ? [$author] : ($post->AUTHORS ?? ['Без автора']);
+
                         // Создание нового поста
-                        Post::firstOrCreate(
+                        $createdPost =  Post::firstOrCreate(
                             ['id' => $post->ID], // Условие поиска по ID
                             [
                                 'title' => $post->NAME,
                                 'slug' => $slug,
                                 'preview_text' => strip_tags($post->PREVIEW_TEXT),
-                                'authors' => ['Без автора'],
+                                'authors' => $authors,
                                 'content' => $contentData, // Преобразуем в JSON
                                 'status' => 'published',
                                 'images' => $imagePaths, // Сохраняем пути к изображениям
-                                'preview' => $imagePaths[0],
+                                'preview' => $imagePaths[0] ?? null,
                                 'search_data' => strip_tags($content), // Преобразуем в JSON
                                 'reading_time' => $readingTime,
-                                'user_id' => 1,
+                                'user_id' => 2,
                                 'publish_at' => $post->DATE_CREATE,
                                 'created_at' => $post->DATE_CREATE,
                                 'updated_at' => $post->DATE_CREATE,
                             ]
                         );
+
+                        $this->createSeo($createdPost);
                     } catch (\Exception $e) {
                         Log::error('Error importing post ID: ' . $post->ID . ' - ' . $e->getMessage());
                     }
@@ -132,6 +138,21 @@ class ImportApiDataPost implements ShouldQueue
         $wordCount = str_word_count($text, 0, "АаБбВвГгДдЕеЁёЖжЗзИиЙйКкЛлМмНнОоПпРрСсТтУуФфХхЦцЧчШшЩщЪъЫыЬьЭэЮюЯя");
         $wordsPerMinute = 120; // Средняя скорость чтения
         return max(1, round($wordCount / $wordsPerMinute));
+    }
+
+    protected function extractAuthor(string $detailText): ?string
+    {
+        // Ищем последний div с text-align: right
+        if (preg_match('/<div\s+style="[^"]*text-align:\s*right[^"]*"[^>]*>(.*?)<\/div>/', $detailText, $matches)) {
+            $author = trim(strip_tags($matches[1]));
+
+            // Удаляем возможные префиксы типа "Автор:", если они есть
+            $author = preg_replace('/^(Автор|Фото|Источник):\s*/ui', '', $author);
+
+            return $author ?: null;
+        }
+
+        return null;
     }
 
 }

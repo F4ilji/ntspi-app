@@ -1,6 +1,8 @@
 import './bootstrap';
 import '../css/app.css';
 import 'preline';
+import 'virtual:svg-icons-register'
+
 
 import { createSSRApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';

@@ -13,6 +13,8 @@ import BudgetEducation from "@/Enum/BudgetEducation.js";
 import TypeExam from "@/Enum/TypeExam.js";
 import BasicPageWrapper from "@/componentss/ui/wrappers/BasicPageWrapper.vue";
 import BasicPageContainer from "@/componentss/ui/templates/BasicPageContainer.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 
 export default {
@@ -49,6 +51,7 @@ export default {
     }
   },
   components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     BasicPageContainer,
     BasicPageWrapper,
     ProgramTitle,
@@ -70,7 +73,10 @@ export default {
 		},
 		seo: {
 			type: Object,
-		}
+		},
+    breadcrumbs: {
+      type: Object
+    }
   },
 }
 </script>
@@ -84,7 +90,10 @@ export default {
     <BasicPageContainer>
       <div class="space-y-3">
         <BackButton link="client.program.index" title="Все программы" />
-        <ProgramItemBreadcrumbs :program-title="program.data.name" />
+        <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+          <BreadcrumbsItem title="Образовательные программы" :url="route('client.program.index')" />
+          <BreadcrumbsItem :title="program.data.name" :url="$page.url" />
+        </BaseBreadcrumbs>
         <ProgramTitle class="text-center" :header="program.data.name" />
       </div>
       <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">

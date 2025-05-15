@@ -10,6 +10,8 @@ import BasicFooter from "@/footers/BasicFooter.vue";
 import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
 import FormEducationalFilter from "@/componentss/shared/filter/filters/FormEducationalFilter.vue";
 import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 
 export default {
@@ -23,6 +25,7 @@ export default {
 		};
 	},
 	components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     WhenVisible,
     MetaTags,
     FormEducationalFilter,
@@ -48,6 +51,9 @@ export default {
       type: Object
     },
     seo: {
+      type: Object
+    },
+    breadcrumbs: {
       type: Object
     }
 	},
@@ -157,7 +163,7 @@ export default {
 			<div class="relative mx-auto mt-[67px] max-w-screen-xl px-4 py-10 md:flex md:flex-row md:py-10">
 				<article class="w-full min-w-0 mt-4 px-1 md:px-6">
 					<div class="relative overflow-hidden">
-						<div class="max-w-[85rem] mx-auto sm:px-6 lg:px-8 py-10 sm:pb-12 sm:py-5">
+						<div class="max-w-[40rem] mx-auto sm:px-6 lg:px-8 py-5 sm:pb-12 sm:py-5">
 							<div>
                 <ScheduleListTitle
                     bottom-text="Просто введите название группы"

@@ -21,11 +21,14 @@ import IsOnlineFilter from "@/componentss/shared/filter/filters/IsOnlineFilter.v
 import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
 import EventListSearch from "@/componentss/features/events/components/EventListSearch.vue";
 import SortingByFilter from "@/componentss/shared/filter/filters/SortingByFilter.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 
 export default {
 	name: "Show",
 	components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     SortingByFilter,
     EventListSearch,
     BasicListFilter,
@@ -90,7 +93,10 @@ export default {
       <div class="space-y-5 md:space-y-10">
         <div class="space-y-3">
           <BackButton link="client.post.index" title="Все новости"/>
-          <PostItemBreadcrumbs :breadcrumbs="breadcrumbs" :post-title="post.data.title" />
+          <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+            <BreadcrumbsItem title="Новости" :url="route('client.post.index')" />
+            <BreadcrumbsItem :title="post.data.title" :url="$page.url" />
+          </BaseBreadcrumbs>
           <BasicTitle :header="post.data.title"/>
         </div>
 

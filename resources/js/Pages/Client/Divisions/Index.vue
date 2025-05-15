@@ -5,10 +5,13 @@ import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
 import DivisionListTitle from "@/componentss/features/divisions/components/DivisionListTitle.vue";
 import DivisionListBreadcrumbs from "@/componentss/features/divisions/components/DivisionListBreadcrumbs.vue";
 import BasicFooter from "@/footers/BasicFooter.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 export default {
   name: "Index",
   components: {
+    BaseBreadcrumbs, BreadcrumbsItem,
     BasicFooter,
     DivisionListTitle,
     MetaTags,
@@ -28,14 +31,11 @@ export default {
     },
 		seo: {
 			type: Object,
-		}
+		},
+    breadcrumbs: {
+      type: Object
+    }
   },
-  methods: {
-
-  },
-
-	mounted() {
-  }
 };
 </script>
 
@@ -61,7 +61,9 @@ export default {
                       bottom-text="Список структурных и административных отделов НТГСПИ"
                       header="Подразделения института" />
 
-									<DivisionListBreadcrumbs />
+                  <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+                    <BreadcrumbsItem title="Подразделения института" :url="route('client.division.index')" />
+                  </BaseBreadcrumbs>
 
 									<!-- Grid -->
 									<div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-6">

@@ -18,10 +18,16 @@ import ProgramTitle from "@/componentss/features/educationalPrograms/components/
 import ProgramListBreadcrumbs from "@/componentss/features/educationalPrograms/components/ProgramListBreadcrumbs.vue";
 import FormEducationalFilter from "@/componentss/shared/filter/filters/FormEducationalFilter.vue";
 import BackButton from "@/componentss/ui/buttons/BackButton.vue";
+import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 export default {
   name: "Show",
   components: {
+    BaseBreadcrumbs,
+    BreadcrumbsItem,
+    BasicIcon,
     BackButton,
     FormEducationalFilter,
     ProgramListBreadcrumbs,
@@ -59,20 +65,10 @@ export default {
 		},
 		seo: {
 			type: Object,
-		}
-  },
-  methods: {
-		textLimit(text, symbols) {
-			if (text.length > symbols) {
-				let LimitedText
-				LimitedText = text.substring(0, symbols)
-				return LimitedText + "..."
-			}
-			return text
 		},
-
-  },
-  mounted() {
+    breadcrumbs: {
+      type: Object
+    }
   }
 };
 </script>
@@ -88,7 +84,10 @@ export default {
       <div class=" space-y-5 md:space-y-8">
         <div class="space-y-3">
           <BackButton link="client.academicJournals.index" title="К списку журналов" />
-          <AcademicJournalsItemBreadcrumbs :title="journal.data.title" />
+          <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+            <BreadcrumbsItem :title="journal.data.title" :url="$page.url" />
+          </BaseBreadcrumbs>
+
           <AcademicJournalsTitle class="text-center" :header="journal.data.title" />
         </div>
 

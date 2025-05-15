@@ -10,7 +10,9 @@
       <NavigateLinks v-if="!settings?.hide_page_navigate_links"  :header-navs="headerNavs"/>
       <div class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
         <div class="space-y-5 md:space-y-5">
-          <PageBreadcrumbs v-if="!settings?.hide_breadcrumbs" :breadcrumbs="breadcrumbs" :page-title="page.data.title"/>
+          <BaseBreadcrumbs v-if="!settings?.hide_breadcrumbs" :breadcrumbs="breadcrumbs">
+            <BreadcrumbsItem :title="breadcrumbs.page.data.title" :url="route('page.view', breadcrumbs.page.data.path)" />
+          </BaseBreadcrumbs>
           <BasicTitle :header="page.data.title"/>
           <div id="page-area">
             <Builder :blocks="page.data.content"/>
@@ -48,6 +50,9 @@ import IsOnlineFilter from "@/componentss/shared/filter/filters/IsOnlineFilter.v
 import BasicListFilter from "@/componentss/shared/filter/BasicListFilter.vue";
 import EventListSearch from "@/componentss/features/events/components/EventListSearch.vue";
 import SortingByFilter from "@/componentss/shared/filter/filters/SortingByFilter.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
+import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
+import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
 
 
 export default {
@@ -79,6 +84,9 @@ export default {
 		}
 	},
 	components: {
+    BreadcrumbsItem,
+    BasicIcon,
+    BaseBreadcrumbs,
     SortingByFilter,
     EventListSearch,
     BasicListFilter,
@@ -109,62 +117,5 @@ export default {
 
 <style>
 
-
-@keyframes fade {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-
-.fade-enter-active,
-.fade-leave-active {
-	transition: all 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-}
-
-@keyframes grow-progress {
-	from {
-		transform: scaleX(0);
-	}
-	to {
-		transform: scaleX(1);
-	}
-}
-
-#progress {
-	height: 2px;
-	background: #26ACB8;
-	z-index: 10000;
-
-	transform-origin: 0 50%;
-	animation: grow-progress auto linear;
-	animation-timeline: scroll();
-}
-
-
-.example-initial-animation {
-	animation: initial-animation 2s ease;
-}
-
-@keyframes initial-animation {
-	0% {
-		transform: rotate(0deg);
-	}
-
-	50% {
-		transform: rotate(360deg);
-	}
-
-	100% {
-		transform: rotate(0deg);
-	}
-}
 
 </style>
