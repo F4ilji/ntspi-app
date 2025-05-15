@@ -27,7 +27,6 @@ import PostSection from "@/componentss/features/mainPage/PostSection.vue";
 import EventSection from "@/componentss/features/mainPage/EventSection.vue";
 import EducationSection from "@/componentss/features/mainPage/EducationSection.vue";
 import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
-import SvgIcon from "@/componentss/ui/icons/SvgIcon.vue";
 
 export default {
 	name: "Main",
@@ -47,7 +46,6 @@ export default {
 	},
 
 	components: {
-    SvgIcon,
     BasicIcon,
     EducationSection,
     EventSection,
