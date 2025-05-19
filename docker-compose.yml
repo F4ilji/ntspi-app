@@ -1,18 +1,36 @@
 version: '3'
+
 services:
   webserver:
     image: nginx:1.27.2
     volumes:
       - ./:/var/www
       - ./_docker/nginx/${NGINX_ENV}/conf.d/:/etc/nginx/conf.d/
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
     ports:
       - "80:80"
+      - "443:443"
     container_name: ntspi-nginx
     restart: always
     depends_on:
       - app
     env_file:
       - .env
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: ntspi-certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    depends_on:
+      - webserver
+    networks:
+      - app-network
 
   app:
     build:
@@ -27,6 +45,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - app-network
 
   php-queue-worker:
     restart: always
@@ -40,6 +60,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - app-network
 
   db:
     image: mysql:8.0
@@ -59,6 +81,8 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
+    networks:
+      - app-network
 
   redis-cache:
     image: redis:7.4.2
@@ -69,7 +93,13 @@ services:
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - cache:/data
+    networks:
+      - app-network
 
 volumes:
   cache:
     driver: local
+
+networks:
+  app-network:
+    driver: bridge
