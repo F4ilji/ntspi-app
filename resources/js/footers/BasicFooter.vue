@@ -23,8 +23,8 @@ export default {
 
           <div>
             <div class="mt-3 grid space-y-3 text-sm">
-              <p><a class="underline inline-flex gap-x-2  hover:text-gray-200 text-[12px]" href="http://localhost/sveden/">Сведения об образовательной организации</a></p>
-              <p><a class="underline inline-flex gap-x-2  hover:text-gray-200 text-[12px]" href="https://ntspi.ru/upload/824_%D0%9E%D0%B1_%D1%83%D1%82%D0%B2_%D0%9F%D0%BE%D0%BB%D0%B8%D1%82_%D0%BE%D0%B1%D1%80_%D0%B7%D0%B0%D1%89%D0%B8%D1%82_%D0%BF%D0%B5%D1%80%D1%81_%D0%B4%D0%B0%D0%BD.pdf">Политика обработки персональных данных</a></p>
+              <p><a class="underline inline-flex gap-x-2  hover:text-gray-200 text-[12px]" target="_blank" href="/sveden/">Сведения об образовательной организации</a></p>
+              <p><a class="underline inline-flex gap-x-2  hover:text-gray-200 text-[12px]" target="_blank" href="/upload/824_%D0%9E%D0%B1_%D1%83%D1%82%D0%B2_%D0%9F%D0%BE%D0%BB%D0%B8%D1%82_%D0%BE%D0%B1%D1%80_%D0%B7%D0%B0%D1%89%D0%B8%D1%82_%D0%BF%D0%B5%D1%80%D1%81_%D0%B4%D0%B0%D0%BD.pdf">Политика обработки персональных данных</a></p>
             </div>
           </div>
 

@@ -9,7 +9,7 @@
 
       <NavigateVisor />
 
-      <div class="sticky top-[110px] hidden h-[calc(100vh-110px)] max-w-[20%] md:flex md:shrink-0 md:flex-col md:justify-between">
+      <div class="sticky top-[110px] hidden h-[calc(100vh-110px)] max-w-[20%] lg:flex lg:shrink-0 lg:flex-col lg:justify-between">
         <nav v-if="departments"
              class="flex h-[calc(100vh-200px)] flex-col overflow-hidden pr-2 pb-4">
           <div class="text-gray-1000 mb-2 text-md font-medium">Кафедры факультета - {{ department.data.faculty.abbreviation }}</div>
@@ -28,7 +28,7 @@
         </nav>
       </div>
 
-      <nav class="order-last hidden w-56 shrink-0 lg:block">
+      <nav class="order-last hidden w-56 shrink-0 xl:block">
         <div class="sticky top-[110px] h-[calc(100vh-110px)]">
           <div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
           <ul class="max-h-[70vh] space-y-1.5 overflow-hidden py-2 text-sm">
@@ -72,19 +72,11 @@
       <article class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
         <div class="space-y-5 md:space-y-5">
 
-          <div class="flex justify-between items-center mb-6">
-            <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3 truncate">
-              <div class="grow">
-                <div class="grid sm:flex sm:justify-between sm:items-center gap-2">
-                  <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
-                    <BreadcrumbsItem title="Факультеты" :url="route('client.faculty.index')" />
-                    <BreadcrumbsItem :title="department.data.faculty.abbreviation" :url="route('client.faculty.show', department.data.faculty.slug)" />
-                    <BreadcrumbsItem :title="department.data.title" :url="$page.url" />
-                  </BaseBreadcrumbs>
-                </div>
-              </div>
-            </div>
-          </div>
+          <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+            <BreadcrumbsItem title="Факультеты" :url="route('client.faculty.index')" />
+            <BreadcrumbsItem :title="department.data.faculty.abbreviation" :url="route('client.faculty.show', department.data.faculty.slug)" />
+            <BreadcrumbsItem :title="department.data.title" :url="$page.url" />
+          </BaseBreadcrumbs>
 
           <BasicTitle :header="department.data.title" />
 

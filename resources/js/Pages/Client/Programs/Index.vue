@@ -107,7 +107,6 @@ export default {
           <div>
             <div class="">
               <div class="mt-10 mb-5 w-full">
-                <ProgramListBreadcrumbs />
                 <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
                   <BreadcrumbsItem title="Образовательные программы" :url="route('client.program.index')" />
                 </BaseBreadcrumbs>

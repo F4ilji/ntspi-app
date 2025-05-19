@@ -23,10 +23,12 @@ import Builder from "@/componentss/shared/builder/pageBuilder/Builder.vue";
 import ProgramTitle from "@/componentss/features/educationalPrograms/components/ProgramTitle.vue";
 import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
 import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
+import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
 
 export default {
   name: "Index",
   components: {
+    BaseBreadcrumbs,
     BasicIcon, BreadcrumbsItem,
     ProgramTitle, Builder, BackButton, BasicPageWrapper, BasicPageContainer, AdditionalProgramItemBreadcrumbs,
     BasicListBadge,
@@ -106,13 +108,9 @@ export default {
         <AdditionalProgramTitle class="text-center" header="Дополнительное образование" />
         <div class="space-y-3 mx-auto max-w-3xl w-full">
           <div class="my-10 w-full">
-            <AdditionalProgramListBreadcrumbs :breadcrumbs="breadcrumbs" />
-            <BreadcrumbsItem :breadcrumbs="breadcrumbs">
-              <Link :href="route('client.additionalEducation.index')" class="flex items-center text-gray-500 hover:text-primary-hover">
-                <BasicIcon class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400" name="breadcrumb-tag" />
-                Дополнительное образование
-              </Link>
-            </BreadcrumbsItem>
+            <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+              <BreadcrumbsItem title="Дополнительное образование" :url="route('client.additionalEducation.index')" />
+            </BaseBreadcrumbs>
             <div class="flex items-center gap-x-2">
               <LevelEduFilter :directions="directionAdditionalEducations" :direction_filter="filters.direction_filter" />
               <BasicListFilter>

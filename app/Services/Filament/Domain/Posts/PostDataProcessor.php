@@ -22,7 +22,7 @@ class PostDataProcessor
         // Устанавливаем текст для предпросмотра
         $data['preview_text'] = $this->setPreviewText($data);
 
-        if (($data['status'] === PostStatus::PUBLISHED->value)) {
+        if (($data['status']->value === PostStatus::PUBLISHED->value)) {
             $data['publish_at'] = $this->setPublishDateTime();
         }
 
@@ -55,7 +55,7 @@ class PostDataProcessor
         $data['preview_text'] = $this->setPreviewText($data);
 
 
-        if (!$data['publish_at'] && ($data['status'] === PostStatus::PUBLISHED->value)) {
+        if (!$data['publish_at'] && ($data['status']->value === PostStatus::PUBLISHED->value)) {
             $data['publish_at'] = $this->setPublishDateTime();
         }
 

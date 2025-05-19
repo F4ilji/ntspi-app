@@ -31,18 +31,10 @@
 
       <article class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
         <div class="space-y-5 md:space-y-5">
-          <div class="flex justify-between items-center mb-6">
-            <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3 truncate">
-              <div class="grow">
-                <div class="grid sm:flex sm:justify-between sm:items-center gap-2">
-                  <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
-                    <BreadcrumbsItem title="Факультеты" :url="route('client.faculty.index')" />
-                    <BreadcrumbsItem :title="faculty.data.shortTitle" :url="$page.url" />
-                  </BaseBreadcrumbs>
-                </div>
-              </div>
-            </div>
-          </div>
+          <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
+            <BreadcrumbsItem title="Факультеты" :url="route('client.faculty.index')" />
+            <BreadcrumbsItem :title="faculty.data.shortTitle" :url="$page.url" />
+          </BaseBreadcrumbs>
 
           <div class="space-y-3">
             <h1 class="text-2xl mb-10 font-bold md:text-3xl">{{ faculty.data.title }}</h1>

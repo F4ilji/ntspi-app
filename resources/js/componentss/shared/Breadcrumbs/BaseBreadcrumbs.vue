@@ -1,8 +1,8 @@
 <template>
   <div class="flex justify-between pb-4 items-center">
-    <div class="flex w-full sm:items-center gap-x-5 sm:gap-x-3 truncate mask-fade">
+    <div class="flex w-full md:items-center gap-x-5 md:gap-x-3 truncate mask-fade">
       <div class="grow">
-        <div class="grid sm:flex sm:justify-between sm:items-center gap-2">
+        <div class="grid md:flex md:justify-between md:items-center gap-2">
           <BreadcrumbsWrapper>
             <li class="text-sm">
               <Link :href="route('index')" class="flex items-center text-gray-500 hover:text-primary-hover" href="/">

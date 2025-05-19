@@ -70,7 +70,6 @@ export default {
       <FacultyListTitle
           bottom-text="Информация о наших факультетах и кафедрах"
           header="Факультеты и кафедры" />
-      <FacultyListBreadcrumbs />
       <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
         <BreadcrumbsItem title="Факультеты" :url="route('client.faculty.index')" />
       </BaseBreadcrumbs>
