@@ -1,7 +1,7 @@
 export const linksReform = {
     data() {
         return {
-            excludedPaths: ['/sveden/', '/storage/']
+            excludedPaths: ['/sveden/', '/storage/', '/upload/', '/panorama/', '/abitur/']
         }
     },
     methods: {
