@@ -48,7 +48,9 @@ class PostDataProcessor
 
     public function processUpdate(array $data): array
     {
-        // Удаляем ненужные данные
+        if (isset($data['status']) && !$data['status'] instanceof PostStatus) {
+            $data['status'] = PostStatus::tryFrom($data['status']);
+        }
         unset($data['publication']);
 
         // Устанавливаем текст для предпросмотра
