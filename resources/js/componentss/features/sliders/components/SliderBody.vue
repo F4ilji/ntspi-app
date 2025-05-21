@@ -155,11 +155,14 @@ export default {
     this.sortedSlides = this.slides.slice().sort((a, b) => a.sort - b.sort);
 
     // Передаем данные в Vuex после монтирования компонента
-    this.updateLastSlider({
-      url: this.$page.props.ziggy.location,
-      top: this.$refs.sliderRef.getBoundingClientRect().top,
-      bottom: this.$refs.sliderRef.getBoundingClientRect().bottom, // Получаем актуальное значение bottom
-    });
+    if (typeof window !== 'undefined') {
+      this.updateLastSlider({
+        url: this.$page.props.ziggy.location,
+        top: this.$refs.sliderRef.getBoundingClientRect().top,
+        bottom: this.$refs.sliderRef.getBoundingClientRect().bottom, // Получаем актуальное значение bottom
+      });
+    }
+
     this.startTimer();
   },
   beforeUnmount() {

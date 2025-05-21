@@ -22,7 +22,9 @@ export default {
 			favoriteGroups: JSON.parse(localStorage.getItem('favoriteGroups')),
 			showFavorites: false,
 			loading: false,
-		};
+      currentPageLoaded: this.schedules_paginator.current_page,
+
+    };
 	},
 	components: {
     BaseBreadcrumbs, BreadcrumbsItem,
@@ -216,6 +218,16 @@ export default {
 							</div>
 						</div>
 					</div>
+
+
+          <span class="flex justify-center mb-4" v-if="currentPageLoaded > 1">
+          <Link :href="route('client.schedule.index')" class="flex items-center py-2">
+						<button class="bg-transperant text-sm text-gray-600 cursor-pointer hover:text-gray-900 duration-300 block px-2 leading-[1.6] rounded-md">К началу</button>
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[17px] text-gray-600">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+					</Link>
+        </span>
 
 
           <div class="mx-auto max-w-2xl hs-accordion-group grid gap-3">

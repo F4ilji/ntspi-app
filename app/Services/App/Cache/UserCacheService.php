@@ -20,6 +20,9 @@ class UserCacheService extends AbstractCacheService implements CacheInterface
     public function clearAllCacheByModel(): void
     {
         $this->clearCacheByPrefix(CacheKeys::USER_PREFIX->value.'*');
+        $this->clearCacheByPrefix(CacheKeys::FACULTY_PREFIX->value.'*');
+        $this->clearCacheByPrefix(CacheKeys::DEPARTMENT_PREFIX->value.'*');
+        $this->clearCacheByPrefix(CacheKeys::DIVISION_PREFIX->value.'*');
     }
 
     public function getCachedData(string $key)

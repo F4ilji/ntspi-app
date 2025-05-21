@@ -21,29 +21,22 @@ class HandleInertiaRequests extends Middleware
 
     public function share(Request $request): array
     {
-        // Навигация (кешированная)
-        $navigation = Cache::remember('navigation', now()->addHours(1), function () {
-            return NavigationResource::collection(
-                MainSection::with('subSections.pages.section')
-                    ->orderBy('sort', 'asc')
-                    ->get()
-            );
-        });
-
-        // Хлебные крошки (автоматически по текущему URL)
-        $breadcrumbs = app(BreadcrumbService::class)->generateBreadcrumbs();
-
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user() ? $request->user()->only('id', 'name', 'email', 'created_at') : null,
             ],
-            'ziggy' => fn () => [
-                ...(new Ziggy)->toArray(),
-                'location' => $request->url(),
-            ],
-            'navigation' => $navigation,
-            'breadcrumbs' => $breadcrumbs, // Добавляем хлебные крошки
+//            'ziggy' => fn () => [
+//                ...(new Ziggy)->toArray(),
+//                'location' => $request->url(),
+//            ],
+            'ziggy' => function() {
+                return array_merge((new Ziggy())->toArray(), [
+                    'location' => url()->current(),
+                ]);
+            },
+            'navigation' => $this->getNavigation(),
+            'breadcrumbs' => $this->getBreadcrumbs(),
             'urlPrev' => function () {
                 if (url()->previous() !== url()->current()) {
                     return url()->previous();
@@ -51,5 +44,21 @@ class HandleInertiaRequests extends Middleware
                 return 'empty';
             },
         ];
+    }
+
+    private function getNavigation()
+    {
+        return Cache::remember('navigation', now()->addHours(1), function () {
+            return NavigationResource::collection(
+                MainSection::with('subSections.pages.section')
+                    ->orderBy('sort', 'asc')
+                    ->get()
+            );
+        });
+    }
+
+    private function getBreadcrumbs()
+    {
+        return app(BreadcrumbService::class)->generateBreadcrumbs();
     }
 }

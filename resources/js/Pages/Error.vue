@@ -34,18 +34,9 @@
 		<BasicFooter />
 	</div>
 
-
-
-
-
-
-
-
-
 </template>
 
 <script>
-
 
 import {defineComponent} from "vue";
 import MainPageNavBar from "@/Navbars/MainPageNavbar.vue";
@@ -74,74 +65,10 @@ export default defineComponent({
 			}[this.status]
 		},
 	},
-
 })
-
 
 </script>
 
 <style scoped>
-
-
-
-
-
-
-@keyframes fade {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-
-.fade-enter-active,
-.fade-leave-active {
-	transition: all 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-}
-
-@keyframes grow-progress {
-	from { transform: scaleX(0); }
-	to { transform: scaleX(1); }
-}
-
-#progress {
-	height: 2px;
-	background: #26ACB8;
-	z-index: 10000;
-
-	transform-origin: 0 50%;
-	animation: grow-progress auto linear;
-	animation-timeline: scroll();
-}
-
-
-.active {
-	color: blue !important;
-}
-
-.example-initial-animation {
-	animation: initial-animation 2s ease;
-}
-
-@keyframes initial-animation {
-	0% {
-		transform: rotate(0deg);
-	}
-
-	50% {
-		transform: rotate(360deg);
-	}
-
-	100% {
-		transform: rotate(0deg);
-	}
-}
 
 </style>
