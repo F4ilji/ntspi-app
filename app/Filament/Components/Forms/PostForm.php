@@ -151,7 +151,7 @@ class PostForm
                                             ->resize(50)
                                             ->imageEditor()
                                             ->helperText('Загрузите главное изображение для новости')
-                                            ->maxSize(2048)
+                                            ->maxSize(20480)
                                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                             ->imagePreviewHeight('150')
                                             ->panelLayout('integrated'),
@@ -167,7 +167,7 @@ class PostForm
                                             ->panelLayout('grid')
                                             ->helperText('Загрузите дополнительные изображения для галереи')
                                             ->maxFiles(10)
-                                            ->maxSize(2048)
+                                            ->maxSize(20480)
                                             ->acceptedFileTypes(['image/jpeg', 'image/png'])
                                             ->imagePreviewHeight('150'),
                                     ]),
@@ -253,7 +253,7 @@ class PostForm
                                                             ->resize(50)
                                                             ->imageEditor()
                                                             ->required()
-                                                            ->maxSize(2048)
+                                                            ->maxSize(50000)
                                                             ->helperText('Загрузите фоновое изображение для слайда')
                                                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp']),
                                                         ToggleButtons::make('slide.image.shading')

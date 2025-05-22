@@ -7,7 +7,7 @@ use App\Containers\Schedule\UI\WEB\Transformers\EducationalGroupResource;
 use App\Ship\Contracts\SeoServiceInterface;
 use App\Ship\Controllers\Controller;
 use App\Ship\Enums\Education\FormEducation;
-use App\Ship\Requests\Request;
+use Illuminate\Http\Request;
 
 class ClientScheduleController extends Controller
 {
@@ -21,9 +21,7 @@ class ClientScheduleController extends Controller
                 $query->whereRaw('LOWER(title) like ?', ["%".strtolower($search)."%"]);
             })
             ->when(request()->input('favorite'), function ($query, $favorite) {
-                $query->whereHas('schedules', function ($query) use ($favorite) {
-                    $query->whereIn('id', $favorite);
-                });
+                $query->whereIn('id', $favorite);
             })
             ->when(request()->input('form'), function ($query, $form) {
                 $query->where('education_form_id', FormEducation::fromName($form)->value);

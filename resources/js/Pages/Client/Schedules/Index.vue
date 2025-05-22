@@ -60,16 +60,31 @@ export default {
     }
 	},
 	methods: {
-		search: debounce(function () {
-			this.$inertia.reload({
-				method: 'get',
-				data: {
-					search: this.searchInput,
-				},
-				preserveState: true,
-				replace: true,
-			});
-		}, 300),
+    search: debounce(function () {
+      if(this.searchInput === "") {
+        let url = new URL(window.location.href);
+        url.searchParams.delete('search');
+        let newUrl = url.toString();
+        this.$inertia.visit(newUrl,{
+          method: 'get',
+          preserveState: true,
+          replace: true,
+        });
+      } else {
+        let url = new URL(window.location.href);
+        url.searchParams.delete('page');
+        let newUrl = url.toString();
+        this.$inertia.visit(newUrl,{
+          method: 'get',
+          data: {
+            search: this.searchInput,
+          },
+          preserveState: true,
+          replace: true,
+        })
+      }
+    }, 500),
+
     toggleFavorite(group) {
       if (!this.favoriteGroups) {
         this.favoriteGroups = [];

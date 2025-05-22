@@ -69,7 +69,7 @@ class ScheduleResource extends Resource
                                     ->label('Файл PDF')
                                     ->required()
                                     ->acceptedFileTypes(['application/pdf'])
-                                    ->maxSize(5120) // 5MB
+                                    ->maxSize(10000)
                                     ->disk('public')
                                     ->directory('schedules')
                                     ->downloadable()

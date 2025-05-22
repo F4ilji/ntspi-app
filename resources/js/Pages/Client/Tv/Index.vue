@@ -13,5 +13,5 @@ export default {
 </script>
 
 <template>
-  <TvSlider class="bvi-hide" slider-id="velit-quasi-volupta" />
+  <TvSlider class="bvi-hide" slider-id="quos-velit-quisquam" />
 </template>
