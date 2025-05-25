@@ -5,6 +5,9 @@ namespace App\Containers\User\Models;
 use App\Containers\InstituteStructure\Models\Department;
 use App\Containers\InstituteStructure\Models\Division;
 use App\Containers\InstituteStructure\Models\Faculty;
+use App\Ship\Contracts\SeoDescriptionInterface;
+use App\Ship\Contracts\SeoTitleInterface;
+use App\Ship\Traits\HasSeo;
 use BezhanSalleh\FilamentShield\FilamentShield;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
@@ -19,9 +22,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, SeoTitleInterface, SeoDescriptionInterface
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPanelShield;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPanelShield, HasSeo;
 
     /**
      * The attributes that are mass assignable.
@@ -116,5 +119,16 @@ class User extends Authenticatable implements FilamentUser
                 || $this->hasRole(config('filament-shield.invited_user.name', 'invited_user')),
             default => false,
         };
+    }
+
+    public function getSeoTitle(): string
+    {
+        return $this->name;
+    }
+
+    public function getSeoDescription(): array
+    {
+        $text = 'Персональная страница сотрудника - ' . $this->name;
+        return $this->prepareDescription($text);
     }
 }

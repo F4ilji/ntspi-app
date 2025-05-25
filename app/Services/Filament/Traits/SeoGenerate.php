@@ -4,6 +4,7 @@ namespace App\Services\Filament\Traits;
 
 use App\Services\Filament\Domain\Seo\SeoGeneratorService;
 use App\Ship\Contracts\SeoDescriptionInterface;
+use App\Ship\Contracts\SeoTitleInterface;
 
 trait SeoGenerate
 {
@@ -25,7 +26,9 @@ trait SeoGenerate
 
     private function generateSeoData($record) {
         return app(SeoGeneratorService::class)->generate([
-            'title' => $record->title,
+            'title' => $record instanceof SeoTitleInterface
+                ? $record->getSeoTitle()
+                : $record->title,
             'content' => $record instanceof SeoDescriptionInterface
                 ? $record->getSeoDescription()
                 : $record->content,

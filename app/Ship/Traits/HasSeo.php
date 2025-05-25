@@ -12,4 +12,16 @@ trait HasSeo
     {
         return $this->morphOne(Seo::class, 'seoable');
     }
+
+    public function prepareDescription(string $description): array
+    {
+        return [
+            [
+                'type' => 'paragraph',
+                'data' => [
+                    'content' => $description,
+                ],
+            ]
+        ];
+    }
 }
