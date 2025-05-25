@@ -21,25 +21,36 @@
 			<!-- End Title -->
 
 			<!-- Grid -->
-			<div class="flex overflow-x-auto space-x-6 mb-10 lg:mb-14 p-4">
+			<div class="flex overflow-x-auto overflow-y-hidden space-x-6 pb-10 lg:mb-14 p-4">
 				<!-- Card -->
 
-				<a v-for="item in resource.data.content" class="group flex-shrink-0 w-64 flex flex-col bg-white border shadow-sm rounded-xl focus:outline-none focus:shadow-md transition" :href="item.link">
-					<div class="aspect-w-16 aspect-h-9 p-3 rounded-xl m-1 group-hover:bg-gray-100">
-						<img v-if="!item.image || item.image.length > 0" class="w-full backdrop-blur-xl rounded-xl object-cover h-[150px]" :src="'/storage/' + item.image" alt="Blog Image">
-						<div v-else class="w-full rounded-xl object-cover h-[150px] flex justify-center items-center">
-              <BasicIcon class="w-10 h-10 text-gray-500" :name="item.icon" />
+        <BasicCarousel
+            :items="resource.data.content"
+            :items-to-show-desktop="4"
+            :items-to-show-mobile="1"
+            :mobile-breakpoint="768"
+        >
+          <template #item="{ item, index }">
+            <div class="h-full flex items-center justify-center">
+              <a class="group flex-shrink-0 w-[18rem] flex flex-col bg-white border shadow-sm rounded-xl focus:outline-none focus:shadow-md transition" :href="item.link">
+                <div class="aspect-w-16 aspect-h-9 p-3 rounded-xl m-1 group-hover:bg-gray-100">
+                  <img v-if="!item.image || item.image.length > 0" class="w-full backdrop-blur-xl rounded-xl object-cover h-[150px]" :src="'/storage/' + item.image" alt="Blog Image">
+                  <div v-else class="w-full rounded-xl object-cover h-[150px] flex justify-center items-center">
+                    <BasicIcon class="w-10 h-10 text-gray-500" :name="item.icon" />
+                  </div>
+                </div>
+                <div class="px-5 pb-4">
+                  <h3 class="mt-2 truncate text-base font-medium text-gray-800 group-hover:text-primary-hover">{{ item.title }}</h3>
+                  <p class="mt-2 text-xs text-gray-600">{{ item.link_text }}</p>
+                </div>
+              </a>
             </div>
-					</div>
-					<div class="px-5 pb-4">
-						<h3 class="mt-2 truncate text-base font-medium text-gray-800 group-hover:text-primary-hover">{{ item.title }}</h3>
-						<p class="mt-2 text-xs text-gray-600">{{ item.link_text }}</p>
-          </div>
-				</a>
+          </template>
+        </BasicCarousel>
 
 
 
-			</div>
+      </div>
 			<!-- End Grid -->
 
 			<!-- Card -->
@@ -54,9 +65,10 @@
 import axios from "axios";
 import {Link} from "@inertiajs/vue3";
 import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
+import BasicCarousel from "@/componentss/shared/carousel/BasicCarousel.vue";
 export default {
 	name: "PageResourceList",
-	components: {BasicIcon, axios, Link },
+	components: {BasicCarousel, BasicIcon, axios, Link },
 	data() {
 		return {
 			resource: null,
