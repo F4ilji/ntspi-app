@@ -6,10 +6,11 @@ use App\Containers\Article\Models\Post;
 use App\Containers\Article\UI\WEB\Transformers\PostItemResource;
 use App\Ship\Enums\CacheKeys;
 use App\Ship\Contracts\SeoServiceInterface;
-
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+
 
 
 class ShowPostController extends \App\Ship\Controllers\Controller
