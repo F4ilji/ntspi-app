@@ -3,7 +3,7 @@
 namespace App\Containers\Widget\UI\WEB\Controllers;
 
 use App\Ship\Controllers\Controller;
-use App\Ship\Requests\Request;
+use Illuminate\Http\Request;
 
 class TvController extends Controller
 {

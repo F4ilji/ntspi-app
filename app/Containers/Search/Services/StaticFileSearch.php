@@ -2,7 +2,7 @@
 
 namespace App\Containers\Search\Services;
 
-use App\Ship\Requests\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;

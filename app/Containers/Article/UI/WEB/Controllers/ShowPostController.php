@@ -6,7 +6,7 @@ use App\Containers\Article\Models\Post;
 use App\Containers\Article\UI\WEB\Transformers\PostItemResource;
 use App\Ship\Enums\CacheKeys;
 use App\Ship\Contracts\SeoServiceInterface;
-use App\Ship\Requests\Request;
+
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;

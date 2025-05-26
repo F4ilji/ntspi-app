@@ -9,7 +9,7 @@ use App\Containers\InstituteStructure\UI\WEB\Transformers\FacultyResource;
 use App\Ship\Contracts\SeoServiceInterface;
 use App\Ship\Controllers\Controller;
 use App\Ship\Enums\CacheKeys;
-use App\Ship\Requests\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 

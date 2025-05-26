@@ -3,7 +3,7 @@
 namespace App\Containers\Article\UI\WEB\Transformers;
 
 
-use App\Ship\Requests\Request;
+use Illuminate\Http\Request;
 use App\Ship\Resources\JsonResource;
 
 class TagResource extends JsonResource

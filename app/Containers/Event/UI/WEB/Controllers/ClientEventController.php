@@ -10,7 +10,7 @@ use App\Containers\Event\UI\WEB\Transformers\EventResource;
 use App\Ship\Contracts\SeoServiceInterface;
 use App\Ship\Controllers\Controller;
 use App\Ship\Enums\CacheKeys;
-use App\Ship\Requests\Request;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Facades\Cache;

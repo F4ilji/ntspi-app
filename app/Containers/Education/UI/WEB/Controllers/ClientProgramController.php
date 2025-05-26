@@ -14,7 +14,7 @@ use App\Ship\Enums\CacheKeys;
 use App\Ship\Enums\Education\BudgetEducation;
 use App\Ship\Enums\Education\FormEducation;
 use App\Ship\Enums\Education\LevelEducational;
-use App\Ship\Requests\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Inertia\Inertia;

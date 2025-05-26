@@ -49,6 +49,14 @@ class DirectionStudyResource extends Resource
                                     })
                                     ->helperText('Полное название направления подготовки'),
 
+                                TextInput::make('uuid')
+                                    ->label('uuid')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->unique(ignoreRecord: true)
+                                    ->helperText('UUID'),
+
+
                                 TextInput::make('slug')
                                     ->label('URL-идентификатор')
                                     ->required()
