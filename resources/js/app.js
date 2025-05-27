@@ -11,6 +11,7 @@ import {linksReform} from "@/mixins/LinksReform.js";
 import YSmartCaptcha from 'vue3-yandex-smartcaptcha'
 import cookieMixin from "@/mixins/cookieMixin.js";
 import store from '@/store/index.js';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 
 

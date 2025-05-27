@@ -82,6 +82,13 @@ class BuildFiltersTask
             param: 'sort'
         );
 
+        $this->filterBuilder->add(
+            key: 'date_filter',
+            type: 'date',
+            value: $filters['date'] ?? null,
+            param: 'date'
+        );
+
 
         return $this->filterBuilder->get();
     }

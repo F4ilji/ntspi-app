@@ -14,7 +14,7 @@ class IndexPostController extends Controller
 
     public function __invoke(Request $request)
     {
-        $filters = $request->only(['search', 'category', 'tag', 'sort', 'page']);
+        $filters = $request->only(['search', 'category', 'tag', 'sort', 'page', 'date']);
 
         $data = $this->listPostsAction->run($filters);
 

@@ -21,9 +21,11 @@ import IsOnlineFilter from "@/componentss/shared/filter/filters/IsOnlineFilter.v
 import EventListSearch from "@/componentss/features/events/components/EventListSearch.vue";
 import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
 import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
+import DateFilter from "@/componentss/shared/filter/filters/DateFilter.vue";
 export default {
   name: "Index",
   components: {
+    DateFilter,
     BaseBreadcrumbs, BreadcrumbsItem,
     WhenVisible,
     EventListSearch, IsOnlineFilter, BasicPagination, EventArchiveListBreadcrumbs, BasicPageWrapper, BasicPageContainer,
@@ -76,7 +78,7 @@ export default {
   },
   computed: {
     hasActiveFilters() {
-      return this.filters.category_filter.value || this.filters.tag_filter.value || this.filters.search_filter.value;
+      return this.filters.category_filter.value || this.filters.tag_filter.value || this.filters.search_filter.value || this.filters.date_filter.value;
     }
   },
 
@@ -102,6 +104,7 @@ export default {
           <PostListSearch :search_filter="filters.search_filter" />
           <BasicListFilter>
             <SortingByFilter :sortingBy_filter="filters.sortingBy_filter" />
+            <DateFilter :date_filter="filters.date_filter" />
             <CategoryFilter :categories="categories" :category_filter="filters.category_filter" />
             <TagFilter :tags="tags" :tag_filter="filters.tag_filter" />
           </BasicListFilter>

@@ -34,6 +34,18 @@ class GetPostsTask
                         });
                     }
                 })
+                ->when(!empty($filters['date']), function ($query) use ($filters) {
+                    $dates = $filters['date'];
+                    if ($dates[1] === null) {
+                        // Если пришла одна дата, ищем по конкретной дате
+                        $query->whereDate('publish_at', \Carbon\Carbon::createFromFormat('d.m.Y', $dates[0])->format('Y-m-d'));
+                    } else {
+                        // Если пришли две даты, ищем в диапазоне
+                        $startDate = \Carbon\Carbon::createFromFormat('d.m.Y', $dates[0])->format('Y-m-d');
+                        $endDate = \Carbon\Carbon::createFromFormat('d.m.Y', $dates[1])->format('Y-m-d');
+                        $query->whereBetween('publish_at', [$startDate, $endDate]);
+                    }
+                })
                 ->when(!empty($filters['search']), function ($query) use ($filters) {
                     $query->whereRaw('LOWER(title) like ?', ["%".strtolower($filters['search'])."%"]);
                 });
