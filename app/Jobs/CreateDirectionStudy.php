@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Containers\Education\Models\DirectionStudy;
 use App\Services\Vicon\DirectionStudy\DirectionStudyService;
+use App\Ship\Enums\Education\LevelEducational;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

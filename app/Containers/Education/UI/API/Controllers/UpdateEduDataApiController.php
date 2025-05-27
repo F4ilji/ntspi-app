@@ -5,7 +5,6 @@ namespace App\Containers\Education\UI\API\Controllers;
 use App\Http\Controllers\Controller;
 use App\Jobs\CreateDirectionStudy;
 use App\Jobs\CreateEducationalProgram;
-use App\Services\Vicon\EducationalProgram\EducationalProgramService;
 
 class UpdateEduDataApiController extends Controller
 {

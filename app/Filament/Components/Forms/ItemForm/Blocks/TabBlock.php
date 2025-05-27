@@ -9,7 +9,9 @@ use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -20,6 +22,9 @@ class TabBlock implements BlockSchema
     public static function schema(): array
     {
         return [
+            Section::make()->schema([
+                Toggle::make('settings.is_accordion')->label('Выводить вкладки в виде аккордиона')->default(false),
+            ]),
             Repeater::make('tab')
                 ->label('Вкладки')
                 ->helperText('Добавьте вкладки с контентом')

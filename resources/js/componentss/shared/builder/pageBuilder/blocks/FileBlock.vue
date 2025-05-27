@@ -5,7 +5,7 @@
 			<div class="flex border rounded-lg px-4 py-2 items-center justify-between duration-300 hover:bg-gray-100">
 					<div class="flex items-center justify-between">
 						<div class="min-w-[30px] min-h-[30px] bg-[#303030] flex justify-center items-center rounded-md mr-2">
-							<BasicIcon :name="file.expansion" class="w-5 h-5 flex-shrink-0" />
+							<BasicIcon :name="file.expansion" class="w-5 h-5 text-white flex-shrink-0" />
 						</div>
 						<div>{{ textLimit(file.title, 70) }}</div>
 					</div>
