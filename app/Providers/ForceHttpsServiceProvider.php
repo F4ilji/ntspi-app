@@ -21,7 +21,7 @@ class ForceHttpsServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if ($this->app->environment('production')) {
+        if (env('NGINX_ENV') === 'prod') {
             URL::forceScheme('https');
         }
     }

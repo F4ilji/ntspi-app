@@ -8,3 +8,5 @@ _deploy
 /public/build
 /public/abitur
 /public/sveden
+dump.sql
+.idea
