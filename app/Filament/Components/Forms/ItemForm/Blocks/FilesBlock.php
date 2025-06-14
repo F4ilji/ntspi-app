@@ -34,7 +34,7 @@ class FilesBlock implements BlockSchema
                     FileUpload::make('path')
                         ->label('Файл')
                         ->required()
-                        ->helperText('Поддерживаются PDF, Word, Excel, PowerPoint и ZIP файлы (макс. 500KB)')
+                        ->helperText('Поддерживаются PDF, Word, Excel, PowerPoint и ZIP файлы')
                         ->getUploadedFileNameForStorageUsing(
                             fn (TemporaryUploadedFile $file): string =>
                             str(Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '-' . Carbon::now()->timestamp) . '.' . $file->getClientOriginalExtension())

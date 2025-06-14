@@ -4,8 +4,10 @@ namespace App\Filament\Components\Forms\ItemForm\Pages;
 
 use App\Filament\Components\Forms\ItemForm\Blocks\ContactBlock;
 use App\Filament\Components\Forms\ItemForm\Blocks\CustomFormBlock;
+use App\Filament\Components\Forms\ItemForm\Blocks\FastFilesBlock;
 use App\Filament\Components\Forms\ItemForm\Blocks\FilesBlock;
 use App\Filament\Components\Forms\ItemForm\Blocks\HeadingBlock;
+use App\Filament\Components\Forms\ItemForm\Blocks\ImageBlock;
 use App\Filament\Components\Forms\ItemForm\Blocks\ImagesBlock;
 use App\Filament\Components\Forms\ItemForm\Blocks\PageItemBlock;
 use App\Filament\Components\Forms\ItemForm\Blocks\PageResourceListBlock;
@@ -41,6 +43,11 @@ class ContentBuilderItem
                     ->icon('heroicon-o-paper-clip')
                     ->schema(FilesBlock::schema()),
 
+                Builder\Block::make('fast_files')
+                    ->label('Быстрая загрузка файлов')
+                    ->icon('heroicon-o-paper-clip')
+                    ->schema(FastFilesBlock::schema()),
+
                 Builder\Block::make('person')
                     ->label('Персона')
                     ->icon('heroicon-o-user')
@@ -56,15 +63,16 @@ class ContentBuilderItem
                     ->icon('heroicon-o-rectangle-stack')
                     ->schema(TabBlock::schema()),
 
+                Builder\Block::make('image')
+                    ->label('Изображение')
+                    ->icon('heroicon-o-photo')
+                    ->schema(ImageBlock::schema()),
+
                 Builder\Block::make('images')
                     ->label('Слайдер изображений')
                     ->icon('heroicon-o-photo')
                     ->schema(ImagesBlock::schema()),
 
-                Builder\Block::make('image')
-                    ->label('Изображение')
-                    ->icon('heroicon-o-photo')
-                    ->schema(ImagesBlock::schema()),
 
                 Builder\Block::make('video')
                     ->label('Видео')

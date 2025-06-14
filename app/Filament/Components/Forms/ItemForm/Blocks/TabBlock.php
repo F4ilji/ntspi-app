@@ -64,13 +64,13 @@ class TabBlock implements BlockSchema
                                 ->icon('heroicon-o-list-bullet')
                                 ->schema(StepperBlock::schema()),
 
-                            Builder\Block::make('images')
-                                ->label('Слайдер изображений')
-                                ->icon('heroicon-o-photo')
-                                ->schema(ImagesBlock::schema()),
-
                             Builder\Block::make('image')
                                 ->label('Изображение')
+                                ->icon('heroicon-o-photo')
+                                ->schema(ImageBlock::schema()),
+
+                            Builder\Block::make('images')
+                                ->label('Слайдер изображений')
                                 ->icon('heroicon-o-photo')
                                 ->schema(ImagesBlock::schema()),
 
