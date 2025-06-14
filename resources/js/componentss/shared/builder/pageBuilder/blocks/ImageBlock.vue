@@ -1,13 +1,24 @@
 <template>
-	<div>
-			<img @click="toggler = !toggler" loading="lazy" class="mx-auto object-cover rounded-md hover:opacity-95 hover:duration-200 transition" :src="'/storage/' + block.data.url" alt="">
-			<div v-if="block.data.alt" class="mt-3 text-sm text-center text-gray-500 dark:text-neutral-500">
-			{{ block.data.alt }}
-			</div>
-	</div>
+  <div class="relative rounded-md overflow-hidden">
+    <div
+        class="absolute inset-0 bg-cover bg-center blur-md brightness-75"
+        :style="`background-image: url('${'/storage/' + block.data.url}')`"
+    ></div>
 
-	<FsLightbox class="" :toggler="toggler" :sources="[domainPath + '/storage/' + block.data.url]"/>
+    <div class="relative z-10 md:m-4"> <img
+        @click="toggler = !toggler"
+        loading="lazy"
+        class="mx-auto h-96 rounded-md object-cover md:object-contain hover:opacity-95 hover:duration-200 transition"
+        :src="'/storage/' + block.data.url"
+        alt=""
+    />
+      <div v-if="block.data.alt" class="mt-3 text-sm text-center text-gray-500 dark:text-neutral-500">
+        {{ block.data.alt }}
+      </div>
+    </div>
+  </div>
 
+  <FsLightbox class="" :toggler="toggler" :sources="[domainPath + '/storage/' + block.data.url]"/>
 </template>
 
 <script>

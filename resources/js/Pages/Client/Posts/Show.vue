@@ -92,7 +92,7 @@ export default {
     <BasicPageContainer breakpoint="md">
       <div class="space-y-5 md:space-y-10">
         <div class="space-y-3">
-          <BackButton link="client.post.index" title="Все новости"/>
+          <BackButton :link="$page.props.urlPrev" title="Назад"/>
           <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
             <BreadcrumbsItem title="Новости" :url="route('client.post.index')" />
             <BreadcrumbsItem :title="post.data.title" :url="$page.url" />
@@ -103,7 +103,6 @@ export default {
         <div class="flex space-x-3 text-gray-500 ">
           <div class="flex items-center gap-3">
             <div class="md:flex md:items-center space-y-2 md:space-y-0 md:space-x-4 text-sm">
-              <PostAuthorsList :authors="post.data.authors"/>
               <time class="block text-gray-500">Опубликовано {{ post.data.created_post }}
               </time>
               <PostTimeRead :time="post.data.reading_time"/>
@@ -111,8 +110,7 @@ export default {
           </div>
         </div>
         <Builder :blocks="blocks"/>
-
-
+        <PostAuthorsList :authors="post.data.authors"/>
         <div>
           <PostGallery v-if="post.data.gallery.length > 1" :title="post.data.title" :images="post.data.gallery"/>
         </div>

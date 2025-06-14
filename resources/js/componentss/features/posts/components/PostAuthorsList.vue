@@ -1,19 +1,25 @@
 <template>
-
-	<div class="col-start-2">
-		<div class="hs-tooltip inline-block">
-			<button type="button" class="hs-tooltip-toggle underline hover:text-blue-400 duration-300">
-				Над статьей работали
-				<span class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute duration-300 invisible z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm dark:bg-neutral-700" role="tooltip">
-          								<template v-for="author in authors">
-														{{ author }} <br>
-													</template>
-        								</span>
-			</button>
-		</div>
-	</div>
-
-
+  <!-- List -->
+  <dl v-if="authors[0] === 'Без автора' && null" class="flex flex-col sm:flex-row gap-1 items-baseline">
+    <!-- items-baseline выравнивает по базовой линии -->
+    <dt class="min-w-40">
+      <h3 class="block text-sm text-gray-500 m-0 underline">Над статьей работали:</h3>
+      <!-- m-0 убирает margin -->
+    </dt>
+    <dd class="m-0">
+      <!-- m-0 для dd на всякий случай -->
+      <ul class="m-0 inline-flex flex-wrap items-center">
+        <!-- flex-wrap и items-center для красивого списка -->
+        <li
+            v-for="(author, index) in authors"
+            :key="index"
+            class="me-1 after:content-[','] last:after:content-none inline-flex items-center text-sm text-gray-800 dark:text-neutral-200"
+        >
+          {{ author }}
+        </li>
+      </ul>
+    </dd>
+  </dl>
 </template>
 
 <script>

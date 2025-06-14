@@ -1,6 +1,6 @@
 <template>
 
-	<div class="text-normal leading-7 font-light text-gray-600 md:text-[16px] md:text-[#374151] md:leading-8 md:font-normal paragraph-container" v-html="wrapTables(block).data.content" />
+	<div class="text-normal leading-7 md:leading-8 tracking-wide font-light text-gray-600 md:text-[15px] md:text-[#374151] md:font-normal paragraph-container" v-html="wrapTables(block).data.content" />
 </template>
 
 <script>
