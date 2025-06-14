@@ -25,7 +25,13 @@ class PostListResource extends JsonResource
             'authors' => $this->authors,
             'preview' => $this->preview,
             'reading_time' => $this->reading_time,
-            'created_post' => Carbon::parse($this->publish_at)->diffforhumans(),
+            'created_post' => Carbon::parse($this->publish_at)
+                ->locale('ru')
+                ->translatedFormat(
+                    Carbon::parse($this->publish_at)->isCurrentYear()
+                        ? 'd M'
+                        : 'd M Y'
+                )
         ];
     }
 }

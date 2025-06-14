@@ -26,7 +26,13 @@ class PostItemResource extends JsonResource
             'authors' => $this->authors,
             'gallery' => $this->images,
             'reading_time' => $this->reading_time,
-            'created_post' => Carbon::parse($this->publish_at)->diffforhumans(),
+            'created_post' => Carbon::parse($this->publish_at)
+                ->locale('ru')
+                ->translatedFormat(
+                    Carbon::parse($this->publish_at)->isCurrentYear()
+                        ? 'd M'
+                        : 'd M Y' . ' г.'
+                )
         ];
     }
 }
