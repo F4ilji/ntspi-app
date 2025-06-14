@@ -16,6 +16,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -89,6 +90,7 @@ class ScheduleResource extends Resource
                             ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Новый файл')
                             ->collapsible()
                             ->cloneable()
+                            ->maxItems(1)
                             ->defaultItems(1),
                     ]),
             ]);
@@ -97,16 +99,21 @@ class ScheduleResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('educationalGroup.title')
-                    ->label('Учебная группа')
-                    ->sortable()
-                    ->searchable(),
+            ->defaultGroup(
+                Group::make('educationalGroup.title')
+                    ->titlePrefixedWithLabel(false)
+                    ->collapsible()
+                    ->getTitleFromRecordUsing(function ($record): string {
+                        $groupTitle = $record->educationalGroup->title;
 
-                TextColumn::make('file_count')
-                    ->label('Файлов')
-                    ->getStateUsing(fn ($record) => count($record->file ?? []))
-                    ->badge(),
+                        return 'Группа: ' . $groupTitle;
+
+                    })
+            )
+            ->columns([
+                TextColumn::make('title')
+                    ->label('Название')
+                    ->getStateUsing(fn ($record) => $record->file[0]['title']),
 
                 TextColumn::make('educationalGroup.education_form_id')
                     ->formatStateUsing(fn ($state) => FormEducation::tryFrom($state)->getLabel())
@@ -165,6 +172,7 @@ class ScheduleResource extends Resource
             'index' => Pages\ListSchedules::route('/'),
             'create' => Pages\CreateSchedule::route('/create'),
             'edit' => Pages\EditSchedule::route('/{record}/edit'),
+            'upload' => Pages\ScheduleResource\Pages\UploadSchedules::route('/upload'), // Добавьте эту строку
         ];
     }
 }
