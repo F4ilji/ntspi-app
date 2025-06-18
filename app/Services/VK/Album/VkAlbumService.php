@@ -36,6 +36,15 @@ class VkAlbumService
         );
     }
 
+    public function getServerForUploadImagesOnWall($group_id)
+    {
+        return $this->vk->photos()->getWallUploadServer(
+            $this->vkAuthService->getToken()->access_token,
+            array(
+                'group_id' => $group_id,
+            )
+        );
+    }
 
 
     public function uploadImagesToUploadServer($uploadUrl, $images)
@@ -82,8 +91,6 @@ class VkAlbumService
 
         // Обработка ответа
         $responseData = json_decode($response, true);
-
-
 
         // Удаление временных файлов
         foreach ($localFiles as $localFile) {
@@ -167,5 +174,4 @@ class VkAlbumService
             ];
         }
     }
-
 }
