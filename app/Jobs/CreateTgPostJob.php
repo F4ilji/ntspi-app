@@ -44,7 +44,7 @@ class CreateTgPostJob implements ShouldQueue
 
     public function handle()
     {
-        $chat = TelegraphChat::find(4);
+        $chat = TelegraphChat::find(1);
         $baseUrl = config('app.url');
         $messageIds = [];
         $captionSent = false;
