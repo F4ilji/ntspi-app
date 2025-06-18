@@ -12,6 +12,7 @@ use VK\Client\VKApiClient;
 class VkWallService
 {
     private VKApiClient $vk;
+    private VkAuthService $vkAuthService;
     private string $wallToken;
     private string $serviceToken;
     private string $publicId;
@@ -24,7 +25,6 @@ class VkWallService
         $this->publicId = env('PUBLIC_ID');
         $this->publicDomain = env('PUBLIC_DOMAIN');
         $this->vkAuthService = new VkAuthService();
-
     }
 
     public function getPosts(int $count)
@@ -38,22 +38,25 @@ class VkWallService
 
     public function getPostById(int $id)
     {
-        $post = $this->vk->wall()->getById($this->serviceToken, array(
-            'posts' => '-'. $this->publicId . '_' . $id,
-        ));
-        return $post[0];
+        try {
+            $post = $this->vk->wall()->getById($this->vkAuthService->getToken()->access_token, array(
+                'posts' => '-'. $this->publicId . '_' . $id,
+            ));
+            return $post[0];
+        } catch (\Exception $e) {
+            Log::error('Ошибка при попытке получения айди ' . $e->getMessage());
+        }
     }
-
-
 
     public function createPost(string $message, int $from_group, string $attachments = '', int|null $publish_date = null)
     {
+        $token = $this->vkAuthService->getToken()->access_token;
         $params = [
             'owner_id' => '-' . $this->publicId,
             'from_group' => $from_group,
             'message' => $message,
             'attachments' => $attachments,
-            'access_token' => $this->wallToken,
+            'access_token' => $token,
             'publish_date' => $publish_date,
             'v' => '5.131',
         ];
@@ -88,7 +91,6 @@ class VkWallService
             ];
         }
 
-
         try {
             return $this->vk->wall()->edit(
                 $this->vkAuthService->getToken()->access_token,
@@ -108,6 +110,36 @@ class VkWallService
             ];
         }
     }
+
+    public function deletePost(int $post_id)
+    {
+        $token = $this->vkAuthService->getToken()->access_token;
+        $params = [
+            'owner_id' => '-' . $this->publicId,
+            'post_id' => $post_id,
+            'access_token' => $token,
+            'v' => '5.131',
+        ];
+
+        try {
+            $response = Http::asForm()->post('https://api.vk.com/method/wall.delete', $params);
+
+            if ($response->successful() && isset($response['response']) && $response['response'] == 1) {
+                return [
+                    'success' => true,
+                ];
+            } else {
+                throw new \Exception('Ошибка API: ' . json_encode($response->json()));
+            }
+        } catch (\Exception $e) {
+            Log::error('Ошибка при удалении поста: ' . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Не удалось удалить пост: ' . $e->getMessage(),
+            ];
+        }
+    }
+
     public function generateAttachmentsParams(string $attachmentType, int $attachmentId)
     {
         $pubic_id = env('PUBLIC_ID');
@@ -116,6 +148,9 @@ class VkWallService
                 return "album-{$pubic_id}_{$attachmentId}";
             }
             case 'doc': {
+
+            }
+            case 'photo': {
 
             }
         }

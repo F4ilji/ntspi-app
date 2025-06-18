@@ -9,6 +9,7 @@ use App\Services\Filament\Domain\Posts\PostDataProcessor;
 use App\Services\Filament\Domain\Posts\PostNotificationService;
 use App\Services\Filament\Domain\Posts\PostSliderService;
 use App\Services\Filament\Domain\Posts\VkPostPublisher;
+use App\Services\Filament\Domain\Posts\TgPostPublisher;
 use App\Services\Filament\Traits\SeoGenerate;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -48,6 +49,7 @@ class CreatePost extends CreateRecord
         $this->createSeo($this->record);
         $this->sendNotifications();
         $this->publishToVk();
+        $this->publishToTg();
     }
 
     protected function handleSlides(): void
@@ -72,6 +74,11 @@ class CreatePost extends CreateRecord
     protected function publishToVk(): void
     {
         (new VkPostPublisher())->publish($this->publicationAgreements, $this->record);
+    }
+
+    protected function publishToTg(): void
+    {
+        (new TgPostPublisher())->publish($this->publicationAgreements, $this->record);
     }
 
 

@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Containers\Article\Models\Post;
+use App\Services\VK\VkService;
 use App\Services\App\Cache\PostCacheService;
 
 class PostObserver
@@ -36,6 +37,7 @@ class PostObserver
     public function deleted(Post $post)
     {
         $this->postCacheService->clearAllCacheByModel();
+        app(VkService::class)->deletePost($post->id);
     }
 
     /**

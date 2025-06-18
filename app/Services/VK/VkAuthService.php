@@ -33,28 +33,51 @@ class VkAuthService
         }
     }
 
+//    public function redirectToProvider()
+//    {
+//        $state = bin2hex(random_bytes(16)); // Генерация случайной строки состояния
+//        session(['vk_state' => $state]); //
+//
+//        $code_verifier = $this->generateCodeVerifier();
+//        $code_challenge = $this->generateCodeChallenge($code_verifier);
+//
+//        session(['vk_code_verifier' => $code_verifier]);
+//
+//
+//        $url = 'https://id.vk.com/authorize?' . http_build_query([
+//                'response_type' => 'code',
+//                'client_id' => env('VK_APP_ID'),
+//                'redirect_uri' => env('VK_REDIRECT_URI'),
+//                'state' => $state,
+//                'scope' => 'photos wall video docs',
+//                'code_challenge' => $code_challenge,
+//                'code_challenge_method' => 's256',
+//            ]);
+//
+//        return redirect($url);
+//    }
+
     public function redirectToProvider()
     {
-        $state = bin2hex(random_bytes(16)); // Генерация случайной строки состояния
-        session(['vk_state' => $state]);
+        $state = bin2hex(random_bytes(16)); // Генерирует случайную строку состояния (state) для защиты от CSRF-атак.
+        session(['vk_state' => $state]); // Сохраняет строку состояния в сессии под ключом 'vk_state'.
 
-        $code_verifier = $this->generateCodeVerifier();
-        $code_challenge = $this->generateCodeChallenge($code_verifier);
+        $code_verifier = $this->generateCodeVerifier(); // Создает случайную строку code_verifier для протокола PKCE.
+        $code_challenge = $this->generateCodeChallenge($code_verifier); // Генерирует code_challenge на основе code_verifier (обычно хеш SHA-256).
 
-        session(['vk_code_verifier' => $code_verifier]);
+        session(['vk_code_verifier' => $code_verifier]); // Сохраняет code_verifier в сессии под ключом 'vk_code_verifier'.
 
-
-        $url = 'https://id.vk.com/authorize?' . http_build_query([
-                'response_type' => 'code',
-                'client_id' => env('VK_APP_ID'),
-                'redirect_uri' => env('VK_REDIRECT_URI'),
-                'state' => $state,
-                'scope' => 'photos wall', // Укажите необходимые права доступа
-                'code_challenge' => $code_challenge, // Добавьте код, если используете PKCE
-                'code_challenge_method' => 's256',
+        $url = 'https://id.vk.com/authorize?' . http_build_query([ // Формирует URL для перенаправления на страницу авторизации VK ID с параметрами:
+                'response_type' => 'code', // Указывает, что нужен код авторизации.
+                'client_id' => env('VK_APP_ID'), // ID приложения VK из переменных окружения.
+                'redirect_uri' => env('VK_REDIRECT_URI'), // URI для перенаправления после авторизации.
+                'state' => $state, // Передает строку состояния для проверки.
+                'scope' => 'photos wall video docs', // Запрашивает доступ к фото, стене, видео и документам.
+                'code_challenge' => $code_challenge, // Передает code_challenge для PKCE.
+                'code_challenge_method' => 's256', // Указывает метод генерации code_challenge (SHA-256).
             ]);
 
-        return redirect($url);
+        return redirect($url); // Перенаправляет пользователя на сформированный URL для авторизации.
     }
 
     public function handleProviderCallback(Request $request)
@@ -97,7 +120,7 @@ class VkAuthService
             'client_id' => env('VK_APP_ID'),
             'device_id' => $request->device_id,
             'state' => $request->state,
-            'scope' => 'photos wall',
+            'scope' => 'photos wall video docs',
         ])->object();
     }
 
@@ -109,7 +132,7 @@ class VkAuthService
             'client_id' => env('VK_APP_ID'),
             'device_id' => $device_id,
             'state' => $state,
-            'scope' => 'photos wall',
+            'scope' => 'photos wall video docs',
         ]);
 
         if ($response->failed()) {
