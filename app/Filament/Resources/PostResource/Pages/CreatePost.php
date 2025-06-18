@@ -49,7 +49,7 @@ class CreatePost extends CreateRecord
         $this->createSeo($this->record);
         $this->sendNotifications();
         $this->publishToVk();
-        $this->publishToTg();
+//        $this->publishToTg();
     }
 
     protected function handleSlides(): void

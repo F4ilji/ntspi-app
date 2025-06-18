@@ -166,7 +166,7 @@ class PostForm
                                             ->reorderable()
                                             ->panelLayout('grid')
                                             ->helperText('Загрузите дополнительные изображения для галереи')
-                                            ->maxFiles(10)
+                                            ->maxFiles(200)
                                             ->maxSize(20480)
                                             ->acceptedFileTypes(['image/jpeg', 'image/png'])
                                             ->imagePreviewHeight('150'),
