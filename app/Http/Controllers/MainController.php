@@ -101,7 +101,7 @@ class MainController extends Controller
         $event_date_start = (new DateTime())->format('Y-m-d');
 
         return EventThumbnailResource::collection(
-            Event::select('title', 'slug', 'event_date_start', 'address', 'is_online', 'category_id')
+            Event::select('title', 'slug', 'event_date_start', 'event_time_start' , 'address', 'is_online', 'category_id')
                 ->where('event_date_start', '>=', $event_date_start)
                 ->orderBy('event_date_start', 'asc')
                 ->limit(3)

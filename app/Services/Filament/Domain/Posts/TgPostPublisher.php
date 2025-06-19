@@ -2,11 +2,8 @@
 
 namespace App\Services\Filament\Domain\Posts;
 
-use App\Enums\PostStatus;
-use App\Jobs\CreateTgPost;
-use App\Jobs\CreateTgPostJob;
-use App\Jobs\UpdateTgPost;
-use App\Models\Post;
+use App\Containers\Article\Enums\PostStatus;
+use App\Containers\Article\Models\Post;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
