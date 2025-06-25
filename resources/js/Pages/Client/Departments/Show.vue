@@ -28,46 +28,7 @@
         </nav>
       </div>
 
-      <nav class="order-last hidden w-56 shrink-0 xl:block">
-        <div class="sticky top-[110px] h-[calc(100vh-110px)]">
-          <div class="text-gray-1000 mb-2 text-md font-medium">На этой странице</div>
-          <ul class="max-h-[70vh] space-y-1.5 overflow-hidden py-2 text-sm">
-            <li class="anchor-li">
-              <a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'workers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'workers' }"
-                 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-                 href="#workers">Сотрудники кафедры</a>
-            </li>
-            <li class="anchor-li">
-              <a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'teachers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'teachers' }"
-                 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-                 href="#teachers">Преподаватели кафедры</a>
-            </li>
-            <li class="anchor-li">
-              <a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'external-teachers', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'external-teachers' }"
-                 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-                 href="#external-teachers">Внешние совместители</a>
-            </li>
-            <li class="anchor-li">
-              <a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'programs', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'programs' }"
-                 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-                 href="#programs">Программы</a>
-            </li>
-            <li class="anchor-li">
-              <a :class="{ 'translate-x-2 text-primary-light' : currentNavSection  === 'description', 'bg-transperant text-gray-600 hover:text-gray-900' : currentNavSection !== 'description' }"
-                 class="duration-150 block py-1 px-2 leading-[1.6] rounded-md"
-                 href="#description">Описание</a>
-            </li>
-            <transition name="fade">
-              <li class="anchor-li flex items-center py-2 border-t" v-if="scrollTop" @click.prevent="scrollToTop">
-                <button class="bg-transperant text-gray-600 cursor-pointer hover:text-gray-900 duration-300 block px-2 leading-[1.6] rounded-md">К началу</button>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[17px] text-gray-600">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </li>
-            </transition>
-          </ul>
-        </div>
-      </nav>
+      <NavigateLinks :header-navs="headerNavs" />
 
       <article class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
         <div class="space-y-5 md:space-y-5">
@@ -81,7 +42,7 @@
           <BasicTitle :header="department.data.title" />
 
           <div id="page-area" class="space-y-5 md:space-y-5">
-            <h2 v-if="department.data.workers.length > 0" :id="'anchor-link-' + generateSlug('Сотрудники кафедры')" class="font-bold text-xl">Сотрудники кафедры</h2>
+            <h2 v-if="department.data.workers.length > 0" :id="'anchor-link-' + generateSlug('Профессорско-преподавательский состав')" class="font-bold text-xl">Профессорско-преподавательский состав</h2>
             <template v-for="worker in department.data.workers">
               <DepartmentWorkerCard :worker="worker" />
             </template>
@@ -105,7 +66,7 @@
                 <div id="hs-basic-with-title-and-arrow-stretched-collapse-three" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" role="region" aria-labelledby="hs-basic-with-title-and-arrow-stretched-heading-three">
                   <ul class="list-disc list-outside space-y-3 ps-5 text-lg text-gray-800 dark:text-neutral-200">
                     <li v-for="program in direction" class="ps-2">
-                      <Link :href="route('client.program.show', program.id)" class="text-base text-primary decoration-2 hover:underline focus:outline-none focus:underline font-medium dark:text-blue-500">{{ program.name }}</Link>
+                      <Link :href="route('client.program.show', program.slug)" class="text-base text-primary decoration-2 hover:underline focus:outline-none focus:underline font-medium dark:text-blue-500">{{ program.name }}</Link>
                     </li>
                   </ul>
                 </div>
@@ -161,6 +122,7 @@ import SortingByFilter from "@/componentss/shared/filter/filters/SortingByFilter
 import NavigateVisor from "@/componentss/shared/visor/NavigateVisor.vue";
 import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
 import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
+import NavigateLinks from "@/componentss/shared/navigate/NavigateLinks.vue";
 
 
 export default {
@@ -193,6 +155,7 @@ export default {
 	},
 
 	components: {
+    NavigateLinks,
     BaseBreadcrumbs, BreadcrumbsItem,
     NavigateVisor,
     SortingByFilter,

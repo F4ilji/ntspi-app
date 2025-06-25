@@ -138,7 +138,7 @@ export default {
             </div>
             <div class="mt-3">
               <h3 class="text-lg font-semibold text-gray-800">Количество мест на прием</h3>
-              <template v-for="admissionPlan in program.data.admissionPlans">
+              <template v-if="Object.keys(program.data.admissionPlans).length !== 0" v-for="admissionPlan in program.data.admissionPlans">
                 <template v-for="(contests, form) in groupContestsByFormEducation(admissionPlan.contests)">
                   <div class="border rounded my-2 py-1">
                     <span class="text-gray-500 text-[14px]">{{ EducationForm.fromValue(form).label }}</span>
@@ -149,6 +149,9 @@ export default {
                   </div>
                 </template>
               </template>
+              <template v-else>
+                <span class="font-light text-sm mt-2">Прием по данной образовательной программе на текущий образовательный год не проводится</span>
+              </template>
             </div>
           </div>
           <!-- End Icon Block -->
@@ -156,7 +159,7 @@ export default {
       </div>
       <div>
         <div class="hs-accordion-group">
-          <div class="hs-accordion bg-white border -mt-px first:rounded-t-lg last:rounded-b-lg" id="hs-bordered-heading-one">
+          <div v-if="Object.keys(program.data.admissionPlans).length !== 0" class="hs-accordion bg-white border -mt-px first:rounded-t-lg last:rounded-b-lg" id="hs-bordered-heading-one">
             <button class="hs-accordion-toggle hs-accordion-active:text-primary inline-flex items-center gap-x-3 w-full font-semibold text-start text-gray-800 py-4 px-5 hover:text-gray-500 disabled:opacity-50 disabled:pointer-events-none" aria-controls="hs-basic-bordered-collapse-two">
               <svg class="hs-accordion-active:hidden block size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14"></path>
@@ -188,7 +191,7 @@ export default {
             </div>
           </div>
 
-          <div class="hs-accordion bg-white border -mt-px first:rounded-t-lg last:rounded-b-lg" id="hs-bordered-heading-two">
+          <div v-if="program.data.about_program" class="hs-accordion bg-white border -mt-px first:rounded-t-lg last:rounded-b-lg" id="hs-bordered-heading-two">
             <button class="hs-accordion-toggle hs-accordion-active:text-primary inline-flex items-center gap-x-3 w-full font-semibold text-start text-gray-800 py-4 px-5 hover:text-gray-500 disabled:opacity-50 disabled:pointer-events-none" aria-controls="hs-basic-bordered-collapse-two">
               <svg class="hs-accordion-active:hidden block size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14"></path>
@@ -206,7 +209,7 @@ export default {
             </div>
           </div>
 
-          <div class="hs-accordion bg-white border -mt-px first:rounded-t-lg last:rounded-b-lg" id="hs-bordered-heading-three">
+          <div v-if="program.data.program_features" class="hs-accordion bg-white border -mt-px first:rounded-t-lg last:rounded-b-lg" id="hs-bordered-heading-three">
             <button class="hs-accordion-toggle hs-accordion-active:text-primary inline-flex items-center gap-x-3 w-full font-semibold text-start text-gray-800 py-4 px-5 hover:text-gray-500 disabled:opacity-50 disabled:pointer-events-none" aria-controls="hs-basic-bordered-collapse-three">
               <svg class="hs-accordion-active:hidden block size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14"></path>

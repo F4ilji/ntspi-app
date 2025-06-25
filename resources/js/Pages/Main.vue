@@ -6,9 +6,9 @@
 
   <section class="max-w-screen-xl w-full mx-auto px-4 py-3 pb-10">
     <PostSection :posts="posts" />
-    <div>
-      <EventSection :events="events" />
-    </div>
+<!--    <div>-->
+<!--      <EventSection :events="events" />-->
+<!--    </div>-->
     <EducationSection :educations="educations" />
   </section>
 	<PageResourceList resource-id="glavnaia-stranica-resurs" />

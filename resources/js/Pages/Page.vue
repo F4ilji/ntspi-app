@@ -9,7 +9,7 @@
       <PageSubSectionLinks v-if="!settings?.hide_page_sub_section_links" :sub-section-pages="subSectionPages" :current-section="page.data.section"/>
       <NavigateLinks v-if="!settings?.hide_page_navigate_links"  :header-navs="headerNavs"/>
       <div class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
-        <div class="space-y-5 md:space-y-5">
+        <div class="space-y-2 md:space-y-5">
           <BaseBreadcrumbs v-if="!settings?.hide_breadcrumbs" :breadcrumbs="breadcrumbs">
             <BreadcrumbsItem :title="breadcrumbs.page.data.title" :url="route('page.view', breadcrumbs.page.data.path)" />
           </BaseBreadcrumbs>

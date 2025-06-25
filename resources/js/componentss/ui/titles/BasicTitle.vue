@@ -1,7 +1,7 @@
 <template>
 
-	<div class="space-y-3">
-		<h1 class="text-2xl mb-10 font-bold md:text-3xl">{{ header }}</h1>
+	<div>
+		<h1 class="text-2xl mb-5 font-bold md:text-3xl">{{ header }}</h1>
 	</div>
 
 </template>
