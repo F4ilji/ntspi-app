@@ -2,6 +2,7 @@
 
 namespace App\Containers\Schedule\UI\WEB\Controllers;
 
+use App\Containers\InstituteStructure\Models\Faculty;
 use App\Containers\Schedule\Models\EducationalGroup;
 use App\Containers\Schedule\UI\WEB\Transformers\EducationalGroupResource;
 use App\Ship\Contracts\SeoServiceInterface;
@@ -25,7 +26,11 @@ class ClientScheduleController extends Controller
             })
             ->when(request()->input('form'), function ($query, $form) {
                 $query->where('education_form_id', FormEducation::fromName($form)->value);
-
+            })
+            ->when(request()->input('faculty'), function ($query, $facultySlug) {
+                $query->whereHas('faculty', function ($q) use ($facultySlug) {
+                    $q->where('slug', $facultySlug);
+                });
             })
             ->with('schedules')
             ->with('faculty')
@@ -49,11 +54,18 @@ class ClientScheduleController extends Controller
             $forms_education[$case->name] = $case->getLabel();
         }
 
+        $faculties = Faculty::query()->where('is_active', true)->get();
+
         $filters = [
             'form_education_filter' => [
                 'type' => 'form',
                 'value' => request()->input('form'),
                 'param' => 'form'
+            ],
+            'faculty_filter' => [
+                'type' => 'faculty',
+                'value' => request()->input('faculty'),
+                'param' => 'faculty'
             ],
             'search_filter' => [
                 'type' => 'search',
@@ -77,6 +89,7 @@ class ClientScheduleController extends Controller
                 'schedulesByFaculty' => inertia()->deepMerge(fn() => $schedulesByFaculty),
                 'schedules_paginator' => $schedulesPaginate,
                 'seo' => $seo,
+                'faculties' => $faculties,
             ]
         );
 

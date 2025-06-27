@@ -12,21 +12,25 @@ import FormEducationalFilter from "@/componentss/shared/filter/filters/FormEduca
 import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
 import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
 import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
+import FavoriteFilter from "@/componentss/features/schedules/components/FavoriteFilter.vue";
+import FacultyFilter from "@/componentss/features/schedules/components/FacultyFilter.vue";
+import SearchFilter from "@/componentss/features/schedules/components/SearchFilter.vue";
 
 
 export default {
 	name: "Index",
 	data() {
 		return {
-			searchInput: this.filters.search_filter.value,
 			favoriteGroups: JSON.parse(localStorage.getItem('favoriteGroups')),
 			showFavorites: false,
 			loading: false,
       currentPageLoaded: this.schedules_paginator.current_page,
-
     };
 	},
 	components: {
+    SearchFilter,
+    FacultyFilter,
+    FavoriteFilter,
     BaseBreadcrumbs, BreadcrumbsItem,
     WhenVisible,
     MetaTags,
@@ -57,34 +61,12 @@ export default {
     },
     breadcrumbs: {
       type: Object
-    }
+    },
+    faculties: {
+      type: Object
+    },
 	},
 	methods: {
-    search: debounce(function () {
-      if(this.searchInput === "") {
-        let url = new URL(window.location.href);
-        url.searchParams.delete('search');
-        let newUrl = url.toString();
-        this.$inertia.visit(newUrl,{
-          method: 'get',
-          preserveState: true,
-          replace: true,
-        });
-      } else {
-        let url = new URL(window.location.href);
-        url.searchParams.delete('page');
-        let newUrl = url.toString();
-        this.$inertia.visit(newUrl,{
-          method: 'get',
-          data: {
-            search: this.searchInput,
-          },
-          preserveState: true,
-          replace: true,
-        })
-      }
-    }, 500),
-
     toggleFavorite(group) {
       if (!this.favoriteGroups) {
         this.favoriteGroups = [];
@@ -107,66 +89,6 @@ export default {
       }
       return this.favoriteGroups.some(g => g === group);
     },
-		toggleShowFavorites() {
-			this.loading = true; // Включаем состояние загрузки
-
-			if (this.filters.favorite_filter.value === null) {
-				this.filterFavorite(() => {
-					this.loading = false; // Выключаем состояние загрузки после завершения
-				});
-			} else {
-				this.clearFilterFavorite(() => {
-					this.loading = false; // Выключаем состояние загрузки после завершения
-				});
-			}
-		},
-
-		filterFavorite: debounce(function (callback) {
-			let url = new URL(window.location.href);
-			// Создаем массив для хранения всех ключей, которые нужно удалить
-			const keysToDelete = [];
-
-			// Перебираем все параметры и добавляем ключи, начинающиеся с 'category', в массив
-			for (const [key] of url.searchParams) {
-				if (key.startsWith('favorite')) {
-					keysToDelete.push(key);
-				}
-			}
-			// Удаляем все ключи из массива
-			keysToDelete.forEach(key => url.searchParams.delete(key));
-			let newUrl = url.toString();
-			this.$inertia.visit(newUrl, {
-				method: 'get',
-				preserveState: true,
-				data: {
-					favorite: (this.favoriteGroups?.length !== 0) ? this.favoriteGroups : "",
-				},
-				onFinish: callback, // Вызываем колбэк после завершения запроса
-			});
-		}, 500),
-		clearFilterFavorite(callback) {
-			let url = new URL(window.location.href);
-			// Создаем массив для хранения всех ключей, которые нужно удалить
-			const keysToDelete = [];
-
-			// Перебираем все параметры и добавляем ключи, начинающиеся с 'category', в массив
-			for (const [key] of url.searchParams) {
-				if (key.startsWith('favorite')) {
-					keysToDelete.push(key);
-				}
-			}
-			// Удаляем все ключи из массива
-			keysToDelete.forEach(key => url.searchParams.delete(key));
-			let newUrl = url.toString();
-			this.$inertia.visit(newUrl, {
-				method: 'get',
-				preserveState: true,
-				onFinish: callback, // Вызываем колбэк после завершения запроса
-
-			});
-		},
-  },
-  computed: {
   },
 };
 </script>
@@ -186,47 +108,14 @@ export default {
                     bottom-text="Просто введите название группы"
                     header="Расписание занятий" />
 								<div class="mt-7 sm:mt-12 mx-auto max-w-xl relative space-y-4">
-									<!-- Form -->
-									<form>
-										<div class="relative z-10 space-x-3 p-3 bg-white border rounded-lg shadow-lg shadow-gray-100">
-											<div class="flex justify-between">
-												<div class="flex w-full">
-													<label for="hs-search-article-1"
-																 class="block text-sm text-gray-700 font-medium dark:text-white">
-														<span class="sr-only">Поиск</span>
-													</label>
-													<input
-															@keydown.enter.prevent
-															autocomplete="off"
-															v-model="searchInput"
-															@input="search"
-															type="search"
-															id="hs-search-article-1"
-															class="py-2.5 px-4 block w-full border-transparent rounded-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100"
-															placeholder="Поиск"
-													>
-												</div>
-											</div>
-										</div>
-									</form>
-									<div class="">
+                  <SearchFilter :search_filter="this.filters.search_filter" />
+									<div>
 										<div class="grid grid-cols-2 gap-3">
-											<button
-													@click="toggleShowFavorites"
-													type="button"
-													:disabled="loading"
-													:class="
-															filters.favorite_filter.value !== null ? 'bg-primary text-white hover:bg-primary-dark': 'text-gray-700 hover:bg-gray-100',
-															loading ? 'animate-pulse' : ''
-															"
-													class="flex w-full py-2 px-4 items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 focus:outline-none disabled:opacity-50 disabled:pointer-events-none"
-													>
-												<BasicIcon name="heart" class="shrink-0 size-4"/>
-												<span>Избранное</span>
-											</button>
-                      <ScheduleListFilter>
-                        <FormEducationalFilter :forms="this.forms_education" :form-edu_filter="this.filters.form_education_filter" />
-                      </ScheduleListFilter>
+                      <FavoriteFilter :favorite_filter="filters.favorite_filter" :loading="loading" :favoriteGroups="favoriteGroups" />
+                      <FacultyFilter :faculties="faculties" :faculty_filter="filters.faculty_filter" />
+<!--                      <ScheduleListFilter>-->
+<!--                        <FormEducationalFilter :forms="this.forms_education" :form-edu_filter="this.filters.form_education_filter" />-->
+<!--                      </ScheduleListFilter>-->
 										</div>
 									</div>
 								</div>
