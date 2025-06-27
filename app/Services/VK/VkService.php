@@ -102,7 +102,16 @@ class VkService
         $postRelation = DB::table('posts_vk_posts')->select()->where('post_id', $post_id)->first();
         $post_id = $postRelation->vk_post_id;
         $vk_post = $this->getPostById($post_id);
-        $this->wallService->deletePost($vk_post['id']);
+
+        $pattern = '/\[https:\/\/vk.com\/album-?[0-9]+_([0-9]+)\|.*\]/';
+        preg_match($pattern, $vk_post['text'], $matches);
+        if (isset($matches[1])) {
+            $album_id = $matches[1];
+            $this->albumService->deleteAlbum($album_id, $this->public_id);
+            $this->wallService->deletePost($vk_post['id']);
+        } else {
+            $this->wallService->deletePost($vk_post['id']);
+        }
     }
 
     public function createAlbum(string $title, $images)

@@ -55,14 +55,12 @@ class UpdateVkPostJob implements ShouldQueue
 
         $vk_post = $wallService->getPostById($this->post_id);
 
-        // доделать
-        if ($vk_post['attachments']) {
-            Log::info($vk_post);
-            if ($this->getAlbumAttachment($vk_post['attachments'])) {
-                Log::info('вход в аттачментс вк');
-                $album = $this->getAlbumAttachment($vk_post['attachments']);
-                Log::info($album);
-                $albumService->deleteAlbum($album['album']['id'], $this->public_id);
+         if ($vk_post['attachments']) {
+            $pattern = '/\[https:\/\/vk.com\/album-?[0-9]+_([0-9]+)\|.*\]/';
+            preg_match($pattern, $vk_post['text'], $matches);
+            if (isset($matches[1])) {
+                $album_id = $matches[1];
+                $albumService->deleteAlbum($album_id, $this->public_id);
             }
         }
 
