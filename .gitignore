@@ -11,4 +11,5 @@ _deploy
 dump.sql
 .idea
 .DS_Store
-**/.DS_Store
+**/.
+.cursor
