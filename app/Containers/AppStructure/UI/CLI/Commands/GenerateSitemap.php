@@ -3,72 +3,42 @@
 namespace App\Containers\AppStructure\UI\CLI\Commands;
 
 use App\Ship\Abstracts\Commands\ConsoleCommand as AbstractConsoleCommand;
-use App\Containers\AdditionalEducation\Models\AdditionalEducation;
-use App\Containers\AppStructure\Models\Page;
-use App\Containers\Article\Enums\PostStatus;
-use App\Containers\Article\Models\Post;
-use App\Containers\Education\Models\EducationalProgram;
-use App\Containers\Event\Models\Event;
-use App\Containers\InstituteStructure\Models\Department;
-use App\Containers\InstituteStructure\Models\Division;
-use App\Containers\InstituteStructure\Models\Faculty;
-use App\Containers\User\Models\User;
-use App\Ship\Enums\Education\EducationalProgramStatus;
+use App\Containers\AppStructure\Tasks\GetPagesForSitemapTask;
+use App\Containers\AppStructure\Tasks\GetPostsForSitemapTask;
+use App\Containers\AppStructure\Tasks\GetDivisionsForSitemapTask;
+use App\Containers\AppStructure\Tasks\GetEducationalProgramsForSitemapTask;
+use App\Containers\AppStructure\Tasks\GetEventsForSitemapTask;
+use App\Containers\AppStructure\Tasks\GetAdditionalEducationsForSitemapTask;
+use App\Containers\AppStructure\Tasks\GetFacultiesForSitemapTask;
+use App\Containers\AppStructure\Tasks\GetDepartmentsForSitemapTask;
+use App\Containers\AppStructure\Tasks\GetUsersForSitemapTask;
+use App\Containers\AppStructure\Tasks\AddUrlsToSitemapTask;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
 class GenerateSitemap extends AbstractConsoleCommand
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'sitemap:generate';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Генерирует карту сайта';
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
+    public function __construct(
+        private readonly GetPagesForSitemapTask $getPagesForSitemapTask,
+        private readonly GetPostsForSitemapTask $getPostsForSitemapTask,
+        private readonly GetDivisionsForSitemapTask $getDivisionsForSitemapTask,
+        private readonly GetEducationalProgramsForSitemapTask $getEducationalProgramsForSitemapTask,
+        private readonly GetEventsForSitemapTask $getEventsForSitemapTask,
+        private readonly GetAdditionalEducationsForSitemapTask $getAdditionalEducationsForSitemapTask,
+        private readonly GetFacultiesForSitemapTask $getFacultiesForSitemapTask,
+        private readonly GetDepartmentsForSitemapTask $getDepartmentsForSitemapTask,
+        private readonly GetUsersForSitemapTask $getUsersForSitemapTask,
+        private readonly AddUrlsToSitemapTask $addUrlsToSitemapTask
+    ) {parent::__construct();}
+
     public function handle()
     {
         $sitemap = Sitemap::create();
 
-        // Генерация карты сайта для всех моделей
-        $this->generatePages($sitemap);
-        $this->generatePosts($sitemap);
-        $this->generateDivisions($sitemap);
-        $this->generateEducationPrograms($sitemap); // Добавляем генерацию для EducationProgram
-        $this->generateEvents($sitemap); // Добавляем генерацию для Event
-        $this->generateAdditionalEducations($sitemap); // Добавляем генерацию для AdditionalEducation
-        $this->generateFaculties($sitemap); // Добавляем генерацию для Faculty
-        $this->generateDepartments($sitemap); // Добавляем генерацию для Department
-        $this->generateUsers($sitemap); // Добавляем генерацию для User
-
-        // Сохраняем карту сайта в файл
-        $sitemap->writeToFile(public_path('sitemap.xml'));
-    }
-
-    protected function generatePages(Sitemap $sitemap)
-    {
-        $pages = Page::query()
-            ->where('is_visible', true)
-            ->where('code', 200)
-            ->where('path', '!=', null)
-            ->where('is_url', false)
-            ->where('title', '!=', null)
-            ->where('searchable', true)
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $pages, function($page) {
+        $this->addUrlsToSitemapTask->run($sitemap, $this->getPagesForSitemapTask->run(), function($page) {
             return [
                 'route' => 'page.view',
                 'params' => ['path' => $page->path],
@@ -76,15 +46,8 @@ class GenerateSitemap extends AbstractConsoleCommand
                 'priority' => 0.5,
             ];
         });
-    }
 
-    protected function generatePosts(Sitemap $sitemap)
-    {
-        $posts = Post::query()
-            ->where('status', PostStatus::PUBLISHED)
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $posts, function($post) {
+        $this->addUrlsToSitemapTask->run($sitemap, $this->getPostsForSitemapTask->run(), function($post) {
             return [
                 'route' => 'client.post.show',
                 'params' => ['slug' => $post->slug],
@@ -92,15 +55,8 @@ class GenerateSitemap extends AbstractConsoleCommand
                 'priority' => 0.5,
             ];
         });
-    }
 
-    protected function generateDivisions(Sitemap $sitemap)
-    {
-        $divisions = Division::query()
-            ->where('is_active', true)
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $divisions, function($division) {
+        $this->addUrlsToSitemapTask->run($sitemap, $this->getDivisionsForSitemapTask->run(), function($division) {
             return [
                 'route' => 'client.division.show',
                 'params' => ['slug' => $division->slug],
@@ -108,15 +64,8 @@ class GenerateSitemap extends AbstractConsoleCommand
                 'priority' => 0.5,
             ];
         });
-    }
 
-    protected function generateEducationPrograms(Sitemap $sitemap)
-    {
-        $programs = EducationalProgram::query()
-            ->where('status', EducationalProgramStatus::PUBLISHED) // Пример условия для активных программ
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $programs, function($program) {
+        $this->addUrlsToSitemapTask->run($sitemap, $this->getEducationalProgramsForSitemapTask->run(), function($program) {
             return [
                 'route' => 'client.program.show',
                 'params' => ['slug' => $program->slug],
@@ -124,17 +73,8 @@ class GenerateSitemap extends AbstractConsoleCommand
                 'priority' => 0.5,
             ];
         });
-    }
 
-    protected function generateEvents(Sitemap $sitemap)
-    {
-        $now = now()->toDateString(); // Текущая дата
-
-        $events = Event::query()
-            ->where('event_date_end', '>=', $now) // Только актуальные события
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $events, function($event) {
+        $this->addUrlsToSitemapTask->run($sitemap, $this->getEventsForSitemapTask->run(), function($event) {
             return [
                 'route' => 'client.event.show',
                 'params' => ['slug' => $event->slug],
@@ -142,15 +82,8 @@ class GenerateSitemap extends AbstractConsoleCommand
                 'priority' => 0.5,
             ];
         });
-    }
 
-    protected function generateAdditionalEducations(Sitemap $sitemap)
-    {
-        $educations = AdditionalEducation::query()
-            ->where('is_active', true) // Пример условия для активных программ
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $educations, function($education) {
+        $this->addUrlsToSitemapTask->run($sitemap, $this->getAdditionalEducationsForSitemapTask->run(), function($education) {
             return [
                 'route' => 'client.additionalEducation.show',
                 'params' => ['slug' => $education->slug],
@@ -158,15 +91,8 @@ class GenerateSitemap extends AbstractConsoleCommand
                 'priority' => 0.5,
             ];
         });
-    }
 
-    protected function generateFaculties(Sitemap $sitemap)
-    {
-        $faculties = Faculty::query()
-            ->where('is_active', true) // Пример условия для активных факультетов
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $faculties, function($faculty) {
+        $this->addUrlsToSitemapTask->run($sitemap, $this->getFacultiesForSitemapTask->run(), function($faculty) {
             return [
                 'route' => 'client.faculty.show',
                 'params' => ['slug' => $faculty->slug],
@@ -174,15 +100,8 @@ class GenerateSitemap extends AbstractConsoleCommand
                 'priority' => 0.5,
             ];
         });
-    }
 
-    protected function generateDepartments(Sitemap $sitemap)
-    {
-        $departments = Department::query()
-            ->where('is_active', true) // Пример условия для активных кафедр
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $departments, function($department) {
+        $this->addUrlsToSitemapTask->run($sitemap, $this->getDepartmentsForSitemapTask->run(), function($department) {
             return [
                 'route' => 'client.department.show',
                 'params' => ['facultySlug' => $department->faculty->slug, 'departmentSlug' => $department->slug],
@@ -190,17 +109,8 @@ class GenerateSitemap extends AbstractConsoleCommand
                 'priority' => 0.5,
             ];
         });
-    }
 
-    protected function generateUsers(Sitemap $sitemap)
-    {
-        $users = User::query()
-            ->whereHas('userDetail', function ($q) {
-                $q->where('is_only_worker', false);
-            })
-            ->get();
-
-        $this->addUrlsToSitemap($sitemap, $users, function($user) {
+        $this->addUrlsToSitemapTask->run($sitemap, $this->getUsersForSitemapTask->run(), function($user) {
             return [
                 'route' => 'client.person.show',
                 'params' => ['slug' => $user->slug],
@@ -208,16 +118,7 @@ class GenerateSitemap extends AbstractConsoleCommand
                 'priority' => 0.5,
             ];
         });
-    }
 
-    protected function addUrlsToSitemap(Sitemap $sitemap, $items, callable $callback)
-    {
-        foreach ($items as $item) {
-            $urlData = $callback($item);
-            $url = route($urlData['route'], $urlData['params']);
-            $sitemap->add(Url::create($url)
-                ->setLastModificationDate($urlData['lastModificationDate'])
-                ->setPriority($urlData['priority']));
-        }
+        $sitemap->writeToFile(public_path('sitemap.xml'));
     }
 }

@@ -10,3 +10,5 @@ _deploy
 /public/sveden
 dump.sql
 .idea
+.DS_Store
+**/.DS_Store

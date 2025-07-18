@@ -2,17 +2,17 @@
 
 namespace App\Http\Middleware;
 
-use App\Containers\AppStructure\Models\MainSection;
-use App\Containers\AppStructure\UI\API\Transformers\NavigationResource;
-use App\Services\App\Breadcrumb\BreadcrumbService;
+use App\Containers\AppStructure\Tasks\GetCachedNavigationDataTask;
+use App\Containers\AppStructure\Tasks\GenerateBreadcrumbsTask;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
     protected $rootView = 'app';
+
+    public function __construct(private readonly GenerateBreadcrumbsTask $generateBreadcrumbsTask){}
 
     public function version(Request $request): ?string
     {
@@ -31,8 +31,8 @@ class HandleInertiaRequests extends Middleware
                     'location' => url()->current(),
                 ]);
             },
-            'navigation' => $this->getNavigation(),
-            'breadcrumbs' => $this->getBreadcrumbs(),
+            'navigation' => app(GetCachedNavigationDataTask::class)->run(),
+            'breadcrumbs' => $this->generateBreadcrumbsTask->run(),
             'urlPrev' => function () {
                 if (url()->previous() !== url()->current()) {
                     return url()->previous();
@@ -40,21 +40,5 @@ class HandleInertiaRequests extends Middleware
                 return 'empty';
             },
         ];
-    }
-
-    private function getNavigation()
-    {
-        return Cache::remember('navigation', now()->addHours(1), function () {
-            return NavigationResource::collection(
-                MainSection::with('subSections.pages.section')
-                    ->orderBy('sort', 'asc')
-                    ->get()
-            );
-        });
-    }
-
-    private function getBreadcrumbs()
-    {
-        return app(BreadcrumbService::class)->generateBreadcrumbs();
     }
 }

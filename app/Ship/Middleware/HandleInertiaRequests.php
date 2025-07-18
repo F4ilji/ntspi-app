@@ -2,17 +2,17 @@
 
 namespace App\Ship\Middleware;
 
-use App\Containers\AppStructure\Models\MainSection;
-use App\Containers\AppStructure\UI\API\Transformers\NavigationResource;
-use App\Services\App\Breadcrumb\BreadcrumbService;
+use App\Containers\AppStructure\Tasks\GetCachedNavigationDataTask;
+use App\Containers\AppStructure\Tasks\GenerateBreadcrumbsTask;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
     protected $rootView = 'app';
+
+    public function __construct(private readonly GenerateBreadcrumbsTask $generateBreadcrumbsTask){}
 
     public function version(Request $request): ?string
     {
@@ -22,16 +22,10 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         // Навигация (кешированная)
-        $navigation = Cache::remember('navigation', now()->addHours(1), function () {
-            return NavigationResource::collection(
-                MainSection::with('subSections.pages.section')
-                    ->orderBy('sort', 'asc')
-                    ->get()
-            );
-        });
+        $navigation = app(GetCachedNavigationDataTask::class)->run();
 
         // Хлебные крошки (автоматически по текущему URL)
-        $breadcrumbs = app(BreadcrumbService::class)->generateBreadcrumbs();
+        $breadcrumbs = $this->generateBreadcrumbsTask->run();
 
         return [
             ...parent::share($request),
