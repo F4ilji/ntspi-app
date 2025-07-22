@@ -2,44 +2,28 @@
 
 namespace App\Containers\Widget\UI\API\Controllers;
 
-use App\Containers\Article\Enums\PostStatus;
-use App\Containers\Article\Models\Post;
-use App\Containers\Widget\UI\API\Transformers\PostThumbnailResource;
+use App\Containers\Widget\Actions\GetPostsAction;
+use App\Containers\Widget\Actions\GetSinglePostAction;
 use App\Ship\Controllers\Controller;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Http\Request;
 
 class ClientWidgetPostController extends Controller
 {
-    public function index()
+    public function __construct(
+        private readonly GetPostsAction $getPostsAction,
+        private readonly GetSinglePostAction $getSinglePostAction
+    ) {}
+
+    public function index(Request $request)
     {
-        $category_id = request()->input('category');
-        $count = request()->input('count', 5);
+        $category_id = $request->input('category');
+        $count = $request->input('count', 5);
 
-        $cacheKey = 'posts_' . $category_id . '_' . $count;
-
-        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($category_id, $count) {
-            return PostThumbnailResource::collection(
-                Post::query()
-                    ->where('status', PostStatus::PUBLISHED)
-                    ->when($category_id, function ($query, $category_id) {
-                        $query->where('category_id', $category_id);
-                    })
-                    ->with('category')
-                    ->orderBy('publish_at', 'desc')
-                    ->take($count)
-                    ->get()
-            );
-        });
+        return $this->getPostsAction->run($category_id, $count);
     }
 
     public function single(int $id)
     {
-        $cacheKey = 'post_' . $id;
-
-        return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($id) {
-            return new PostThumbnailResource(
-                Post::query()->with('category')->find($id)->firstOrFail()
-            );
-        });
+        return $this->getSinglePostAction->run($id);
     }
 }

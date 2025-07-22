@@ -1,6 +1,4 @@
 <template>
-
-
 	<div v-if="loading" class="flex flex-col space-y-4">
 		<div class="flex animate-pulse">
 			<div class="ms-4 mt-2 w-full border px-4 py-4 rounded-xl shadow-sm">
@@ -35,7 +33,7 @@
 							</li>
 							<li class="inline-flex items-center">
 								<span class="flex items-center text-sm text-gray-500 hover:text-primary-hover focus:outline-none focus:text-primary" href="#">
-									{{ breadcrumbs.mainSection }}
+									{{ breadcrumbs.subSection }}
 								</span>
 								<svg class="shrink-0 mx-2 size-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 									<path d="m9 18 6-6-6-6"></path>

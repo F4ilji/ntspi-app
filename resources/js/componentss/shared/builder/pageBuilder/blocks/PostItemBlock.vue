@@ -39,7 +39,7 @@
 								{{ post.data.title }}
 							</h3>
 							<p class="mt-3 text-gray-600">
-								Produce professional, reliable streams easily leveraging Preline's innovative broadcast studio
+                {{ textLimit(post.data.preview_text, 80) }}
 							</p>
 							<p class="mt-4 inline-flex items-center gap-x-1 text-sm text-primary decoration-2 group-hover:underline group-focus:underline font-medium">
 								Читать далее
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import slugify from "slugify";
+import { helpers } from "@/mixins/Helpers";
 import axios from "axios";
 import {Link} from "@inertiajs/vue3";
 
@@ -84,7 +84,15 @@ export default {
 						console.error('Ошибка:', error);
 						this.loading = false; // Установить состояние загрузки в false даже при ошибке
 					});
-		}
+		},
+    textLimit(text, symbols) {
+			if (text.length > symbols) {
+				let LimitedText;
+				LimitedText = text.substring(0, symbols);
+				return LimitedText + "...";
+			}
+			return text;
+		},
 	},
 	mounted() {
 		this.getPost(this.block.data.post);
