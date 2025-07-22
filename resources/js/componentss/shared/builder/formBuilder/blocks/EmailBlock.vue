@@ -1,5 +1,5 @@
 <template>
-	<div class="mb-4 sm:mb-8">
+	<div>
 		<label :for="block.data.name_field + '-id'" class="block mb-2 text-sm font-medium">{{ block.data.title_field }}</label>
 		<div class="relative">
 			<input

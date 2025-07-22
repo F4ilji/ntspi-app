@@ -1,5 +1,5 @@
 <template>
-	<div class="mb-4 sm:mb-8">
+	<div>
 		<label :for="block.data.name_field + '-id'" class="block mb-2 text-sm font-medium">{{ block.data.title_field }}</label>
 		<div class="relative">
 			<input
@@ -22,7 +22,7 @@
 				</svg>
 			</div>
 		</div>
-		<div class="flex items-center mt-2 justify-between flex-wrap">
+		<div v-if="block.data.description" class="flex items-center mt-2 justify-between flex-wrap">
 			<p v-if="!error" class="text-sm text-gray-500" id="hs-input-helper-text">
 				{{ block.data.description }}
 			</p>

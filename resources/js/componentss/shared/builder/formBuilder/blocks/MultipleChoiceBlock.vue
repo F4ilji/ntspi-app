@@ -1,5 +1,5 @@
 <template>
-	<div class="mb-4 sm:mb-8">
+	<div>
 		<label class="block mb-3 text-sm font-medium">{{ block.data.title_field }}</label>
 		<div class="space-y-2">
 			<div v-for="column in block.data.columns" class="flex">

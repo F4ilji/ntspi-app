@@ -28,8 +28,8 @@
           </h2>
         </div>
         <!-- Card -->
-        <div class="mt-5 p-4 relative z-1000 bg-white md:border rounded-xl sm:mt-10 md:p-10">
-          <form @submit="submitForm">
+        <div class="mt-5 relative z-1000 bg-white md:border rounded-xl sm:mt-10 md:p-10">
+          <form class="space-y-4" @submit="submitForm">
             <component
                 v-for="(block, index) in blocks.data.columns"
                 :key="index"
@@ -155,8 +155,6 @@ export default {
         date: () => import('@/componentss/shared/builder/formBuilder/blocks/DateBlock.vue'),
         additional_education_choice: () => import('@/componentss/shared/builder/formBuilder/blocks/AdditionalEducationalChoiceBlock.vue'),
         educational_program_choice: () => import('@/componentss/shared/builder/formBuilder/blocks/EducationalChoiceBlock.vue'),
-        captcha: () => import('@/componentss/shared/builder/formBuilder/blocks/CaptchaBlock.vue'),
-        personal_data: () => import('@/componentss/shared/builder/formBuilder/blocks/PersonalDataBlock.vue'),
       };
       return defineAsyncComponent(componentMap[type] || null);
     },
