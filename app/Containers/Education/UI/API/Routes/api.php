@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/getAcademicYear', AcademicYearController::class)->name('academic.year');
 
-Route::middleware(['superadmin'])->group(function () {
+Route::middleware(['web', 'superadmin'])->group(function () {
     Route::get('/get-edu-program-data', [UpdateEduDataApiController::class, 'index']);
     Route::get('/get-admission-plans-data', [UpdateAdmissionPlansDataApiController::class, 'index']);
 });

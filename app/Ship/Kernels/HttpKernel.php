@@ -27,6 +27,7 @@ class HttpKernel extends LaravelHttpKernel
     protected $middleware = [
         TransformRequestMiddleware::class,
         // \App\Ship\Middleware\TrustHosts::class,
+        \Illuminate\Session\Middleware\StartSession::class,
         \App\Ship\Middleware\TrustProxies::class,
         \Illuminate\Http\Middleware\HandleCors::class,
         \App\Ship\Middleware\PreventRequestsDuringMaintenance::class,
@@ -65,6 +66,7 @@ class HttpKernel extends LaravelHttpKernel
      *
      * @var array<string, class-string|string>
      */
+
     protected $routeMiddleware = [
         'auth' => \App\Ship\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,

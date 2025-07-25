@@ -12,13 +12,13 @@
             <li v-if="breadcrumbs?.mainSection?.data?.title" class="text-sm">
               <span class="flex items-center text-gray-500 hover:text-primary-hover cursor-pointer" @click.prevent="handleSectionClick(breadcrumbs.mainSection)">
                 <BasicIcon class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400" name="breadcrumb-tag" />
-								{{ TEXT_LIMIT(breadcrumbs.mainSection.data.title, 25) }}
+								{{ breadcrumbs.mainSection.data.title }}
 							</span>
             </li>
             <li v-if="breadcrumbs?.subSection?.data?.title" class="text-sm">
               <span class="flex items-center text-gray-500 hover:text-primary-hover cursor-pointer" @click.prevent="handleSubSectionClick(breadcrumbs.mainSection, breadcrumbs.subSection)">
                 <BasicIcon class="flex-shrink-0 mx-2 overflow-visible h-2.5 w-2.5 text-gray-400" name="breadcrumb-tag" />
-								{{ TEXT_LIMIT(breadcrumbs.subSection.data.title, 25) }}
+								{{ breadcrumbs.subSection.data.title }}
 							</span>
             </li>
             <slot />
