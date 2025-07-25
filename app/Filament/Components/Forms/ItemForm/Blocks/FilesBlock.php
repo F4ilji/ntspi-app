@@ -24,6 +24,7 @@ class FilesBlock implements BlockSchema
                 ->schema([
                     Hidden::make('expansion')->required(),
                     Hidden::make('size')->required(),
+                    Hidden::make('time_added')->required(),
                     TextInput::make('title')
                         ->label('Название файла')
                         ->placeholder('Введите название файла')
@@ -51,8 +52,10 @@ class FilesBlock implements BlockSchema
                         ->directory('files')
                         ->downloadable()
                         ->afterStateUpdated(function ($set, $state) {
+                            $set('title', $state?->getClientOriginalName());
                             $set('expansion', $state?->getClientOriginalExtension());
                             $set('size', ByteConverter::bytesToHuman($state?->getSize()));
+                            $set('time_added', Carbon::now()->timestamp);
                         })
                         ->visibility('public')
                         ->preserveFilenames()

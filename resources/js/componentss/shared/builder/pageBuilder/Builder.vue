@@ -1,7 +1,7 @@
 <template>
   <transition name="fade" mode="out-in">
     <PageSkeleton v-if="loading" key="skeleton" />
-    <div class="space-y-6" v-else key="content">
+    <div class="space-y-4" v-else key="content">
       <component
           v-for="(block, index) in blocks"
           :key="index"

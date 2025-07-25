@@ -28,13 +28,11 @@ class PersonBlock implements BlockSchema
             FileUpload::make('photo')
                 ->label('Фотография')
                 ->image()
-                ->helperText('Рекомендуемый формат: WebP')
                 ->optimize('webp')
                 ->resize(50)
                 ->disk('public')
                 ->directory('images')
                 ->imageEditor()
-                ->required()
                 ->downloadable()
                 ->openable(),
             Repeater::make('info')
