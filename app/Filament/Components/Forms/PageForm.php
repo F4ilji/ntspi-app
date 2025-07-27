@@ -142,12 +142,21 @@ class PageForm
                                                     ->label('Скрыть хлебные крошки')
                                                     ->helperText('Скрывает навигационную цепочку вверху страницы')
                                                     ->columnSpan(1),
-                                                Select::make('settings.custom_form')->label('Прикрепить форму для страницы')
+                                            ])
+                                            ->columns(2),
+                                            Section::make('Отображение плавающей формы на странице')
+                                            ->description('Управление плавающей формой на странице')
+                                            ->collapsible()
+                                            ->schema([
+                                                Select::make('settings.form.id')->label('Прикрепить форму для страницы')
                                                     ->searchable()
                                                     ->preload()
                                                     ->options(CustomForm::query()
                                                     ->where('status', CustomFormStatus::PUBLISHED)->pluck('title', 'form_id'))
-                                                    ->columnSpanFull()
+                                                    ->columnSpanFull(),
+                                                Textinput::make('settings.form.title')->label('Заголовок плавающего окна'),
+                                                Textinput::make('settings.form.description')->label('Описание плавающего окна'),
+                                                Textinput::make('settings.form.button')->label('Текст кнопки'),
                                             ])
                                             ->columns(2),
                                     ]),

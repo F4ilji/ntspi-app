@@ -2,9 +2,9 @@
 
 namespace App\Containers\Education\UI\API\Controllers;
 
+use App\Containers\Education\Jobs\CreateDirectionStudy;
+use App\Containers\Education\Jobs\CreateEducationalProgram;
 use App\Http\Controllers\Controller;
-use App\Jobs\CreateDirectionStudy;
-use App\Jobs\CreateEducationalProgram;
 
 class UpdateEduDataApiController extends Controller
 {

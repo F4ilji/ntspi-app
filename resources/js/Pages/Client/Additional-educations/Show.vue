@@ -18,11 +18,13 @@ import FormBuilder from "@/componentss/shared/builder/formBuilder/FormBuilder.vu
 import BreadcrumbsItem from "@/componentss/shared/Breadcrumbs/BreadcrumbsItem.vue";
 import BasicIcon from "@/componentss/ui/icons/BasicIcon.vue";
 import BaseBreadcrumbs from "@/componentss/shared/Breadcrumbs/BaseBreadcrumbs.vue";
+import Form from "@/componentss/features/forms/Form.vue";
 
 
 export default {
   name: "Show",
   components: {
+    Form,
     BaseBreadcrumbs,
     BasicIcon, BreadcrumbsItem,
     FormBuilder,
@@ -193,7 +195,7 @@ export default {
     <div class="hs-accordion-group">
       <div class="hs-accordion border-gray-200 active bg-white border rounded-xl" id="hs-active-bordered-heading-two">
         <button class="hs-accordion-toggle hs-accordion-active:text-blue-600 inline-flex justify-between items-center gap-x-3 w-full font-semibold text-start text-gray-800 py-4 px-8 hover:text-gray-500 disabled:opacity-50 disabled:pointer-events-none rounded-xl" aria-expanded="true" aria-controls="hs-basic-active-bordered-collapse-two">
-          Запишитесь на консультацию по курсу
+          {{ form?.title }}
           <svg class="hs-accordion-active:hidden block size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 12h14"></path>
             <path d="M12 5v14"></path>
@@ -207,11 +209,11 @@ export default {
             <div class="flex rounded-xl">
               <div class="grow rounded-xl">
                 <p class="mt-2 text-sm text-gray-600 dark:text-neutral-400">
-                  Заполните форму обратной связи и с вами свяжется специалист центра дополнительного образования
+                  {{ form?.description }}
                 </p>
                 <div class="mt-5 inline-flex gap-x-2">
                   <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-vertically-centered-scrollable-modal" data-hs-overlay="#hs-vertically-centered-scrollable-modal">
-                    Записаться
+                    {{ form?.button }}
                   </button>
                 </div>
               </div>
@@ -238,7 +240,7 @@ export default {
           </button>
         </div>
         <div class="p-2 overflow-y-auto">
-          <FormBlock :form-id="form" />
+          <Form :form-id="form.id" />
         </div>
       </div>
     </div>

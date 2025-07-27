@@ -4,7 +4,6 @@ namespace App\Containers\AdditionalEducation\Actions;
 
 use App\Containers\AdditionalEducation\Data\Resources\AdditionalEducationResource;
 use App\Containers\AdditionalEducation\Tasks\FindAdditionalEducationBySlugTask;
-use App\Ship\Actions\Action;
 use App\Ship\Contracts\SeoServiceInterface;
 use Illuminate\Http\Request;
 
@@ -22,8 +21,8 @@ class GetAdditionalEducationBySlugAction
 
         $settingsPage = $request->attributes->get('settings_page') ?? [];
 
-        if (array_key_exists('custom_form', $settingsPage)) {
-            $form = $settingsPage['custom_form'];
+        if (array_key_exists('form', $settingsPage)) {
+            $form = $settingsPage['form'];
         } else {
             $form = null;
         }

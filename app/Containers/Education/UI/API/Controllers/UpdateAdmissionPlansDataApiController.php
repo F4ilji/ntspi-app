@@ -2,11 +2,8 @@
 
 namespace App\Containers\Education\UI\API\Controllers;
 
+use App\Containers\Education\Jobs\CreateAdmissionPlan;
 use App\Http\Controllers\Controller;
-use App\Jobs\CreateAdmissionPlan;
-use App\Jobs\CreateDirectionStudy;
-use App\Jobs\CreateEducationalProgram;
-use App\Services\Vicon\EducationalProgram\EducationalProgramService;
 
 class UpdateAdmissionPlansDataApiController extends Controller
 {

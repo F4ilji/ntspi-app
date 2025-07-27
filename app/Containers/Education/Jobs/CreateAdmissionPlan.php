@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Containers\Education\Jobs;
 
 use App\Containers\Education\Models\AdmissionCampaign;
 use App\Containers\Education\Models\AdmissionPlan;

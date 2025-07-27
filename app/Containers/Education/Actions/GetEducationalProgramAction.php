@@ -23,8 +23,16 @@ class GetEducationalProgramAction
         $formsEdu = $this->getEducationalFormsTask->run();
         $seo = $this->getSeoForModelTask->run($this->seoPageProvider, $programModel);
 
+        $settingsPage = request()->attributes->get('settings_page') ?? [];
+
+        if (array_key_exists('form', $settingsPage)) {
+            $form = $settingsPage['form'];
+        } else {
+            $form = null;
+        }
+
         $program = new EducationalProgramResource($programModel);
 
-        return compact('program', 'formsEdu', 'seo');
+        return compact('program', 'formsEdu', 'seo', 'form');
     }
 }
