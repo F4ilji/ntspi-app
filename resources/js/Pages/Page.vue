@@ -38,7 +38,7 @@
     <BasicFooter />
   </BasicPageWrapper>
 
-  <div v-if="settings?.form.id" class="fixed bottom-0 end-0 z-60 sm:max-w-xl w-full mx-auto p-6">
+  <div v-if="settings?.form?.id" class="fixed bottom-0 end-0 z-60 sm:max-w-xl w-full mx-auto p-6">
     <div class="hs-accordion-group">
       <div class="hs-accordion border-gray-200 active bg-white border rounded-xl" id="hs-active-bordered-heading-two">
         <button class="hs-accordion-toggle hs-accordion-active:text-blue-600 inline-flex justify-between items-center gap-x-3 w-full font-semibold text-start text-gray-800 py-4 px-8 hover:text-gray-500 disabled:opacity-50 disabled:pointer-events-none rounded-xl" aria-expanded="true" aria-controls="hs-basic-active-bordered-collapse-two">
@@ -72,7 +72,7 @@
   </div>
 
 
-  <div v-if="settings?.form.id" id="hs-vertically-centered-scrollable-modal" class="hs-overlay hidden size-full fixed top-0 start-0 z-[1000000] overflow-x-hidden overflow-y-auto pointer-events-none" role="dialog" tabindex="-1" aria-labelledby="hs-vertically-centered-scrollable-modal-label">
+  <div v-if="settings?.form?.id" id="hs-vertically-centered-scrollable-modal" class="hs-overlay hidden size-full fixed top-0 start-0 z-[1000000] overflow-x-hidden overflow-y-auto pointer-events-none" role="dialog" tabindex="-1" aria-labelledby="hs-vertically-centered-scrollable-modal-label">
     <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-3xl sm:w-full m-3 sm:mx-auto h-[calc(100%-56px)] min-h-[calc(100%-56px)] flex items-center">
       <div class="w-full max-h-full overflow-hidden flex flex-col bg-white border border-gray-200 shadow-2xs rounded-xl pointer-events-auto dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/70">
         <div class="flex justify-between items-center py-3 px-4 border-gray-200 dark:border-neutral-700">
@@ -87,7 +87,7 @@
           </button>
         </div>
         <div class="p-2 overflow-y-auto">
-          <Form :form-id="settings?.form.id" />
+          <Form :form-id="settings?.form?.id" />
         </div>
       </div>
     </div>
