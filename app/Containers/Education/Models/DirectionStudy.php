@@ -17,6 +17,7 @@ class DirectionStudy extends Model
 
     protected $casts = [
         'lvl_edu' => LevelEducational::class,
+        'info' => 'array',
     ];
 
     public function programs(): HasMany
