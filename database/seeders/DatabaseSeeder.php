@@ -6,6 +6,10 @@ use App\Containers\InstituteStructure\Models\Faculty;
 use App\Containers\Article\Models\Post;
 use App\Containers\Schedule\Models\EducationalGroup;
 use App\Containers\Schedule\Models\Schedule;
+use App\Containers\Widget\Data\Seeders\SlideSeeder;
+use App\Ship\Seeders\ContactWidgetSeeder;
+use App\Ship\Seeders\PageReferenceListSeeder;
+use App\Ship\Seeders\SliderSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,6 +18,16 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
+
+        $this->call([
+            ContactWidgetSeeder::class,
+            PageReferenceListSeeder::class,
+            SliderSeeder::class,
+            SlideSeeder::class,
+        ]);
+
+
+
 //        $faker = Factory::create();
 //        User::create([
 //            'name' => 'Failj',
@@ -24,18 +38,18 @@ class DatabaseSeeder extends Seeder
 //        User::factory()->count(50)->has(UserDetail::factory())->create();
 //        EventCategory::factory()->count(10)->create();
 //        Category::factory()->count(80)->create();
-        Post::factory()->count(1000)->create();
+//        Post::factory()->count(1000)->create();
 //        Event::factory()->count(200)->create();
-        $faculties = Faculty::factory()->count(6)->create();
+//        $faculties = Faculty::factory()->count(6)->create();
 
 // Затем создаем 40 групп, распределяя их по созданным факультетам
-        EducationalGroup::factory()
-            ->count(40)
-            ->sequence(fn () => [
-                'faculty_id' => $faculties->random()->id
-            ])
-            ->has(Schedule::factory()->count(90 / 40)) // Распределяем 90 расписаний по 40 группам
-            ->create();
+//        EducationalGroup::factory()
+//            ->count(40)
+//            ->sequence(fn () => [
+//                'faculty_id' => $faculties->random()->id
+//            ])
+//            ->has(Schedule::factory()->count(90 / 40)) // Распределяем 90 расписаний по 40 группам
+//            ->create();
 //        Department::factory()->count(12)->create();
 //
 //        for ($i = 0; $i < 20; $i++) {
