@@ -1,11 +1,9 @@
 FROM php:8.2-fpm
 
-# Устанавливаем рабочую директорию до установки системных зависимостей,
-# чтобы все последующие команды выполнялись в правильном контексте.
+# Устанавливаем рабочую директорию
 WORKDIR /var/www
 
-# Установка системных зависимостей
-# В одном RUN-слое, чтобы уменьшить количество слоев в образе.
+# Установка системных зависимостей и инструментов в одном слое
 RUN apt-get update && apt-get install -y \
     apt-utils \
     libpq-dev \
@@ -30,13 +28,12 @@ RUN apt-get update && apt-get install -y \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && npm install -g npm \
-    # Очистка кэша, чтобы уменьшить размер образа
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    # Очистка кэша для уменьшения размера образа
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Установка расширений PHP
 RUN docker-php-ext-configure gd --with-webp --with-jpeg \
-    && docker-php-ext-install gd pdo_mysql bcmath zip intl
+    && docker-php-ext-install -j$(nproc) gd pdo_mysql bcmath zip intl
 
 # Установка Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -44,29 +41,15 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --filename=composer \
     --install-dir=/usr/local/bin
 
-# Создаём необходимые поддиректории внутри 'storage'
-# Шаг 5: Копирование файлов Composer для кэширования
-COPY composer.json composer.lock ./
 
-# Шаг 6: Установка зависимостей
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Создание необходимых директорий для Laravel
+RUN mkdir -p storage/framework/views storage/framework/sessions storage/framework/cache storage/logs bootstrap/cache
 
-# Шаг 7: Копирование всего остального кода приложения
-# В этот момент директории 'storage' и 'bootstrap/cache' появятся в образе.
-COPY . .
-
-# Шаг 8: Создание необходимых поддиректорий
-# Эта команда создаст поддиректории внутри 'storage', которые могут отсутствовать.
-RUN mkdir -p storage/framework/views storage/framework/sessions storage/framework/cache storage/logs
-
-# Шаг 9: Установка прав доступа
-# Теперь эта команда выполнится успешно, так как директории уже существуют.
+# Установка правильных прав доступа
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-
-
-# Копирование конфигураций
+# Копирование конфигураций PHP и Supervisor
 COPY ./_docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
 COPY ./_docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
