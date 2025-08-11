@@ -39,12 +39,15 @@ services:
     container_name: ntspi-php
     restart: always
     ports:
-      - '5173'
+      - "5173"
     depends_on:
       db:
         condition: service_healthy
     networks:
       - app-network
+    dns:
+      - 8.8.8.8 # Google DNS
+      - 1.1.1.1 # Cloudflare DNS
 
   php-queue-worker:
     restart: always
@@ -60,6 +63,9 @@ services:
         condition: service_healthy
     networks:
       - app-network
+    dns:
+      - 8.8.8.8 # Google DNS
+      - 1.1.1.1 # Cloudflare DNS
 
   db:
     image: mysql:8.0

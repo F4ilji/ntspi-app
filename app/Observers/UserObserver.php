@@ -20,6 +20,9 @@ class UserObserver
     public function created(User $user): void
     {
         $this->userCacheService->clearAllCacheByModel();
+        if (\Illuminate\Support\Facades\Schema::hasTable('roles')) {
+            $user->assignRole(config('filament-shield.dashboard_user.name', 'dashboard_user'));
+        }
     }
 
     /**

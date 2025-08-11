@@ -1,5 +1,6 @@
 <?php
 
+use App\Containers\Widget\Models\CustomForm;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('custom_form_responses', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\CustomForm::class);
+            $table->foreignIdFor(CustomForm::class);
             $table->text('answers');
             $table->boolean('checked')->default(0);
             $table->timestamps();

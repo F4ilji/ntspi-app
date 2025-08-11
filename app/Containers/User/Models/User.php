@@ -8,7 +8,6 @@ use App\Containers\InstituteStructure\Models\Faculty;
 use App\Ship\Contracts\SeoDescriptionInterface;
 use App\Ship\Contracts\SeoTitleInterface;
 use App\Ship\Traits\HasSeo;
-use BezhanSalleh\FilamentShield\FilamentShield;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Filament\Models\Contracts\FilamentUser;
@@ -97,19 +96,7 @@ class User extends Authenticatable implements FilamentUser, SeoTitleInterface, S
         return $this->hasOne(AcceptedInvitation::class, 'receiver_id');
     }
 
-    protected static function booted(): void
-    {
-        if (config('filament-shield.dashboard_user.enabled', false)) {
-            FilamentShield::createRole(name: config('filament-shield.dashboard_user.name', 'dashboard_user'));
-            FilamentShield::createRole(name: config('', 'editor'));
-            static::created(function (User $user) {
-                $user->assignRole(config('filament-shield.dashboard_user.name', 'dashboard_user'));
-            });
-            static::deleting(function (User $user) {
-                $user->assignRole(config('filament-shield.dashboard_user.name', 'dashboard_user'));
-            });
-        }
-    }
+
     public function canAccessPanel(Panel|\Filament\Panel $panel): bool
     {
         return match ($panel->getId()) {
