@@ -146,8 +146,7 @@ class SlideResource extends Resource
                             ->resize(50)
                             ->disk('public')
                             ->directory('images')
-                            ->imageEditor()
-                            ->required(),
+                            ->imageEditor(),
                         ToggleButtons::make('image.shading')->inline()->grouped()->label('Уровень затемнения изображения')->options([
                             '1' => 'Без затемнения',
                             '0.7' => 'Слабое затемнение',

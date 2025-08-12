@@ -23,7 +23,7 @@ class SlideFactory extends Factory
             'title' => $this->faker->sentence(3),
             'content' => $this->faker->paragraph(2),
             'image' => json_encode([
-                'url' => '/public/img/thumbnail-1.png',
+                'url' => null,
                 'shading' => $this->faker->randomFloat(1, 0, 1)
             ]),
             'link' => '/news/' . $this->faker->slug,

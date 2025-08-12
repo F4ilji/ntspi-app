@@ -15,7 +15,7 @@
           data-nimg="fill"
           class="object-cover rounded-xl transition-opacity duration-1000 absolute inset-0 h-full w-full"
           sizes="100vw"
-          :src="'/storage/' + slide.image.url"
+          :src="slide.image.url ? '/storage/' + slide.image.url : 'img/thumbnail-3.png'"
           :class="{ 'opacity-1': currentIndex === index, 'opacity-0': currentIndex !== index }"
       />
     </a>
