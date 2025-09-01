@@ -23,6 +23,7 @@ use App\Containers\User\Observers\UserDetailObserver;
 use App\Containers\Widget\Models\ContactWidget;
 use App\Containers\Widget\Models\PageReferenceList;
 use App\Containers\Widget\Models\Slide;
+use App\Filament\Resources\MainSectionResource\RelationManagers\SubSectionsRelationManager;
 use App\Observers\AcademicJournalObserver;
 use App\Observers\AdditionalEducationObserver;
 use App\Observers\AdmissionCampaignObserver;
@@ -41,6 +42,7 @@ use App\Observers\SlideObserver;
 use App\Observers\SubSectionObserver;
 use App\Observers\UserObserver;
 use App\Services\App\Cache\SliderCacheService;
+use App\Services\App\Cache\SubSectionCacheService;
 use App\Ship\Contracts\SeoServiceInterface;
 use App\Ship\Services\SeoPageService;
 use Carbon\Carbon;
@@ -76,6 +78,7 @@ class AppServiceProvider extends ServiceProvider
 
         FilamentView::registerRenderHook(TablesRenderHook::TOOLBAR_REORDER_TRIGGER_AFTER, function () {
             (new SliderCacheService())->clearAllCacheByModel();
+            (new SubSectionCacheService())->clearAllCacheByModel();
         });
     }
 

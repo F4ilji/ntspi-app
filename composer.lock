@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "46d10b4875c40f8c0425ba3eab11c904",
+    "content-hash": "43b10611f8194dcbafa73ce6ec065b66",
     "packages": [
         {
             "name": "alxdorosenco/porto-for-laravel",
@@ -13506,7 +13506,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1",
+        "php": "^8.2",
         "ext-curl": "*",
         "ext-zip": "*"
     },

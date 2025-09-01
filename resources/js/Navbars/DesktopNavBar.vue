@@ -3,13 +3,14 @@
 			 class="hs-collapse hidden overflow-hidden transition-all duration-300 basis-full grow lg:block">
 		<div
 				class="overflow-hidden overflow-y-auto max-h-[75vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
-			<div
+
+      <div
 					class="flex flex-col gap-x-0 mt-5 md:flex-row md:items-center md:justify-end md:gap-x-7 md:mt-0 md:ps-7 md:divide-y-0 md:divide-solid">
 				<template v-if="sections && sections.data">
 					<template v-for="section in sections.data" :key="section.id">
 						<div
 								:id="'nav-section-' + section.slug"
-								class="hs-dropdown [--strategy:static] md:[--strategy:absolute] [--adaptive:none] md:[--trigger:hover] py-3 md:py-6">
+								class="hs-dropdown [--strategy:static] md:[--strategy:absolute] [--adaptive:none] md:[--trigger:hover] py-3">
 							<button
 									:id="'nav-section-btn-' + section.slug"
 									type="button"
@@ -59,40 +60,40 @@
 						</div>
 					</template>
 				</template>
+      </div>
+      <div class="flex md:gap-x-7 md:items-center md:justify-end">
+        <a @click="this.toggleBvi" href="#" class="hover:opacity-70 open-bvi ">
+          <svg :class="!underSliderHeader ? 'text-white' : 'text-black'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+               stroke="currentColor"
+               class="w-6 h-6 duration-300 md:block hidden">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+          </svg>
+          <span :class="!underSliderHeader ? 'text-white' : 'text-black'" class="md:hidden">Режим для слабовидящих</span>
+        </a>
 
-				<a @click="this.toggleBvi" href="#" class="hover:opacity-70 py-3 open-bvi ">
-					<svg :class="!underSliderHeader ? 'text-white' : 'text-black'" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-							 stroke="currentColor"
-							 class="w-6 h-6 duration-300 md:block hidden">
-						<path stroke-linecap="round" stroke-linejoin="round"
-									d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
-						<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-					</svg>
-					<span :class="!underSliderHeader ? 'text-white' : 'text-black'" class="md:hidden">Режим для слабовидящих</span>
-				</a>
+        <Link :href="route('client.schedule.index')" class="hover:opacity-70">
+          <svg :class="!underSliderHeader ? 'text-white' : 'text-black'" xmlns="http://www.w3.org/2000/svg"
+               fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+               class="w-6 h-6 duration-300 md:block hidden">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"/>
+          </svg>
+          <span :class="!underSliderHeader ? 'text-white' : 'text-black'" class="md:hidden">Расписание</span>
+        </Link>
 
+        <button class="hover:opacity-70 cursor-pointer" data-hs-overlay="#open-search-modal">
+          <svg :class="!underSliderHeader ? 'text-white' : 'text-black'" xmlns="http://www.w3.org/2000/svg"
+               fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+               class="w-6 h-6 duration-300 md:block hidden">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+          </svg>
+          <span :class="!underSliderHeader ? 'text-white' : 'text-black'" class="md:hidden">Поиск</span>
+        </button>
 
-				<Link :href="route('client.schedule.index')" class="hover:opacity-70 py-3">
-					<svg :class="!underSliderHeader ? 'text-white' : 'text-black'" xmlns="http://www.w3.org/2000/svg"
-							 fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-							 class="w-6 h-6 duration-300 md:block hidden">
-						<path stroke-linecap="round" stroke-linejoin="round"
-									d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"/>
-					</svg>
-					<span :class="!underSliderHeader ? 'text-white' : 'text-black'" class="md:hidden">Расписание</span>
-				</Link>
-
-				<button class="hover:opacity-70 py-3 cursor-pointer" data-hs-overlay="#open-search-modal">
-					<svg :class="!underSliderHeader ? 'text-white' : 'text-black'" xmlns="http://www.w3.org/2000/svg"
-							 fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-							 class="w-6 h-6 duration-300 md:block hidden">
-						<path stroke-linecap="round" stroke-linejoin="round"
-									d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
-					</svg>
-					<span :class="!underSliderHeader ? 'text-white' : 'text-black'" class="md:hidden">Поиск</span>
-				</button>
-
-        <button class="hover:opacity-70 py-3 cursor-pointer" data-hs-overlay="#open-search-sveden-modal">
+        <button class="hover:opacity-70 cursor-pointer" data-hs-overlay="#open-search-sveden-modal">
           <svg :class="!underSliderHeader ? 'text-white' : 'text-black'" xmlns="http://www.w3.org/2000/svg"
                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                class="w-6 h-6 duration-300 md:block hidden">
@@ -102,11 +103,10 @@
 
           <span :class="!underSliderHeader ? 'text-white' : 'text-black'" class="md:hidden">Поиск</span>
         </button>
-
-
-
       </div>
-		</div>
+
+
+    </div>
 	</div>
 </template>
 

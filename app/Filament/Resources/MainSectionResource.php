@@ -23,14 +23,7 @@ class MainSectionResource extends Resource
 
     public static ?string $pluralLabel = 'Главные разделы';
 
-
-
-
-
-
     protected static ?string $navigationGroup = 'Структура приложения';
-
-
 
     public static function form(Form $form): Form
     {

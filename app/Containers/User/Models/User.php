@@ -100,8 +100,7 @@ class User extends Authenticatable implements FilamentUser, SeoTitleInterface, S
     public function canAccessPanel(Panel|\Filament\Panel $panel): bool
     {
         return match ($panel->getId()) {
-            "admin" => $this->hasRole(Utils::getSuperAdminName()),
-            "dashboard" => $this->hasRole(config('filament-shield.dashboard_user.name', 'dashboard_user'))
+            "admin", "dashboard" => $this->hasRole(config('filament-shield.dashboard_user.name', 'dashboard_user'))
                 || $this->hasRole(Utils::getSuperAdminName())
                 || $this->hasRole(config('filament-shield.invited_user.name', 'invited_user')),
             default => false,

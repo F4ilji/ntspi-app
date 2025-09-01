@@ -32,7 +32,7 @@ class EditMainSection extends EditRecord
         $this->subSection_ids = SubSection::query()->where('main_section_id', '=', $this->record->id)->pluck('id')->toArray();
         SubSection::query()->where('main_section_id', '=', $this->record->id)->update(['main_section_id' => NULL]);
         SubSection::whereIn('id', $this->subSection_ids)->update(['main_section_id' => $this->record->id]);
-        $subSections = SubSection::query()->where('main_section_id', '=', $this->record->id)->get();
+        $subSections = SubSection::query()->where('main_section_id', '=', $this->record->id)->with('pages')->get();
 
         foreach ($subSections as $subSection) {
             foreach ($subSection->pages as $page) {
