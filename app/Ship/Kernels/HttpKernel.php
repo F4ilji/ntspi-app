@@ -10,6 +10,7 @@ use App\Ship\Middleware\LimitPost;
 use App\Ship\Middleware\RateLimitCheckMiddleware;
 use App\Ship\Middleware\RateLimitCounterMiddleware;
 use App\Ship\Middleware\TransformRequestMiddleware;
+use Fruitcake\Cors\HandleCors;
 use Illuminate\Foundation\Http\Kernel as LaravelHttpKernel;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
@@ -25,11 +26,12 @@ class HttpKernel extends LaravelHttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
+        HandleCors::class,
         TransformRequestMiddleware::class,
         // \App\Ship\Middleware\TrustHosts::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \App\Ship\Middleware\TrustProxies::class,
-        \Illuminate\Http\Middleware\HandleCors::class,
+//        \Illuminate\Http\Middleware\HandleCors::class,
         \App\Ship\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Ship\Middleware\TrimStrings::class,
