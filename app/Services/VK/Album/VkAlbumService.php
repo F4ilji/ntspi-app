@@ -103,7 +103,7 @@ class VkAlbumService
     public function saveImagesToUploadServer($albumId, $server, $photosList, $hash)
     {
         // URL для запроса
-        $url = 'https://api.vk.com/method/photos.save';
+        $url = 'https://api.vk.ru/method/photos.save';
 
         // Подготовка данных для отправки
         $postFields = [

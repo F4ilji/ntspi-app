@@ -44,7 +44,7 @@ class VkAuthService
 //        session(['vk_code_verifier' => $code_verifier]);
 //
 //
-//        $url = 'https://id.vk.com/authorize?' . http_build_query([
+//        $url = 'https://id.vk.ru/authorize?' . http_build_query([
 //                'response_type' => 'code',
 //                'client_id' => env('VK_APP_ID'),
 //                'redirect_uri' => env('VK_REDIRECT_URI'),
@@ -67,7 +67,7 @@ class VkAuthService
 
         session(['vk_code_verifier' => $code_verifier]); // Сохраняет code_verifier в сессии под ключом 'vk_code_verifier'.
 
-        $url = 'https://id.vk.com/authorize?' . http_build_query([ // Формирует URL для перенаправления на страницу авторизации VK ID с параметрами:
+        $url = 'https://id.vk.ru/authorize?' . http_build_query([ // Формирует URL для перенаправления на страницу авторизации VK ID с параметрами:
                 'response_type' => 'code', // Указывает, что нужен код авторизации.
                 'client_id' => env('VK_APP_ID'), // ID приложения VK из переменных окружения.
                 'redirect_uri' => env('VK_REDIRECT_URI'), // URI для перенаправления после авторизации.
@@ -112,7 +112,7 @@ class VkAuthService
 
     private function exchangeCodeForTokens(Request $request, $codeVerifier)
     {
-        return Http::asForm()->post('https://id.vk.com/oauth2/auth', [
+        return Http::asForm()->post('https://id.vk.ru/oauth2/auth', [
             'grant_type' => 'authorization_code',
             'code_verifier' => $codeVerifier,
             'redirect_uri' => env('VK_REDIRECT_URI_AFTER_AUTH'),
@@ -126,7 +126,7 @@ class VkAuthService
 
     private function refreshToken($refresh_token, $state, $device_id)
     {
-        $response = Http::asForm()->post('https://id.vk.com/oauth2/auth', [
+        $response = Http::asForm()->post('https://id.vk.ru/oauth2/auth', [
             'grant_type' => 'refresh_token',
             'refresh_token' => $refresh_token,
             'client_id' => env('VK_APP_ID'),

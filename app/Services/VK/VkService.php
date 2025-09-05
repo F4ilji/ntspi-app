@@ -66,7 +66,7 @@ class VkService
 
                 $album = $this->createAlbum($title, $images);
                 if (isset($album['id'])) {
-                    $albumLink = "https://vk.com/album-{$this->public_id}_{$album['id']}";
+                    $albumLink = "https://vk.ru/album-{$this->public_id}_{$album['id']}";
                     $message .= "\n[{$albumLink}|Ссылка на все фотографии]";
                 } else {
                     Log::error('Не удалось создать альбом');
@@ -168,7 +168,7 @@ class VkService
         foreach ($videoPaths as $videoPath) {
             try {
                 // Шаг 1: Получение сервера для загрузки
-                $saveResponse = Http::get('https://api.vk.com/method/video.save', [
+                $saveResponse = Http::get('https://api.vk.ru/method/video.save', [
                     'group_id' => $groupId,
                     'access_token' => $this->vkAuthService->getToken()->access_token,
                     'v' => '5.131',
@@ -209,7 +209,7 @@ class VkService
 
         foreach ($imagePaths as $imagePath) {
             try {
-                $uploadServerResponse = Http::get('https://api.vk.com/method/photos.getWallUploadServer', [
+                $uploadServerResponse = Http::get('https://api.vk.ru/method/photos.getWallUploadServer', [
                     'group_id' => $groupId,
                     'access_token' => $this->vkAuthService->getToken()->access_token,
                     'v' => '5.131',
@@ -234,7 +234,7 @@ class VkService
                 }
 
                 // Шаг 3: Сохранение фотографии
-                $saveResponse = Http::get('https://api.vk.com/method/photos.saveWallPhoto', [
+                $saveResponse = Http::get('https://api.vk.ru/method/photos.saveWallPhoto', [
                     'group_id' => $groupId,
                     'photo' => $uploadData['photo'],
                     'server' => $uploadData['server'],

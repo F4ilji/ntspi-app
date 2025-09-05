@@ -62,7 +62,7 @@ class VkWallService
         ];
 
         try {
-            $response = Http::asForm()->post('https://api.vk.com/method/wall.post', $params);
+            $response = Http::asForm()->post('https://api.vk.ru/method/wall.post', $params);
 
             if ($response->successful() && isset($response['response'])) {
                 return [
@@ -122,7 +122,7 @@ class VkWallService
         ];
 
         try {
-            $response = Http::asForm()->post('https://api.vk.com/method/wall.delete', $params);
+            $response = Http::asForm()->post('https://api.vk.ru/method/wall.delete', $params);
 
             if ($response->successful() && isset($response['response']) && $response['response'] == 1) {
                 return [
