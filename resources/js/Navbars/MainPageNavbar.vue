@@ -6,7 +6,7 @@
     ]"
           class="flex duration-500 flex-wrap md:justify-start md:flex-nowrap z-50 w-full text-sm py-3 md:py-0">
     <nav class="max-w-screen-xl w-full mx-auto px-4 py-3" aria-label="Global">
-      <div class="relative lg:flex md:items-center md:justify-between">
+      <div class="relative lg:flex md:items-center md:pb-4 md:justify-between">
         <div class="flex items-center justify-between">
           <Link class="flex-none text-xl font-semibold"
                 :href="route('index')" aria-label="NTSPI">

@@ -44,14 +44,14 @@
             <h1
                 v-if="item.title"
                 :class="`text-${item.settings.text_position}`"
-                class="text-brand-primary mb-3 mt-2 text-3xl font-semibold tracking-tight text-white lg:text-5xl lg:leading-tight"
+                class="text-brand-primary mb-3 mt-2 text-3xl font-semibold tracking-tight text-white lg:text-7xl lg:leading-tight"
             >
               {{ item.title }}
             </h1>
             <div v-if="item.content" class="mt-8 space-x-3 text-gray-500 mb-8">
               <div class="gap-3 md:flex-row md:items-center">
                 <div class="gap-3">
-                  <p :class="`text-${item.settings.text_position}`" class="text-gray-100 text-2xl font-light line-clamp-3">
+                  <p :class="`text-${item.settings.text_position}`" class="text-gray-100 text-4xl font-light line-clamp-3">
                     {{ item.content }}
                   </p>
                 </div>
