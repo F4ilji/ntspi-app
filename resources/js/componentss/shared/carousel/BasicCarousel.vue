@@ -26,14 +26,14 @@
     <button
         @click.stop="prev"
         :disabled="currentIndex === 0"
-        class="absolute top-1/2 left-0 transform -translate-y-1/2 -ml-4 md:-ml-10 bg-gray-700/70 text-white p-2 rounded-full hover:bg-gray-600/90 focus:outline-none z-20 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+        class="hidden md:absolute top-1/2 left-0 transform -translate-y-1/2 -ml-4 md:-ml-10 bg-gray-700/70 text-white p-2 rounded-full hover:bg-gray-600/90 focus:outline-none z-100000 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
     >
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
     </button>
     <button
         @click.stop="next"
         :disabled="currentIndex >= maxScrollIndex"
-        class="absolute top-1/2 right-0 transform -translate-y-1/2 -mr-4 md:-mr-10 bg-gray-700/70 text-white p-2 rounded-full hover:bg-gray-600/90 focus:outline-none z-20 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+        class="hidden md:absolute top-1/2 right-0 transform -translate-y-1/2 -mr-4 md:-mr-10 bg-gray-700/70 text-white p-2 rounded-full hover:bg-gray-600/90 focus:outline-none z-100000 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
     >
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
     </button>

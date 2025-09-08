@@ -150,19 +150,23 @@ class WorkersRelationManager extends RelationManager
                     ->before(function () {
                         app(DivisionCacheService::class)->clearAllCacheByModel();
                     })
-
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->iconButton()
-                    ->tooltip('Редактировать данные сотрудника'),
-
+                    ->tooltip('Редактировать данные сотрудника')
+                    ->before(function () {
+                        app(DivisionCacheService::class)->clearAllCacheByModel();
+                    }),
                 Tables\Actions\DetachAction::make()
                     ->iconButton()
                     ->tooltip('Убрать из подразделения')
                     ->modalHeading('Подтверждение удаления')
                     ->modalSubmitActionLabel('Убрать')
-                    ->modalDescription('Вы уверены, что хотите убрать этого сотрудника из подразделения?'),
+                    ->modalDescription('Вы уверены, что хотите убрать этого сотрудника из подразделения?')
+                    ->before(function () {
+                        app(DivisionCacheService::class)->clearAllCacheByModel();
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -170,7 +174,10 @@ class WorkersRelationManager extends RelationManager
                         ->label('Убрать выбранных')
                         ->modalHeading('Подтверждение удаления')
                         ->modalSubmitActionLabel('Убрать')
-                        ->modalDescription('Вы уверены, что хотите убрать выбранных сотрудников из подразделения?'),
+                        ->modalDescription('Вы уверены, что хотите убрать выбранных сотрудников из подразделения?')
+                        ->before(function () {
+                            app(DivisionCacheService::class)->clearAllCacheByModel();
+                        }),
                 ]),
             ])
             ->emptyStateActions([
