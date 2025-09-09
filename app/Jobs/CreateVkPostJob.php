@@ -83,7 +83,7 @@ class CreateVkPostJob implements ShouldQueue
             // Если не все изображения вошли, создаем альбом
             $album = $this->createAlbum($this->title, $this->images);
             if (isset($album['id'])) {
-                $albumLink = "https://vk.com/album-{$this->public_id}_{$album['id']}";
+                $albumLink = "https://vk.ru/album-{$this->public_id}_{$album['id']}";
                 $this->message .= "\n\n[{$albumLink}|Ссылка на все фотографии]";
             } else {
                 Log::error('Не удалось создать альбом');
@@ -154,7 +154,7 @@ class CreateVkPostJob implements ShouldQueue
 
         foreach ($imagePaths as $imagePath) {
             try {
-                $uploadServerResponse = Http::get('https://api.vk.com/method/photos.getWallUploadServer', [
+                $uploadServerResponse = Http::get('https://api.vk.ru/method/photos.getWallUploadServer', [
                     'group_id' => $groupId,
                     'access_token' => (new VkAuthService())->getToken()->access_token,
                     'v' => '5.131',
@@ -177,7 +177,7 @@ class CreateVkPostJob implements ShouldQueue
                     throw new \Exception('Не удалось загрузить фотографию: ' . $imagePath);
                 }
 
-                $saveResponse = Http::get('https://api.vk.com/method/photos.saveWallPhoto', [
+                $saveResponse = Http::get('https://api.vk.ru/method/photos.saveWallPhoto', [
                     'group_id' => $groupId,
                     'photo' => $uploadData['photo'],
                     'server' => $uploadData['server'],
@@ -207,7 +207,7 @@ class CreateVkPostJob implements ShouldQueue
 
         foreach ($videoPaths as $videoPath) {
             try {
-                $saveResponse = Http::timeout(360)->get('https://api.vk.com/method/video.save', [
+                $saveResponse = Http::timeout(360)->get('https://api.vk.ru/method/video.save', [
                     'group_id' => $groupId,
                     'access_token' => (new VkAuthService())->getToken()->access_token,
                     'v' => '5.131',
@@ -247,7 +247,7 @@ class CreateVkPostJob implements ShouldQueue
         foreach ($documentPaths as $docPath) {
             try {
                 // Получение сервера для загрузки документов на стену группы
-                $uploadServerResponse = Http::get('https://api.vk.com/method/docs.getWallUploadServer', [
+                $uploadServerResponse = Http::get('https://api.vk.ru/method/docs.getWallUploadServer', [
                     'group_id' => $groupId,
                     'access_token' => (new VkAuthService())->getToken()->access_token,
                     'v' => '5.131',
@@ -273,7 +273,7 @@ class CreateVkPostJob implements ShouldQueue
                 }
 
                 // Сохранение документа
-                $saveResponse = Http::get('https://api.vk.com/method/docs.save', [
+                $saveResponse = Http::get('https://api.vk.ru/method/docs.save', [
                     'file' => $uploadData['file'],
                     'access_token' => (new VkAuthService())->getToken()->access_token,
                     'v' => '5.131',

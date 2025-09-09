@@ -3,7 +3,7 @@
       class="relative w-full max-w-7xl mx-auto cursor-grab"
       ref="carouselContainer"
       @mousedown.prevent="onDragStart"
-      @touchstart.prevent="onDragStart"
+      @touchstart="onDragStart"
       :class="{ 'cursor-grabbing': isDragging }"
   >
     <div class="overflow-hidden h-full" ref="viewportElement">
@@ -26,21 +26,21 @@
     <button
         @click.stop="prev"
         :disabled="currentIndex === 0"
-        class="hidden md:absolute top-1/2 left-0 transform -translate-y-1/2 -ml-4 md:-ml-10 bg-gray-700/70 text-white p-2 rounded-full hover:bg-gray-600/90 focus:outline-none z-100000 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+        class="absolute top-1/2 left-0 transform -translate-y-1/2 md:-ml-10 bg-gray-700/70 text-white p-2 rounded-full hover:bg-gray-600/90 focus:outline-none z-10 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
     >
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
     </button>
     <button
         @click.stop="next"
         :disabled="currentIndex >= maxScrollIndex"
-        class="hidden md:absolute top-1/2 right-0 transform -translate-y-1/2 -mr-4 md:-mr-10 bg-gray-700/70 text-white p-2 rounded-full hover:bg-gray-600/90 focus:outline-none z-100000 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+        class="absolute top-1/2 right-0 transform -translate-y-1/2 md:-mr-10 bg-gray-700/70 text-white p-2 rounded-full hover:bg-gray-600/90 focus:outline-none z-10 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
     >
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
     </button>
 
     <div
         v-if="numberOfDots > 1"
-        class="absolute left-1/2 transform -translate-x-1/2 flex space-x-2 p-6 z-20"
+        class="absolute -bottom-15 left-1/2 transform -translate-x-1/2 flex space-x-2 p-4 z-10"
     >
       <button
           v-for="dotIdx in numberOfDots"
@@ -77,9 +77,9 @@ const props = defineProps({
     type: Number,
     default: 0.1,
   },
-  gapSizePx: { // НОВЫЙ ПРОПС: Размер промежутка в пикселях
+  gapSizePx: {
     type: Number,
-    default: 16, // Соответствует TailwindCSS gap-4 (1rem = 16px)
+    default: 16,
   }
 });
 
@@ -115,57 +115,33 @@ onBeforeUnmount(() => {
   if (mediaQueryList) {
     mediaQueryList.removeEventListener('change', handleMediaQueryChange);
   }
-  window.removeEventListener('mousemove', onDragMove);
-  window.removeEventListener('mouseup', onDragEnd);
-  window.removeEventListener('touchmove', onDragMove);
-  window.removeEventListener('touchend', onDragEnd);
-  window.removeEventListener('touchcancel', onDragEnd);
+  removeDragListeners();
 });
 
 const totalItems = computed(() => props.items.length);
 
 const itemOuterWidthPercentage = computed(() => {
   if (currentItemsToShow.value <= 0 || !viewportElement.value) return 0;
-
   const viewportWidth = viewportElement.value.offsetWidth;
   if (viewportWidth === 0) return 0;
-
-  // Общая ширина промежутков, которую нужно вычесть из 100%
-  // Промежутков на 1 меньше, чем элементов
   const totalGapWidthPx = (currentItemsToShow.value - 1) * props.gapSizePx;
   const totalGapWidthPercentage = (totalGapWidthPx / viewportWidth) * 100;
-
-  // Ширина, доступная для самих элементов (без промежутков)
   const availableWidthForItemsPercentage = 100 - totalGapWidthPercentage;
-
-  // Ширина каждого элемента как процент от общей ширины вьюпорта
   return availableWidthForItemsPercentage / currentItemsToShow.value;
 });
-
 
 const itemPixelWidth = computed(() => {
   if (viewportElement.value && currentItemsToShow.value > 0) {
     const viewportWidth = viewportElement.value.offsetWidth;
     const totalGapWidthPx = (currentItemsToShow.value - 1) * props.gapSizePx;
-
-    // Ширина каждого элемента без учета промежутка
     const widthOfSingleItemPx = (viewportWidth - totalGapWidthPx) / currentItemsToShow.value;
-
-    // Для расчета смещения `translateX` нам нужно смещаться на ширину элемента
-    // плюс ширину одного промежутка, если он есть.
-    // Если мы на последнем элементе, который не имеет промежутка справа,
-    // но при переходе к следующему (если он есть), смещение все равно должно учитывать "отправную точку" следующего элемента.
-    // Поэтому всегда добавляем gapSizePx.
     return widthOfSingleItemPx + props.gapSizePx;
   }
   return 0;
 });
 
-
 const maxScrollIndex = computed(() => {
   if (!totalItems.value || totalItems.value <= currentItemsToShow.value) return 0;
-  // Максимальный индекс, до которого можно прокрутить, чтобы последний видимый элемент
-  // был последним элементом в массиве items.
   return totalItems.value - currentItemsToShow.value;
 });
 
@@ -182,26 +158,14 @@ const currentSliderTranslateX = computed(() => {
   }
   if (itemPixelWidth.value > 0) {
     const clampedIndex = Math.min(currentIndex.value, maxScrollIndex.value);
-    // При вычислении translate, мы должны смещаться на ширину элемента
-    // плюс один промежуток между элементами.
-    // Но последний промежуток на самом деле не должен быть частью смещения
-    // при прокрутке до последнего элемента.
-    //
-    // Давайте переопределим `itemPixelWidth` для ясности:
-    // `effectiveItemWidth` - это ширина одного элемента без учета его правого промежутка.
     const effectiveItemWidth = (viewportElement.value.offsetWidth - (currentItemsToShow.value - 1) * props.gapSizePx) / currentItemsToShow.value;
-
-    // Смещение = (индекс * ширина_элемента) + (индекс * размер_промежутка)
     return -(clampedIndex * effectiveItemWidth + clampedIndex * props.gapSizePx);
   }
   return 0;
 });
 
-
 const numberOfDots = computed(() => {
-  if (totalItems.value === 0) return 0;
-  if (totalItems.value > 0 && totalItems.value <= currentItemsToShow.value) return 1;
-  // Количество точек равно максимальному индексу прокрутки + 1
+  if (totalItems.value <= currentItemsToShow.value) return 0;
   return maxScrollIndex.value + 1;
 });
 
@@ -222,7 +186,10 @@ const goToDot = (dotIndex) => {
 };
 
 const onDragStart = (event) => {
-  // Не перетаскивать, если элементов мало для прокрутки
+  if (event.target.closest('button')) {
+    return;
+  }
+
   if (totalItems.value <= currentItemsToShow.value || itemPixelWidth.value === 0) return;
 
   isDragging.value = true;
@@ -230,7 +197,6 @@ const onDragStart = (event) => {
   dragStartX.value = touch.clientX;
   dragCurrentX.value = touch.clientX;
 
-  // Рассчитываем dragStartTranslateX на основе текущего валидного индекса
   const currentValidIndex = Math.min(currentIndex.value, maxScrollIndex.value);
   const effectiveItemWidth = (viewportElement.value.offsetWidth - (currentItemsToShow.value - 1) * props.gapSizePx) / currentItemsToShow.value;
   dragStartTranslateX.value = -(currentValidIndex * effectiveItemWidth + currentValidIndex * props.gapSizePx);
@@ -248,11 +214,16 @@ const onDragStart = (event) => {
 
 const onDragMove = (event) => {
   if (!isDragging.value) return;
+
+  if (event.cancelable) {
+    event.preventDefault();
+  }
+
   const touch = event.type === 'touchmove' ? event.touches[0] : event;
   dragCurrentX.value = touch.clientX;
 };
 
-const onDragEnd = (event) => {
+const onDragEnd = () => {
   if (!isDragging.value) {
     removeDragListeners();
     return;
@@ -260,11 +231,9 @@ const onDragEnd = (event) => {
   isDragging.value = false;
 
   const draggedDistance = dragCurrentX.value - dragStartX.value;
-
-  // Здесь мы должны использовать ширину одного элемента, *включая* его промежуток для расчета смещения.
   const effectiveItemWidthWithGap = (viewportElement.value.offsetWidth - (currentItemsToShow.value - 1) * props.gapSizePx) / currentItemsToShow.value + props.gapSizePx;
 
-  if (effectiveItemWidthWithGap === 0) { // Защита от деления на ноль
+  if (effectiveItemWidthWithGap === 0) {
     removeDragListeners();
     if (carouselContainer.value) carouselContainer.value.style.userSelect = '';
     return;
@@ -295,7 +264,6 @@ const removeDragListeners = () => {
   window.removeEventListener('touchend', onDragEnd);
   window.removeEventListener('touchcancel', onDragEnd);
 }
-
 </script>
 
 <style scoped>
