@@ -92,7 +92,7 @@ export default {
     <BasicPageContainer breakpoint="md">
       <div class="space-y-5 md:space-y-10">
         <div class="space-y-3">
-          <BackButton :link="$page.props.urlPrev" title="Назад"/>
+          <BackButton link="client.post.index" title="Назад"/>
           <BaseBreadcrumbs :breadcrumbs="breadcrumbs">
             <BreadcrumbsItem title="Новости" :url="route('client.post.index')" />
             <BreadcrumbsItem :title="post.data.title" :url="$page.url" />
