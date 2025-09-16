@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AcademicJournalResource\RelationManagers;
 
+use App\Services\App\Cache\AcademicJournalCacheService;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -119,30 +120,45 @@ class JournalsRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->label('Добавить выпуск')
-                    ->modalHeading('Добавление нового выпуска'),
+                    ->modalHeading('Добавление нового выпуска')
+                    ->before(function () {
+                        app(AcademicJournalCacheService::class)->clearAllCacheByModel();
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->iconButton()
-                    ->tooltip('Редактировать'),
+                    ->tooltip('Редактировать')
+                    ->before(function () {
+                        app(AcademicJournalCacheService::class)->clearAllCacheByModel();
+                    }),
 
                 Tables\Actions\DeleteAction::make()
                     ->iconButton()
                     ->tooltip('Удалить')
                     ->modalHeading('Удаление выпуска')
-                    ->modalDescription('Вы уверены, что хотите удалить этот выпуск?'),
+                    ->modalDescription('Вы уверены, что хотите удалить этот выпуск?')
+                    ->before(function () {
+                        app(AcademicJournalCacheService::class)->clearAllCacheByModel();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                         ->label('Удалить выбранные')
                         ->modalHeading('Удаление выпусков')
-                        ->modalDescription('Вы уверены, что хотите удалить выбранные выпуски?'),
+                        ->modalDescription('Вы уверены, что хотите удалить выбранные выпуски?')
+                        ->before(function () {
+                            app(AcademicJournalCacheService::class)->clearAllCacheByModel();
+                        }),
                 ]),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()
-                    ->label('Добавить выпуск'),
+                    ->label('Добавить выпуск')
+                    ->before(function () {
+                        app(AcademicJournalCacheService::class)->clearAllCacheByModel();
+                    }),
             ])
             ->groups([
                 Tables\Grouping\Group::make('year_publication')
