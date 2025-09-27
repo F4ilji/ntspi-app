@@ -39,6 +39,7 @@ class HandleInertiaRequests extends Middleware
                 }
                 return 'empty';
             },
+            'yandex_metrika_id' => config('services.yandex_metrika.id'),
         ];
     }
 }

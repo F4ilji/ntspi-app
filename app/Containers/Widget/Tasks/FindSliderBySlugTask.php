@@ -4,7 +4,7 @@ namespace App\Containers\Widget\Tasks;
 
 use App\Containers\Widget\Models\Slider;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Carbon; // Убедитесь, что Carbon импортирован
 
 class FindSliderBySlugTask
 {
@@ -13,7 +13,7 @@ class FindSliderBySlugTask
         $cacheKey = 'slider_' . $slug;
 
         return Cache::remember($cacheKey, now()->addHour(), function () use ($slug) {
-            $now = Carbon::now(); // Получаем текущее время один раз
+            $now = Carbon::now();
 
             $slider = Slider::query()
                 ->where('slug', $slug)
@@ -21,7 +21,13 @@ class FindSliderBySlugTask
                 ->with(['slides' => function($query) use ($now) {
                     $query->where('is_active', true)
                         ->where('start_time', '<=', $now)
-                        ->where('end_time', '>=', $now);
+                        // Добавляем условие для end_time
+                        ->where(function ($q) use ($now) {
+                            // Показываем слайд, если end_time еще не наступил
+                            $q->where('end_time', '>=', $now)
+                                // ИЛИ если end_time вообще не указан (NULL)
+                                ->orWhereNull('end_time');
+                        });
                 }])
                 ->firstOrFail();
 
