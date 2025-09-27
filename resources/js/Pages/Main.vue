@@ -2,7 +2,7 @@
 	<MetaTags :seo="seo" />
 
 	<MainPageNavBar :sections="$page.props.navigation" />
-  <Slider class="bvi-hide" slider-id="quos-velit-quisquam" />
+  <Slider class="bvi-hide bg-gray-300" slider-id="quos-velit-quisquam" />
 
   <section class="max-w-screen-xl w-full mx-auto px-4 py-3 pb-10">
     <PostSection :posts="posts" />

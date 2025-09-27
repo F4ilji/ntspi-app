@@ -206,8 +206,7 @@ class SlidesRelationManager extends RelationManager
                                             ->native(false)
                                             ->displayFormat('d/m/Y H:i')
                                             ->seconds(false)
-                                            ->default(Carbon::now())
-                                            ->minDate(fn($record, $context) => $context === 'edit' ? $record?->start_time : Carbon::now()),
+                                            ->default(Carbon::now()),
 
                                         DateTimePicker::make('end_time')
                                             ->label('Дата окончания показа')
@@ -216,7 +215,6 @@ class SlidesRelationManager extends RelationManager
                                             ->displayFormat('d/m/Y H:i')
                                             ->seconds(false)
                                             ->default(Carbon::now()->addWeeks(2))
-                                            ->minDate(fn (Forms\Get $get) => $get('start_time') ?: Carbon::now()),
                                     ]),
 
                                 TextInput::make('link')

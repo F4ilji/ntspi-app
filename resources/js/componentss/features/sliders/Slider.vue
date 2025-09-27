@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading" class="relative z-0 min-h-[calc(100vh)] items-center">
+  <div v-if="loading" class="relative z-0 min-h-[calc(100vh)] items-center bg-gray-500">
     <div class="group block rounded-xl overflow-hidden animate-pulse min-h-[calc(100vh)] bg-gray-200"></div>
   </div>
 
