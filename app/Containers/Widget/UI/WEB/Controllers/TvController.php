@@ -11,4 +11,9 @@ class TvController extends Controller
     {
         return inertia()->render('Client/Tv/Index');
     }
+
+    public function time()
+    {
+        return inertia()->render('Client/Tv/Time');
+    }
 }
