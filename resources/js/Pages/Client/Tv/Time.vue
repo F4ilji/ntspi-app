@@ -4,7 +4,7 @@
       :class="{ 'invert': isResetting }"
   >
     <!-- Левый блок - Расписание -->
-    <div class="w-1/2 p-10 flex flex-col justify-center bg-gray-900 m-5 rounded-xl">
+    <div class="w-1/2 p-10 flex flex-col justify-center bg-gray-900">
       <!-- Состояние: Идет пара -->
       <div v-if="currentStatus.type === 'class'">
         <h2 class="text-6xl font-bold mb-4">
@@ -42,7 +42,7 @@
     </div>
 
     <!-- Правый блок - Дата и время -->
-    <div class="w-1/2 bg-gray-800 p-10 flex flex-col justify-center items-center m-5 rounded-xl">
+    <div class="w-1/2 bg-gray-800 p-10 flex flex-col justify-center items-center">
       <h1 class="text-8xl font-bold mb-4 tabular-nums">
         {{ currentTime }}
       </h1>
