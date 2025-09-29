@@ -1,14 +1,5 @@
 <template>
   <div class="relative z-0 min-h-screen flex flex-col">
-    <div class="w-full">
-      <div class="flex w-full h-1 bg-gray-200 overflow-hidden" role="progressbar"
-           aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-        <div
-            class="flex flex-col justify-center overflow-hidden bg-primary-light text-xs text-white text-center whitespace-nowrap transition-all duration-500 ease-in-out"
-            :style="{ 'width': `${progressBarStep}%` }"></div>
-      </div>
-    </div>
-
     <!-- Основной контент, который занимает все доступное пространство -->
     <div class="flex-1 relative">
       <!-- Слайды с изображениями -->
@@ -83,7 +74,7 @@ export default {
       currentIndex: 0,
       intervalId: null,
       reloadIntervalId: null,
-      slideDuration: 9000,
+      slideDuration: 15000,
       reloadDuration: 600000, // 10 минут в миллисекундах
       sortedSlides: null,
 
