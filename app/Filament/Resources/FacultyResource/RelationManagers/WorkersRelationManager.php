@@ -40,7 +40,6 @@ class WorkersRelationManager extends RelationManager
 
                         Forms\Components\TextInput::make('service_phone')
                             ->label('Рабочий телефон')
-                            ->tel()
                             ->maxLength(20)
                             ->placeholder('+7 (XXX) XXX-XX-XX')
                             ->helperText('Номер рабочего телефона с кодом'),
