@@ -1,6 +1,6 @@
 <!-- NavLink.vue -->
 <template>
-	<h2 :id="generateSlug(title)" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
+	<h2 :id="'anchor-link-' + generateSlug(title)" class="mb-3 font-medium text-gray-800 dark:text-neutral-200">
 		{{ title }}
 	</h2>
 	<div class="grid grid-cols-1 sm:grid-cols-1 gap-3">

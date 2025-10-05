@@ -26,10 +26,6 @@
     <BasicFooter />
   </BasicPageWrapper>
 
-
-
-
-
 </template>
 
 <script>

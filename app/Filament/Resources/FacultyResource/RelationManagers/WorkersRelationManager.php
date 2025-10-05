@@ -120,7 +120,6 @@ class WorkersRelationManager extends RelationManager
 
                                 Forms\Components\TextInput::make('service_phone')
                                     ->label('Рабочий телефон')
-                                    ->tel()
                                     ->maxLength(20)
                                     ->placeholder('+7 (XXX) XXX-XX-XX')
                                     ->helperText('Номер рабочего телефона с кодом'),
@@ -142,14 +141,19 @@ class WorkersRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->iconButton()
-                    ->tooltip('Редактировать'),
-
+                    ->tooltip('Редактировать')
+                    ->before(function () {
+                        app(FacultyCacheService::class)->clearAllCacheByModel();
+                    }),
                 Tables\Actions\DetachAction::make()
                     ->iconButton()
                     ->tooltip('Открепить')
                     ->modalHeading('Открепить сотрудника')
                     ->modalDescription('Вы уверены, что хотите открепить этого сотрудника от факультета?')
-                    ->modalSubmitActionLabel('Открепить'),
+                    ->modalSubmitActionLabel('Открепить')
+                    ->before(function () {
+                        app(FacultyCacheService::class)->clearAllCacheByModel();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -157,7 +161,10 @@ class WorkersRelationManager extends RelationManager
                         ->label('Открепить выбранных')
                         ->modalHeading('Открепить сотрудников')
                         ->modalDescription('Вы уверены, что хотите открепить выбранных сотрудников от факультета?')
-                        ->modalSubmitActionLabel('Открепить'),
+                        ->modalSubmitActionLabel('Открепить')
+                        ->before(function () {
+                            app(FacultyCacheService::class)->clearAllCacheByModel();
+                        }),
                 ]),
             ])
             ->emptyStateHeading('Нет сотрудников')
