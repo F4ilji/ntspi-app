@@ -54,7 +54,7 @@
 
 <!--            <h2 id="external-teachers" class="font-bold text-xl">Внешние совместители</h2>-->
 
-            <h2 v-if="directions" :id="'anchor-link-' + generateSlug('Программы')" class="font-bold text-xl">Программы</h2>
+            <h2 v-if="directions && !!directions.length" :id="'anchor-link-' + generateSlug('Программы')" class="font-bold text-xl">Программы</h2>
 
             <div class="hs-accordion-group">
               <div v-for="(direction, index) in directions" class="hs-accordion hs-accordion-active:bg-gray-100 rounded-xl px-4 py-6" id="hs-basic-with-title-and-arrow-stretched-heading-three">
