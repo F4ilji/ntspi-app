@@ -55,7 +55,7 @@
   </div>
 
   <div class="mt-5 sm:mt-7">
-    <EducationBlock v-if="person.data.details.education.length > 0" title="Направление подготовки" :educations="person.data.details.education" />
+    <EducationBlock v-if="person.data.details.education.length > 0" title="Образование" :educations="person.data.details.education" />
   </div>
 
   <div class="mt-8">

@@ -1,5 +1,5 @@
 <template>
-  <dl v-if="!(authors[0] === 'Без автора' && null)" class="flex flex-col sm:flex-row gap-1 items-baseline">
+  <dl v-if="!!authors.length" class="flex flex-col sm:flex-row gap-1 items-baseline">
     <dt class="min-w-40">
       <h3 class="block text-sm text-gray-500 m-0 underline">Над статьей работали:</h3>
     </dt>
