@@ -42,11 +42,7 @@ class WorkersRelationManager extends RelationManager
                         Forms\Components\TextInput::make('service_phone')
                             ->label('Служебный телефон')
                             ->placeholder('+7 (XXX) XXX-XX-XX')
-                            ->helperText('Формат: +7 (XXX) XXX-XX-XX')
-                            ->regex('/^\+?[0-9\s\-\(\)]{7,}$/')
-                            ->validationMessages([
-                                'regex' => 'Пожалуйста, введите корректный номер телефона',
-                            ]),
+                            ->helperText('Формат: +7 (XXX) XXX-XX-XX'),
 
                         Forms\Components\TextInput::make('cabinet')
                             ->label('Кабинет')
@@ -128,11 +124,7 @@ class WorkersRelationManager extends RelationManager
                                     ->label('Служебный телефон')
                                     ->columnSpanFull()
                                     ->placeholder('+7 (XXX) XXX-XX-XX')
-                                    ->helperText('Формат: +7 (XXX) XXX-XX-XX')
-                                    ->regex('/^\+?[0-9\s\-\(\)]{7,}$/')
-                                    ->validationMessages([
-                                        'regex' => 'Пожалуйста, введите корректный номер телефона',
-                                    ]),
+                                    ->helperText('Формат: +7 (XXX) XXX-XX-XX'),
 
                                 Forms\Components\TextInput::make('cabinet')
                                     ->label('Кабинет')
