@@ -41,8 +41,6 @@ class WorkersRelationManager extends RelationManager
 
                         Forms\Components\TextInput::make('service_phone')
                             ->label('Служебный телефон')
-                            ->tel()
-                            ->maxLength(20)
                             ->placeholder('+7 (XXX) XXX-XX-XX')
                             ->helperText('Формат: +7 (XXX) XXX-XX-XX')
                             ->regex('/^\+?[0-9\s\-\(\)]{7,}$/')
@@ -128,9 +126,7 @@ class WorkersRelationManager extends RelationManager
 
                                 Forms\Components\TextInput::make('service_phone')
                                     ->label('Служебный телефон')
-                                    ->tel()
                                     ->columnSpanFull()
-                                    ->maxLength(20)
                                     ->placeholder('+7 (XXX) XXX-XX-XX')
                                     ->helperText('Формат: +7 (XXX) XXX-XX-XX')
                                     ->regex('/^\+?[0-9\s\-\(\)]{7,}$/')
