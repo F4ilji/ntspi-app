@@ -79,7 +79,7 @@
   </div>
 
   <div class="mt-8">
-    <ListBlock v-if="person.data.details.attendedConferences.length > 0" name-list="Участие в конференциях" :list="person.data.details.attendedConferences" />
+    <ListBlock v-if="person.data.details.attendedConferences.length > 0" name-list="Участие в конференциях, выставках" :list="person.data.details.attendedConferences" />
   </div>
 
   <div class="mt-8">
