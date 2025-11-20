@@ -51,7 +51,7 @@ class GetPostsTask
                 });
 
             $sort = $filters['sort'] ?? 'desc';
-            return $query->orderBy('publish_at', $sort)->paginate(9)->withQueryString();
+            return $query->orderBy('publish_at', $sort)->paginate(10)->withQueryString();
         });
     }
 }

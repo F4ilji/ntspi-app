@@ -129,7 +129,7 @@ export default {
           <div class="space-y-5 md:space-y-4">
             <div>
               <div class="container mx-auto max-w-screen-lg py-5 lg:py-8">
-                <div class="grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
+                <div class="grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-2">
                   <template v-for="post in posts.data" :key="post.id">
                     <PostListItem :post="post" />
                   </template>

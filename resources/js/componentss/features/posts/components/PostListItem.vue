@@ -58,20 +58,18 @@
                               </a>
                             </p>
                           </div>
-                          <div
-                              class="mt-3 flex items-center space-x-3 text-gray-500 dark:text-gray-400"
-                          >
-                            <span>
-                              <div class="flex items-center gap-3">
-																<span v-if="post && post.authors && post.authors.length > 0" class="truncate text-sm">
-  																{{ textLimit(post.authors[0], 20) }}
-																</span>
-                              </div>
+                          <div class="flex items-center gap-3 text-gray-500">
+
+                            <span v-if="post?.authors?.length" class="truncate text-sm">
+                              {{ textLimit(post.authors[0], 40) }}
                             </span>
-                            <span class="text-xs text-gray-300 dark:text-gray-600"
-                            >•</span
-                            >
-                            <span class="truncate text-sm">{{ post.created_post }}</span>
+
+                            <span v-if="post?.authors?.length" class="text-xs text-gray-300 dark:text-gray-600">•</span>
+
+                            <span class="truncate text-sm">
+                              {{ post.created_post }}
+                            </span>
+
                           </div>
                         </div>
                       </div>
