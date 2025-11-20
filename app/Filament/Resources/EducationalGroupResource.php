@@ -40,6 +40,7 @@ class EducationalGroupResource extends Resource
                                     ->required()
                                     ->maxLength(50)
                                     ->placeholder('Например: ИВТ-21-1')
+                                    ->unique()
                                     ->helperText('Введите краткое название группы в принятом формате'),
 
                                 Select::make('faculty_id')

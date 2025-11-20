@@ -61,7 +61,7 @@ class PostForm
                                             ->label('Статус публикации')
                                             ->options(PostStatus::class)
                                             ->required()
-                                            ->default(PostStatus::VERIFICATION)
+                                            ->default(PostStatus::PUBLISHED)
                                             ->helperText('Выберите статус публикации новости')
                                             ->disableOptionWhen(fn (string $value): bool =>
                                                 $value == PostStatus::PUBLISHED->value && !auth()->user()->can('publish_post')
@@ -125,7 +125,7 @@ class PostForm
                                                         Toggle::make('publication.vk')
                                                             ->label('Опубликовать в VK')
                                                             ->default(false)
-//                                                            ->disabled(true)
+                                                            ->disabled(true)
                                                             ->helperText('Новость будет автоматически опубликована в VK'),
 //                                                        Toggle::make('publication.telegram')
 //                                                            ->label('Опубликовать в Telegram')

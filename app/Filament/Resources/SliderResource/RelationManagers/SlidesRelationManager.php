@@ -96,7 +96,7 @@ class SlidesRelationManager extends RelationManager
                                     })
                                     ->options(function (Forms\Get $get) {
                                         if ($get('model_select') === 'Post') {
-                                            return Post::where('status', 'published')->pluck('title', 'id');
+                                            return Post::where('status', 'published')->orderBy('created_at', 'desc')->pluck('title', 'id');
                                         }
                                         if ($get('model_select') === 'Page') {
                                             return Page::whereNotNull('title')->pluck('title', 'id');
