@@ -125,7 +125,6 @@ class PostForm
                                                         Toggle::make('publication.vk')
                                                             ->label('Опубликовать в VK')
                                                             ->default(false)
-                                                            ->disabled(true)
                                                             ->helperText('Новость будет автоматически опубликована в VK'),
 //                                                        Toggle::make('publication.telegram')
 //                                                            ->label('Опубликовать в Telegram')
