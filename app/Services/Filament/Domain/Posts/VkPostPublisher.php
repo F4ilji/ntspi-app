@@ -88,7 +88,7 @@ class VkPostPublisher
     private function generateContentForVk($post): string
     {
         $message = '';
-        $message .= "Название: $post->title\n\n";
+        $message .= "$post->title\n\n";
 
         if (is_array($post->content)) {
             $message .= $this->parseContentBlocks($post->content);
