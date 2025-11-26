@@ -74,7 +74,6 @@ class CreateVkPostJob implements ShouldQueue
             Log::info("{$logPrefix} Видео: " . count($attached_videos) . ", Осталось слотов для фото: {$remaining_slots}");
 
             if ($remaining_slots > 0 && !empty($this->images)) {
-                // Подготовка только тех изображений, которые поместятся
                 $images_to_attach = array_slice($this->images, 0, $remaining_slots);
 
                 Log::info("{$logPrefix} Начинаем подготовку фото для стены", ['files' => $images_to_attach]);
@@ -89,14 +88,12 @@ class CreateVkPostJob implements ShouldQueue
                 Log::info("{$logPrefix} Фото не будут добавлены (нет слотов или нет фото).");
             }
 
-            // Собираем все вложения с учетом приоритетов
             $selected_attachments = array_merge($doc_list, $attached_videos, $image_list);
         }
 
-        // Проверяем, все ли изображения прикреплены
         if (count($this->images) > count($image_list)) {
             Log::info("{$logPrefix} Не все фото вошли в пост. Создаем альбом.");
-            // Если не все изображения вошли, создаем альбом
+
             $album = $this->createAlbum($this->title, $this->images);
             if (isset($album['id'])) {
                 $albumLink = "https://vk.ru/album-{$this->public_id}_{$album['id']}";
@@ -127,14 +124,31 @@ class CreateVkPostJob implements ShouldQueue
 
     private function prepareWallPhotos(array $images): string
     {
-        $baseUrl = config('app.url');
         try {
-            $imagePaths = array_map(function($img) use ($baseUrl) {
-                // Убираем двойные слеши если есть, для красоты логов, но не обязательно
-                return $baseUrl . $img;
-            }, $images);
+            $imagePaths = [];
 
-            Log::info("URL изображений для загрузки:", $imagePaths);
+            foreach ($images as $img) {
+                $relativePath = ltrim($img, '/');
+
+                $fullPath = public_path($relativePath);
+
+                if (!file_exists($fullPath)) {
+                    $fullPath = storage_path('app/public/' . $relativePath);
+                }
+
+                if (file_exists($fullPath)) {
+                    $imagePaths[] = $fullPath;
+                } else {
+                    Log::warning("Файл не найден на диске: {$img} (Искали: {$fullPath})");
+                }
+            }
+
+            if (empty($imagePaths)) {
+                Log::info("Нет валидных локальных путей для фото.");
+                return '';
+            }
+
+            Log::info("Локальные пути изображений для загрузки:", $imagePaths);
 
             $photos = $this->uploadWallPhotos($imagePaths, $this->public_id);
 
@@ -143,6 +157,7 @@ class CreateVkPostJob implements ShouldQueue
             }, $photos));
 
             return $result;
+
         } catch (\Exception $e) {
             Log::error("Ошибка при подготовке фотографий: " . $e->getMessage());
             return '';
