@@ -25,22 +25,34 @@ return [
         ],
 
         'test' => [
-            'plugins' => 'advlist paste autoresize codesample directionality emoticons fullscreen hr image imagetools link lists media table toc wordcount',
-            'toolbar' => ' bold italic | numlist bullist | blockquote table hr |  link   |  fullscreen',
+            'plugins' => 'advlist paste autoresize codesample directionality emoticons fullscreen hr link lists table toc wordcount',
+
+            'toolbar' => ' bold italic removeformat | numlist bullist | blockquote table hr |  link   |  fullscreen',
             'upload_directory' => null,
             'browser_spellcheck' => true,
+
             'custom_configs' => [
                 'table_advtab' => false,
                 'table_row_advtab' => false,
                 'table_cell_advtab' => false,
                 'contextmenu' => '',
                 'table_resize_bars' => false,
-                'paste_as_text' => true,
-                'browser_spellcheck' => true, // Включение проверки орфографии
+                'browser_spellcheck' => true,
 
+                'paste_as_text' => false,
 
+                'paste_data_images' => false,
+
+                'invalid_styles' => 'color background background-color font-family font-size line-height width height margin padding',
+
+                'invalid_elements' => 'img,video,audio,object,embed,iframe,script,applet',
+
+                'paste_webkit_styles' => 'none',
+                'paste_remove_styles_if_webkit' => true,
+
+                'paste_merge_formats' => true,
             ],
-        ]
+        ],
 
 
         /*
