@@ -116,6 +116,3 @@ php artisan db:seed
 *   `app/Containers/`: Business logic modules (Porto pattern).
 *   `resources/js/`: Vue.js components, Pages, and shared UI assets.
 *   `routes/`: Web and API routes (including dynamic DB-based routing logic).
-
-## 📄 License
-[MIT License](LICENSE)
