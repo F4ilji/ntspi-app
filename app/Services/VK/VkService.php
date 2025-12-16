@@ -19,7 +19,7 @@ class VkService
         $vk = new VKApiClient();
         $this->wallService = new VkWallService($vk);
         $this->albumService = new VkAlbumService($vk);
-        $this->public_id = env('PUBLIC_ID');
+        $this->public_id = config('services.vk.public_id');
         $this->vkAuthService = new VkAuthService();
     }
 
@@ -108,7 +108,7 @@ class VkService
     public function createAlbum(string $title, $images)
     {
         $album = $this->albumService->createAlbum($title);
-        $uploadServer = $this->albumService->getServerForUploadImages($album['id'], env('PUBLIC_ID'));
+        $uploadServer = $this->albumService->getServerForUploadImages($album['id'], config('services.vk.public_id'));
         foreach (array_chunk($images, 4) as $images_slice) {
             $images_data = $this->albumService->uploadImagesToUploadServer($uploadServer['upload_url'], $images_slice);
             $this->albumService->saveImagesToUploadServer(
@@ -142,7 +142,7 @@ class VkService
                 return $baseUrl . $img;
             }, $images);
 
-            $photos = $this->uploadWallPhotos($imagePaths, env('PUBLIC_ID'));
+            $photos = $this->uploadWallPhotos($imagePaths, config('services.vk.public_id'));
 
             return implode(',', array_map(function($photo) {
                 return "photo{$photo['owner_id']}_{$photo['id']}";
@@ -158,7 +158,7 @@ class VkService
         $videoPaths = array_map(function($vid) use ($baseUrl) {
             return $baseUrl . $vid;
         }, $videos);
-        return $this->uploadVideos($videoPaths, env('PUBLIC_ID')); // Возвращает массив, например: ['video123_456', 'video789_012']
+        return $this->uploadVideos($videoPaths, config('services.vk.public_id')); // Возвращает массив, например: ['video123_456', 'video789_012']
     }
 
     private function uploadVideos(array $videoPaths, ?int $groupId = null): array

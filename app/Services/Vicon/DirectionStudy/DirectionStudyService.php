@@ -40,31 +40,31 @@ class DirectionStudyService
 
     public function getNaprs(int $edu_level): object
     {
-        $data = $this->callAPI("https://db-nica.ru/api/v1/naprs?perPage=200&filter_edu_level=$edu_level", env('VICON_TOKEN'));
+        $data = $this->callAPI("https://db-nica.ru/api/v1/naprs?perPage=200&filter_edu_level=$edu_level", config('services.vicon.token'));
         return $data;
     }
 
     public function getNapr(string $uuid): object
     {
-        $data = $this->callAPI("https://db-nica.ru/api/v1/napr/$uuid", env('VICON_TOKEN'));
+        $data = $this->callAPI("https://db-nica.ru/api/v1/napr/$uuid", config('services.vicon.token'));
         return $data;
     }
 
     public function getPrograms(int $edu_level): object
     {
-        $data = $this->callAPI("https://db-nica.ru/api/v1/programs?filter_edu_level=$edu_level&perPage=200", env('VICON_TOKEN'));
+        $data = $this->callAPI("https://db-nica.ru/api/v1/programs?filter_edu_level=$edu_level&perPage=200", config('services.vicon.token'));
         return $data;
     }
 
     public function getProgram(string $uuid): object
     {
-        $data = $this->callAPI("https://db-nica.ru/api/v1/program/$uuid", env('VICON_TOKEN'));
+        $data = $this->callAPI("https://db-nica.ru/api/v1/program/$uuid", config('services.vicon.token'));
         return $data;
     }
 
     public function getProgramDocs(string $uuid): object
     {
-        $data = $this->callAPI("https://db-nica.ru/api/v1/program/$uuid/edu-docs?perPage=200", env('VICON_TOKEN'));
+        $data = $this->callAPI("https://db-nica.ru/api/v1/program/$uuid/edu-docs?perPage=200", config('services.vicon.token'));
         return $data;
     }
 

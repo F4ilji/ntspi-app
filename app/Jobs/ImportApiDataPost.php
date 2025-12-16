@@ -32,13 +32,13 @@ class ImportApiDataPost implements ShouldQueue
     {
         try {
             // Получаем первую страницу данных
-            $response = Http::get(env('TRANSFER_PROXY_URL') . '/api/posts')->object();
+            $response = Http::get(config('TRANSFER_PROXY_URL') . '/api/posts')->object();
             $last_page = $response->last_page;
             Log::info('Last page: ' . $last_page);
 
             // Проходим по всем страницам
             for ($page = 1; $page <= $last_page; $page++) {
-                $response = Http::get(env('TRANSFER_PROXY_URL') . "/api/posts?page=$page")->object();
+                $response = Http::get(config('TRANSFER_PROXY_URL') . "/api/posts?page=$page")->object();
                 $results = $response->data;
 
                 // Обрабатываем каждую запись

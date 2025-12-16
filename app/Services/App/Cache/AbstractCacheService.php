@@ -9,7 +9,7 @@ abstract class AbstractCacheService
     public function clearCacheByPrefix(string $prefix): void
     {
         // Получаем префикс из .env
-        $redisPrefix = env('REDIS_PREFIX', 'ntspi');
+        $redisPrefix = config('database.redis.options.prefix', 'ntspi');
 
         // Получаем ключи, соответствующие префиксу
         $keys = Redis::keys($prefix);

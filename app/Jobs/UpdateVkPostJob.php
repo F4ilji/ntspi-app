@@ -41,7 +41,7 @@ class UpdateVkPostJob implements ShouldQueue
         $this->videos = $videos;
         $this->documents = $documents;
         $this->publish_date = $publish_date;
-        $this->public_id = env('PUBLIC_ID');
+        $this->public_id = config('services.vk.public_id');
     }
 
     public function handle()
@@ -324,7 +324,7 @@ class UpdateVkPostJob implements ShouldQueue
         $vk = new VKApiClient();
 
         $album = (new VkAlbumService($vk))->createAlbum($title);
-        $uploadServer = (new VkAlbumService($vk))->getServerForUploadImages($album['id'], env('PUBLIC_ID'));
+        $uploadServer = (new VkAlbumService($vk))->getServerForUploadImages($album['id'], config('PUBLIC_ID'));
         foreach (array_chunk($images, 4) as $images_slice) {
             $images_data = (new VkAlbumService($vk))->uploadImagesToUploadServer($uploadServer['upload_url'], $images_slice);
             (new VkAlbumService($vk))->saveImagesToUploadServer(

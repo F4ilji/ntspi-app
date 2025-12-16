@@ -20,10 +20,10 @@ class VkWallService
 
     public function __construct(VKApiClient $vk) {
         $this->vk = $vk;
-        $this->wallToken = env('WALL_ACCESS_VK_TOKEN');
-        $this->serviceToken = env('SERVICE_ACCESS_VK_KEY');
-        $this->publicId = env('PUBLIC_ID');
-        $this->publicDomain = env('PUBLIC_DOMAIN');
+        $this->wallToken = config('services.vk.wall_token');
+        $this->serviceToken = config('services.vk.service_key');
+        $this->publicId = config('services.vk.public_id');
+        $this->publicDomain = config('services.vk.public_id');
         $this->vkAuthService = new VkAuthService();
     }
 
@@ -142,7 +142,7 @@ class VkWallService
 
     public function generateAttachmentsParams(string $attachmentType, int $attachmentId)
     {
-        $pubic_id = env('PUBLIC_ID');
+        $pubic_id = config('services.vk.public_id');
         switch ($attachmentType) {
             case 'album': {
                 return "album-{$pubic_id}_{$attachmentId}";

@@ -21,8 +21,8 @@ class VkAlbumService
     public function __construct(VKApiClient $vk) {
         $this->vk = $vk;
         $this->vkAuthService = new VkAuthService();
-        $this->serviceToken = env('SERVICE_ACCESS_VK_KEY');
-        $this->publicId = env('PUBLIC_ID');
+        $this->serviceToken = config('services.vk.service_key');
+        $this->publicId = config('services.vk.public_id');
     }
 
     public function getServerForUploadImages($album_id, $group_id)
@@ -109,7 +109,7 @@ class VkAlbumService
         $postFields = [
             'album_id' => $albumId,
             'server' => $server,
-            'group_id' => env('PUBLIC_ID'),
+            'group_id' => config('services.vk.public_id'),
             'photos_list' => $photosList, // Преобразуем массив в JSON-строку
             'hash' => $hash,
             'access_token' => $this->vkAuthService->getToken()->access_token,

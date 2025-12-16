@@ -28,7 +28,7 @@ class AdmissionPlanService
         try {
             $response = $this->callAPI(
                 "https://db-nica.ru/api/v1/campaigns",
-                env('VICON_TOKEN')
+                config('services.vicon.token')
             );
             if (!is_array($response)) {
                 Log::warning('Unexpected response type in getCampaigns', [
@@ -52,7 +52,7 @@ class AdmissionPlanService
         try {
             $response = $this->callAPI(
                 "https://db-nica.ru/api/v1/planPriema/$campaign_levels_code",
-                env('VICON_TOKEN')
+                config('services.vicon.token')
             );
 
             if (!is_object($response)) {

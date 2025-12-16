@@ -35,4 +35,20 @@ return [
         'id' => env('YANDEX_METRIKA_ID'),
     ],
 
+    'vk' => [
+        'app_id' => env('VK_APP_ID'),
+        'service_key' => env('SERVICE_ACCESS_VK_KEY'),
+        'wall_token' => env('WALL_ACCESS_VK_TOKEN'),
+        'public_id' => env('PUBLIC_ID'),
+        'public_domain' => env('PUBLIC_DOMAIN'),
+        'redirect_uri' => env('VK_REDIRECT_URI'),
+        'redirect_uri_after_auth' => env('VK_REDIRECT_URI_AFTER_AUTH'),
+    ],
+
+    'vicon' => [
+        'token' => env('VICON_TOKEN'),
+        'api_url' => 'https://db-nica.ru/api/v1',
+    ],
+
+
 ];
