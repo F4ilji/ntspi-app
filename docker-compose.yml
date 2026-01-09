@@ -100,28 +100,8 @@ services:
     networks:
       - app-network
 
-  jenkins:
-    build:
-      context: .
-      dockerfile: _docker/jenkins/Dockerfile
-    container_name: ntspi-jenkins
-    restart: always
-    ports:
-      - "8080:8080" # Порт для доступа к UI Jenkins
-      - "50000:50000" # Порт для агентов
-    volumes:
-      - jenkins_home:/var/jenkins_home # Сохранение данных Jenkins
-      - /var/run/docker.sock:/var/run/docker.sock # Доступ к Docker хоста
-      - ./:/var/www # Доступ к файлам проекта
-    networks:
-      - app-network
-    group_add:
-      - 999
 volumes:
   cache:
-    driver: local
-
-  jenkins_home:
     driver: local
 
 networks:
