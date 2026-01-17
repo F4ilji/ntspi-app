@@ -172,7 +172,7 @@ class ScheduleResource extends Resource
             'index' => Pages\ListSchedules::route('/'),
             'create' => Pages\CreateSchedule::route('/create'),
             'edit' => Pages\EditSchedule::route('/{record}/edit'),
-            'upload' => Pages\ScheduleResource\Pages\UploadSchedules::route('/upload'), // Добавьте эту строку
+            'upload' => Pages\ScheduleResource\Pages\UploadSchedules::route('/upload'),
         ];
     }
 }

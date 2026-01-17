@@ -104,11 +104,7 @@ class UploadSchedules extends Page
                 return true; // Уже обработан, ничего не делаем
             }
 
-            $groupTitleParts = explode(' ', $originalFileName, 3);
-            $groupSearchTitle = implode(' ', array_slice($groupTitleParts, 0, 2));
-
-            $educationalGroup = EducationalGroup::where('title', 'like', $groupSearchTitle . '%')
-                ->first();
+            $educationalGroup = $this->findEducationalGroupByFileName($originalFileName);
 
             if (!$educationalGroup) {
                 $this->failedFiles[] = $originalFileNameWithExtension;
@@ -157,11 +153,6 @@ class UploadSchedules extends Page
             });
 
             $this->processedFiles[] = $originalFileNameWithExtension;
-            Notification::make()
-                ->title('Расписание успешно загружено')
-                ->body("Файл `{$originalFileNameWithExtension}` для группы `{$educationalGroup->title}`")
-                ->success()
-                ->send();
             return true;
 
         } catch (\Throwable $e) {
@@ -199,20 +190,30 @@ class UploadSchedules extends Page
         }
 
         // Отправляем итоговое уведомление
-        if (!empty($this->processedFiles) || !empty($this->failedFiles)) {
-            $message = '';
-            if (!empty($this->processedFiles)) {
-                $message .= 'Успешно обработаны: ' . implode(', ', $this->processedFiles) . '. ';
-            }
-            if (!empty($this->failedFiles)) {
-                $message .= 'Не удалось обработать: ' . implode(', ', $this->failedFiles) . '. ';
+        $hasProcessed = !empty($this->processedFiles);
+        $hasFailed = !empty($this->failedFiles);
+
+        if ($hasProcessed || $hasFailed) {
+            $notification = Notification::make();
+
+            if ($hasProcessed && $hasFailed) {
+                $notification
+                    ->title('Частично обработано')
+                    ->body('Успешно: ' . count($this->processedFiles) . '. Ошибки: ' . count($this->failedFiles) . '. Подробности в логах.')
+                    ->warning();
+            } elseif ($hasProcessed) {
+                $notification
+                    ->title('Все файлы успешно загружены')
+                    ->body('Успешно обработано: ' . count($this->processedFiles) . ' файл(ов)')
+                    ->success();
+            } else { // $hasFailed only
+                $notification
+                    ->title('Ошибка при обработке файлов')
+                    ->body('Ошибки при обработке: ' . count($this->failedFiles) . ' файл(ов)')
+                    ->danger();
             }
 
-            Notification::make()
-                ->title('Результаты загрузки файлов')
-                ->body($message)
-                ->info()
-                ->send();
+            $notification->send();
         }
 
         // Очищаем форму и связанные свойства после обработки
@@ -241,5 +242,59 @@ class UploadSchedules extends Page
     public static function getNavigationLabel(): string
     {
         return __('Расписание и группы');
+    }
+
+    /**
+     * Находит образовательную группу по названию файла, используя различные стратегии сопоставления
+     *
+     * @param string $fileName
+     * @return EducationalGroup|null
+     */
+    protected function findEducationalGroupByFileName(string $fileName): ?EducationalGroup
+    {
+        // Удаляем расширение файла, если оно есть
+        $fileNameWithoutExt = pathinfo($fileName, PATHINFO_FILENAME);
+
+        // Попытка 1: поиск точного совпадения
+        $exactMatch = EducationalGroup::where('title', $fileNameWithoutExt)->first();
+        if ($exactMatch) {
+            return $exactMatch;
+        }
+
+        // Попытка 2: используем регулярные выражения для поиска групп вида БФКф-2531, Нт-102 и т.д.
+        // Шаблон: любая последовательность букв/цифр с дефисом и цифрой
+        if (preg_match('/([А-Яа-яЁёA-Za-z]+[-_\s]?[\dА-Яа-яЁёA-Za-z]*\d)/u', $fileName, $matches)) {
+            $potentialGroupCode = trim($matches[1]);
+
+            // Убираем лишние символы вроде пробелов и дефисов в конце
+            $potentialGroupCode = preg_replace('/[-_\s]+$/', '', $potentialGroupCode);
+
+            // Попытка найти группу по коду
+            $group = EducationalGroup::where('title', 'like', '%' . $potentialGroupCode . '%')->first();
+            if ($group) {
+                return $group;
+            }
+        }
+
+        // Попытка 3: разбиение на слова и поиск по первым двум словам (старая логика)
+        $words = preg_split('/\s+/', $fileName, 3); // разбиваем на 3 части максимум
+        if (count($words) >= 2) {
+            $groupTitleFromWords = $words[0] . ' ' . $words[1];
+            $group = EducationalGroup::where('title', 'like', $groupTitleFromWords . '%')->first();
+            if ($group) {
+                return $group;
+            }
+        }
+
+        // Попытка 4: если осталось только одно слово
+        if (isset($words[0])) {
+            $group = EducationalGroup::where('title', 'like', $words[0] . '%')->first();
+            if ($group) {
+                return $group;
+            }
+        }
+
+        // Если ничего не нашли, возвращаем null
+        return null;
     }
 }
