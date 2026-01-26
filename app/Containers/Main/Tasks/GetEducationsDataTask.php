@@ -5,6 +5,7 @@ namespace App\Containers\Main\Tasks;
 use App\Containers\AdditionalEducation\Models\AdditionalEducation;
 use App\Containers\AdditionalEducation\Models\AdditionalEducationCategory;
 use App\Containers\Education\Models\AdmissionCampaign;
+use App\Ship\Enums\Education\AdmissionCampaignStatus;
 use App\Ship\Enums\Education\LevelEducational;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -31,7 +32,8 @@ class GetEducationsDataTask
 
     private function getAdmissionCampaign(): array
     {
-        $info = AdmissionCampaign::first()->info ?? [];
+        $camp = AdmissionCampaign::where('status', AdmissionCampaignStatus::ACTIVE)->latest()->first();
+        $info = $camp->info ?? [];
 
         return collect($info)->reduce(function ($carry, $a) {
             $lvl = LevelEducational::from((int)$a['edu_name'])->name;
