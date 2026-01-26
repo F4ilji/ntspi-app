@@ -1,3 +1,5 @@
+// linksReform.js
+
 export const linksReform = {
     data() {
         return {
@@ -27,11 +29,9 @@ export const linksReform = {
         async removeBackdropElement() {
             const backdrop = document.querySelector('div[data-hs-overlay-backdrop-template]');
             if (backdrop) {
-                // Добавляем анимацию исчезновения
                 backdrop.style.transition = 'opacity 0.5s ease';
                 backdrop.style.opacity = '0';
 
-                // Ждем завершения анимации
                 await new Promise(resolve => {
                     backdrop.addEventListener('transitionend', () => {
                         backdrop.remove();
@@ -49,20 +49,23 @@ export const linksReform = {
 
         reactiveLinks.forEach(link => {
             link.addEventListener('click', async (event) => {
+
+                if (link.getAttribute('target') === '_blank') {
+                    return;
+                }
+
                 if (this.checkPathname(link.pathname)) return;
 
                 event.preventDefault();
                 const url = link.getAttribute('href');
 
                 try {
-                    // Удаляем бэкдроп с анимацией перед переходом
                     await this.removeBackdropElement();
                     this.clearBodyStyles();
 
                     this.$inertia.visit(url, {
                         preserveScroll: false,
                         onBefore: () => {
-                            // Дополнительная проверка перед переходом
                             this.removeBackdropElement().catch(() => {});
                             this.clearBodyStyles();
                             return true;
@@ -70,7 +73,7 @@ export const linksReform = {
                     });
                 } catch (e) {
                     console.error('Error during navigation:', e);
-                    this.$inertia.visit(url); // Fallback на обычный переход
+                    this.$inertia.visit(url);
                 }
             });
         });
