@@ -4,7 +4,7 @@
   <div class="w-full mx-auto">
     <div class="grid sm:grid-cols-2 lg:grid-cols-2 gap-6">
       <template v-for="(level, index) in educations.admission_campaign">
-        <Link :href="route('client.program.index', {level: LevelEducational[index].name})">
+        <a target="_blank" :href="route('client.program.index', {level: LevelEducational[index].name})">
           <div class="group flex flex-col h-full bg-white hover:opacity-70 hover:border-primary-dark duration-300 border border-gray-200 shadow-sm rounded-xl">
             <div class="p-4 md:p-6">
                 <span class="block mb-1 text-xs font-semibold uppercase text-primary">
@@ -41,7 +41,7 @@
 
             </div>
           </div>
-        </Link>
+        </a>
 
       </template>
       <Link :href="route('client.additionalEducation.index')">
