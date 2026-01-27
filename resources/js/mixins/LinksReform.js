@@ -50,10 +50,6 @@ export const linksReform = {
         reactiveLinks.forEach(link => {
             link.addEventListener('click', async (event) => {
 
-                if (link.getAttribute('target') === '_blank') {
-                    return;
-                }
-
                 if (this.checkPathname(link.pathname)) return;
 
                 event.preventDefault();
