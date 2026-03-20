@@ -48,7 +48,7 @@ class VkWallService
         }
     }
 
-    public function createPost(string $message, int $from_group, string $attachments = '', int|null $publish_date = null)
+    public function createPost(string $message, int $from_group, string $attachments = '', int|null $publish_date = null, string $primary_attachments_mode = 'carousel')
     {
         $token = $this->vkAuthService->getToken()->access_token;
         $params = [
@@ -58,6 +58,7 @@ class VkWallService
             'attachments' => $attachments,
             'access_token' => $token,
             'publish_date' => $publish_date,
+            'primary_attachments_mode' => $primary_attachments_mode,
             'v' => '5.131',
         ];
 

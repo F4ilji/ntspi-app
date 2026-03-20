@@ -53,7 +53,7 @@ class VkService
 //        return $this->wallService->createPost($message, $from_group, $attachmentString, $publish_date);
 //    }
 
-    public function createPost(string $title, string $message, array $images = [], array $videos = [], int|null $publish_date = null)
+    public function createPost(string $title, string $message, array $images = [], array $videos = [], int|null $publish_date = null, string $primary_attachments_mode = 'carousel')
     {
         $from_group = 1;
         $attachments = [];
@@ -76,7 +76,7 @@ class VkService
 
         $attachmentString = implode(',', $attachments);
 
-        return $this->wallService->createPost($message, $from_group, $attachmentString, $publish_date);
+        return $this->wallService->createPost($message, $from_group, $attachmentString, $publish_date, $primary_attachments_mode);
     }
 
     public function updatePost(int $id, string $title, string $message, array $images = [], int|null $publish_date = null)

@@ -28,9 +28,10 @@ class UpdateVkPostJob implements ShouldQueue
     protected $videos;
     protected $publish_date;
     protected $public_id;
+    protected $primary_attachments_mode;
 
     public function __construct(
-        int $post_id, string $title, string $message, array $images = [], array $videos = [], ?int $publish_date = null
+        int $post_id, string $title, string $message, array $images = [], array $videos = [], ?int $publish_date = null, string $primary_attachments_mode = 'carousel'
     )
     {
         $this->post_id = $post_id;
@@ -40,6 +41,7 @@ class UpdateVkPostJob implements ShouldQueue
         $this->videos = $videos;
         $this->publish_date = $publish_date;
         $this->public_id = config('services.vk.public_id');
+        $this->primary_attachments_mode = $primary_attachments_mode;
     }
 
     public function handle()

@@ -95,9 +95,12 @@ class CreatePostFromAiDataTask
      */
     private function preparePostData(array $newsData, array $content, ?string $previewPath, array $imagesPaths): array
     {
+        $baseSlug = Str::slug($newsData['title'] ?? '');
+        $slug = $this->generateUniqueSlug($baseSlug);
+
         return [
             'title' => $newsData['title'] ?? 'Без названия',
-            'slug' => Str::slug($newsData['title'] ?? '') . '-' . time(),
+            'slug' => $slug,
             'content' => $content,
             'authors' => $newsData['authors'] ?? [],
             'category_id' => $newsData['category_id'] ?? null,
@@ -111,6 +114,22 @@ class CreatePostFromAiDataTask
             ],
             'publication' => [],
         ];
+    }
+
+    /**
+     * Генерирует уникальный slug
+     */
+    private function generateUniqueSlug(string $baseSlug): string
+    {
+        $slug = $baseSlug;
+        $count = 1;
+
+        while (Post::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $count;
+            $count++;
+        }
+
+        return $slug;
     }
 
     /**

@@ -27,7 +27,7 @@ class PublishPostController extends Controller
         }
 
         try {
-            $publishedPost = $this->publishPostAction->run($post);
+            $publishedPost = $this->publishPostAction->run($post, $request->input('publish_to_vk', true));
 
             return back()->with([
                 'success' => 'Новость успешно опубликована: ' . $publishedPost->title,

@@ -182,7 +182,18 @@
                 <span>Обновлено: {{ new Date(post.updated_at).toLocaleDateString('ru-RU') }}</span>
               </div>
             </div>
-            <div class="ml-4 flex flex-col gap-2">
+            <div class="ml-4 flex flex-col gap-2 items-end">
+              <!-- Переключатель публикации в VK -->
+              <label class="flex items-center gap-2 cursor-pointer mb-2" @click.stop>
+                <input
+                  v-model="postPublishSettings[post.id]"
+                  type="checkbox"
+                  class="sr-only peer"
+                >
+                <div class="relative w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                <span class="text-xs font-medium text-gray-600">VK</span>
+              </label>
+              
               <button
                 @click.stop="publishPost(post)"
                 :disabled="publishProcessing"
@@ -297,7 +308,20 @@
 
         <!-- Кнопки действий -->
         <div class="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-between items-center rounded-b-lg">
-          <div class="flex gap-3">
+          <div class="flex items-center gap-4">
+            <!-- Переключатель публикации в VK -->
+            <button
+              type="button"
+              @click.stop="postPublishSettings[selectedPost?.id] = !postPublishSettings[selectedPost?.id]"
+              class="flex items-center gap-2 cursor-pointer focus:outline-none"
+            >
+              <div class="relative">
+                <div class="w-11 h-6 bg-gray-200 rounded-full transition-colors" :class="postPublishSettings[selectedPost?.id] ? 'bg-indigo-600' : 'bg-gray-200'"></div>
+                <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform" :class="postPublishSettings[selectedPost?.id] ? 'translate-x-5' : 'translate-x-0'"></div>
+              </div>
+              <span class="text-sm font-medium text-gray-700">Опубликовать в VK</span>
+            </button>
+            
             <!-- Кнопка "Опубликовать" (только для черновиков) -->
             <button
               v-if="!selectedPost.publish_at"
@@ -334,7 +358,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useForm, usePage, router } from '@inertiajs/vue3';
 
 // Сохраняем имя компонента
@@ -351,6 +375,18 @@ const selectedPost = ref(null);
 
 // Состояние для процесса публикации
 const publishProcessing = ref(false);
+
+// Состояние для переключателя публикации в VK (отдельно для каждого поста)
+const postPublishSettings = ref({});
+
+// Инициализируем переключатели для всех постов
+watch(draftPosts, (posts) => {
+  posts.forEach(post => {
+    if (postPublishSettings.value[post.id] === undefined) {
+      postPublishSettings.value[post.id] = true;
+    }
+  });
+}, { immediate: true });
 
 // Открытие модального окна
 const openPostModal = (post) => {
@@ -370,7 +406,9 @@ const publishPost = (post) => {
 
   publishProcessing.value = true;
 
-  router.post(route('dashboard.posts.publish', post.id), {}, {
+  router.post(route('dashboard.posts.publish', post.id), {
+    publish_to_vk: postPublishSettings.value[post.id] ?? true,
+  }, {
     preserveScroll: true,
     onSuccess: () => {
       publishProcessing.value = false;

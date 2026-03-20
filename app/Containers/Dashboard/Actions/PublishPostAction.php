@@ -21,9 +21,10 @@ class PublishPostAction
      * Публикует черновик поста
      *
      * @param Post $post Пост для публикации
+     * @param bool $publishToVk Публиковать ли в VK
      * @return Post Опубликованный пост
      */
-    public function run(Post $post): Post
+    public function run(Post $post, bool $publishToVk = true): Post
     {
         // Обновляем данные поста
         $updatedData = $this->postDataProcessor->processUpdate([
@@ -40,8 +41,10 @@ class PublishPostAction
         // Отправляем уведомления
         $this->sendNotifications($post);
 
-        // Публикуем в VK
-        $this->publishToVk($post);
+        // Публикуем в VK, если указано
+        if ($publishToVk) {
+            $this->publishToVk($post);
+        }
 
         // Обновляем слайд, если есть
         $this->updateSlide($post);

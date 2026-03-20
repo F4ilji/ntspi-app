@@ -26,7 +26,7 @@ class CreateVkPost implements ShouldQueue
         readonly private array $images = [],
         readonly private int $post_id,
         readonly private int|null $publish_date = null,
-
+        readonly private string $primary_attachments_mode = 'carousel',
     )
     {}
 
@@ -34,7 +34,13 @@ class CreateVkPost implements ShouldQueue
     {
         try {
             $vkService = new VkService();
-            $vk_post = $vkService->createPost($this->title, $this->text, $this->images, $this->publish_date);
+            $vk_post = $vkService->createPost(
+                $this->title,
+                $this->text,
+                $this->images,
+                $this->publish_date,
+                $this->primary_attachments_mode
+            );
             DB::table('posts_vk_posts')->insert(
                 [
                     'post_id' => $this->post_id,
