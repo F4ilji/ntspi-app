@@ -31,7 +31,7 @@ class CreateVkPostJob implements ShouldQueue
     protected $primary_attachments_mode;
 
     public function __construct(
-        int $post_id, string $title, string $message, array $images = [], array $videos = [], ?int $publish_date = null, string $primary_attachments_mode = 'carousel'
+        int $post_id, string $title, string $message, array $images = [], array $videos = [], ?int $publish_date = null, string $primary_attachments_mode = 'grid'
     )
     {
         $this->post_id = $post_id;
