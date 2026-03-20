@@ -79,10 +79,13 @@
                 <p class="pl-1">или перетащите их сюда</p>
               </div>
               <p class="text-xs text-gray-500">
-                DOCX, PDF, XLSX, JPG, PNG, WEBP (до 20MB каждый)
+                DOCX, PDF, XLSX, JPG, PNG, WEBP, ZIP (до 20MB каждый)
               </p>
               <p class="text-xs text-indigo-600 font-medium">
                 Система автоматически определит файл с текстом новости по названию или содержанию
+              </p>
+              <p class="text-xs text-green-600 font-medium mt-2">
+                💡 Можно загрузить ZIP-архив — система автоматически распакует его и обработает содержимое
               </p>
             </div>
           </div>
@@ -95,7 +98,7 @@
               ref="filesInput"
               class="hidden"
               @change="handleFileInput"
-              accept=".doc,.docx,.pdf,.xls,.xlsx,.jpg,.jpeg,.png,.webp,.gif"
+              accept=".doc,.docx,.pdf,.xls,.xlsx,.jpg,.jpeg,.png,.webp,.gif,.zip"
           />
 
           <!-- Ошибки валидации -->

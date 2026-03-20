@@ -26,11 +26,11 @@ class StoreFilesRequest extends FormRequest
             'files.*' => [
                 'required',
                 'file',
-                'mimes:doc,docx,pdf,xls,xlsx,jpg,jpeg,png,webp,gif',
+                'mimes:doc,docx,pdf,xls,xlsx,jpg,jpeg,png,webp,gif,zip',
                 'max:20480' // макс 20МБ на КАЖДЫЙ файл
             ],
 
-            // Обязательно наличие хотя бы одного DOC или DOCX файла
+            // Обязательно наличие хотя бы одного DOC или DOCX файла (или архива, который будет распакован)
             'files' => [
                 'required',
                 'array',
@@ -40,7 +40,18 @@ class StoreFilesRequest extends FormRequest
                         return in_array($ext, ['doc', 'docx']);
                     });
                     
-                    if (!$hasDocOrDocx) {
+                    $hasArchive = collect($value)->contains(function ($file) {
+                        $ext = strtolower($file->getClientOriginalExtension());
+                        return in_array($ext, ['zip']);
+                    });
+
+                    // Если есть только архивы — проверяем их содержимое после распаковки
+                    if (!$hasDocOrDocx && $hasArchive) {
+                        // Разрешаем, проверка будет после распаковки
+                        return;
+                    }
+
+                    if (!$hasDocOrDocx && !$hasArchive) {
                         $fail('Должен быть загружен хотя бы один DOC или DOCX файл для извлечения текста новости.');
                     }
                 },
