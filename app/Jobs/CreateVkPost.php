@@ -26,7 +26,7 @@ class CreateVkPost implements ShouldQueue
         readonly private array $images = [],
         readonly private int $post_id,
         readonly private int|null $publish_date = null,
-        readonly private string $primary_attachments_mode = 'carousel',
+        readonly private string $primary_attachments_mode = 'grid',
     )
     {}
 

@@ -53,7 +53,7 @@ class VkService
 //        return $this->wallService->createPost($message, $from_group, $attachmentString, $publish_date);
 //    }
 
-    public function createPost(string $title, string $message, array $images = [], array $videos = [], int|null $publish_date = null, string $primary_attachments_mode = 'carousel')
+    public function createPost(string $title, string $message, array $images = [], array $videos = [], int|null $publish_date = null, string $primary_attachments_mode = 'grid')
     {
         $from_group = 1;
         $attachments = [];

@@ -48,7 +48,7 @@ class VkWallService
         }
     }
 
-    public function createPost(string $message, int $from_group, string $attachments = '', int|null $publish_date = null, string $primary_attachments_mode = 'carousel')
+    public function createPost(string $message, int $from_group, string $attachments = '', int|null $publish_date = null, string $primary_attachments_mode = 'grid')
     {
         $token = $this->vkAuthService->getToken()->access_token;
         $params = [
