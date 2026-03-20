@@ -26,12 +26,11 @@ class UpdateVkPostJob implements ShouldQueue
     protected $message;
     protected $images;
     protected $videos;
-    protected $documents;
     protected $publish_date;
     protected $public_id;
 
     public function __construct(
-        int $post_id, string $title, string $message, array $images = [], array $videos = [], array $documents = [], ?int $publish_date = null
+        int $post_id, string $title, string $message, array $images = [], array $videos = [], ?int $publish_date = null
     )
     {
         $this->post_id = $post_id;
@@ -39,7 +38,6 @@ class UpdateVkPostJob implements ShouldQueue
         $this->message = $message;
         $this->images = $images;
         $this->videos = $videos;
-        $this->documents = $documents;
         $this->publish_date = $publish_date;
         $this->public_id = config('services.vk.public_id');
     }
@@ -68,35 +66,28 @@ class UpdateVkPostJob implements ShouldQueue
 
         $from_group = 1;
 
-        // Подготовка документов
-        $doc_attachments = !empty($this->documents) ? $this->prepareDocuments($this->documents) : '';
-        $doc_list = $doc_attachments ? explode(',', $doc_attachments) : [];
-        $doc_count = count($doc_list);
+        // Документы больше не загружаются — они добавляются как ссылки в тексте поста
+        // Считаем только видео и изображения
+        $video_attachments = !empty($this->videos) ? $this->prepareVideos($this->videos) : '';
+        $video_list = $video_attachments ? explode(',', $video_attachments) : [];
+        
+        // Все 10 слотов доступны для видео и изображений
+        $available_slots = 10 - count($video_list);
+        $attached_videos = array_slice($video_list, 0, count($video_list));
+        $remaining_slots = $available_slots;
 
-        if ($doc_count >= 10) {
-            // Если документов 10 или больше, прикрепляем только первые 10
-            $selected_attachments = array_slice($doc_list, 0, 10);
-            $image_list = [];
+        $image_list = [];
+        if ($remaining_slots > 0 && !empty($this->images)) {
+            // Подготовка только тех изображений, которые поместятся
+            $images_to_attach = array_slice($this->images, 0, $remaining_slots);
+            $image_attachments = $this->prepareWallPhotos($images_to_attach);
+            $image_list = $image_attachments ? explode(',', $image_attachments) : [];
         } else {
-            // Подготовка видео
-            $video_attachments = !empty($this->videos) ? $this->prepareVideos($this->videos) : '';
-            $video_list = $video_attachments ? explode(',', $video_attachments) : [];
-            $available_slots = 10 - $doc_count;
-            $attached_videos = array_slice($video_list, 0, min(count($video_list), $available_slots));
-            $remaining_slots = $available_slots - count($attached_videos);
-
-            if ($remaining_slots > 0 && !empty($this->images)) {
-                // Подготовка только тех изображений, которые поместятся
-                $images_to_attach = array_slice($this->images, 0, $remaining_slots);
-                $image_attachments = $this->prepareWallPhotos($images_to_attach);
-                $image_list = $image_attachments ? explode(',', $image_attachments) : [];
-            } else {
-                $image_list = [];
-            }
-
-            // Собираем все вложения с учетом приоритетов
-            $selected_attachments = array_merge($doc_list, $attached_videos, $image_list);
+            Log::info("Фото не будут добавлены (нет слотов или нет фото).");
         }
+
+        // Собираем все вложения с учетом приоритетов
+        $selected_attachments = array_merge($attached_videos, $image_list);
 
         // Проверяем, все ли изображения прикреплены
         if (count($this->images) > count($image_list)) {
@@ -151,22 +142,6 @@ class UpdateVkPostJob implements ShouldQueue
         }, $videos);
         $uploadedVideos = $this->uploadVideos($videoPaths, $this->public_id);
         return implode(',', $uploadedVideos);
-    }
-
-    private function prepareDocuments(array $documents): string
-    {
-        $baseUrl = config('app.url');
-        try {
-            $documentPaths = array_map(function($doc) use ($baseUrl) {
-                return $baseUrl . $doc;
-            }, $documents);
-            Log::info(json_encode($documentPaths));
-            $uploadedDocs = $this->uploadDocuments($documentPaths, $this->public_id);
-            return implode(',', $uploadedDocs);
-        } catch (\Exception $e) {
-            Log::error("Ошибка при подготовке документов: " . $e->getMessage());
-            return '';
-        }
     }
 
     private function uploadWallPhotos(array $imagePaths, ?int $groupId = null): array
@@ -259,64 +234,6 @@ class UpdateVkPostJob implements ShouldQueue
         }
 
         return $uploadedVideos;
-    }
-
-    private function uploadDocuments(array $documentPaths, ?int $groupId = null): array
-    {
-        $uploadedDocs = [];
-
-        foreach ($documentPaths as $docPath) {
-            try {
-                // Получение сервера для загрузки документов на стену группы
-                $uploadServerResponse = Http::get('https://api.vk.ru/method/docs.getWallUploadServer', [
-                    'group_id' => $groupId,
-                    'access_token' => (new VkAuthService())->getToken()->access_token,
-                    'v' => '5.131',
-                ]);
-
-                $uploadServerData = $uploadServerResponse->json();
-                Log::info($uploadServerData);
-                if (!isset($uploadServerData['response']['upload_url'])) {
-                    throw new \Exception('Не удалось получить сервер для загрузки документа: ' . $docPath);
-                }
-                $uploadUrl = $uploadServerData['response']['upload_url'];
-
-                // Загрузка документа на сервер
-                $uploadResponse = Http::attach(
-                    'file',
-                    file_get_contents($docPath),
-                    basename($docPath)
-                )->post($uploadUrl);
-
-                $uploadData = $uploadResponse->json();
-                if (!isset($uploadData['file'])) {
-                    throw new \Exception('Не удалось загрузить документ: ' . $docPath);
-                }
-
-                // Сохранение документа
-                $saveResponse = Http::get('https://api.vk.ru/method/docs.save', [
-                    'file' => $uploadData['file'],
-                    'access_token' => (new VkAuthService())->getToken()->access_token,
-                    'v' => '5.131',
-                ]);
-
-                $saveData = $saveResponse->json();
-
-                // Проверка наличия данных о документе
-                if (!isset($saveData['response']['doc'])) {
-                    throw new \Exception('Не удалось сохранить документ: ' . $docPath);
-                }
-
-                // Получение данных о документе
-                $doc = $saveData['response']['doc'];
-                $attachment = "doc{$doc['owner_id']}_{$doc['id']}";
-                $uploadedDocs[] = $attachment;
-            } catch (\Exception $e) {
-                Log::error("Ошибка при загрузке документа {$docPath}: " . $e->getMessage());
-            }
-        }
-
-        return $uploadedDocs;
     }
 
     public function createAlbum(string $title, $images)

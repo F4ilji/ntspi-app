@@ -24,6 +24,9 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     g++ \
     default-mysql-client \
+    # LibreOffice для конвертации DOC в DOCX
+    libreoffice-common \
+    libreoffice-writer \
     # Установка Node.js (актуальная LTS-версия 18)
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \

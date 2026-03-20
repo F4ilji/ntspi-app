@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Containers\Dashboard\Tasks;
+
+use App\Containers\Article\Models\Post;
+use Illuminate\Database\Eloquent\Collection;
+
+class GetDraftPostsTask
+{
+    public function run(): Collection
+    {
+        return Post::query()
+            ->with(['category', 'author'])
+            ->whereNull('publish_at')
+            ->orderBy('created_at', 'desc')
+            ->get([
+                'id',
+                'title',
+                'slug',
+                'preview_text',
+                'content',
+                'status',
+                'authors',
+                'preview',
+                'images',
+                'reading_time',
+                'category_id',
+                'created_at',
+                'updated_at',
+            ]);
+    }
+}

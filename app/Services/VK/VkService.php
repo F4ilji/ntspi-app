@@ -98,11 +98,19 @@ class VkService
         return $this->wallService->updatePost($id, $message, $from_group, $album_attachment, $publish_date);
     }
 
-    public function deletePost(int $post_id){
-        $postRelation = DB::table('posts_vk_posts')->select()->where('post_id', $post_id)->first();
-        $post_id = $postRelation->vk_post_id;
-        $vk_post = $this->getPostById($post_id);
-        $this->wallService->deletePost($vk_post['id']);
+    public function deletePost(int $post_id) {
+        $postRelation = DB::table('posts_vk_posts')
+            ->where('post_id', $post_id)
+            ->first();
+
+        if ($postRelation && isset($postRelation->vk_post_id)) {
+            $vk_post_id = $postRelation->vk_post_id;
+            $vk_post = $this->getPostById($vk_post_id);
+
+            if ($vk_post && isset($vk_post['id'])) {
+                $this->wallService->deletePost($vk_post['id']);
+            }
+        }
     }
 
     public function createAlbum(string $title, $images)

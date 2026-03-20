@@ -31,7 +31,6 @@ class VkPostPublisher
                 $allImages = array_merge($imagesFromPost, $imagesFromContent);
                 $imageLinks = $this->generateImageLinksForVk($allImages);
                 $videos = $this->extractVideosFromContent($post->content);
-                $documents = $this->extractFilesFromContent($post->content);
 
                 $publishDate = $post->publish_at > now() ? $post->publish_at->timestamp : null;
 
@@ -41,7 +40,6 @@ class VkPostPublisher
                     $text,
                     $imageLinks,
                     $videos,
-                    $documents,
                     $publishDate));
             }
         }
@@ -58,7 +56,6 @@ class VkPostPublisher
                 $allImages = array_merge($imagesFromPost, $imagesFromContent);
                 $imageLinks = $this->generateImageLinksForVk($allImages);
                 $videos = $this->extractVideosFromContent($post->content);
-                $documents = $this->extractFilesFromContent($post->content);
 
                 $publishDate = $post->publish_at > now() ? $post->publish_at->timestamp : null;
 
@@ -68,21 +65,9 @@ class VkPostPublisher
                     $text,
                     $imageLinks,
                     $videos,
-                    $documents,
                     $publishDate));
             }
         }
-
-//
-//        if ($post->status === PostStatus::PUBLISHED) {
-//            if ($settings['vk']) {
-//                $text = $this->generateContentForVk($post->title, $post->content);
-//                $images = $this->generateImageLinksForVk($post->images);
-//                $publishDate = $post->publish_at > now() ? $post->publish_at->timestamp : null;
-//
-//                dispatch(new UpdateVkPost($post->title, $text, $images, $post->id, $publishDate));
-//            }
-//        }
     }
 
     private function generateContentForVk($post): string
@@ -109,33 +94,40 @@ class VkPostPublisher
             $message .= "\n\n$authorLabel " . implode(', ', $authors);
         }
 
+        // Добавляем ссылки на прикрепленные файлы
+        $fileLinks = $this->generateFileLinks($post->content);
+        if (!empty($fileLinks)) {
+            $message .= "\n\n" . $fileLinks;
+        }
+
         $message = html_entity_decode($message);
 
-//        $maxLength = 16000;
-//        $reservedSpace = 200;
-//        $linkText = '';
-
-//        if ($post->slug) {
-//            $url = config('app.url') . "/posts/{$post->slug}";
-//            $linkText = "\n\n[{$url}|Читать полностью]";
-//        }
-//
-//        $linkLength = mb_strlen($linkText);
-//
-//        $maxMLength = $maxLength - $reservedSpace - $linkLength;
-//
-//        if (mb_strlen($message) > $maxMLength) {
-//            $truncated = mb_substr($message, 0, $maxMLength);
-//            $lastSpace = mb_strrpos($truncated, ' ');
-//            if ($lastSpace !== false) {
-//                $truncated = mb_substr($truncated, 0, $lastSpace);
-//            }
-//            $message = $truncated . '...';
-//        }
-//
-//        $message .= $linkText;
-
         return $message;
+    }
+
+    /**
+     * Генерирует ссылки на файлы в формате VK [url|text]
+     */
+    private function generateFileLinks(array $content): string
+    {
+        $links = [];
+        $baseUrl = config('app.url');
+
+        foreach ($content as $block) {
+            if ($block['type'] === 'files' && isset($block['data']['file']) && is_array($block['data']['file'])) {
+                foreach ($block['data']['file'] as $file) {
+                    if (isset($file['path']) && isset($file['title'])) {
+                        $fileUrl = $baseUrl . '/storage/' . ltrim($file['path'], '/');
+                        $fileName = $file['title'];
+                        $links[] = "[{$fileUrl}|📎 {$fileName}]";
+                    }
+                }
+            }
+        }
+
+        return !empty($links) 
+            ? "Прикреплённые файлы:\n" . implode("\n", $links) 
+            : '';
     }
 
     private function parseContentBlocks(array $blocks): string
@@ -186,21 +178,6 @@ class VkPostPublisher
             }
         }
         return $videos;
-    }
-
-    private function extractFilesFromContent(array $blocks): array
-    {
-        $files = [];
-        foreach ($blocks as $block) {
-            if ($block['type'] === 'files' && isset($block['data']['file']) && is_array($block['data']['file'])) {
-                foreach ($block['data']['file'] as $file) {
-                    if (isset($file['path'])) {
-                        $files[] = Storage::url($file['path']);
-                    }
-                }
-            }
-        }
-        return $files;
     }
 
     private function generateImageLinksForVk(array $images): array

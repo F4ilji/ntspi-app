@@ -40,6 +40,12 @@ class HandleInertiaRequests extends Middleware
                 return 'empty';
             },
             'yandex_metrika_id' => config('services.yandex_metrika.id'),
+            'flash' => function () use ($request) {
+                return [
+                    'success' => $request->session()->get('success'),
+                    'extracted_text' => $request->session()->get('extracted_text'),
+                ];
+            },
         ];
     }
 }

@@ -29,7 +29,6 @@ class HttpKernel extends LaravelHttpKernel
         HandleCors::class,
         TransformRequestMiddleware::class,
         // \App\Ship\Middleware\TrustHosts::class,
-        \Illuminate\Session\Middleware\StartSession::class,
         \App\Ship\Middleware\TrustProxies::class,
 //        \Illuminate\Http\Middleware\HandleCors::class,
         \App\Ship\Middleware\PreventRequestsDuringMaintenance::class,
@@ -50,8 +49,8 @@ class HttpKernel extends LaravelHttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Ship\Middleware\VerifyCsrfToken::class,
-            \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\HandleInertiaRequests::class,
         ],
 
         'api' => [
