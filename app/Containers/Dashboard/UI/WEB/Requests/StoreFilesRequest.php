@@ -27,10 +27,10 @@ class StoreFilesRequest extends FormRequest
                 'required',
                 'file',
                 'mimes:doc,docx,pdf,xls,xlsx,jpg,jpeg,png,webp,gif,zip',
-                'max:20480' // макс 20МБ на КАЖДЫЙ файл
+                'max:40960' // макс 40МБ на КАЖДЫЙ файл
             ],
 
-            // Обязательно наличие хотя бы одного DOC или DOCX файла (или архива, который будет распакован)
+            // Обязательно наличие хотя бы одного DOC или DOCX файла
             'files' => [
                 'required',
                 'array',
@@ -39,19 +39,8 @@ class StoreFilesRequest extends FormRequest
                         $ext = strtolower($file->getClientOriginalExtension());
                         return in_array($ext, ['doc', 'docx']);
                     });
-                    
-                    $hasArchive = collect($value)->contains(function ($file) {
-                        $ext = strtolower($file->getClientOriginalExtension());
-                        return in_array($ext, ['zip']);
-                    });
 
-                    // Если есть только архивы — проверяем их содержимое после распаковки
-                    if (!$hasDocOrDocx && $hasArchive) {
-                        // Разрешаем, проверка будет после распаковки
-                        return;
-                    }
-
-                    if (!$hasDocOrDocx && !$hasArchive) {
+                    if (!$hasDocOrDocx) {
                         $fail('Должен быть загружен хотя бы один DOC или DOCX файл для извлечения текста новости.');
                     }
                 },
@@ -66,8 +55,8 @@ class StoreFilesRequest extends FormRequest
             'files.array' => 'Поле должно быть массивом файлов',
             'files.min' => 'Загрузите хотя бы один файл',
             'files.max' => 'Нельзя загрузить больше 20 файлов за один раз',
-            'files.*.mimes' => 'Файл имеет недопустимый формат. Разрешены: DOC, DOCX, PDF, XLS, XLSX, JPG, JPEG, PNG, WEBP, GIF',
-            'files.*.max' => 'Размер файла превышает 20 МБ.',
+            'files.*.mimes' => 'Файл имеет недопустимый формат. Разрешены: DOC, DOCX, PDF, XLS, XLSX, JPG, JPEG, PNG, WEBP, GIF, ZIP',
+            'files.*.max' => 'Размер файла превышает 40 МБ.',
         ];
     }
 }

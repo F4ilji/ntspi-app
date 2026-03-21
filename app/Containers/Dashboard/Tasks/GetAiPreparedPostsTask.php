@@ -2,16 +2,17 @@
 
 namespace App\Containers\Dashboard\Tasks;
 
+use App\Containers\Article\Enums\PostStatus;
 use App\Containers\Article\Models\Post;
 use Illuminate\Database\Eloquent\Collection;
 
-class GetDraftPostsTask
+class GetAiPreparedPostsTask
 {
     public function run(): Collection
     {
         return Post::query()
             ->with(['category', 'author'])
-            ->whereNull('publish_at')
+            ->whereIn('status', [PostStatus::VERIFICATION->value, PostStatus::REJECTED->value])
             ->orderBy('created_at', 'desc')
             ->get([
                 'id',

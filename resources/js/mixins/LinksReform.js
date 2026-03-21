@@ -3,7 +3,7 @@
 export const linksReform = {
     data() {
         return {
-            excludedPaths: ['/sveden/', '/storage/', '/upload/', '/panorama/', '/abitur/']
+            excludedPaths: ['/sveden/', '/storage/', '/upload/', '/panorama/', '/abitur/', '/admin/']
         }
     },
     methods: {
