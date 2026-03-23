@@ -29,8 +29,15 @@ class ProcessMixedFilesController extends Controller
 
             $result = $this->processMixedFilesAction->run($files);
 
+            // Формируем сообщение со статистикой сжатия
+            $compressionMessage = '';
+            if (isset($result['compressionStats']) && $result['compressionStats']['compressed'] > 0) {
+                $compressionMessage = ' Изображения сжаты: ' . $result['compressionStats']['compressed'] . '/' . $result['compressionStats']['total'] . 
+                    ' (экономия ' . $this->formatFileSize($result['compressionStats']['saved_bytes']) . ')';
+            }
+
             return back()->with([
-                'success' => 'Файлы успешно загружены! Новость создана: ' . $result['post']->title,
+                'success' => 'Файлы успешно загружены! Новость создана: ' . $result['post']->title . $compressionMessage,
                 'extracted_text' => $result['newsData'],
                 'created_post' => [
                     ...$result['post']->toArray(),
@@ -43,6 +50,20 @@ class ProcessMixedFilesController extends Controller
                 'error' => 'Ошибка при создании новости: ' . $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Форматирует размер файла
+     */
+    private function formatFileSize(int $bytes): string
+    {
+        $units = ['б', 'КиБ', 'МиБ', 'ГиБ'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= (1 << (10 * $pow));
+
+        return round($bytes, 2) . ' ' . $units[$pow];
     }
 
     /**

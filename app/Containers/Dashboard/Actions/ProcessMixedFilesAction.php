@@ -5,6 +5,7 @@ namespace App\Containers\Dashboard\Actions;
 use App\Containers\Article\Models\Category;
 use App\Containers\Article\Models\Post;
 use App\Containers\Dashboard\Tasks\CallAiServiceTask;
+use App\Containers\Dashboard\Tasks\CompressImageTask;
 use App\Containers\Dashboard\Tasks\CreatePostFromAiDataTask;
 use App\Containers\Dashboard\Tasks\ExtractTextFromDocumentTask;
 use App\Containers\Dashboard\Tasks\FindMainNewsFileTask;
@@ -19,6 +20,7 @@ class ProcessMixedFilesAction
         private readonly ExtractTextFromDocumentTask $extractTextFromDocumentTask,
         private readonly CallAiServiceTask $callAiServiceTask,
         private readonly CreatePostFromAiDataTask $createPostFromAiDataTask,
+        private readonly CompressImageTask $compressImageTask,
     ) {}
 
     /**
@@ -104,18 +106,72 @@ class ProcessMixedFilesAction
      */
     private function saveFiles(Collection $files, UploadedFile $mainFile): array
     {
+        Log::info('[ProcessMixedFilesAction:saveFiles] Начало сохранения файлов', [
+            'total_files' => $files->count(),
+        ]);
+
         // Сохраняем основной документ
         $documentPath = $mainFile->store('documents', 'local');
 
-        // Сохраняем остальные файлы как медиа
-        $mediaPaths = $files
-            ->filter(fn($file) => $file !== $mainFile)
-            ->map(fn($file) => $file->store('media', 'public'))
-            ->toArray();
+        // Сжимаем и сохраняем остальные файлы как медиа
+        $mediaPaths = [];
+        $compressionStats = ['total' => 0, 'compressed' => 0, 'saved_bytes' => 0];
+
+        foreach ($files as $file) {
+            // Пропускаем основной файл
+            if ($file === $mainFile) {
+                continue;
+            }
+
+            $compressionStats['total']++;
+
+            // Если это изображение - сжимаем
+            if ($this->compressImageTask->isImage($file)) {
+                Log::info('[ProcessMixedFilesAction:saveFiles] Обработка изображения', [
+                    'file' => $file->getClientOriginalName(),
+                ]);
+
+                $result = $this->compressImageTask->run($file);
+
+                if ($result['compressed']) {
+                    $compressionStats['compressed']++;
+                    $compressionStats['saved_bytes'] += $result['original_size'] - $result['size'];
+
+                    Log::info('[ProcessMixedFilesAction:saveFiles] Изображение сжато', [
+                        'file' => $file->getClientOriginalName(),
+                        'original_size' => $this->formatFileSize($result['original_size']),
+                        'compressed_size' => $this->formatFileSize($result['size']),
+                        'ratio' => $result['compression_ratio'] . '%',
+                    ]);
+                }
+
+                // Сохраняем сжатый файл
+                $path = $result['file']->store('media', 'public');
+
+                // Очищаем временный файл
+                if (file_exists($result['file']->getRealPath())) {
+                    unlink($result['file']->getRealPath());
+                }
+
+                $mediaPaths[] = $path;
+            } else {
+                // Не изображения сохраняем как есть
+                $path = $file->store('media', 'public');
+                $mediaPaths[] = $path;
+            }
+        }
+
+        Log::info('[ProcessMixedFilesAction:saveFiles] Статистика сжатия', [
+            'total_images' => $compressionStats['total'],
+            'compressed' => $compressionStats['compressed'],
+            'saved' => $this->formatFileSize($compressionStats['saved_bytes']),
+            'saved_bytes' => $compressionStats['saved_bytes'],
+        ]);
 
         return [
             'documentPath' => $documentPath,
             'mediaPaths' => $mediaPaths,
+            'compressionStats' => $compressionStats,
         ];
     }
 

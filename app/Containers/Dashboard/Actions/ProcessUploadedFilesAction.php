@@ -5,9 +5,11 @@ namespace App\Containers\Dashboard\Actions;
 use App\Containers\Article\Models\Category;
 use App\Containers\Article\Models\Post;
 use App\Containers\Dashboard\Tasks\CallAiServiceTask;
+use App\Containers\Dashboard\Tasks\CompressImageTask;
 use App\Containers\Dashboard\Tasks\CreatePostFromAiDataTask;
 use App\Containers\Dashboard\Tasks\ExtractTextFromDocumentTask;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 
 class ProcessUploadedFilesAction
 {
@@ -15,6 +17,7 @@ class ProcessUploadedFilesAction
         private readonly ExtractTextFromDocumentTask $extractTextFromDocumentTask,
         private readonly CallAiServiceTask $callAiServiceTask,
         private readonly CreatePostFromAiDataTask $createPostFromAiDataTask,
+        private readonly CompressImageTask $compressImageTask,
     ) {}
 
     /**
@@ -64,13 +67,48 @@ class ProcessUploadedFilesAction
     }
 
     /**
-     * Сохраняет медиафайлы
+     * Сохраняет медиафайлы со сжатием
      */
     private function saveMediaFiles(array $mediaFiles): array
     {
-        return collect($mediaFiles)
-            ->map(fn($file) => $file->store('media', 'public'))
-            ->toArray();
+        $paths = [];
+        $compressionStats = ['total' => 0, 'compressed' => 0, 'saved_bytes' => 0];
+
+        foreach ($mediaFiles as $file) {
+            $compressionStats['total']++;
+
+            // Если это изображение - сжимаем
+            if ($this->compressImageTask->isImage($file)) {
+                $result = $this->compressImageTask->run($file);
+
+                if ($result['compressed']) {
+                    $compressionStats['compressed']++;
+                    $compressionStats['saved_bytes'] += $result['original_size'] - $result['size'];
+                }
+
+                // Сохраняем сжатый файл
+                $path = $result['file']->store('media', 'public');
+
+                // Очищаем временный файл
+                if (file_exists($result['file']->getRealPath())) {
+                    unlink($result['file']->getRealPath());
+                }
+
+                $paths[] = $path;
+            } else {
+                // Не изображения сохраняем как есть
+                $path = $file->store('media', 'public');
+                $paths[] = $path;
+            }
+        }
+
+        Log::info('[ProcessUploadedFilesAction] Статистика сжатия', [
+            'total_images' => $compressionStats['total'],
+            'compressed' => $compressionStats['compressed'],
+            'saved' => $this->formatFileSize($compressionStats['saved_bytes']),
+        ]);
+
+        return $paths;
     }
 
     /**

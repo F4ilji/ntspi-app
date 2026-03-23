@@ -27,6 +27,8 @@ RUN apt-get update && apt-get install -y \
     # LibreOffice для конвертации DOC в DOCX
     libreoffice-common \
     libreoffice-writer \
+    # Kerberos для IMAP
+    libkrb5-dev \
     # Установка Node.js (актуальная LTS-версия 18)
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
@@ -34,9 +36,14 @@ RUN apt-get update && apt-get install -y \
     # Очистка кэша для уменьшения размера образа
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Установка install-php-extensions
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions
+
 # Установка расширений PHP
 RUN docker-php-ext-configure gd --with-webp --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd pdo_mysql bcmath zip intl
+    && docker-php-ext-install -j$(nproc) gd pdo_mysql bcmath zip intl \
+    && install-php-extensions imap
 
 # Установка Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
