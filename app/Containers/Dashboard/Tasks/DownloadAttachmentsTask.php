@@ -139,13 +139,36 @@ class DownloadAttachmentsTask
      */
     private function generateUniqueFilename(string $originalName): string
     {
-        $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-        $basename = pathinfo($originalName, PATHINFO_FILENAME);
-
+        // Декодируем MIME-кодировку (=?UTF-8?B?...?=)
+        $decodedName = mb_decode_mimeheader($originalName) ?: $originalName;
+        
+        // Если не декодировалось, пробуем другой метод
+        if ($decodedName === $originalName && str_contains($originalName, '=?')) {
+            $decodedName = iconv_mime_decode($originalName, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, 'UTF-8') ?: $originalName;
+        }
+        
         // Очищаем имя от специальных символов
-        $basename = preg_replace('/[^a-zA-Z0-9_\-\p{L}]/u', '_', $basename);
-
-        // Добавляем timestamp для уникальности
-        return $basename . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $extension;
+        $decodedName = preg_replace('/[^a-zA-Z0-9_\-\p{L}.]/u', '_', $decodedName);
+        
+        // Удаляем множественные подчёркивания
+        $decodedName = preg_replace('/_+/', '_', $decodedName);
+        
+        // Получаем расширение
+        $extension = strtolower(pathinfo($decodedName, PATHINFO_EXTENSION));
+        
+        // Если расширение пустое, пробуем определить из оригинального имени
+        if (empty($extension) && str_contains($originalName, '.docx')) {
+            $extension = 'docx';
+        } elseif (empty($extension) && str_contains($originalName, '.doc')) {
+            $extension = 'doc';
+        } elseif (empty($extension) && str_contains($originalName, '.pdf')) {
+            $extension = 'pdf';
+        }
+        
+        // Генерируем уникальное имя
+        $basename = pathinfo($decodedName, PATHINFO_FILENAME);
+        $basename = mb_substr($basename, 0, 100); // Ограничиваем длину
+        
+        return $basename . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . ($extension ?: 'bin');
     }
 }

@@ -26,7 +26,7 @@ class VkPostPublisher
             if ($settings['vk']) {
                 $text = $this->generateContentForVk($post);
 
-                $imagesFromPost = $post->images;
+                $imagesFromPost = $post->images ?? [];
                 $imagesFromContent = $this->extractImagesFromContent($post->content);
                 $allImages = array_merge($imagesFromPost, $imagesFromContent);
                 $imageLinks = $this->generateImageLinksForVk($allImages);
@@ -51,7 +51,7 @@ class VkPostPublisher
             if ($settings['vk']) {
                 $text = $this->generateContentForVk($post);
 
-                $imagesFromPost = $post->images;
+                $imagesFromPost = $post->images ?? [];
                 $imagesFromContent = $this->extractImagesFromContent($post->content);
                 $allImages = array_merge($imagesFromPost, $imagesFromContent);
                 $imageLinks = $this->generateImageLinksForVk($allImages);
