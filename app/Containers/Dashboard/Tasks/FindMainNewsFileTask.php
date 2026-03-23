@@ -36,7 +36,29 @@ class FindMainNewsFileTask
         // Фильтруем DOC и DOCX файлы (поддерживаем оба формата)
         $docFiles = $files->filter(function($file) {
             $ext = strtolower($file->getClientOriginalExtension());
-            return in_array($ext, ['doc', 'docx']);
+            $mimeType = $file->getMimeType();
+            
+            // Проверяем по расширению
+            if (in_array($ext, ['doc', 'docx'])) {
+                return true;
+            }
+            
+            // Проверяем по MIME-типу (для случаев, когда расширение не определено)
+            $documentMimes = [
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            ];
+            if (in_array($mimeType, $documentMimes, true)) {
+                return true;
+            }
+            
+            // Проверяем по содержимому имени файла (для MIME-кодированных имён)
+            $filename = $file->getClientOriginalName();
+            if (str_contains(strtolower($filename), '.docx') || str_contains(strtolower($filename), '.doc')) {
+                return true;
+            }
+            
+            return false;
         });
 
         Log::info('[FindMainNewsFileTask] Найдено DOC/DOCX файлов', [

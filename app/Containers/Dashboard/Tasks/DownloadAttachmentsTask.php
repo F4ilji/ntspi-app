@@ -61,9 +61,12 @@ class DownloadAttachmentsTask
                 $savedPath = $this->saveAttachment($attachment, $disk);
 
                 if ($savedPath) {
+                    // Декодируем MIME-имя для корректного определения расширения
+                    $decodedFilename = $this->decodeMimeFilename($attachment->getName());
+
                     $savedAttachments[] = EmailAttachmentData::fromFile(
                         path: $savedPath,
-                        originalFilename: $attachment->getName(),
+                        originalFilename: $decodedFilename,
                         mimeType: $attachment->getContentType(),
                         size: $attachment->getSize(),
                         contentId: $attachment->getContentId(),
@@ -139,23 +142,17 @@ class DownloadAttachmentsTask
      */
     private function generateUniqueFilename(string $originalName): string
     {
-        // Декодируем MIME-кодировку (=?UTF-8?B?...?=)
-        $decodedName = mb_decode_mimeheader($originalName) ?: $originalName;
-        
-        // Если не декодировалось, пробуем другой метод
-        if ($decodedName === $originalName && str_contains($originalName, '=?')) {
-            $decodedName = iconv_mime_decode($originalName, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, 'UTF-8') ?: $originalName;
-        }
-        
+        $decodedName = $this->decodeMimeFilename($originalName);
+
         // Очищаем имя от специальных символов
         $decodedName = preg_replace('/[^a-zA-Z0-9_\-\p{L}.]/u', '_', $decodedName);
-        
+
         // Удаляем множественные подчёркивания
         $decodedName = preg_replace('/_+/', '_', $decodedName);
-        
+
         // Получаем расширение
         $extension = strtolower(pathinfo($decodedName, PATHINFO_EXTENSION));
-        
+
         // Если расширение пустое, пробуем определить из оригинального имени
         if (empty($extension) && str_contains($originalName, '.docx')) {
             $extension = 'docx';
@@ -164,11 +161,30 @@ class DownloadAttachmentsTask
         } elseif (empty($extension) && str_contains($originalName, '.pdf')) {
             $extension = 'pdf';
         }
-        
+
         // Генерируем уникальное имя
         $basename = pathinfo($decodedName, PATHINFO_FILENAME);
         $basename = mb_substr($basename, 0, 100); // Ограничиваем длину
-        
+
         return $basename . '_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . ($extension ?: 'bin');
+    }
+
+    /**
+     * Декодировать MIME-кодированное имя файла
+     *
+     * @param string $filename Имя файла в MIME-кодировке
+     * @return string Декодированное имя файла
+     */
+    private function decodeMimeFilename(string $filename): string
+    {
+        // Декодируем MIME-кодировку (=?UTF-8?B?...?=)
+        $decodedName = mb_decode_mimeheader($filename) ?: $filename;
+
+        // Если не декодировалось, пробуем другой метод
+        if ($decodedName === $filename && str_contains($filename, '=?')) {
+            $decodedName = iconv_mime_decode($filename, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, 'UTF-8') ?: $filename;
+        }
+
+        return $decodedName;
     }
 }
