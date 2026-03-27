@@ -4,6 +4,7 @@ namespace App\Containers\Dashboard\Tasks;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class CallAiServiceTask
 {
@@ -16,33 +17,109 @@ class CallAiServiceTask
      */
     public function run(string $text, Collection $categories): ?array
     {
-        $categoryList = collect($categories)
-            ->map(fn($cat) => "{$cat->id}: {$cat->title}")
-            ->implode("\n");
+        try {
+            Log::info('[CallAiServiceTask] Начало AI запроса', [
+                'text_length' => strlen($text),
+                'categories_count' => $categories->count(),
+            ]);
 
-        $systemPrompt = $this->buildSystemPrompt($categoryList);
+            // Проверяем наличие API ключа
+            $apiKey = env('QWEN_API_KEY');
+            if (empty($apiKey)) {
+                Log::error('[CallAiServiceTask] API ключ не настроен', [
+                    'env_key' => 'QWEN_API_KEY',
+                ]);
+                throw new \RuntimeException('AI API ключ не настроен в окружении');
+            }
 
-        $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . env('QWEN_API_KEY'),
-            'Content-Type' => 'application/json',
-        ])->post('https://routerai.ru/api/v1/chat/completions', [
-            'model' => 'qwen/qwen3.5-flash-02-23',
-            'reasoning' => ['enabled' => false],
-            'messages' => [
-                ['role' => 'system', 'content' => $systemPrompt],
-                ['role' => 'user', 'content' => $text],
-            ],
-            'response_format' => ['type' => 'json_object'],
-            'temperature' => 0,
-            'max_tokens' => 2000,
-        ]);
+            $categoryList = collect($categories)
+                ->map(fn($cat) => "{$cat->id}: {$cat->title}")
+                ->implode("\n");
 
-        if ($response->successful()) {
-            $result = $response->json();
-            return json_decode($result['choices'][0]['message']['content'], true);
+            $systemPrompt = $this->buildSystemPrompt($categoryList);
+
+            Log::info('[CallAiServiceTask] Отправка запроса к AI', [
+                'url' => 'https://routerai.ru/api/v1/chat/completions',
+                'model' => 'qwen/qwen3.5-flash-02-23',
+            ]);
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+                'Content-Type' => 'application/json',
+            ])
+                ->timeout(60) // Увеличиваем timeout до 60 секунд
+                ->retry(3, 1000, function ($exception, $response) {
+                    // Повторяем только при ошибках соединения или 5xx
+                    if ($response && $response->successful()) {
+                        return false;
+                    }
+                    Log::warning('[CallAiServiceTask] Попытка не удалась, повтор...', [
+                        'exception' => $exception->getMessage(),
+                    ]);
+                    return true;
+                })
+                ->post('https://routerai.ru/api/v1/chat/completions', [
+                    'model' => 'qwen/qwen3.5-flash-02-23',
+                    'reasoning' => ['enabled' => false],
+                    'messages' => [
+                        ['role' => 'system', 'content' => $systemPrompt],
+                        ['role' => 'user', 'content' => $text],
+                    ],
+                    'response_format' => ['type' => 'json_object'],
+                    'temperature' => 0,
+                    'max_tokens' => 2000,
+                ]);
+
+            Log::info('[CallAiServiceTask] Ответ от AI', [
+                'status' => $response->status(),
+                'successful' => $response->successful(),
+            ]);
+
+            if ($response->successful()) {
+                $result = $response->json();
+                $content = $result['choices'][0]['message']['content'] ?? null;
+
+                if (empty($content)) {
+                    Log::error('[CallAiServiceTask] Пустой ответ от AI', [
+                        'response' => $result,
+                    ]);
+                    return null;
+                }
+
+                $data = json_decode($content, true);
+
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    Log::error('[CallAiServiceTask] Ошибка парсинга JSON ответа', [
+                        'error' => json_last_error_msg(),
+                        'content' => substr($content, 0, 500),
+                    ]);
+                    return null;
+                }
+
+                Log::info('[CallAiServiceTask] AI данные успешно распознаны', [
+                    'title' => $data['title'] ?? 'N/A',
+                    'has_body' => isset($data['body']),
+                    'category_id' => $data['category_id'] ?? 'N/A',
+                ]);
+
+                return $data;
+            }
+
+            Log::error('[CallAiServiceTask] AI запрос не удался', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+                'headers' => $response->headers(),
+            ]);
+
+            return null;
+        } catch (\Exception $e) {
+            Log::error('[CallAiServiceTask] Критическая ошибка AI запроса', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            throw $e;
         }
-
-        return null;
     }
 
     /**

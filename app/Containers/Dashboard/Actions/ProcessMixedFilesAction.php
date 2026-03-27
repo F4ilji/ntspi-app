@@ -88,11 +88,30 @@ class ProcessMixedFilesAction
         $categories = Category::all();
 
         // Отправляем текст в AI
-        $newsData = $this->callAiServiceTask->run($extractedText, $categories);
+        Log::info('[ProcessMixedFilesAction] Отправка текста в AI сервис', [
+            'text_length' => strlen($extractedText ?? ''),
+            'categories_count' => $categories->count(),
+        ]);
+
+        try {
+            $newsData = $this->callAiServiceTask->run($extractedText, $categories);
+        } catch (\Exception $e) {
+            Log::error('[ProcessMixedFilesAction] Ошибка вызова AI сервиса', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw new \RuntimeException('Ошибка при обработке данных AI: ' . $e->getMessage(), 0, $e);
+        }
 
         if (!$newsData) {
-            throw new \RuntimeException('Не удалось распознать данные через AI сервис');
+            Log::error('[ProcessMixedFilesAction] AI сервис вернул пустой ответ');
+            throw new \RuntimeException('Не удалось распознать данные через AI сервис. Проверьте логи AI запроса.');
         }
+
+        Log::info('[ProcessMixedFilesAction] AI данные успешно получены', [
+            'title' => $newsData['title'] ?? 'N/A',
+            'category_id' => $newsData['category_id'] ?? 'N/A',
+        ]);
 
         // Создаём пост
         $post = $this->createPostFromAiDataTask->run($newsData, $documentPath, $mediaPaths, $attachedFiles);
