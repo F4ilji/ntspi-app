@@ -42,7 +42,7 @@ return [
             'protocol'  => env('EMAIL_NEWS_PROTOCOL', 'imap'),
             'encryption'  => env('EMAIL_NEWS_ENCRYPTION', 'ssl'),
             'validate_cert'  => env('EMAIL_NEWS_VALIDATE_CERT', true),
-            'username'  => env('EMAIL_NEWS_IMAP_USER', 'ilya-vavilov@internet.ru'),
+            'username'  => env('EMAIL_NEWS_IMAP_USER', ''),
             'password'  => env('EMAIL_NEWS_IMAP_PASS', ''),
             'authentication'  => null,
             'proxy' => [
@@ -91,6 +91,24 @@ return [
         'open' => [
             'DISABLE_AUTHENTICATOR' => 'GSSAPI',
         ],
+
+        // OPTIMIZATION: Fetch method - FT_PEEK prevents marking messages as read automatically
+        // This also reduces memory usage by not loading full message bodies by default
+        'fetch' => \Webklex\PHPIMAP\IMAP::FT_PEEK,
+
+        // OPTIMIZATION: Use UID as message key for better reliability
+        'message_key' => 'id',
+
+        // OPTIMIZATION: Do not fetch message bodies by default
+        // Bodies will be loaded only when explicitly needed (lazy loading)
+        'fetch_body' => false,
+
+        // OPTIMIZATION: Do not fetch flags by default (reduces memory)
+        'fetch_flags' => false,
+
+        // OPTIMIZATION: Limit number of messages fetched per query
+        // Prevents memory overflow when processing large mailboxes
+        'fetch_limit' => env('IMAP_FETCH_LIMIT', 20),
     ],
 
     /*
