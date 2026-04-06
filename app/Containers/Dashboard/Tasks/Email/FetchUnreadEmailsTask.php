@@ -35,12 +35,12 @@ class FetchUnreadEmailsTask
         ]);
 
         try {
-            // OPTIMIZATION: Загружаем только заголовки (без тел и вложений)
-            // setFetchBody(false) предотвращает загрузку raw_body и structure
+            // NOTE: setFetchBody(true) необходим для загрузки структуры письма (вложения)
+            // Контроль памяти осуществляется через limit() и batch-обработку в Action
             $query = $folder->messages()
                 ->unseen()
-                ->setFetchBody(false)
-                ->setFetchFlags(false);
+                ->setFetchBody(true)  // Загружаем структуру (нужна для вложений)
+                ->setFetchFlags(false); // Флаги не нужны
 
             // Применяем лимит для предотвращения переполнения памяти
             if ($limit > 0) {
@@ -53,6 +53,7 @@ class FetchUnreadEmailsTask
             foreach ($messages as $message) {
                 // OPTIMIZATION: Извлекаем только метаданные (не загружаем тело)
                 $from = $message->getFrom()[0] ?? null;
+                $subjectAttr = $message->getSubject();
 
                 $emails[] = [
                     'message' => $message,
@@ -60,8 +61,10 @@ class FetchUnreadEmailsTask
                     'uid' => $message->getUid(),
                     'from_email' => $from?->mail ?? null,
                     'from_name' => $from?->name ?? null,
-                    'subject' => $message->getSubject(),
+                    // FIX: Attribute объект нужно конвертировать в строку
+                    'subject' => $subjectAttr instanceof \Webklex\PHPIMAP\Attribute ? (string) $subjectAttr : ($subjectAttr ?? 'Без темы'),
                     'date' => $message->getDate(),
+                    // NOTE: hasAttachments() может быть неточным без загрузки структуры
                     'has_attachments' => $message->hasAttachments(),
                     'size' => $message->getSize(),
                 ];

@@ -93,18 +93,13 @@ return [
         ],
 
         // OPTIMIZATION: Fetch method - FT_PEEK prevents marking messages as read automatically
-        // This also reduces memory usage by not loading full message bodies by default
         'fetch' => \Webklex\PHPIMAP\IMAP::FT_PEEK,
 
         // OPTIMIZATION: Use UID as message key for better reliability
         'message_key' => 'id',
 
-        // OPTIMIZATION: Do not fetch message bodies by default
-        // Bodies will be loaded only when explicitly needed (lazy loading)
-        'fetch_body' => false,
-
-        // OPTIMIZATION: Do not fetch flags by default (reduces memory)
-        'fetch_flags' => false,
+        // NOTE: fetch_body и fetch_flags контролируются на уровне Query (setFetchBody/setFetchFlags)
+        // Глобальные настройки здесь не применяются, чтобы не ломать вложения
 
         // OPTIMIZATION: Limit number of messages fetched per query
         // Prevents memory overflow when processing large mailboxes
