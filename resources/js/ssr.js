@@ -4,6 +4,7 @@ import createServer from '@inertiajs/vue3/server'
 import { renderToString } from '@vue/server-renderer'
 import { createSSRApp, h } from 'vue'
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import { default as Router } from '../../vendor/tightenco/ziggy/dist/index.m.js';
 
 createServer(page =>
     createInertiaApp({
@@ -31,6 +32,19 @@ createServer(page =>
             } else {
                 ziggyConfig.location = new URL(process.env.APP_URL || 'http://localhost');
             }
+
+            // Создаем функцию route с правильной конфигурацией
+            const route = (name, params, absolute, config) => {
+                const ziggyConfigForRoute = {
+                    ...page.props.ziggy,
+                    location: ziggyConfig.location,
+                };
+                const router = new Router(name, params, absolute, ziggyConfigForRoute);
+                return router.toString();
+            };
+
+            // Делаем route доступным глобально
+            ssrApp.config.globalProperties.route = route;
 
             return ssrApp
                 .use(plugin)

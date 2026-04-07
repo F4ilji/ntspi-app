@@ -14,11 +14,11 @@ export default {
   props: {
     title: {
       type: String,
-      required: true, // Сделаем title обязательным
+      required: true,
     },
     link: {
       type: String,
-      required: true, // Сделаем link обязательным
+      required: true,
     }
   },
   computed: {
@@ -28,10 +28,20 @@ export default {
         new URL(this.link);
         return this.link; // Если это валидный URL, возвращаем его
       } catch (e) {
-        // Если это не валидный URL, предполагаем, что это название роута Inertia
-        // Убедитесь, что функция route() доступна глобально или импортирована
-        // (обычно она доступна в Laravel-приложениях через Inertia)
-        return route(this.link);
+        // Если это не валидный URL, предполагаем, что это название роута
+        // Используем this.route() который доступен через ZiggyVue mixin
+        if (typeof this.route === 'function') {
+          try {
+            return this.route(this.link);
+          } catch (err) {
+            console.error('Route function failed:', err);
+            return '#';
+          }
+        }
+        
+        // Fallback: возвращаем ссылку как есть или хэш
+        console.warn('route() function is not available');
+        return '#';
       }
     }
   }
