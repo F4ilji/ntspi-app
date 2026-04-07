@@ -21,12 +21,20 @@ createServer(page =>
             ssrApp.config.errorHandler = () => null;
             ssrApp.config.warnHandler = () => null;
 
+            const ziggyConfig = {
+                ...page.props.ziggy,
+            };
+
+            // SSR-safe location handling
+            if (page.props.ziggy?.location) {
+                ziggyConfig.location = new URL(page.props.ziggy.location);
+            } else {
+                ziggyConfig.location = new URL(process.env.APP_URL || 'http://localhost');
+            }
+
             return ssrApp
                 .use(plugin)
-                .use(ZiggyVue, {
-                    ...page.props.ziggy,
-                    location: new URL(page.props.ziggy.location),
-                });
+                .use(ZiggyVue, ziggyConfig);
         },
     }),
 );

@@ -13,5 +13,6 @@ dump.sql
 .DS_Store
 **/.
 .cursor
-hot
+.cache
 QWEN.md
+hot

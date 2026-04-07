@@ -56,7 +56,7 @@
   "optionalDependencies": {
     "@esbuild/linux-arm64": "^0.25.1",
     "@rollup/rollup-darwin-arm64": "^4.35.0",
-    "@rollup/rollup-linux-arm64-gnu": "^4.35.0"
+    "@rollup/rollup-linux-arm64-gnu": "^4.60.1"
   },
   "name": "ntspi-reborn",
   "description": "<p align=\"center\"><a href=\"https://laravel.com\" target=\"_blank\"><img src=\"https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg\" width=\"400\" alt=\"Laravel Logo\"></a></p>",

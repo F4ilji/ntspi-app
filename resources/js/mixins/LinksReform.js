@@ -3,12 +3,16 @@
 export const linksReform = {
     data() {
         return {
-            excludedPaths: ['/sveden/', '/storage/', '/upload/', '/panorama/', '/abitur/', '/admin/']
+            excludedPaths: ['sveden', 'storage', 'upload', 'panorama', 'abitur', 'admin']
         }
     },
     methods: {
+        normalizePath(path) {
+            return path.replace(/^\/+|\/+$/g, '');
+        },
         checkPathname(pathname) {
-            return this.excludedPaths.some(path => pathname.startsWith(path));
+            const normalizedPathname = this.normalizePath(pathname);
+            return this.excludedPaths.some(path => normalizedPathname.startsWith(path));
         },
         getDefaultLinks() {
             const links = document.querySelectorAll('a:not([href^="#"]):not([download])');

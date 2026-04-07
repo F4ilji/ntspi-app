@@ -189,6 +189,9 @@ class FetchEmailNewsAction
                     'subject' => $email['subject'] ?? 'unknown',
                 ]);
 
+                // Помечаем письмо как прочитанное чтобы не обрабатывать повторно
+                $this->markEmail($email['message'], $folder);
+
                 return [
                     'success' => false,
                     'error' => 'Нет DOC/DOCX файла для извлечения текста',

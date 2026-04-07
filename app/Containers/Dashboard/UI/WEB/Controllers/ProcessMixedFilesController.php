@@ -2,7 +2,7 @@
 
 namespace App\Containers\Dashboard\UI\WEB\Controllers;
 
-use App\Containers\Dashboard\Actions\ProcessMixedFilesAction;
+use App\Containers\Dashboard\Actions\EmailNews\ProcessMixedFilesAction;
 use App\Containers\Dashboard\UI\WEB\Requests\StoreFilesRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;

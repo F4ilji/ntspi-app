@@ -86,6 +86,7 @@ class Kernel extends HttpKernel
         'rate.limited.check' => RateLimitCheckMiddleware::class,
         'ensure.browser' => InternalRequestOnly::class,
         'superadmin' => \App\Http\Middleware\EnsureUserIsSuperadmin::class,
+        'dashboard.auth' => \App\Containers\Dashboard\UI\WEB\Middleware\EnsureDashboardAuthenticated::class,
         'limit.post' => LimitPost::class,
         'form.time.period' => FormTimePeriodMiddleware::class,
 

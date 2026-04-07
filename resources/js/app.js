@@ -9,36 +9,59 @@ import { createInertiaApp, router } from '@inertiajs/vue3';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import {linksReform} from "@/mixins/LinksReform.js";
 import cookieMixin from "@/mixins/cookieMixin.js";
+import {helpers} from "@/mixins/Helpers.js";
 import store from '@/store/index.js';
 import '@vuepic/vue-datepicker/dist/main.css';
 
-createInertiaApp({
-    resolve: name => {
-        const pages = import.meta.glob('./Pages/**/*.vue')
-        return pages[`./Pages/${name}.vue`]()
-    },
-    setup({ el, App, props, plugin }) {
-        return createSSRApp({ render: () => h(App, props) })
-            .use(plugin)
-            .use(store)
-            .mixin(linksReform)
-            .mixin(cookieMixin)
-            .use(ZiggyVue)
-            .mount(el);
-    },
-    progress: {
-        color: '#1E57A3',
-        delay: 250,
-    },
-});
+// Load TinyMCE globally before app initialization
+const loadTinyMCE = () => {
+    return new Promise((resolve) => {
+        if (typeof tinymce !== 'undefined') {
+            resolve();
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = '/vendor/tinymce/tinymce.min.js';
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => {
+            console.error('Failed to load TinyMCE');
+            resolve();
+        };
+        document.head.appendChild(script);
+    });
+};
 
-router.on('navigate', (event) => {
-    const metrikaId = event.detail.page.props.yandex_metrika_id;
+loadTinyMCE().then(() => {
+    createInertiaApp({
+        resolve: name => {
+            const pages = import.meta.glob('./Pages/**/*.vue')
+            return pages[`./Pages/${name}.vue`]()
+        },
+        setup({ el, App, props, plugin }) {
+            return createSSRApp({ render: () => h(App, props) })
+                .use(plugin)
+                .use(store)
+                .mixin(linksReform)
+                .mixin(cookieMixin)
+                .mixin(helpers)
+                .use(ZiggyVue)
+                .mount(el);
+        },
+        progress: {
+            color: '#1E57A3',
+            delay: 250,
+        },
+    });
 
-    if (metrikaId && typeof ym === 'function') {
-        ym(metrikaId, 'hit', window.location.href, {
-            title: document.title,
-            referer: event.detail.page.props.ziggy?.previous_url || document.referrer,
-        });
-    }
+    router.on('navigate', (event) => {
+        const metrikaId = event.detail.page.props.yandex_metrika_id;
+
+        if (metrikaId && typeof ym === 'function') {
+            ym(metrikaId, 'hit', window.location.href, {
+                title: document.title,
+                referer: event.detail.page.props.ziggy?.previous_url || document.referrer,
+            });
+        }
+    });
 });

@@ -87,6 +87,7 @@ class HttpKernel extends LaravelHttpKernel
         'rate.limited.check' => RateLimitCheckMiddleware::class,
         'ensure.browser' => InternalRequestOnly::class,
         'superadmin' => EnsureUserIsSuperadmin::class,
+        'dashboard.auth' => \App\Containers\Dashboard\UI\WEB\Middleware\EnsureDashboardAuthenticated::class,
         'limit.post' => LimitPost::class,
         'form.time.period' => FormTimePeriodMiddleware::class,
     ];

@@ -21,6 +21,11 @@ class HandleInertiaRequests extends Middleware
 
     public function share(Request $request): array
     {
+        // Отключаем SSR для Dashboard роутов
+        if (str_starts_with($request->path(), 'dashboard')) {
+            config(['inertia.ssr.enabled' => false]);
+        }
+
         return [
             ...parent::share($request),
             'auth' => [

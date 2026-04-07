@@ -3,7 +3,7 @@
 namespace App\Containers\Dashboard\UI\WEB\Controllers;
 
 use App\Containers\Article\Models\Post;
-use App\Containers\Dashboard\Actions\PublishPostAction;
+use App\Containers\Dashboard\Actions\Posts\PublishPostAction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

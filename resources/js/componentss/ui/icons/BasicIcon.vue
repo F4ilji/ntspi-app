@@ -24,8 +24,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const rawName = props.name.replace(/^heroicon-(o|c|s|m)-/, '');
-    const symbolId = computed(() => `#${props.prefix}-${rawName}`)
+    const rawName = props.name ? props.name.replace(/^heroicon-(o|c|s|m)-/, '') : '';
+    const symbolId = computed(() => props.name ? `#${props.prefix}-${rawName}` : '')
     return { symbolId }
   },
   // computed: {
