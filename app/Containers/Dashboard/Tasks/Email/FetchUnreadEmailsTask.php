@@ -29,7 +29,7 @@ class FetchUnreadEmailsTask
     {
         $limit = $limit ?? config('imap.options.fetch_limit', 20);
 
-        Log::info('[FetchUnreadEmailsTask] Получение непрочитанных писем', [
+        Log::debug('[FetchUnreadEmailsTask] Получение непрочитанных писем', [
             'folder' => $folder->full_name ?? $folder->name ?? 'unknown',
             'limit' => $limit,
         ]);
@@ -75,7 +75,7 @@ class FetchUnreadEmailsTask
                 'emails_count' => count($emails),
             ]);
 
-            Log::info('[FetchUnreadEmailsTask] Получены письма', [
+            Log::debug('[FetchUnreadEmailsTask] Получены письма', [
                 'count' => count($emails),
                 'folder' => $folder->full_name ?? $folder->name ?? 'unknown',
             ]);

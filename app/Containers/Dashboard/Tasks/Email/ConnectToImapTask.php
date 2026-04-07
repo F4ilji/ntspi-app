@@ -31,7 +31,7 @@ class ConnectToImapTask
         // Получаем конфиг для webklex/php-imap
         $imapConfig = config('imap');
 
-        Log::info('[ConnectToImapTask] Попытка подключения к IMAP', [
+        Log::debug('[ConnectToImapTask] Попытка подключения к IMAP', [
             'account' => $accountName,
             'host' => $imapConfig['accounts'][$accountName]['host'] ?? 'unknown',
         ]);
@@ -47,7 +47,7 @@ class ConnectToImapTask
             $client = $clientManager->account($accountName);
             $client->connect();
 
-            Log::info('[ConnectToImapTask] Успешное подключение к IMAP', [
+            Log::debug('[ConnectToImapTask] Успешное подключение к IMAP', [
                 'account' => $accountName,
             ]);
 
@@ -72,7 +72,7 @@ class ConnectToImapTask
      */
     public function getFolder(Client $client, string $folderName): Folder
     {
-        Log::info('[ConnectToImapTask] Получение папки', [
+        Log::debug('[ConnectToImapTask] Получение папки', [
             'folder' => $folderName,
         ]);
 
@@ -95,7 +95,7 @@ class ConnectToImapTask
                 throw EmailFetchException::folderNotFound($folderName);
             }
 
-            Log::info('[ConnectToImapTask] Папка получена успешно', [
+            Log::debug('[ConnectToImapTask] Папка получена успешно', [
                 'folder' => $folderName,
                 'fullName' => $folder->full_name ?? $folder->name ?? $folderName,
             ]);

@@ -17,7 +17,7 @@ class MarkEmailAsReadTask
      */
     public function run(object $message): bool
     {
-        Log::info('[MarkEmailAsReadTask] Пометка письма как прочитанного', [
+        Log::debug('[MarkEmailAsReadTask] Пометка письма как прочитанного', [
             'message_id' => $message->getMessageId(),
             'subject' => $message->getSubject(),
         ]);
@@ -25,7 +25,7 @@ class MarkEmailAsReadTask
         try {
             $message->setFlag('Seen');
 
-            Log::info('[MarkEmailAsReadTask] Письмо помечено как прочитанное');
+            Log::debug('[MarkEmailAsReadTask] Письмо помечено как прочитанное');
 
             return true;
         } catch (\Exception $e) {
@@ -46,7 +46,7 @@ class MarkEmailAsReadTask
      */
     public function markAndMove(object $message, string $targetFolder): bool
     {
-        Log::info('[MarkEmailAsReadTask] Пометка и перемещение письма', [
+        Log::debug('[MarkEmailAsReadTask] Пометка и перемещение письма', [
             'message_id' => $message->getMessageId(),
             'target_folder' => $targetFolder,
         ]);
@@ -58,7 +58,7 @@ class MarkEmailAsReadTask
             // Перемещаем в другую папку
             $message->moveToFolder($targetFolder);
 
-            Log::info('[MarkEmailAsReadTask] Письмо обработано и перемещено', [
+            Log::debug('[MarkEmailAsReadTask] Письмо обработано и перемещено', [
                 'target_folder' => $targetFolder,
             ]);
 

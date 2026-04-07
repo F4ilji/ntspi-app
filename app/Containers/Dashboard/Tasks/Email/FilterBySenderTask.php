@@ -32,7 +32,7 @@ class FilterBySenderTask
             }
         }
 
-        Log::info('[FilterBySenderTask] Фильтрация писем', [
+        Log::debug('[FilterBySenderTask] Фильтрация писем', [
             'total_emails' => count($emails),
             'allowed_senders' => $allowedSenders,
         ]);
@@ -66,7 +66,7 @@ class FilterBySenderTask
             $filtered[] = $email;
         }
 
-        Log::info('[FilterBySenderTask] Фильтрация завершена', [
+        Log::debug('[FilterBySenderTask] Фильтрация завершена', [
             'total' => count($emails),
             'filtered' => count($filtered),
             'skipped' => $skippedCount,

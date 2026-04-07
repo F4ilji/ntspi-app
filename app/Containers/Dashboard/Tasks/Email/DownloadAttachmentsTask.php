@@ -33,7 +33,7 @@ class DownloadAttachmentsTask
     {
         $disk = $disk ?? config('email-news.attachments_folder', 'email_attachments');
 
-        Log::info('[DownloadAttachmentsTask] Начало загрузки вложений', [
+        Log::debug('[DownloadAttachmentsTask] Начало загрузки вложений', [
             'message_id' => $message->getMessageId(),
             'disk' => $disk,
             'memory_usage' => round(memory_get_usage(true) / 1024 / 1024, 2) . 'MB',
@@ -48,7 +48,7 @@ class DownloadAttachmentsTask
             throw EmailFetchException::noAttachmentsFound();
         }
 
-        Log::info('[DownloadAttachmentsTask] Найдено вложений', [
+        Log::debug('[DownloadAttachmentsTask] Найдено вложений', [
             'count' => count($attachments),
         ]);
 
@@ -83,7 +83,7 @@ class DownloadAttachmentsTask
                         contentId: $attachment->getContentId(),
                     );
 
-                    Log::info('[DownloadAttachmentsTask] Вложение сохранено', [
+                    Log::debug('[DownloadAttachmentsTask] Вложение сохранено', [
                         'filename' => $attachment->getName(),
                         'path' => $savedPath,
                         'size' => $attachment->getSize(),
@@ -92,7 +92,7 @@ class DownloadAttachmentsTask
 
                 // OPTIMIZATION: Логирование памяти для больших вложений
                 if (memory_get_usage(true) > self::MEMORY_LOG_THRESHOLD) {
-                    Log::info('[DownloadAttachmentsTask] Высокое использование памяти', [
+                    Log::debug('[DownloadAttachmentsTask] Высокое использование памяти', [
                         'memory_usage' => round(memory_get_usage(true) / 1024 / 1024, 2) . 'MB',
                         'peak_memory' => round(memory_get_peak_usage(true) / 1024 / 1024, 2) . 'MB',
                     ]);
@@ -111,7 +111,7 @@ class DownloadAttachmentsTask
             throw EmailFetchException::noAttachmentsFound();
         }
 
-        Log::info('[DownloadAttachmentsTask] Загрузка вложений завершена', [
+        Log::debug('[DownloadAttachmentsTask] Загрузка вложений завершена', [
             'saved_count' => count($savedAttachments),
             'memory_usage' => round(memory_get_usage(true) / 1024 / 1024, 2) . 'MB',
         ]);
