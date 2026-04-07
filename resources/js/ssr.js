@@ -6,6 +6,7 @@ import { createSSRApp, h } from 'vue'
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { default as Router } from '../../vendor/tightenco/ziggy/dist/index.m.js';
 import { createRouteMixin } from './mixins/RouteMixin.js';
+import { createSsrErrorHandler, logSsrError } from './ssr/errorHandler.js';
 
 createServer(page =>
     createInertiaApp({
@@ -20,7 +21,9 @@ createServer(page =>
                 render: () => h(App, props),
             });
 
-            ssrApp.config.errorHandler = () => null;
+            // SSR error handler - logs to separate file
+            const ssrErrorHandler = createSsrErrorHandler();
+            ssrApp.config.errorHandler = ssrErrorHandler;
             ssrApp.config.warnHandler = () => null;
 
             const ziggyConfig = {
@@ -42,5 +45,10 @@ createServer(page =>
                 .use(plugin)
                 .use(ZiggyVue, ziggyConfig);
         },
-    }),
+    }).catch(error => {
+        // Catch Inertia SSR errors and log them separately
+        logSsrError(error);
+        // Re-throw to maintain normal error flow
+        throw error;
+    })
 );

@@ -406,6 +406,3 @@ route(name, params) {
     - Завершение работы → подключи `review`
 4.  **Exec (PHP):** Если нужна команда artisan — оберни в `docker exec -it ntspi-php ...`.
 5.  **Exec (System):** Если нужен поиск — используй `find/grep`.
-
-## Qwen Added Memories
-- Security hardening applied to prod: nginx restricts PHP execution to index.php only, blocks access to .env/vendor/storage/hidden files, adds CSP header. PHP-FPM has open_basedir=/var/www:/tmp, disabled dangerous functions (passthru, system, proc_open, etc.), secure session cookies, expose_php=Off. curl_exec and shell_exec kept enabled because app uses them (VK API, LibreOffice conversion). Files: _docker/nginx/prod/conf.d/nginx.conf, _docker/app/php.ini

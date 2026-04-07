@@ -23,7 +23,8 @@
       "Bash(docker compose ps)",
       "Bash(docker compose build *)",
       "Bash(curl *)",
-      "Bash(cat *)"
+      "Bash(cat *)",
+      "Bash(echo *)"
     ]
   },
   "$version": 3
