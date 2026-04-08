@@ -24,7 +24,9 @@
       "Bash(docker compose build *)",
       "Bash(curl *)",
       "Bash(cat *)",
-      "Bash(echo *)"
+      "Bash(echo *)",
+      "Bash(docker cp *)",
+      "Bash(touch *)"
     ]
   },
   "$version": 3

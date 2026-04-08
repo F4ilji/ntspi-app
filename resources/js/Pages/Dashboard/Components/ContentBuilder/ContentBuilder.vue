@@ -403,6 +403,9 @@ export default {
       document.removeEventListener('mouseup', stopDrag);
     }
 
+    // Track if we've initialized from server data
+    let initialized = false;
+
     // Initialize from modelValue
     onMounted(() => {
       if (props.modelValue && props.modelValue.length > 0) {
@@ -410,6 +413,7 @@ export default {
           _uid: generateUid(),
           ...block
         }));
+        initialized = true;
       }
     });
 
@@ -417,12 +421,13 @@ export default {
     watch(
       () => props.modelValue,
       (newValue) => {
-        if (newValue && newValue.length > 0 && blocks.value.length === 0) {
-          // Only initialize if blocks are empty (initial load from server)
+        if (newValue && newValue.length > 0 && !initialized) {
+          // Only initialize once (initial load from server)
           blocks.value = newValue.map(block => ({
             _uid: generateUid(),
             ...block
           }));
+          initialized = true;
         }
       },
       { deep: true }

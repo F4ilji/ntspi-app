@@ -73,6 +73,9 @@ const iconMap = {
   beaker: 'beaker',
   'user-circle': 'user-circle',
   'rectangle-stack': 'rectangle-stack',
+  'arrow-path': 'arrow-path',
+  'academic-cap': 'academic-cap',
+  'clipboard-document-check': 'clipboard-document-check',
 };
 
 const iconComponent = computed(() => iconMap[props.item.icon] || 'home');

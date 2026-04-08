@@ -9,7 +9,7 @@ class FindPageByPathTask
 {
     public function run(string $path): ?Page
     {
-        $cacheKey = 'page_' . md5($path);
+        $cacheKey = 'page_data_' . md5($path);
 
         return Cache::remember($cacheKey, now()->addHours(48), function () use ($path) {
             return Page::where('path', '=', $path)

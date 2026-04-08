@@ -15,6 +15,6 @@ dump.sql
 .cursor
 .cache
 hot
-QWEN.md
-.qwen
 /storage/logs
+resources/js/ziggy.js
+public/vikon_core

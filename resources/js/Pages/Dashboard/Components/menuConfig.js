@@ -121,4 +121,11 @@ export const menuItems = [
       { label: 'Все пользователи', route: 'dashboard.users.index' },
     ],
   },
+  {
+    key: 'vikon-updates',
+    label: 'Обновления VIKON',
+    icon: 'arrow-path',
+    route: 'dashboard.vikon-updates.index',
+    activePrefixes: ['dashboard.vikon-updates'],
+  },
 ];

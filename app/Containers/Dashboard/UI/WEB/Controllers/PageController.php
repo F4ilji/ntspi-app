@@ -91,7 +91,7 @@ class PageController extends Controller
 
             $this->updatePageAction->run($page, $validated);
 
-            return redirect()->route('dashboard.pages.index')
+            return redirect()->route('dashboard.pages.edit', $page)
                 ->with('success', 'Страница успешно обновлена!');
         } catch (\Exception $e) {
             return back()

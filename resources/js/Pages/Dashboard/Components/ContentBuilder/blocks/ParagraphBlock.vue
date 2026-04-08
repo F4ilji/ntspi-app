@@ -41,7 +41,7 @@ export default {
       required: true
     }
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'update'],
   data() {
     return {
       editorId: `paragraph-editor-${++editorCounter}`,
@@ -61,6 +61,7 @@ export default {
         ...this.modelValue,
         [field]: value
       });
+      this.$emit('update');
     },
     waitForTinyMCE() {
       if (typeof tinymce !== 'undefined') {
@@ -111,6 +112,8 @@ export default {
           editor.on('init', () => {
             editor.setContent(this.modelValue.content || '');
             this.loading = false;
+            // Emit initial content to ensure parent has correct value
+            this.update('content', editor.getContent());
           });
           editor.on('change', () => {
             this.update('content', editor.getContent());

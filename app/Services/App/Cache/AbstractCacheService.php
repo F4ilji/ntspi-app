@@ -8,18 +8,21 @@ abstract class AbstractCacheService
 {
     public function clearCacheByPrefix(string $prefix): void
     {
-        // Получаем префикс из .env
-        $redisPrefix = config('database.redis.options.prefix', 'ntspi');
-
-        // Получаем ключи, соответствующие префиксу
-        $keys = Redis::keys($prefix);
+        // Получаем префикс Redis из конфигурации (уровень Redis connection)
+        $redisPrefix = config('database.redis.options.prefix', '');
+        
+        // Удаляем wildcard (*) из префикса для поиска
+        $searchPrefix = rtrim($prefix, '*');
+        
+        // Получаем ключи через Redis (Redis::keys возвращает ключи УЖЕ с префиксом)
+        $keys = Redis::keys($searchPrefix . '*');
 
         if (!empty($keys)) {
             foreach ($keys as $key) {
-                // Убираем префикс и двоеточие из ключа
-                $cleanedKey = str_replace([$redisPrefix, ':'], '', $key);
-
-                // Удаляем ключ
+                // Redis::keys возвращает ключи с префиксом (напр., 'ntspi:page_data_abc')
+                // Но Redis::del() тоже добавит префикс автоматически!
+                // Поэтому нужно убрать префикс перед удалением
+                $cleanedKey = ltrim(str_replace($redisPrefix, '', $key), ':');
                 Redis::del($cleanedKey);
             }
         }
