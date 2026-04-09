@@ -37,9 +37,9 @@ class DeploySiteAction
                 unlink($this->logFile);
             }
 
-            // Запускаем deploy.sh в фоне
+            // Запускаем deploy.sh в фоне через sudo (нужен настроенный NOPASSWD для www-data)
             $command = sprintf(
-                'nohup bash %s > %s 2>&1 &',
+                'sudo bash %s > %s 2>&1 &',
                 escapeshellarg($this->deployScript),
                 escapeshellarg($this->logFile)
             );
