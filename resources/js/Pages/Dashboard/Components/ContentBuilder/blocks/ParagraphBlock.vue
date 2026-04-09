@@ -103,7 +103,7 @@ export default {
           'autoresize'
         ],
         toolbar: 'undo redo | blocks | ' +
-          'bold italic forecolor | alignleft aligncenter ' +
+          'bold italic forecolor link | alignleft aligncenter ' +
           'alignright alignjustify | bullist numlist outdent indent | ' +
           'removeformat | help | fullscreen',
         content_style: 'body { font-family: Inter, -apple-system, sans-serif; font-size: 14px; }',
