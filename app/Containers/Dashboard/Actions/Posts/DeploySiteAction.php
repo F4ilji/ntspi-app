@@ -8,7 +8,6 @@ class DeploySiteAction
 {
     private string $deployScript = '/var/www/_deploy/deploy.sh';
     private string $logFile = '/var/www/_deploy/deploy.log';
-    private string $pidFile = '/var/www/_deploy/deploy.pid';
 
     /**
      * Запускает deploy.sh напрямую
@@ -33,39 +32,35 @@ class DeploySiteAction
                 ];
             }
 
-            // Запускаем deploy.sh в фоне через proc_open
+            // Очищаем старый лог
+            if (file_exists($this->logFile)) {
+                unlink($this->logFile);
+            }
+
+            // Запускаем deploy.sh в фоне
             $command = sprintf(
-                'nohup bash %s > %s 2>&1 & echo $!',
+                'nohup bash %s > %s 2>&1 &',
                 escapeshellarg($this->deployScript),
                 escapeshellarg($this->logFile)
             );
 
-            $descriptors = [
-                1 => ['pipe', 'w'],  // stdout
-                2 => ['pipe', 'w'],  // stderr
-            ];
+            shell_exec($command);
 
-            $process = proc_open($command, $descriptors, $pipes);
+            // Даём процессу время на запуск
+            usleep(500000); // 0.5 сек
 
-            if (!is_resource($process)) {
-                Log::error('Deploy script failed to start — proc_open unavailable');
+            if (!$this->isDeployRunning()) {
+                // Процесс не запустился — читаем лог
+                $error = file_exists($this->logFile) ? file_get_contents($this->logFile) : 'Нет лога';
+                Log::error('Deploy script failed to start', ['log' => $error]);
+
                 return [
                     'success' => false,
-                    'message' => 'Ошибка при запуске скрипта деплоя (proc_open недоступен)',
+                    'message' => 'Скрипт деплоя не запустился. Проверьте лог.',
                 ];
             }
 
-            // Читаем PID процесса
-            $pid = trim(stream_get_contents($pipes[1]));
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-            proc_close($process);
-
-            if (!empty($pid) && is_numeric($pid)) {
-                file_put_contents($this->pidFile, $pid);
-            }
-
-            Log::info('Deploy triggered', ['user_id' => auth()->id(), 'pid' => $pid]);
+            Log::info('Deploy triggered', ['user_id' => auth()->id()]);
 
             return [
                 'success' => true,
@@ -144,9 +139,6 @@ class DeploySiteAction
         if (file_exists($this->logFile)) {
             unlink($this->logFile);
         }
-        if (file_exists($this->pidFile)) {
-            unlink($this->pidFile);
-        }
     }
 
     /**
@@ -154,18 +146,8 @@ class DeploySiteAction
      */
     private function isDeployRunning(): bool
     {
-        if (!file_exists($this->pidFile)) {
-            return false;
-        }
+        $output = shell_exec('pgrep -f "deploy\\.sh"');
 
-        $pid = trim(file_get_contents($this->pidFile));
-        if (empty($pid)) {
-            return false;
-        }
-
-        // Проверяем существование процесса
-        exec(sprintf('kill -0 %s 2>/dev/null', escapeshellarg($pid)), $output, $exitCode);
-
-        return $exitCode === 0;
+        return !empty(trim($output ?? ''));
     }
 }
