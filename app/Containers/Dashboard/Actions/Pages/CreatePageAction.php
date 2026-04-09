@@ -8,7 +8,6 @@ use App\Containers\Dashboard\Tasks\Content\GenerateSearchDataTask;
 class CreatePageAction
 {
     public function __construct(
-        private readonly GeneratePagePathAction $generatePagePathAction,
         private readonly GenerateSearchDataTask $generateSearchDataTask,
     ) {}
 
@@ -20,18 +19,10 @@ class CreatePageAction
      */
     public function run(array $data): Page
     {
-        $subSectionId = $data['sub_section_id'] ?? null;
-
-        // Генерируем path на основе subSection
-        $data['path'] = $this->generatePagePathAction->run($data['slug'], $subSectionId);
-
         // Генерируем search_data из контента
         if (!empty($data['content'])) {
             $data['search_data'] = $this->generateSearchDataTask->run($data['content']);
         }
-
-        // Удаляем sub_section_id — он не является полем модели Page
-        unset($data['sub_section_id']);
 
         return Page::create($data);
     }

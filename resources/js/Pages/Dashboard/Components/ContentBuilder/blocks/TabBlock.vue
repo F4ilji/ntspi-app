@@ -4,7 +4,7 @@
     <div class="flex items-center gap-2">
       <input
         type="checkbox"
-        :checked="modelValue.settings.is_accordion"
+        :checked="modelValue?.settings?.is_accordion"
         @change="updateSettings('is_accordion', $event.target.checked)"
         class="h-4 w-4 text-primary focus:ring-primary border-layer-line rounded"
       />
@@ -97,7 +97,7 @@ export default {
       this.$emit('update:modelValue', { ...this.modelValue, [field]: value });
     },
     updateSettings(field, value) {
-      this.update('settings', { ...this.modelValue.settings, [field]: value });
+      this.update('settings', { ...(this.modelValue.settings || {}), [field]: value });
     },
     updateTab(index, field, value) {
       const tabs = [...this.tabs];

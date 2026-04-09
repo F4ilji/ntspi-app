@@ -1,23 +1,46 @@
 <template>
   <div class="min-h-screen bg-background-2">
     <!-- Header -->
-    <div class="border-b border-line-2 bg-layer/50 backdrop-blur-sm sticky top-0 z-10 h-16">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-        <div class="flex items-center h-full gap-3">
-          <a
-            :href="route('dashboard.pages.index')"
-            class="p-2 text-muted-foreground-1 hover:text-foreground hover:bg-muted-hover rounded-lg transition-all"
-          >
-            <DashboardIcon name="arrow-left" size="5" />
-          </a>
+    <div class="border-b border-line-2 bg-layer/50 backdrop-blur-sm sticky top-0 z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <DashboardIcon name="plus" size="5" class="text-primary" />
+            <a
+              :href="route('dashboard.pages.index')"
+              class="p-2 text-muted-foreground-1 hover:text-foreground hover:bg-muted-hover rounded-lg transition-all"
+            >
+              <DashboardIcon name="arrow-left" size="5" />
+            </a>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <DashboardIcon name="plus" size="5" class="text-primary" />
+              </div>
+              <div>
+                <h1 class="text-lg font-medium text-foreground">Создание страницы</h1>
+                <p class="text-xs text-muted-foreground-1">Заполните информацию о новой странице</p>
+              </div>
             </div>
-            <div>
-              <h1 class="text-lg font-medium text-foreground">Создание страницы</h1>
-              <p class="text-xs text-muted-foreground-1">Заполните информацию о новой странице</p>
-            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <a
+              :href="route('dashboard.pages.index')"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-surface border border-layer-line text-foreground text-sm font-medium rounded-lg hover:bg-muted-hover transition-all"
+            >
+              Отмена
+            </a>
+            <button
+              type="button"
+              @click="submit"
+              :disabled="processing"
+              class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <svg v-if="processing" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <DashboardIcon v-else name="check" size="4" />
+              {{ processing ? 'Создание...' : 'Создать страницу' }}
+            </button>
           </div>
         </div>
       </div>
@@ -274,28 +297,6 @@
                 </div>
               </div>
             </div>
-          </div>
-
-          <!-- Submit Button -->
-          <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-line-2">
-            <a
-              :href="route('dashboard.pages.index')"
-              class="inline-flex items-center gap-2 px-4 py-2.5 bg-surface border border-layer-line text-foreground text-sm font-medium rounded-lg hover:bg-muted-hover transition-all"
-            >
-              Отмена
-            </a>
-            <button
-              type="submit"
-              :disabled="processing"
-              class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg v-if="processing" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-              <DashboardIcon v-else name="check" size="4" />
-              {{ processing ? 'Сохранение...' : 'Создать страницу' }}
-            </button>
           </div>
         </form>
       </div>

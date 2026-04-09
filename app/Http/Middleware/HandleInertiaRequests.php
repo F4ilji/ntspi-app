@@ -28,6 +28,9 @@ class HandleInertiaRequests extends Middleware
 
         return [
             ...parent::share($request),
+            'app' => [
+                'env' => app()->environment(),
+            ],
             'auth' => [
                 'user' => $request->user() ? $request->user()->only('id', 'name', 'email', 'created_at') : null,
             ],

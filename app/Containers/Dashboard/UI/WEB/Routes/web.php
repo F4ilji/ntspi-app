@@ -10,6 +10,7 @@ use App\Containers\Dashboard\UI\WEB\Controllers\CategoryController as NewsCatego
 use App\Containers\Dashboard\UI\WEB\Controllers\ContactWidgetController;
 use App\Containers\Dashboard\UI\WEB\Controllers\CreateSliderController;
 use App\Containers\Dashboard\UI\WEB\Controllers\CustomFormController;
+use App\Containers\Dashboard\UI\WEB\Controllers\DeployController;
 use App\Containers\Dashboard\UI\WEB\Controllers\DepartmentController;
 use App\Containers\Dashboard\UI\WEB\Controllers\PageReferenceListController;
 use App\Containers\Dashboard\UI\WEB\Controllers\DepartmentProgramController;
@@ -60,6 +61,9 @@ Route::post('/dashboard/logout', [AuthenticatedSessionController::class, 'destro
 // Authenticated dashboard routes
 Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     Route::get('/dashboard', IndexDashboardController::class)->name('dashboard.index');
+    Route::post('/dashboard/deploy', [DeployController::class, 'deploy'])->name('dashboard.deploy');
+    Route::get('/dashboard/deploy/status', [DeployController::class, 'status'])->name('dashboard.deploy.status');
+    Route::post('/dashboard/deploy/clear', [DeployController::class, 'clear'])->name('dashboard.deploy.clear');
 
     // CRUD постов
     Route::prefix('/dashboard/posts')->name('dashboard.posts.')->group(function () {
