@@ -25,7 +25,7 @@ class DeployController extends Controller
             ], 403);
         }
 
-        if (!$request->user()->hasRole('admin')) {
+        if (!$request->user()->hasRole('super_admin')) {
             return response()->json([
                 'success' => false,
                 'message' => 'Недостаточно прав для выполнения этой операции',
@@ -46,7 +46,7 @@ class DeployController extends Controller
             return response()->json(['status' => 'disabled'], 403);
         }
 
-        if (!$request->user()->hasRole('admin')) {
+        if (!$request->user()->hasRole('super_admin')) {
             return response()->json([
                 'success' => false,
                 'message' => 'Недостаточно прав',
@@ -63,7 +63,7 @@ class DeployController extends Controller
      */
     public function clear(Request $request): JsonResponse
     {
-        if (!$request->user()->hasRole('admin')) {
+        if (!$request->user()->hasRole('super_admin')) {
             return response()->json([
                 'success' => false,
                 'message' => 'Недостаточно прав',
