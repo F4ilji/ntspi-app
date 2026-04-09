@@ -96,7 +96,6 @@
                 <DashboardIcon v-if="tab.id === 'main'" name="information-circle" size="4" :class="activeTab === tab.id ? 'text-primary' : 'text-muted-foreground-2'" />
                 <DashboardIcon v-if="tab.id === 'content'" name="document-text" size="4" :class="activeTab === tab.id ? 'text-primary' : 'text-muted-foreground-2'" />
                 <DashboardIcon v-if="tab.id === 'media'" name="photo" size="4" :class="activeTab === tab.id ? 'text-primary' : 'text-muted-foreground-2'" />
-                <DashboardIcon v-if="tab.id === 'slider'" name="presentation-chart-bar" size="4" :class="activeTab === tab.id ? 'text-primary' : 'text-muted-foreground-2'" />
                 {{ tab.label }}
               </button>
             </div>
@@ -305,7 +304,8 @@
                 </div>
               </div>
 
-              <!-- Social Media -->
+              <!-- Social Media — ВРЕМЕННО СКРЫТО -->
+              <!--
               <div class="border border-layer-line rounded-lg overflow-hidden">
                 <div class="px-4 py-3 bg-surface/50 border-b border-line-2">
                   <div class="flex items-center gap-2">
@@ -325,9 +325,12 @@
                       Опубликовать ВКонтакте
                     </label>
                   </div>
-                  <p class="mt-2 text-xs text-muted-foreground-1">Новость будет автоматически опубликована в VK</p>
+                  <p class="mt-2 text-xs text-muted-foreground-1">
+                    {{ isEdit ? 'Новость будет обновлена в VK' : 'Новость будет автоматически опубликована в VK' }}
+                  </p>
                 </div>
               </div>
+              -->
             </div>
 
             <!-- Tab: Content -->
@@ -473,14 +476,19 @@
                     <div class="space-y-3 text-center">
                       <div class="flex justify-center">
                         <div :class="[isDraggingGallery ? 'bg-primary/20' : 'bg-primary/10', 'w-12 h-12 rounded-lg flex items-center justify-center transition-all']">
-                          <DashboardIcon name="cloud-arrow-up" size="6" class="text-primary" />
+                          <svg v-if="uploadingImages" class="animate-spin w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          <DashboardIcon v-else name="cloud-arrow-up" size="6" class="text-primary" />
                         </div>
                       </div>
                       <div>
                         <p class="text-sm font-medium text-foreground">
-                          <span class="text-primary">Нажмите для выбора</span> или перетащите файлы
+                          <span v-if="uploadingImages">Загрузка...</span>
+                          <span v-else><span class="text-primary">Нажмите для выбора</span> или перетащите файлы</span>
                         </p>
-                        <p class="text-xs text-muted-foreground-1 mt-1">JPG, PNG (до 20MB каждый, макс. 200 файлов)</p>
+                        <p class="text-xs text-muted-foreground-1 mt-1">JPG, PNG, WebP (до 20MB каждый, макс. 200 файлов)</p>
                       </div>
                     </div>
                   </div>
@@ -546,14 +554,6 @@
                 </p>
               </div>
             </div>
-
-            <!-- Tab: Slider -->
-            <div v-if="activeTab === 'slider'" class="space-y-6">
-              <div class="text-center py-12">
-                <DashboardIcon name="information-circle" size="16" class="text-gray-400 mx-auto mb-4" />
-                <p class="text-sm text-gray-600">Управление слайдами доступно в разделе "Слайдеры" Dashboard</p>
-              </div>
-            </div>
           </div>
         </div>
       </form>
@@ -582,10 +582,6 @@ export default {
       type: Array,
       required: true
     },
-    sliders: {
-      type: Array,
-      required: true
-    },
     statuses: {
       type: Array,
       required: true
@@ -596,10 +592,10 @@ export default {
     return {
       activeTab: 'main',
       isEdit: false,
-      isSliderEnabled: false,
       activeButton: true,
       isDraggingPreview: false,
       isDraggingGallery: false,
+      uploadingImages: false,
       newTag: '',
       newAuthor: '',
       PostStatus,
@@ -642,8 +638,7 @@ export default {
       tabs: [
         { id: 'main', label: 'Основная информация' },
         { id: 'content', label: 'Содержание' },
-        { id: 'media', label: 'Медиа' },
-        { id: 'slider', label: 'Слайдер' }
+        { id: 'media', label: 'Медиа' }
       ],
       slugGenerated: false
     }
@@ -685,25 +680,24 @@ export default {
       if (typeof this.form.preview === 'string') {
         return `/storage/${this.form.preview}`;
       }
-      return URL.createObjectURL(this.form.preview);
+      if (this.form.preview instanceof File || this.form.preview instanceof Blob) {
+        return URL.createObjectURL(this.form.preview);
+      }
+      return null;
     },
 
     galleryUrls() {
       return this.form.images.map(img => {
+        if (!img) return null;
         if (typeof img === 'string') {
           return `/storage/${img}`;
         }
-        return URL.createObjectURL(img);
-      });
+        if (img instanceof File || img instanceof Blob) {
+          return URL.createObjectURL(img);
+        }
+        return null;
+      }).filter(url => url !== null);
     },
-
-    slideImageUrl() {
-      if (!this.form.slide.image.url) return null;
-      if (typeof this.form.slide.image.url === 'string') {
-        return `/storage/${this.form.slide.image.url}`;
-      }
-      return URL.createObjectURL(this.form.slide.image.url);
-    }
   },
 
   beforeUnmount() {
@@ -729,6 +723,7 @@ export default {
 
     initializeForm() {
       const p = this.post;
+      
       this.form = {
         ...this.form,
         title: p.title || '',
@@ -739,13 +734,11 @@ export default {
         authors: p.authors || [],
         content: p.content || [],
         preview: p.preview || null,
-        images: p.images || [],
+        images: Array.isArray(p.images) ? [...p.images] : [],
         publish_setting: p.publish_setting || { publish_after: false, publish_at: null },
         publication: p.publication || { vk: true, telegram: true },
         slide: p.slide || this.form.slide
       };
-
-      this.isSliderEnabled = !!(p.slide && p.slide.slider_id);
     },
 
     inputClass(field) {
@@ -793,14 +786,44 @@ export default {
     handlePreviewDrop(e) {
       const files = e.dataTransfer.files;
       if (files.length > 0 && this.isImageFile(files[0])) {
-        this.form.preview = files[0];
+        this.uploadPreviewToServer(files[0]);
       }
     },
 
     handlePreviewFileSelect(e) {
       const file = e.target.files[0];
       if (file && this.isImageFile(file)) {
-        this.form.preview = file;
+        this.uploadPreviewToServer(file);
+      }
+    },
+
+    async uploadPreviewToServer(file) {
+      if (!file) return;
+
+      this.uploadingImages = true;
+
+      try {
+        const formData = new FormData();
+        formData.append('images[]', file);
+
+        const response = await fetch(route('dashboard.posts.upload-images'), {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+          },
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (result.success && result.paths && result.paths.length > 0) {
+          this.form.preview = result.paths[0];
+        }
+      } catch (error) {
+        console.error('Preview upload error:', error);
+      } finally {
+        this.uploadingImages = false;
       }
     },
 
@@ -810,16 +833,48 @@ export default {
 
     handleGalleryDrop(e) {
       const files = Array.from(e.dataTransfer.files).filter(f => this.isImageFile(f));
-      files.forEach(file => {
-        this.form.images.push(file);
-      });
+      this.uploadImagesToServer(files);
     },
 
     handleGalleryFileSelect(e) {
       const files = Array.from(e.target.files).filter(f => this.isImageFile(f));
-      files.forEach(file => {
-        this.form.images.push(file);
-      });
+      this.uploadImagesToServer(files);
+      // Сбрасываем input чтобы можно было выбрать те же файлы снова
+      e.target.value = '';
+    },
+
+    async uploadImagesToServer(files) {
+      if (files.length === 0) return;
+
+      this.uploadingImages = true;
+
+      try {
+        const formData = new FormData();
+        files.forEach(file => {
+          formData.append('images[]', file);
+        });
+
+        const response = await fetch(route('dashboard.posts.upload-images'), {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+          },
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (result.success && result.paths) {
+          result.paths.forEach(path => {
+            this.form.images.push(path);
+          });
+        }
+      } catch (error) {
+        console.error('Image upload error:', error);
+      } finally {
+        this.uploadingImages = false;
+      }
     },
 
     triggerGalleryInput() {
@@ -884,27 +939,36 @@ export default {
       });
     },
 
-    handleSlideImageSelect(e) {
-      const file = e.target.files[0];
-      if (file && this.isImageFile(file)) {
-        this.form.slide.image.url = file;
-      }
-    },
-
-    isImageFile(file) {
-      return ['image/jpeg', 'image/png', 'image/webp'].includes(file.type);
-    },
-
     submitForm() {
       this.form.processing = true;
       this.form.errors = {};
+
+      // Фильтруем изображения - оставляем только строки (пути)
+      this.form.images = this.form.images.filter(img => typeof img === 'string' && img.length > 0);
 
       const formData = new FormData();
 
       Object.keys(this.form).forEach(key => {
         if (key === 'errors' || key === 'processing') return;
 
-        const value = this.form[key];
+        let value = this.form[key];
+        
+        // Пропускаем preview если null, пустая строка или пустой объект
+        if (key === 'preview') {
+          if (!value || value === '' || (typeof value === 'object' && Object.keys(value).length === 0)) {
+            return;
+          }
+        }
+        
+        // Пропускаем images если массив пустой
+        if (key === 'images' && Array.isArray(value) && value.length === 0) return;
+        
+        // Пропускаем category_id если null
+        if (key === 'category_id' && (value === null || value === '')) return;
+        
+        // Пропускаем slide если slider_id null и нет данных
+        if (key === 'slide' && value && !value.slider_id && !value.title && !value.content) return;
+        
         if (typeof value === 'object' && value !== null) {
           formData.append(key, JSON.stringify(value));
         } else {
@@ -916,15 +980,13 @@ export default {
         ? route('dashboard.posts.update', this.post.id)
         : route('dashboard.posts.store');
 
-      const method = this.isEdit ? 'POST' : 'POST';
-
       if (this.isEdit) {
         formData.append('_method', 'PUT');
       }
 
       this.$inertia.post(url, formData, {
-        preserveScroll: true,
-        onSuccess: () => {
+        preserveScroll: false,
+        onSuccess: (page) => {
           this.form.processing = false;
         },
         onError: (errors) => {

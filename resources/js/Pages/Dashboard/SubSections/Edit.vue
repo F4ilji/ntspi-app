@@ -194,6 +194,13 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right">
                       <div class="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Link
+                          :href="route('dashboard.pages.edit', page.id)"
+                          class="p-2 text-muted-foreground-1 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
+                          title="Редактировать"
+                        >
+                          <DashboardIcon name="pencil-square" size="4" />
+                        </Link>
                         <button
                           @click.prevent="detachPage(page)"
                           class="p-2 text-muted-foreground-1 hover:text-rose-600 hover:bg-rose-500/10 rounded-lg transition-all"
@@ -224,6 +231,7 @@
 </template>
 
 <script>
+import { Link } from '@inertiajs/vue3';
 import DashboardIcon from '../Components/DashboardIcon.vue';
 import FlashMessages from '../Components/shared/FlashMessages.vue';
 import EmptyState from '../Components/shared/EmptyState.vue';
@@ -231,6 +239,7 @@ import EmptyState from '../Components/shared/EmptyState.vue';
 export default {
   name: 'SubSectionEdit',
   components: {
+    Link,
     DashboardIcon,
     FlashMessages,
     EmptyState

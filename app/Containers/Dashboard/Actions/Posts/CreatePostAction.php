@@ -5,7 +5,6 @@ namespace App\Containers\Dashboard\Actions\Posts;
 use App\Containers\Article\Models\Post;
 use App\Containers\Dashboard\Tasks\Posts\CreatePostTask;
 use App\Containers\Dashboard\Tasks\Posts\HandlePostSliderTask;
-use App\Containers\Dashboard\Tasks\Posts\PublishPostToVkTask;
 use App\Containers\Dashboard\Tasks\Posts\SendPostNotificationTask;
 
 class CreatePostAction
@@ -14,7 +13,6 @@ class CreatePostAction
         private readonly CreatePostTask $createPostTask,
         private readonly HandlePostSliderTask $handleSliderTask,
         private readonly SendPostNotificationTask $sendNotificationTask,
-        private readonly PublishPostToVkTask $publishToVkTask,
     ) {}
 
     /**
@@ -27,7 +25,6 @@ class CreatePostAction
     {
         // Извлекаем данные слайдера и публикации
         $slideData = $data['slide'] ?? [];
-        $shouldPublishToVk = $data['publication']['vk'] ?? false;
 
         // Удаляем служебные данные перед созданием
         unset($data['slide'], $data['publication']);
@@ -40,9 +37,6 @@ class CreatePostAction
 
         // Отправляем уведомления (Task)
         $this->sendNotificationTask->run($post, null, true);
-
-        // Публикуем в VK (Task)
-        $this->publishToVkTask->run($post, $shouldPublishToVk, false);
 
         return $post;
     }

@@ -29,7 +29,7 @@ class VkPostPublisher
                 $imagesFromPost = $post->images ?? [];
                 $imagesFromContent = $this->extractImagesFromContent($post->content);
                 $allImages = array_merge($imagesFromPost, $imagesFromContent);
-                $imageLinks = $this->generateImageLinksForVk($allImages);
+                $imageLinks = array_filter($this->generateImageLinksForVk($allImages)); // Удаляем null
                 $videos = $this->extractVideosFromContent($post->content);
 
                 $publishDate = $post->publish_at > now() ? $post->publish_at->timestamp : null;
@@ -54,7 +54,7 @@ class VkPostPublisher
                 $imagesFromPost = $post->images ?? [];
                 $imagesFromContent = $this->extractImagesFromContent($post->content);
                 $allImages = array_merge($imagesFromPost, $imagesFromContent);
-                $imageLinks = $this->generateImageLinksForVk($allImages);
+                $imageLinks = array_filter($this->generateImageLinksForVk($allImages)); // Удаляем null
                 $videos = $this->extractVideosFromContent($post->content);
 
                 $publishDate = $post->publish_at > now() ? $post->publish_at->timestamp : null;
@@ -183,7 +183,11 @@ class VkPostPublisher
     private function generateImageLinksForVk(array $images): array
     {
         return array_map(function ($file) {
-            return Storage::url($file); // Генерируем полный URL для изображения
+            // Пропускаем невалидные данные (пустые массивы, null и т.д.)
+            if (!is_string($file) || empty($file)) {
+                return null;
+            }
+            return Storage::url($file);
         }, $images);
     }
 }

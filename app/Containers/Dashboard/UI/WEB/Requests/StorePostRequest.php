@@ -12,12 +12,67 @@ class StorePostRequest extends FormRequest
         return true;
     }
 
+    /**
+     * Prepare the data for validation.
+     *
+     * Decodes JSON-encoded fields from FormData back to arrays.
+     */
+    protected function prepareForValidation(): void
+    {
+        $fieldsToDecode = [
+            'content',
+            'tags',
+            'authors',
+            'images',
+            'publish_setting',
+            'publication',
+            'slide',
+        ];
+
+        foreach ($fieldsToDecode as $field) {
+            $value = $this->input($field);
+            if (is_string($value)) {
+                $decoded = json_decode($value, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $this->merge([$field => $decoded]);
+                }
+            }
+        }
+
+        // Handle nested slide properties
+        if (is_array($this->input('slide'))) {
+            $slideData = $this->input('slide');
+            
+            if (isset($slideData['image']) && is_string($slideData['image'])) {
+                $decoded = json_decode($slideData['image'], true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $slideData['image'] = $decoded;
+                }
+            }
+            
+            if (isset($slideData['settings']) && is_string($slideData['settings'])) {
+                $decoded = json_decode($slideData['settings'], true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $slideData['settings'] = $decoded;
+                }
+            }
+            
+            $this->merge(['slide' => $slideData]);
+        }
+        
+        // Удаляем preview если это пустой объект
+        $preview = $this->input('preview');
+        if ($preview === '{}' || $preview === 'null' || $preview === null || $preview === '') {
+            $this->merge(['preview' => null]);
+        }
+    }
+
     public function rules(): array
     {
         return [
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', Rule::unique('posts', 'slug')->ignore($this->route('post'))],
-            'status' => ['required', 'integer', Rule::in([0, 1, 2, 3])], // PostStatus enum values
+            'status' => ['required', 'string', Rule::in(['draft', 'published', 'verification', 'rejected'])],
             'category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'tags' => ['nullable', 'array'],
             'authors' => ['nullable', 'array'],
@@ -26,7 +81,7 @@ class StorePostRequest extends FormRequest
             'images' => ['nullable', 'array'],
             'publish_setting' => ['nullable', 'array'],
             'publish_setting.publish_after' => ['nullable', 'boolean'],
-            'publish_setting.publish_at' => ['nullable', 'date', 'after:now'],
+            'publish_setting.publish_at' => ['nullable', 'date'],
             'publication' => ['nullable', 'array'],
             'publication.vk' => ['nullable', 'boolean'],
             'publication.telegram' => ['nullable', 'boolean'],
@@ -54,7 +109,7 @@ class StorePostRequest extends FormRequest
             'slug.required' => 'URL-адрес обязателен',
             'slug.unique' => 'Такой URL-адрес уже используется',
             'status.required' => 'Статус публикации обязателен',
-            'status.in' => 'Некорректный статус публикации',
+            'status.in' => 'Некорректный статус публикации. Допустимые значения: draft, published, verification, rejected',
             'category_id.exists' => 'Выбранная категория не существует',
             'content.required' => 'Содержание новости обязательно',
             'publish_setting.publish_at.after' => 'Дата публикации должна быть в будущем',

@@ -22,7 +22,7 @@
       <div
         v-for="(block, index) in blocks"
         :key="block._uid"
-        class="group relative bg-white border border-layer-line rounded-lg overflow-hidden"
+        class="group relative bg-white border border-layer-line rounded-lg"
       >
         <!-- Block Header -->
         <div class="flex items-center gap-2 px-4 py-3 bg-muted/30 border-b border-layer-line">

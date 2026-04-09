@@ -13,6 +13,7 @@ use App\Containers\Dashboard\Actions\Posts\GetPostFormDataAction;
 use App\Containers\Dashboard\Actions\Posts\ListAiPreparedPostsAction;
 use App\Containers\Dashboard\Actions\Posts\ListPostsAction;
 use App\Containers\Dashboard\Actions\Posts\UpdatePostAction;
+use App\Containers\Dashboard\Actions\Posts\UploadPostImagesAction;
 use App\Containers\Dashboard\UI\WEB\Requests\StorePostRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -31,6 +32,7 @@ class PostController extends Controller
         private readonly BulkDeletePostsAction $bulkDeletePostsAction,
         private readonly BulkPublishPostsAction $bulkPublishPostsAction,
         private readonly BulkVerificationPostsAction $bulkVerificationPostsAction,
+        private readonly UploadPostImagesAction $uploadPostImagesAction,
     ) {}
 
     /**
@@ -49,7 +51,7 @@ class PostController extends Controller
     public function store(StorePostRequest $request): RedirectResponse
     {
         try {
-            $this->createPostAction->run($request->validated());
+            $post = $this->createPostAction->run($request->validated());
 
             return redirect()->route('dashboard.posts.index')
                 ->with('success', 'Новость успешно создана!');
@@ -71,6 +73,7 @@ class PostController extends Controller
         return Inertia::render('Dashboard/Posts/Edit', [
             'post' => [
                 ...$post->toArray(),
+                'status' => $post->status?->value ?? $post->status,
                 'publish_setting' => [
                     'publish_after' => $post->publish_at !== null,
                     'publish_at' => $post->publish_at,
@@ -213,6 +216,31 @@ class PostController extends Controller
         } catch (\Exception $e) {
             return back()
                 ->with('error', 'Ошибка: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Загружает изображения для поста и возвращает пути
+     */
+    public function uploadImages(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'images' => 'required|array',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,webp|max:20480',
+        ]);
+
+        try {
+            $paths = $this->uploadPostImagesAction->run($request->file('images'));
+
+            return response()->json([
+                'success' => true,
+                'paths' => $paths,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Ошибка при загрузке изображений: ' . $e->getMessage(),
+            ], 500);
         }
     }
 }

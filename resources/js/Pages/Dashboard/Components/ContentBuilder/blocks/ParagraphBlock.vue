@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-3">
+  <div class="space-y-3" style="overflow: visible;">
     <div class="flex items-center gap-2 mb-2">
       <input
         type="checkbox"
@@ -12,7 +12,7 @@
       </label>
     </div>
 
-    <div>
+    <div style="overflow: visible;">
       <label class="block text-sm font-medium text-foreground mb-1">
         Текст <span class="text-danger">*</span>
       </label>
@@ -90,9 +90,9 @@ export default {
       tinymce.init({
         selector: `#${this.editorId}`,
         license_key: 'gpl',
-        autoresize_bottom_margin: 20,
-        autoresize_overflow_padding: 20,
-        max_height: 600,
+        min_height: 400,
+        autoresize_bottom_margin: 30,
+        autoresize_overflow_padding: 30,
         menubar: false,
         statusbar: true,
         branding: false,
@@ -105,14 +105,13 @@ export default {
         toolbar: 'undo redo | blocks | ' +
           'bold italic forecolor | alignleft aligncenter ' +
           'alignright alignjustify | bullist numlist outdent indent | ' +
-          'removeformat | help',
+          'removeformat | help | fullscreen',
         content_style: 'body { font-family: Inter, -apple-system, sans-serif; font-size: 14px; }',
         setup: (editor) => {
           this.editor = editor;
           editor.on('init', () => {
             editor.setContent(this.modelValue.content || '');
             this.loading = false;
-            // Emit initial content to ensure parent has correct value
             this.update('content', editor.getContent());
           });
           editor.on('change', () => {

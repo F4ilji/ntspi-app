@@ -16,28 +16,33 @@ class PostDataProcessor
      */
     public function processCreate(array $data): array
     {
+        // Конвертируем статус в enum, если необходимо
+        if (isset($data['status']) && !$data['status'] instanceof PostStatus) {
+            $data['status'] = PostStatus::tryFrom($data['status']) ?? PostStatus::DRAFT;
+        }
+
         // Удаляем ненужные данные
         unset($data['publication']);
 
         // Устанавливаем текст для предпросмотра
         $data['preview_text'] = $this->setPreviewText($data);
 
-        if (($data['status']->value === PostStatus::PUBLISHED->value)) {
+        if ($data['status'] === PostStatus::PUBLISHED) {
             $data['publish_at'] = $this->setPublishDateTime();
         }
 
         // Устанавливаем время публикации
-        if ($data['publish_setting']['publish_after'] === true) {
+        if (isset($data['publish_setting']['publish_after']) && $data['publish_setting']['publish_after'] === true) {
             $data['publish_at'] = $this->setPublishDateTimeInFuture($data['publish_setting']);
         }
 
         unset($data['publish_setting']);
 
-        // Генерируем данные для поиска
-        $data['search_data'] = $this->generateSearchData($data['content']);
-
-        // Рассчитываем время чтения
-        $data['reading_time'] = $this->calculateReadingTime($data['search_data']);
+        // Генерируем данные для поиска только если content - массив
+        if (isset($data['content']) && is_array($data['content'])) {
+            $data['search_data'] = $this->generateSearchData($data['content']);
+            $data['reading_time'] = $this->calculateReadingTime($data['search_data']);
+        }
 
         // Устанавливаем ID текущего пользователя
         $data['user_id'] = auth()->id();
@@ -48,32 +53,36 @@ class PostDataProcessor
 
     public function processUpdate(array $data): array
     {
+        // Конвертируем статус в enum, если необходимо
         if (isset($data['status']) && !$data['status'] instanceof PostStatus) {
-            $data['status'] = PostStatus::tryFrom($data['status']);
+            $data['status'] = PostStatus::tryFrom($data['status']) ?? PostStatus::DRAFT;
         }
+
+        // Если статус не установлен, используем черновик
+        if (!isset($data['status'])) {
+            $data['status'] = PostStatus::DRAFT;
+        }
+
         unset($data['publication']);
 
         // Устанавливаем текст для предпросмотра
         $data['preview_text'] = $this->setPreviewText($data);
 
-
-        if (!$data['publish_at'] && ($data['status']->value === PostStatus::PUBLISHED->value)) {
+        // Обновляем publish_at из publish_setting если дата передана
+        if (isset($data['publish_setting']['publish_at']) && $data['publish_setting']['publish_at']) {
+            $data['publish_at'] = Carbon::parse($data['publish_setting']['publish_at']);
+        } elseif (!isset($data['publish_at']) && $data['status'] === PostStatus::PUBLISHED) {
+            // Если дата не передана и пост публикуется — ставим текущее время
             $data['publish_at'] = $this->setPublishDateTime();
-        }
-
-        // Устанавливаем время публикации
-        if ((isset($data['publish_setting']['publish_after']) && $data['publish_setting']['publish_after']) ||
-            (isset($data['publish_setting']['publish_at']) && $data['publish_setting']['publish_at'])) {
-            $data['publish_at'] = $this->setPublishDateTimeInFuture($data['publish_setting']);
         }
 
         unset($data['publish_setting']);
 
-        // Генерируем данные для поиска
-        $data['search_data'] = $this->generateSearchData($data['content']);
-
-        // Рассчитываем время чтения
-        $data['reading_time'] = $this->calculateReadingTime($data['search_data']);
+        // Генерируем данные для поиска только если content - массив
+        if (isset($data['content']) && is_array($data['content'])) {
+            $data['search_data'] = $this->generateSearchData($data['content']);
+            $data['reading_time'] = $this->calculateReadingTime($data['search_data']);
+        }
 
         return $data;
     }
@@ -86,6 +95,11 @@ class PostDataProcessor
      */
     private function setPreviewText(array $data): string
     {
+        // Если content не массив или пустой, возвращаем пустую строку
+        if (!isset($data['content']) || !is_array($data['content']) || empty($data['content'])) {
+            return '';
+        }
+
         $rowData = $this->getBlockBySeoActiveState('paragraph', $data['content']);
         if ($rowData === null) {
             $rowData = $this->getFirstBlockByName('paragraph', $data['content']);

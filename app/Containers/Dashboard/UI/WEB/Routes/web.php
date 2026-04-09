@@ -68,6 +68,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
         Route::post('/ai-prepared/parse-email', [ParseEmailNewsController::class, '__invoke'])->name('ai-prepared.parse-email');
         Route::get('/create', [PostController::class, 'create'])->name('create');
         Route::post('/', [PostController::class, 'store'])->name('store');
+        Route::post('/upload-images', [PostController::class, 'uploadImages'])->name('upload-images');
         Route::delete('/bulk-destroy', [PostController::class, 'bulkDestroy'])->name('bulk-destroy');
         Route::post('/bulk-publish', [PostController::class, 'bulkPublish'])->name('bulk-publish');
         Route::post('/bulk-verification', [PostController::class, 'bulkVerification'])->name('bulk-verification');
