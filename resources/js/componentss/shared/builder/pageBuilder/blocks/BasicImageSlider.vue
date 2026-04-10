@@ -1,5 +1,5 @@
 <template>
-	<div class="relative">
+	<div v-if="items && items.length > 0" class="relative">
 		<div class="flex">
 			<div
 					v-for="(item, index) in items"
@@ -29,11 +29,11 @@
 		</button>
 	</div>
 
-	<figcaption class="mt-3 text-sm text-center text-gray-500 dark:text-neutral-500">
+	<figcaption v-if="block.data.alt" class="mt-3 text-sm text-center text-gray-500 dark:text-neutral-500">
 		{{ block.data.alt }}
 	</figcaption>
 
-	<FsLightbox class="" :slide="slide" :toggler="toggler" :sources="items.map(item => domainPath + '/storage/' + item)"/>
+	<FsLightbox v-if="items && items.length > 0" class="" :slide="slide" :toggler="toggler" :sources="items.map(item => domainPath + '/storage/' + item)"/>
 </template>
 
 <script>
@@ -45,7 +45,7 @@ export default {
 	data() {
 		return {
 			currentIndex: 0,
-			items: this.block.data.url,
+			items: this.block.data.url || [],
 			toggler: false,
 			domainPath: null,
 			slide: null,

@@ -6,7 +6,7 @@
       </label>
       <div class="flex items-center gap-3">
         <div v-if="modelValue.url" class="relative">
-          <img :src="modelValue.url" alt="Preview" class="w-32 h-32 object-cover rounded-lg border border-layer-line" />
+          <img :src="RESOLVE_ASSET_URL(modelValue.url)" alt="Preview" class="w-32 h-32 object-cover rounded-lg border border-layer-line" />
           <button
             type="button"
             @click="update('url', '')"
@@ -21,11 +21,13 @@
         <div class="flex-1">
           <input
             type="file"
+            ref="fileInput"
             @change="handleFileUpload"
             accept="image/*"
             class="w-full px-3 py-2 border border-layer-line rounded-lg bg-white text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           />
-          <p class="mt-1 text-xs text-muted-foreground-1">
+          <p v-if="uploading" class="mt-1 text-xs text-primary">Загрузка...</p>
+          <p v-else class="mt-1 text-xs text-muted-foreground-1">
             Загрузите изображение (JPG, PNG, WebP)
           </p>
         </div>
@@ -56,22 +58,50 @@ export default {
       required: true
     }
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'update'],
+  data() {
+    return {
+      uploading: false,
+    };
+  },
   methods: {
     update(field, value) {
       this.$emit('update:modelValue', {
         ...this.modelValue,
         [field]: value
       });
+      this.$emit('update');
     },
-    handleFileUpload(event) {
+    async handleFileUpload(event) {
       const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.update('url', e.target.result);
-        };
-        reader.readAsDataURL(file);
+      if (!file) return;
+
+      this.uploading = true;
+
+      try {
+        const formData = new FormData();
+        formData.append('images[]', file);
+
+        const response = await fetch(route('dashboard.posts.upload-images'), {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+          },
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (result.success && result.paths && result.paths.length > 0) {
+          this.update('url', result.paths[0]);
+        }
+      } catch (error) {
+        console.error('Image upload error:', error);
+      } finally {
+        this.uploading = false;
+        // Reset input so the same file can be selected again
+        event.target.value = '';
       }
     }
   }

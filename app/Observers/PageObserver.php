@@ -29,6 +29,11 @@ class PageObserver
     public function updated(Page $page): void
     {
         $this->pageCacheService->clearAllCacheByModel();
+
+        // Clear navigation cache if sort order changed
+        if ($page->isDirty('sort')) {
+            Cache::forget('navigation');
+        }
     }
 
     /**
