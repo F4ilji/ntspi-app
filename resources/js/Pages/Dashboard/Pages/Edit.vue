@@ -350,7 +350,6 @@ export default {
         sub_section_id: this.page.sub_section_id || '',
         code: this.page.code || '200',
         searchable: this.page.searchable === 1 || this.page.searchable === true || this.page.searchable === '1',
-        icon: this.page.icon || 'heroicon-o-academic-cap',
         content: this.page.content || [],
         settings: {
           hide_page_sub_section_links: this.page.settings?.hide_page_sub_section_links || false,

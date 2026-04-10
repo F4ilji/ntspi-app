@@ -19,8 +19,7 @@ class PageNavigateResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'path' => $this->path,
-            'is_url' => $this->is_url,
-            'icon' => $this->icon
+            'is_url' => $this->is_url
         ];
     }
 }

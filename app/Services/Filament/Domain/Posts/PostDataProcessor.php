@@ -100,10 +100,7 @@ class PostDataProcessor
             return '';
         }
 
-        $rowData = $this->getBlockBySeoActiveState('paragraph', $data['content']);
-        if ($rowData === null) {
-            $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
-        }
+        $rowData = $this->getFirstBlockByName('paragraph', $data['content']);
 
         $previewText = $rowData ? html_entity_decode(strip_tags($rowData['data']['content'])) : '';
         return Str::limit($previewText, 160);
@@ -216,23 +213,6 @@ class PostDataProcessor
     {
         foreach ($content as $block) {
             if ($block['type'] === $name) {
-                return $block;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Находит блок по SEO-активности.
-     *
-     * @param string $name
-     * @param array $content
-     * @return array|null
-     */
-    private function getBlockBySeoActiveState(string $name, array $content): ?array
-    {
-        foreach ($content as $block) {
-            if ($block['type'] === $name && ($block['data']['seo_active'] ?? false)) {
                 return $block;
             }
         }

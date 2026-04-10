@@ -81,7 +81,7 @@ export default {
   props: {
     modelValue: { type: Object, required: true }
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'update'],
   computed: {
     tabs() {
       const rawTabs = this.modelValue?.tab || [];
@@ -95,6 +95,7 @@ export default {
   methods: {
     update(field, value) {
       this.$emit('update:modelValue', { ...this.modelValue, [field]: value });
+      this.$emit('update');
     },
     updateSettings(field, value) {
       this.update('settings', { ...(this.modelValue.settings || {}), [field]: value });

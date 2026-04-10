@@ -161,10 +161,13 @@
               </form>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto" :class="{ 'select-none': dragIndex !== null }">
               <table class="min-w-full divide-y divide-line-2">
                 <thead class="bg-surface/50">
                   <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground-1 uppercase tracking-wider w-10">
+                      <!-- Drag handle column -->
+                    </th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground-1 uppercase tracking-wider">
                       Заголовок страницы
                     </th>
@@ -178,10 +181,26 @@
                 </thead>
                 <tbody class="divide-y divide-line-2">
                   <tr
-                    v-for="page in pages"
+                    v-for="(page, index) in pages"
                     :key="page.id"
-                    class="group hover:bg-muted-hover/50 transition-all duration-200"
+                    :data-index="index"
+                    :draggable="true"
+                    @dragstart="onDragStart($event, index)"
+                    @dragover.prevent="onDragOver($event, index)"
+                    @dragenter.prevent="onDragEnter($event, index)"
+                    @drop.prevent="onDrop($event, index)"
+                    @dragend="onDragEnd"
+                    :class="[
+                      'group hover:bg-muted-hover/50 transition-all duration-200',
+                      dragIndex === index ? 'opacity-40 bg-primary/10 border-y-2 border-primary/30' : '',
+                      dropIndex === index && dragIndex !== index ? 'border-t-2 border-primary bg-primary/5' : ''
+                    ]"
                   >
+                    <td class="px-6 py-4">
+                      <div class="cursor-move text-muted-foreground-1 hover:text-foreground transition-colors">
+                        <DashboardIcon name="bars-3" size="4" />
+                      </div>
+                    </td>
                     <td class="px-6 py-4">
                       <div class="text-sm font-medium text-foreground">
                         {{ page.title }}
@@ -215,13 +234,35 @@
                   <!-- Empty State -->
                   <EmptyState
                     v-if="pages.length === 0"
-                    :columns="3"
+                    :columns="4"
                     title="Страницы не найдены"
                     description="Прикрепите страницы к этому подразделу"
                     icon-path="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                   />
                 </tbody>
               </table>
+            </div>
+
+            <!-- Save Order Button (shown when order changed) -->
+            <div v-if="orderChanged" class="px-6 py-4 border-t border-line-2 bg-surface/30">
+              <div class="flex items-center justify-between">
+                <p class="text-sm text-muted-foreground-1">
+                  <DashboardIcon name="information-circle" size="4" class="inline mr-1" />
+                  Порядок страниц изменен. Сохраните изменения.
+                </p>
+                <button
+                  @click="saveOrder"
+                  :disabled="savingOrder"
+                  class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <svg v-if="savingOrder" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  <DashboardIcon v-else name="check" size="4" />
+                  {{ savingOrder ? 'Сохранение...' : 'Сохранить порядок' }}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -271,13 +312,19 @@ export default {
       selectedPageId: '',
       errors: {},
       processing: false,
-      attachingPage: false
+      attachingPage: false,
+      // Drag and drop state
+      dragIndex: null,
+      dropIndex: null,
+      localPages: [],
+      orderChanged: false,
+      savingOrder: false
     }
   },
 
   computed: {
     pages() {
-      return this.subSection.pages || [];
+      return this.orderChanged ? this.localPages : (this.subSection.pages || []);
     }
   },
 
@@ -316,9 +363,17 @@ export default {
         { page_id: this.selectedPageId },
         {
           preserveScroll: true,
-          onFinish: () => {
+          onSuccess: () => {
             this.attachingPage = false;
             this.selectedPageId = '';
+            // Reset local changes if page is attached
+            if (this.orderChanged) {
+              this.orderChanged = false;
+              this.localPages = [];
+            }
+          },
+          onError: () => {
+            this.attachingPage = false;
           }
         }
       );
@@ -326,13 +381,94 @@ export default {
 
     detachPage(page) {
       if (confirm(`Открепить страницу "${page.title}"?`)) {
+        // If we have local changes, remove from local state first
+        if (this.orderChanged) {
+          const index = this.localPages.findIndex(p => p.id === page.id);
+          if (index !== -1) {
+            this.localPages.splice(index, 1);
+          }
+        }
+
         this.$inertia.delete(route('dashboard.sub-sections.pages.detach', {
           subSection: this.subSection.id,
           page: page.id
         }), {
-          preserveScroll: true
+          preserveScroll: true,
+          onSuccess: () => {
+            // Reset local changes if page is detached
+            if (this.orderChanged && this.localPages.length === 0) {
+              this.orderChanged = false;
+            }
+          }
         });
       }
+    },
+
+    // Drag and Drop methods
+    onDragStart(event, index) {
+      this.dragIndex = index;
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', index.toString());
+    },
+
+    onDragOver(event, index) {
+      event.dataTransfer.dropEffect = 'move';
+    },
+
+    onDragEnter(event, index) {
+      this.dropIndex = index;
+    },
+
+    onDrop(event, targetIndex) {
+      const sourceIndex = this.dragIndex;
+
+      if (sourceIndex === null || sourceIndex === targetIndex) {
+        this.dragIndex = null;
+        this.dropIndex = null;
+        return;
+      }
+
+      // Initialize localPages if not already done
+      if (!this.orderChanged) {
+        this.localPages = [...this.pages];
+      }
+
+      // Move the item in the array
+      const item = this.localPages.splice(sourceIndex, 1)[0];
+      this.localPages.splice(targetIndex, 0, item);
+
+      this.orderChanged = true;
+      this.dragIndex = null;
+      this.dropIndex = null;
+    },
+
+    onDragEnd() {
+      this.dragIndex = null;
+      this.dropIndex = null;
+    },
+
+    saveOrder() {
+      if (!this.orderChanged) return;
+
+      this.savingOrder = true;
+
+      const pageIds = this.localPages.map(page => page.id);
+
+      this.$inertia.post(
+        route('dashboard.sub-sections.pages.reorder', this.subSection.id),
+        { page_ids: pageIds },
+        {
+          preserveScroll: true,
+          onSuccess: () => {
+            this.savingOrder = false;
+            this.orderChanged = false;
+            this.localPages = [];
+          },
+          onError: () => {
+            this.savingOrder = false;
+          }
+        }
+      );
     }
   }
 }

@@ -19,6 +19,9 @@ class CreatePageAction
      */
     public function run(array $data): Page
     {
+        // Ensure icon is never saved even if sent from old forms
+        unset($data['icon']);
+
         // Генерируем search_data из контента
         if (!empty($data['content'])) {
             $data['search_data'] = $this->generateSearchDataTask->run($data['content']);

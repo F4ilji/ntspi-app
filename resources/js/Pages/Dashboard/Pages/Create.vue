@@ -333,7 +333,6 @@ export default {
         sub_section_id: '',
         code: '200',
         searchable: true,
-        icon: 'heroicon-o-academic-cap',
         content: [],
         settings: {
           hide_page_sub_section_links: false,

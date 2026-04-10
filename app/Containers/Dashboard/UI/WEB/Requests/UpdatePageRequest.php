@@ -20,7 +20,6 @@ class UpdatePageRequest extends FormRequest
             'sub_section_id' => ['nullable', 'exists:sub_sections,id'],
             'code' => ['required', Rule::in(['200', '404', '500'])],
             'searchable' => ['boolean'],
-            'icon' => ['nullable', 'string'],
             'content' => ['nullable', 'array'],
             'settings' => ['nullable', 'array'],
             'settings.hide_page_sub_section_links' => ['nullable', 'boolean'],

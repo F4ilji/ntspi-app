@@ -291,7 +291,7 @@ export default {
 
     const blockDefaults = {
       heading: () => ({ id: `anchor-${Date.now()}`, content: '' }),
-      paragraph: () => ({ seo_active: true, content: '' }),
+      paragraph: () => ({ content: '' }),
       image: () => ({ url: '', alt: '' }),
       images: () => ({ url: [], alt: '' }),
       files: () => ({ file: [] }),

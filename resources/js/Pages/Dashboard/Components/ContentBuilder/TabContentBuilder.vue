@@ -288,7 +288,7 @@ export default {
 
     const blockDefaults = {
       heading: () => ({ id: `anchor-${Date.now()}`, content: '' }),
-      paragraph: () => ({ seo_active: true, content: '' }),
+      paragraph: () => ({ content: '' }),
       image: () => ({ url: '', alt: '' }),
       images: () => ({ url: [], alt: '' }),
       files: () => ({ file: [] }),
@@ -402,24 +402,26 @@ export default {
     onMounted(() => {
       if (props.modelValue && props.modelValue.length > 0) {
         blocks.value = props.modelValue.map(block => ({
-          _uid: generateUid(),
+          _uid: block._uid || generateUid(),
           ...block
         }));
       }
     });
 
-    // Watch for modelValue changes (e.g., when loading existing content)
+    // Watch for modelValue changes — only for initial load or when parent reloads
+    // DO NOT sync on every change to avoid infinite loops with emitChange
     watch(
       () => props.modelValue,
       (newValue) => {
+        // Only update if blocks are empty (page reload or tab switch)
         if (newValue && newValue.length > 0 && blocks.value.length === 0) {
-          // Only initialize if blocks are empty (initial load from server)
           blocks.value = newValue.map(block => ({
-            _uid: generateUid(),
+            _uid: block._uid || generateUid(),
             ...block
           }));
         }
-      }
+      },
+      { deep: true }
     );
 
     return {

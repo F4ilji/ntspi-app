@@ -37,9 +37,9 @@ class DeploySiteAction
                 unlink($this->logFile);
             }
 
-            // Запускаем deploy.sh в фоне через sudo (полный путь + NOPASSWD для www-data)
+            // Запускаем deploy.sh в фоне (docker socket проброшен в контейнер)
             $command = sprintf(
-                '/usr/bin/sudo bash %s > %s 2>&1 &',
+                'bash %s > %s 2>&1 &',
                 escapeshellarg($this->deployScript),
                 escapeshellarg($this->logFile)
             );

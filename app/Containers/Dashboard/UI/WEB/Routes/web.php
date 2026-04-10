@@ -356,6 +356,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
         // Управление страницами (Relation Manager)
         Route::post('/{subSection}/pages/attach', [SubSectionController::class, 'attachPage'])->name('pages.attach');
         Route::delete('/{subSection}/pages/{page}/detach', [SubSectionController::class, 'detachPage'])->name('pages.detach');
+        Route::post('/{subSection}/pages/reorder', [SubSectionController::class, 'reorderPages'])->name('pages.reorder');
     });
 
     // CRUD страниц

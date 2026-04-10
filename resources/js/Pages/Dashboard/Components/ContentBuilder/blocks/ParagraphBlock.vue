@@ -1,17 +1,5 @@
 <template>
   <div class="space-y-3" style="overflow: visible;">
-    <div class="flex items-center gap-2 mb-2">
-      <input
-        type="checkbox"
-        :checked="modelValue.seo_active"
-        @change="update('seo_active', $event.target.checked)"
-        class="h-4 w-4 text-primary focus:ring-primary border-layer-line rounded"
-      />
-      <label class="text-sm text-foreground">
-        Активировать SEO для этого блока
-      </label>
-    </div>
-
     <div style="overflow: visible;">
       <label class="block text-sm font-medium text-foreground mb-1">
         Текст <span class="text-danger">*</span>

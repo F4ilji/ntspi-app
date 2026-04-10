@@ -23,7 +23,6 @@ class PageResource extends JsonResource
             'path' => $this->path,
             'is_url' => $this->is_url,
             'settings' => $this->settings,
-            'icon' => $this->icon,
             'section' => $this->section ? $this->section->title : null,
             'created_at' => $this->created_at->diffforhumans()
         ];

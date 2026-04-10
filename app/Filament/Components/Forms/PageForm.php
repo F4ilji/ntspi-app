@@ -13,7 +13,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Illuminate\Support\Str;
-use TomatoPHP\FilamentIcons\Components\IconPicker;
 
 class PageForm
 {
@@ -109,11 +108,6 @@ class PageForm
                                             ->default(true)
                                             ->inline(false)
                                             ->helperText('Разрешить локальному поиску индексировать страницу'),
-                                        IconPicker::make('icon')
-                                            ->label('Иконка страницы')
-                                            ->default('heroicon-o-academic-cap')
-                                            ->helperText('Выберите иконку для отображения в навигации')
-                                            ->columns(6),
                                         TextInput::make('search_data')
                                             ->hidden(),
                                     ]),

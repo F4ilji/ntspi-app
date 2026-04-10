@@ -28,7 +28,6 @@ class VkPostGenerationTest extends TestCase
                 [
                     'type' => 'paragraph',
                     'data' => [
-                        'seo_active' => true,
                         'content' => '<p>Это основной текст новости. Он содержит важную информацию о событии.</p>',
                     ],
                 ],
@@ -115,7 +114,6 @@ class VkPostGenerationTest extends TestCase
                 [
                     'type' => 'paragraph',
                     'data' => [
-                        'seo_active' => true,
                         'content' => '<p>Текст новости без файлов.</p>',
                     ],
                 ],

@@ -49,7 +49,6 @@ class CreatePostFromAiDataTask
             [
                 'type' => 'paragraph',
                 'data' => [
-                    'seo_active' => true,
                     'content' => $newsData['body'] ?? '',
                 ],
             ],

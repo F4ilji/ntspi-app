@@ -6,6 +6,7 @@ use App\Containers\AppStructure\Models\Page;
 use App\Containers\AppStructure\Models\SubSection;
 use App\Containers\Dashboard\Actions\Pages\AttachPageToSubSectionAction;
 use App\Containers\Dashboard\Actions\Pages\DetachPageFromSubSectionAction;
+use App\Containers\Dashboard\Actions\Pages\ReorderPagesAction;
 use App\Containers\Dashboard\Actions\SubSections\AttachSubSectionToMainSectionAction;
 use App\Containers\Dashboard\Actions\SubSections\CreateSubSectionAction;
 use App\Containers\Dashboard\Actions\SubSections\DeleteSubSectionAction;
@@ -31,6 +32,7 @@ class SubSectionController extends Controller
         private readonly DetachSubSectionFromMainSectionAction $detachSubSectionAction,
         private readonly AttachPageToSubSectionAction $attachPageAction,
         private readonly DetachPageFromSubSectionAction $detachPageAction,
+        private readonly ReorderPagesAction $reorderPagesAction,
     ) {}
 
     /**
@@ -82,7 +84,9 @@ class SubSectionController extends Controller
      */
     public function edit(SubSection $subSection): \Inertia\Response
     {
-        $subSection->load(['mainSection', 'pages']);
+        $subSection->load(['mainSection', 'pages' => function ($query) {
+            $query->orderBy('sort', 'asc');
+        }]);
 
         $mainSections = MainSection::pluck('title', 'id');
         $availablePages = Page::whereNull('sub_section_id')
@@ -198,6 +202,25 @@ class SubSectionController extends Controller
             return back()->with('success', 'Страница откреплена от подраздела!');
         } catch (\Exception $e) {
             return back()->with('error', 'Ошибка при откреплении страницы: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Изменяет порядок страниц в подразделе
+     */
+    public function reorderPages(Request $request, SubSection $subSection): RedirectResponse
+    {
+        $request->validate([
+            'page_ids' => ['required', 'array'],
+            'page_ids.*' => ['integer', 'exists:pages,id'],
+        ]);
+
+        try {
+            $this->reorderPagesAction->run($subSection->id, $request->page_ids);
+
+            return back()->with('success', 'Порядок страниц обновлен!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Ошибка при изменении порядка страниц: ' . $e->getMessage());
         }
     }
 }

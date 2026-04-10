@@ -53,16 +53,6 @@ class TabBuilderItem
                     ->label('Текст')
                     ->icon('heroicon-o-document-text')
                     ->schema([
-                        Toggle::make('seo_active')
-                            ->label('Использовать блок как SEO-текст')
-                            ->helperText('Этот текст будет использоваться для SEO-оптимизации')
-                            ->live(onBlur: true)
-                            ->required()
-                            ->disabled(function ($state, Forms\Get $get) {
-                                $data = $get('../../');
-                                return self::findSeoActive($data) && !$state;
-                            })
-                            ->dehydrated(),
                         TinyEditor::make('content')
                             ->label('Текст')
                             ->placeholder('Начните вводить текст...')
