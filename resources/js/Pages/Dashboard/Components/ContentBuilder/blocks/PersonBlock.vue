@@ -88,10 +88,11 @@ export default {
   props: {
     modelValue: { type: Object, required: true }
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'update'],
   methods: {
     update(field, value) {
       this.$emit('update:modelValue', { ...this.modelValue, [field]: value });
+      this.$emit('update');
     },
     updateInfo(index, field, value) {
       const info = [...this.modelValue.info];

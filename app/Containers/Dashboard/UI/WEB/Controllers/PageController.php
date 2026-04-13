@@ -3,6 +3,7 @@
 namespace App\Containers\Dashboard\UI\WEB\Controllers;
 
 use App\Containers\AppStructure\Models\Page;
+use App\Containers\Dashboard\Actions\ContentBuilder\UploadContentBuilderFilesAction;
 use App\Containers\Dashboard\Actions\Pages\CreatePageAction;
 use App\Containers\Dashboard\Actions\Pages\DeletePageAction;
 use App\Containers\Dashboard\Actions\Pages\ListPagesAction;
@@ -10,6 +11,7 @@ use App\Containers\Dashboard\Actions\Pages\UpdatePageAction;
 use App\Containers\Dashboard\UI\WEB\Requests\StorePageRequest;
 use App\Containers\Dashboard\UI\WEB\Requests\UpdatePageRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -21,6 +23,7 @@ class PageController extends Controller
         private readonly CreatePageAction $createPageAction,
         private readonly UpdatePageAction $updatePageAction,
         private readonly DeletePageAction $deletePageAction,
+        private readonly UploadContentBuilderFilesAction $uploadContentBuilderFilesAction,
     ) {}
 
     /**
@@ -113,6 +116,31 @@ class PageController extends Controller
         } catch (\Exception $e) {
             return back()
                 ->with('error', 'Ошибка при удалении страницы: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Загружает файлы для ContentBuilder и возвращает метаданные
+     */
+    public function uploadFiles(Request $request): JsonResponse
+    {
+        $request->validate([
+            'files' => 'required|array',
+            'files.*' => 'required|file|mimes:pdf,docx,xlsx,pptx,zip,doc,xls,ppt|max:524288',
+        ]);
+
+        try {
+            $results = $this->uploadContentBuilderFilesAction->run($request->file('files'));
+
+            return response()->json([
+                'success' => true,
+                'files' => $results,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Ошибка при загрузке файлов: ' . $e->getMessage(),
+            ], 500);
         }
     }
 }

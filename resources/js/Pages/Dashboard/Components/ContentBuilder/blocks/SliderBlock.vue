@@ -28,7 +28,7 @@ export default {
   props: {
     modelValue: { type: Object, required: true }
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'update'],
   data() {
     return { sliders: [] };
   },
@@ -44,6 +44,7 @@ export default {
   methods: {
     update(field, value) {
       this.$emit('update:modelValue', { ...this.modelValue, [field]: value });
+      this.$emit('update');
     }
   }
 }

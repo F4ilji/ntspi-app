@@ -33,12 +33,22 @@
       </div>
     </div>
 
+    <!-- Upload Progress -->
+    <div v-if="uploading" class="flex items-center gap-2 p-3 bg-primary/5 border border-primary/20 rounded-lg">
+      <svg class="animate-spin h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+      </svg>
+      <span class="text-sm text-primary">Загрузка файлов...</span>
+    </div>
+
     <input
       type="file"
       @change="handleFilesUpload"
+      :disabled="uploading"
       accept=".pdf,.docx,.xlsx,.pptx,.zip"
       multiple
-      class="w-full px-3 py-2 border border-layer-line rounded-lg bg-white text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+      class="w-full px-3 py-2 border border-layer-line rounded-lg bg-white text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
     />
     <p class="text-xs text-muted-foreground-1">
       PDF, DOCX, XLSX, PPTX, ZIP. Макс. 512MB
@@ -60,10 +70,16 @@ export default {
   props: {
     modelValue: { type: Object, required: true }
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'update'],
+  data() {
+    return {
+      uploading: false
+    };
+  },
   methods: {
     update(field, value) {
       this.$emit('update:modelValue', { ...this.modelValue, [field]: value });
+      this.$emit('update');
     },
     updateFile(index, field, value) {
       const files = [...this.modelValue.file];
@@ -71,24 +87,64 @@ export default {
       this.update('file', files);
     },
     addFile() {
-      this.update('file', [...this.modelValue.file, { title: '', path: '', expansion: '', size: '', time_added: Date.now() }]);
+      this.update('file', [...this.modelValue.file, { title: '', path: '', expansion: '', size: '', time_added: Math.floor(Date.now() / 1000) }]);
     },
     removeFile(index) {
       this.update('file', this.modelValue.file.filter((_, i) => i !== index));
     },
-    handleFilesUpload(event) {
+    async handleFilesUpload(event) {
       const files = Array.from(event.target.files);
-      files.forEach(file => {
-        const extension = file.name.split('.').pop().toLowerCase();
-        const size = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
-        this.update('file', [...this.modelValue.file, {
-          title: file.name,
-          path: URL.createObjectURL(file),
-          expansion: extension,
-          size: size,
-          time_added: Date.now()
-        }]);
-      });
+      if (files.length === 0) return;
+
+      // Reset input to allow selecting same files again
+      event.target.value = '';
+
+      await this.uploadFilesToServer(files);
+    },
+    async uploadFilesToServer(files) {
+      if (files.length === 0) return;
+
+      this.uploading = true;
+
+      try {
+        const formData = new FormData();
+        files.forEach(file => {
+          formData.append('files[]', file);
+        });
+
+        const response = await fetch(route('dashboard.pages.upload-files'), {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '',
+            'Accept': 'application/json',
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.success && result.files) {
+          const newFiles = result.files.map(file => ({
+            title: file.title,
+            path: file.path,
+            expansion: file.expansion,
+            size: file.size,
+            time_added: Math.floor(Date.now() / 1000)
+          }));
+
+          this.update('file', [...this.modelValue.file, ...newFiles]);
+        } else {
+          console.error('File upload failed:', result.error);
+        }
+      } catch (error) {
+        console.error('File upload error:', error);
+      } finally {
+        this.uploading = false;
+      }
     }
   }
 }

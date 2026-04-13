@@ -23,7 +23,7 @@
 export default {
   name: 'ContactBlock',
   props: { modelValue: { type: Object, required: true } },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'update'],
   data() { return { contacts: [] }; },
   async mounted() {
     try {
@@ -34,6 +34,7 @@ export default {
   methods: {
     update(field, value) {
       this.$emit('update:modelValue', { ...this.modelValue, [field]: value });
+      this.$emit('update');
     }
   }
 }
