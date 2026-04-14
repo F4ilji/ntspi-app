@@ -783,6 +783,17 @@ export default {
       this.form.authors.splice(index, 1);
     },
 
+    isImageFile(file) {
+      if (!file) return false;
+      const validTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+        'image/jpg'
+      ];
+      return validTypes.includes(file.type);
+    },
+
     handlePreviewDrop(e) {
       const files = e.dataTransfer.files;
       if (files.length > 0 && this.isImageFile(files[0])) {
