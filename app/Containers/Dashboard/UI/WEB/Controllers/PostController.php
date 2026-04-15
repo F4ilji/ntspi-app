@@ -67,12 +67,13 @@ class PostController extends Controller
      */
     public function edit(Post $post): \Inertia\Response
     {
-        $post->load(['category', 'seo']);
+        $post->load(['category', 'seo', 'tags']);
         $formData = $this->getPostFormDataAction->run();
 
         return Inertia::render('Dashboard/Posts/Edit', [
             'post' => [
                 ...$post->toArray(),
+                'tags' => $post->tags->map(fn($tag) => ['id' => $tag->id, 'name' => $tag->name, 'slug' => $tag->slug]),
                 'status' => $post->status?->value ?? $post->status,
                 'publish_setting' => [
                     'publish_after' => $post->publish_at !== null,

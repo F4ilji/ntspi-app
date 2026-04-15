@@ -21,7 +21,20 @@ class CreatePostTask
     public function run(array $data): Post
     {
         $processedData = $this->postDataProcessor->processCreate($data);
-        return Post::create($processedData);
+
+        $tags = $processedData['tags'] ?? null;
+        
+        // Удаляем теги из данных, так как они обрабатываются отдельно
+        unset($processedData['tags']);
+        
+        $post = Post::create($processedData);
+        
+        // Синхронизируем теги если они есть
+        if (!empty($tags) && is_array($tags)) {
+            $post->syncTags($tags);
+        }
+        
+        return $post;
     }
 
     /**

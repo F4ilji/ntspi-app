@@ -24,9 +24,18 @@ class UpdatePostTask
             ...$post->toArray(),
             ...$data,
         ]);
-
+        
+        $tags = $processedData['tags'] ?? null;
+        
+        unset($processedData['tags']);
+        
         $post->update($processedData);
-
+        
+        // Синхронизируем теги если они есть
+        if (!empty($tags) && is_array($tags)) {
+            $post->syncTags($tags);
+        }
+        
         return $post->fresh();
     }
 }
