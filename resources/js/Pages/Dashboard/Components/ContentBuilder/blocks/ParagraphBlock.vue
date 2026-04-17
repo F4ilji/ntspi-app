@@ -90,6 +90,9 @@ export default {
           'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount',
           'autoresize'
         ],
+        invalid_styles: 'all',
+        paste_remove_styles_if_webkit: true,
+        paste_merge_formats: true,
         toolbar: 'undo redo | blocks | ' +
           'bold italic forecolor link | alignleft aligncenter ' +
           'alignright alignjustify | bullist numlist outdent indent | ' +
