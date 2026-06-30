@@ -25,4 +25,10 @@ export const quickActions = [
     href: null,
     icon: 'upload',
   },
+  {
+    label: 'Обновить Sveden',
+    route: 'dashboard.sveden',
+    href: null,
+    icon: 'cog',
+  },
 ];

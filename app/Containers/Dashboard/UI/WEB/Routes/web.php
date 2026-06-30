@@ -27,6 +27,7 @@ use App\Containers\Dashboard\UI\WEB\Controllers\EditSliderController;
 use App\Containers\Dashboard\UI\WEB\Controllers\FacultyController;
 use App\Containers\Dashboard\UI\WEB\Controllers\FacultyWorkerController;
 use App\Containers\Dashboard\UI\WEB\Controllers\IndexDashboardController;
+use App\Containers\Dashboard\UI\WEB\Controllers\IntegrationCredentialsController;
 use App\Containers\Dashboard\UI\WEB\Controllers\JournalIssueController;
 use App\Containers\Dashboard\UI\WEB\Controllers\MainSectionController;
 use App\Containers\Dashboard\UI\WEB\Controllers\PageController;
@@ -36,6 +37,7 @@ use App\Containers\Dashboard\UI\WEB\Controllers\ProcessMixedFilesController;
 use App\Containers\Dashboard\UI\WEB\Controllers\PublishPostController;
 use App\Containers\Dashboard\UI\WEB\Controllers\QuickUploadController;
 use App\Containers\Dashboard\UI\WEB\Controllers\ScheduleController;
+use App\Containers\Dashboard\UI\WEB\Controllers\SvedenController;
 use App\Containers\Dashboard\UI\WEB\Controllers\SliderController;
 use App\Containers\Dashboard\UI\WEB\Controllers\StoreFilesController;
 use App\Containers\Dashboard\UI\WEB\Controllers\StoreSlideController;
@@ -61,9 +63,15 @@ Route::post('/dashboard/logout', [AuthenticatedSessionController::class, 'destro
 // Authenticated dashboard routes
 Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     Route::get('/dashboard', IndexDashboardController::class)->name('dashboard.index');
+    Route::get('/dashboard/deploy', [DeployController::class, 'index'])->name('dashboard.deploy.index');
     Route::post('/dashboard/deploy', [DeployController::class, 'deploy'])->name('dashboard.deploy');
     Route::get('/dashboard/deploy/status', [DeployController::class, 'status'])->name('dashboard.deploy.status');
+    Route::get('/dashboard/deploy/log', [DeployController::class, 'log'])->name('dashboard.deploy.log');
+    Route::get('/dashboard/deploy/history', [DeployController::class, 'history'])->name('dashboard.deploy.history');
     Route::post('/dashboard/deploy/clear', [DeployController::class, 'clear'])->name('dashboard.deploy.clear');
+
+    Route::get('/dashboard/sveden', [SvedenController::class, 'index'])->name('dashboard.sveden');
+    Route::post('/dashboard/sveden', [SvedenController::class, 'store'])->name('dashboard.sveden.store');
 
     // CRUD постов
     Route::prefix('/dashboard/posts')->name('dashboard.posts.')->group(function () {
@@ -405,6 +413,16 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
         Route::get('/{pageReferenceList}/edit', [PageReferenceListController::class, 'edit'])->name('edit');
         Route::put('/{pageReferenceList}', [PageReferenceListController::class, 'update'])->name('update');
         Route::delete('/{pageReferenceList}', [PageReferenceListController::class, 'destroy'])->name('destroy');
+    });
+
+    // CRUD интеграционных ключей
+    Route::prefix('/dashboard/integration-credentials')->name('dashboard.integration-credentials.')->group(function () {
+        Route::get('/', [IntegrationCredentialsController::class, 'index'])->name('index');
+        Route::get('/create', [IntegrationCredentialsController::class, 'create'])->name('create');
+        Route::post('/', [IntegrationCredentialsController::class, 'store'])->name('store');
+        Route::get('/{credential}/edit', [IntegrationCredentialsController::class, 'edit'])->name('edit');
+        Route::put('/{credential}', [IntegrationCredentialsController::class, 'update'])->name('update');
+        Route::delete('/{credential}', [IntegrationCredentialsController::class, 'destroy'])->name('destroy');
     });
 });
 
