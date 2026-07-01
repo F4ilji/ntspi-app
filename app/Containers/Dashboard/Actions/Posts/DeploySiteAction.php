@@ -2,72 +2,63 @@
 
 namespace App\Containers\Dashboard\Actions\Posts;
 
+use App\Containers\Dashboard\Tasks\DeployTask;
 use Illuminate\Support\Facades\Log;
 
 class DeploySiteAction
 {
-    private string $deployScript = '/var/www/_deploy/deploy.sh';
-    private string $logFile = '/var/www/_deploy/deploy.log';
+    public function __construct(
+        private readonly DeployTask $deployTask,
+    ) {}
 
-    /**
-     * Запускает deploy.sh напрямую
-     *
-     * @return array ['success' => bool, 'message' => string]
-     */
     public function run(): array
     {
         try {
-            if (!file_exists($this->deployScript)) {
+            if (!$this->deployTask->scriptExists()) {
+                Log::channel('deploy')->warning('[DeployAction] Script not found');
                 return [
                     'success' => false,
                     'message' => 'Скрипт деплоя не найден на сервере',
                 ];
             }
 
-            // Проверяем, не запущен ли уже деплой
-            if ($this->isDeployRunning()) {
+            if ($this->deployTask->isDeployRunning()) {
+                Log::channel('deploy')->warning('[DeployAction] Deploy already running', [
+                    'user_id' => auth()->id(),
+                ]);
                 return [
                     'success' => false,
                     'message' => 'Деплой уже запущен! Подождите завершения текущего процесса.',
                 ];
             }
 
-            // Очищаем старый лог
-            if (file_exists($this->logFile)) {
-                unlink($this->logFile);
-            }
+            $started = $this->deployTask->startDeploy();
 
-            // Запускаем deploy.sh в фоне (docker socket проброшен в контейнер)
-            $command = sprintf(
-                'bash %s > %s 2>&1 &',
-                escapeshellarg($this->deployScript),
-                escapeshellarg($this->logFile)
-            );
-
-            shell_exec($command);
-
-            // Даём процессу время на запуск
-            usleep(500000); // 0.5 сек
-
-            if (!$this->isDeployRunning()) {
-                // Процесс не запустился — читаем лог
-                $error = file_exists($this->logFile) ? file_get_contents($this->logFile) : 'Нет лога';
-                Log::error('Deploy script failed to start', ['log' => $error]);
-
+            if (!$started) {
+                Log::channel('deploy')->error('[DeployAction] Failed to start deploy script', [
+                    'user_id' => auth()->id(),
+                ]);
                 return [
                     'success' => false,
                     'message' => 'Скрипт деплоя не запустился. Проверьте лог.',
                 ];
             }
 
-            Log::info('Deploy triggered', ['user_id' => auth()->id()]);
+            Log::channel('deploy')->info('[DeployAction] Deploy triggered successfully', [
+                'user_id' => auth()->id(),
+                'user_email' => auth()->user()?->email,
+            ]);
 
             return [
                 'success' => true,
                 'message' => 'Деплой запущен! Процесс обновления сайта начнётся в течение нескольких секунд.',
             ];
         } catch (\Exception $e) {
-            Log::error('Deploy trigger failed', ['exception' => $e->getMessage()]);
+            Log::channel('deploy')->error('[DeployAction] Exception', [
+                'user_id' => auth()->id(),
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
 
             return [
                 'success' => false,
@@ -76,78 +67,31 @@ class DeploySiteAction
         }
     }
 
-    /**
-     * Проверяет статус деплоя
-     */
     public function getStatus(): array
     {
-        if (!file_exists($this->logFile)) {
-            return ['status' => 'idle', 'message' => 'Деплой не запущен'];
-        }
+        return $this->deployTask->getDeployStatus();
+    }
 
-        $log = file_get_contents($this->logFile);
-
-        // Проверяем, запущен ли процесс
-        if ($this->isDeployRunning()) {
-            return [
-                'status' => 'running',
-                'message' => 'Деплой выполняется...',
-                'log' => $log,
-            ];
-        }
-
-        // Процесс завершил — проверяем результат
-        $lastLines = array_slice(explode("\n", trim($log)), -5);
-        $lastOutput = implode("\n", $lastLines);
-
-        $isSuccess = stripos($lastOutput, 'успешн') !== false
-            || stripos($lastOutput, 'success') !== false
-            || stripos($lastOutput, '✅') !== false;
-
-        $isFailed = stripos($lastOutput, 'ошибк') !== false
-            || stripos($lastOutput, 'error') !== false
-            || stripos($lastOutput, '❌') !== false;
-
-        if ($isSuccess) {
-            return [
-                'status' => 'completed',
-                'message' => 'Деплой завершён успешно!',
-                'log' => $log,
-            ];
-        }
-
-        if ($isFailed) {
-            return [
-                'status' => 'failed',
-                'message' => 'Деплой завершён с ошибкой',
-                'log' => $log,
-            ];
-        }
-
+    public function getLog(int $lines = 50): array
+    {
         return [
-            'status' => 'unknown',
-            'message' => 'Статус неизвестен',
-            'log' => $log,
+            'log' => $this->deployTask->getLogTail($lines),
+            'full_log' => $this->deployTask->getLog(),
         ];
     }
 
-    /**
-     * Очищает статус деплоя
-     */
-    public function clearStatus(): void
+    public function getHistory(): array
     {
-        if (file_exists($this->logFile)) {
-            unlink($this->logFile);
-        }
+        return [
+            'history' => $this->deployTask->getHistory(),
+        ];
     }
 
-    /**
-     * Проверяет, запущен ли процесс деплоя
-     */
-    private function isDeployRunning(): bool
+    public function clearStatus(): void
     {
-        $output = shell_exec('pgrep -f "deploy\\.sh"');
-
-        return !empty(trim($output ?? ''));
+        Log::channel('deploy')->info('[DeployAction] Log cleared', [
+            'user_id' => auth()->id(),
+        ]);
+        $this->deployTask->clearLog();
     }
 }
