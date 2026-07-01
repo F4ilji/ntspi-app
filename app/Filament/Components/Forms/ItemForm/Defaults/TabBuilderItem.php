@@ -9,7 +9,7 @@ use App\Containers\Widget\Models\ContactWidget;
 use App\Containers\Widget\Models\CustomForm;
 use App\Containers\Widget\Models\PageReferenceList;
 use App\Containers\Widget\Models\Slider;
-use App\Ship\Helpers\ByteConverter;
+use App\Ship\Services\ByteConverter;
 use App\Containers\AppStructure\Models\Page;
 use App\Containers\Article\Models\Post;
 use Filament\Forms;

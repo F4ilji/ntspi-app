@@ -5,7 +5,7 @@ namespace App\Filament\Components\Forms\ItemForm\Defaults;
 use App\Containers\Article\Models\Category;
 use App\Containers\Widget\Models\CustomForm;
 use App\Containers\Widget\Models\PageReferenceList;
-use App\Ship\Helpers\ByteConverter;
+use App\Ship\Services\ByteConverter;
 use App\Containers\AppStructure\Models\Page;
 use App\Containers\Article\Models\Post;
 use Filament\Forms\Components\Builder;

@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Ship\Helpers\ByteConverter;
+use App\Ship\Services\ByteConverter;
 use Illuminate\Support\ServiceProvider;
 
 class ByteConverterServiceProvider extends ServiceProvider

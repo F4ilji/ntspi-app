@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Ship\Helpers;
+namespace App\Ship\Services;
 
 class ByteConverter
 {

@@ -56,5 +56,6 @@ enum CacheKeys: string {
     case TAGS_PREFIX = 'tags_';
     case TAG_CONTENT_PREFIX = 'tag_content_';
 
-
+    // Integration Credentials
+    case INTEGRATION_CREDENTIAL_PREFIX = 'integration_credential_';
 }
