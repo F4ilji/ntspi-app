@@ -26,7 +26,8 @@
       "Bash(cat *)",
       "Bash(echo *)",
       "Bash(docker cp *)",
-      "Bash(touch *)"
+      "Bash(touch *)",
+      "Bash(chmod *)"
     ]
   },
   "$version": 3

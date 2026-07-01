@@ -18,3 +18,8 @@ hot
 /storage/logs
 resources/js/ziggy.js
 public/vikon_core
+.mimocode
+.qwen
+QWEN.md
+AGENTS.md
+docs
