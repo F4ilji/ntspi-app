@@ -223,6 +223,18 @@ const upload = async () => {
       },
     });
 
+    if (!response.ok) {
+      const text = await response.text();
+      const isHtml = text.trimStart().startsWith('<!DOCTYPE') || text.trimStart().startsWith('<html');
+      if (isHtml) {
+        errorMessage.value = 'Сервер вернул ошибку ' + response.status + '. Возможно, сессия истекла. Обновите страницу.';
+      } else {
+        const data = JSON.parse(text);
+        errorMessage.value = data.message || 'Ошибка ' + response.status;
+      }
+      return;
+    }
+
     const data = await response.json();
 
     if (data.success) {
