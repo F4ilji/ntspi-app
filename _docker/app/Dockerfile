@@ -55,6 +55,10 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
 # Создание необходимых директорий для Laravel
 RUN mkdir -p storage/framework/views storage/framework/sessions storage/framework/cache storage/logs bootstrap/cache
 
+# Добавляем www-data в группу с GID=1000 (совпадает с GID хост-пользователя)
+RUN groupadd -g 1000 hostgroup 2>/dev/null || true \
+    && usermod -aG hostgroup www-data
+
 # Установка правильных прав доступа
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache

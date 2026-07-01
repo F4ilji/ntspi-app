@@ -214,6 +214,7 @@ const upload = async () => {
     const response = await fetch(route('dashboard.quick-upload.store'), {
       method: 'POST',
       body: formData,
+      credentials: 'same-origin',
       headers: {
         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
         'X-Requested-With': 'XMLHttpRequest',
