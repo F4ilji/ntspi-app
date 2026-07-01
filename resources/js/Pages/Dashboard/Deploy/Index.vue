@@ -68,7 +68,7 @@ async function startDeploy() {
     }
   } catch (error) {
     console.error('Deploy error:', error)
-    alert('Ошибка соединения с сервером')
+    alert('Ошибка соединения с сервером: ' + error)
   }
 }
 
