@@ -236,7 +236,8 @@ const upload = async () => {
       errorMessage.value = data.message || 'Ошибка при обновлении';
     }
   } catch (error) {
-    errorMessage.value = 'Ошибка при загрузке файла. Попробуйте ещё раз.';
+    const details = error.message || String(error);
+    errorMessage.value = 'Ошибка при загрузке файла: ' + details;
     console.error('Upload error:', error);
   } finally {
     uploading.value = false;
