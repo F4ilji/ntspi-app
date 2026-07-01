@@ -122,10 +122,24 @@ export const menuItems = [
     ],
   },
   {
+    key: 'deploy',
+    label: 'Деплой',
+    icon: 'arrow-up-tray',
+    route: 'dashboard.deploy.index',
+    activePrefixes: ['dashboard.deploy'],
+  },
+  {
     key: 'vikon-updates',
     label: 'Обновления VIKON',
     icon: 'arrow-path',
     route: 'dashboard.vikon-updates.index',
     activePrefixes: ['dashboard.vikon-updates'],
+  },
+  {
+    key: 'integration-credentials',
+    label: 'Интеграционные ключи',
+    icon: 'key',
+    route: 'dashboard.integration-credentials.index',
+    activePrefixes: ['dashboard.integration-credentials'],
   },
 ];

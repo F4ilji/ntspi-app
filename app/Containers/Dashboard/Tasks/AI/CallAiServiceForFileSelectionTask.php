@@ -2,11 +2,16 @@
 
 namespace App\Containers\Dashboard\Tasks\AI;
 
+use App\Containers\Dashboard\Tasks\IntegrationCredentials\GetIntegrationCredentialTask;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class CallAiServiceForFileSelectionTask
 {
+    public function __construct(
+        private readonly GetIntegrationCredentialTask $getCredentialTask,
+    ) {}
+
     /**
      * Отправляет фрагменты файлов в AI для определения основного файла
      *
@@ -19,6 +24,15 @@ class CallAiServiceForFileSelectionTask
             'fragments_count' => count($fragments),
         ]);
 
+        $credential = $this->getCredentialTask->run('qwen');
+        if (!$credential) {
+            Log::error('[CallAiServiceForFileSelectionTask] API ключ не настроен', [
+                'provider' => 'qwen',
+            ]);
+            return null;
+        }
+        $apiKey = $credential->payload['api_key'] ?? '';
+
         $prompt = $this->buildPrompt($fragments);
 
         Log::info('[CallAiServiceForFileSelectionTask] Отправка запроса к AI');
@@ -26,7 +40,7 @@ class CallAiServiceForFileSelectionTask
         try {
             $response = Http::timeout(30) // Таймаут 30 секунд
                 ->withHeaders([
-                    'Authorization' => 'Bearer ' . env('QWEN_API_KEY'),
+                    'Authorization' => 'Bearer ' . $apiKey,
                     'Content-Type' => 'application/json',
                 ])->post('https://routerai.ru/api/v1/chat/completions', [
                     'model' => 'qwen/qwen3.5-flash-02-23',

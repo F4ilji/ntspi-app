@@ -2,12 +2,17 @@
 
 namespace App\Containers\Dashboard\Tasks\AI;
 
+use App\Containers\Dashboard\Tasks\IntegrationCredentials\GetIntegrationCredentialTask;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class CallAiServiceTask
 {
+    public function __construct(
+        private readonly GetIntegrationCredentialTask $getCredentialTask,
+    ) {}
+
     /**
      * Отправляет текст в AI сервис для извлечения структурированных данных
      *
@@ -23,14 +28,14 @@ class CallAiServiceTask
                 'categories_count' => $categories->count(),
             ]);
 
-            // Проверяем наличие API ключа
-            $apiKey = env('QWEN_API_KEY');
-            if (empty($apiKey)) {
+            $credential = $this->getCredentialTask->run('qwen');
+            if (!$credential) {
                 Log::error('[CallAiServiceTask] API ключ не настроен', [
-                    'env_key' => 'QWEN_API_KEY',
+                    'provider' => 'qwen',
                 ]);
-                throw new \RuntimeException('AI API ключ не настроен в окружении');
+                throw new \RuntimeException('AI API ключ не настроен');
             }
+            $apiKey = $credential->payload['api_key'] ?? '';
 
             $categoryList = collect($categories)
                 ->map(fn($cat) => "{$cat->id}: {$cat->title}")

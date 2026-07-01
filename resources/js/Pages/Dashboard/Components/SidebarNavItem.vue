@@ -76,6 +76,7 @@ const iconMap = {
   'arrow-path': 'arrow-path',
   'academic-cap': 'academic-cap',
   'clipboard-document-check': 'clipboard-document-check',
+  key: 'key',
 };
 
 const iconComponent = computed(() => iconMap[props.item.icon] || 'home');

@@ -6,6 +6,7 @@ use App\Containers\Dashboard\Actions\Posts\DeploySiteAction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Inertia\Inertia;
 
 class DeployController extends Controller
 {
@@ -13,9 +14,17 @@ class DeployController extends Controller
         private readonly DeploySiteAction $deploySiteAction,
     ) {}
 
-    /**
-     * Запускает деплой (создаёт файл-триггер)
-     */
+    public function index(): \Inertia\Response
+    {
+        $history = $this->deploySiteAction->getHistory();
+        $status = $this->deploySiteAction->getStatus();
+
+        return Inertia::render('Dashboard/Deploy/Index', [
+            'history' => $history['history'],
+            'status' => $status,
+        ]);
+    }
+
     public function deploy(Request $request): JsonResponse
     {
         if (app()->environment() !== 'production') {
@@ -37,9 +46,6 @@ class DeployController extends Controller
         return response()->json($result);
     }
 
-    /**
-     * Проверяет статус деплоя
-     */
     public function status(Request $request): JsonResponse
     {
         if (app()->environment() !== 'production') {
@@ -58,9 +64,29 @@ class DeployController extends Controller
         return response()->json($status);
     }
 
-    /**
-     * Очищает статус деплоя
-     */
+    public function log(Request $request): JsonResponse
+    {
+        if (!$request->user()->hasRole('super_admin')) {
+            return response()->json(['success' => false], 403);
+        }
+
+        $lines = (int) $request->query('lines', 50);
+        $result = $this->deploySiteAction->getLog($lines);
+
+        return response()->json($result);
+    }
+
+    public function history(Request $request): JsonResponse
+    {
+        if (!$request->user()->hasRole('super_admin')) {
+            return response()->json(['success' => false], 403);
+        }
+
+        $result = $this->deploySiteAction->getHistory();
+
+        return response()->json($result);
+    }
+
     public function clear(Request $request): JsonResponse
     {
         if (!$request->user()->hasRole('super_admin')) {

@@ -76,6 +76,16 @@ export default {
           textClass: 'group-hover:text-amber-600',
           hoverClass: 'hover:border-amber-500/20 hover:bg-amber-500/5',
         },
+        {
+          route: 'dashboard.sveden',
+          label: 'Обновить Sveden',
+          desc: 'Заглушка для обновления',
+          icon: 'arrow-path',
+          bgClass: 'bg-cyan-500/10 group-hover:bg-cyan-500/20',
+          iconClass: 'text-cyan-600',
+          textClass: 'group-hover:text-cyan-600',
+          hoverClass: 'hover:border-cyan-500/20 hover:bg-cyan-500/5',
+        },
       ],
     };
   },
