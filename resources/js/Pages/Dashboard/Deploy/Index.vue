@@ -50,10 +50,8 @@ async function startDeploy() {
   try {
     const response = await fetch(route('dashboard.deploy'), {
       method: 'POST',
-      credentials: 'same-origin',
       headers: {
-        'Content-Type': 'application/json',
-        'X-XSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
         'Accept': 'application/json',
       },
     })
@@ -80,14 +78,12 @@ function startPolling() {
   pollInterval = setInterval(async () => {
     try {
       const statusRes = await fetch(route('dashboard.deploy.status'), {
-        credentials: 'same-origin',
         headers: { 'Accept': 'application/json' },
       })
       const statusData = await statusRes.json()
       deployStatus.value = statusData
 
       const logRes = await fetch(route('dashboard.deploy.log') + '?lines=100', {
-        credentials: 'same-origin',
         headers: { 'Accept': 'application/json' },
       })
       const logData = await logRes.json()
@@ -116,9 +112,8 @@ async function clearLog() {
   try {
     await fetch(route('dashboard.deploy.clear'), {
       method: 'POST',
-      credentials: 'same-origin',
       headers: {
-        'X-XSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
         'Accept': 'application/json',
       },
     })
