@@ -32,7 +32,14 @@ const fetchStatus = async () => {
       credentials: 'same-origin',
       headers,
     })
-    status.value = await response.json()
+    const text = await response.text()
+
+    try {
+      status.value = JSON.parse(text)
+    } catch {
+      console.error('Status response is not JSON:', text.substring(0, 200))
+      return
+    }
 
     if (!status.value.running && pollingInterval) {
       clearInterval(pollingInterval)
@@ -50,15 +57,24 @@ const startDeploy = async () => {
       credentials: 'same-origin',
       headers,
     })
-    const data = await response.json()
+    const text = await response.text()
+    console.log('Deploy response:', response.status, text)
+
+    let data
+    try {
+      data = JSON.parse(text)
+    } catch {
+      alert('Server returned HTML instead of JSON. Check console.')
+      return
+    }
 
     if (response.ok) {
       startPolling()
     } else {
-      alert(data.error || 'Failed to start deploy:' + data.error)
+      alert(data.error || 'Failed to start deploy')
     }
   } catch (error) {
-    alert('Failed to start deploy:' + error)
+    alert('Failed to start deploy: ' + error.message)
   }
 }
 
