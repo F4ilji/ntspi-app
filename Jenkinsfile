@@ -7,6 +7,18 @@ pipeline {
     }
 
     stages {
+        stage('Backup Database') {
+            steps {
+                dir("${APP_DIR}") {
+                    sh '''
+                        mkdir -p backups
+                        docker exec ntspi-db mysqldump -u admin -psecret ntspi_db | gzip > backups/ntspi_db_$(date +%F_%H%M).sql.gz
+                        find backups -name "*.sql.gz" -mtime +7 -delete
+                    '''
+                }
+            }
+        }
+
         stage('Maintenance Mode') {
             steps {
                 dir("${APP_DIR}") {
