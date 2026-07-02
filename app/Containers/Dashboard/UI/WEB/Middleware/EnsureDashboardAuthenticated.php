@@ -15,6 +15,9 @@ class EnsureDashboardAuthenticated
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['error' => 'Unauthenticated'], 401);
+            }
             return redirect()->route('login');
         }
 
