@@ -15,9 +15,23 @@ const status = ref({
 
 let pollingInterval = null
 
+const getCsrfToken = () => {
+  const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/)
+  return match ? decodeURIComponent(match[1]) : ''
+}
+
+const headers = {
+  'Content-Type': 'application/json',
+  'X-XSRF-TOKEN': getCsrfToken(),
+  'Accept': 'application/json',
+}
+
 const fetchStatus = async () => {
   try {
-    const response = await fetch('/api/deploy/status')
+    const response = await fetch('/api/deploy/status', {
+      credentials: 'same-origin',
+      headers,
+    })
     status.value = await response.json()
 
     if (!status.value.running && pollingInterval) {
@@ -31,7 +45,11 @@ const fetchStatus = async () => {
 
 const startDeploy = async () => {
   try {
-    const response = await fetch('/api/deploy', { method: 'POST' })
+    const response = await fetch('/api/deploy', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers,
+    })
     const data = await response.json()
 
     if (response.ok) {
