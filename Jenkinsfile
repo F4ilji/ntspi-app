@@ -3,14 +3,14 @@ pipeline {
 
     environment {
         APP_DIR = '/var/www'
-        SERVICES = 'app webserver php-queue-worker'
+        CONTAINER = 'ntspi-php'
     }
 
     stages {
         stage('Maintenance Mode') {
             steps {
                 dir("${APP_DIR}") {
-                    sh 'docker compose exec app php artisan down || true'
+                    sh 'docker exec ntspi-php php artisan down || true'
                 }
             }
         }
@@ -28,7 +28,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir("${APP_DIR}") {
-                    sh 'docker compose run --rm app composer install --no-dev --no-interaction --prefer-dist --no-cache'
+                    sh 'docker exec ntspi-php composer install --no-dev --no-interaction --prefer-dist --no-cache'
                 }
             }
         }
@@ -36,7 +36,7 @@ pipeline {
         stage('Database Migrations') {
             steps {
                 dir("${APP_DIR}") {
-                    sh 'docker compose exec app php artisan migrate --force'
+                    sh 'docker exec ntspi-php php artisan migrate --force'
                 }
             }
         }
@@ -44,8 +44,8 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir("${APP_DIR}") {
-                    sh 'docker compose exec app npm install --legacy-peer-deps'
-                    sh 'docker compose exec app npm run build'
+                    sh 'docker exec ntspi-php npm install --legacy-peer-deps'
+                    sh 'docker exec ntspi-php npm run build'
                 }
             }
         }
@@ -54,18 +54,18 @@ pipeline {
             steps {
                 dir("${APP_DIR}") {
                     sh '''
-                        docker compose exec app php artisan cache:clear
-                        docker compose exec app php artisan config:clear
-                        docker compose exec app php artisan route:clear
-                        docker compose exec app php artisan view:clear
-                        docker compose exec app php artisan filament:clear-cached-components
-                        docker compose exec app php artisan filament:optimize-clear
+                        docker exec ntspi-php php artisan cache:clear
+                        docker exec ntspi-php php artisan config:clear
+                        docker exec ntspi-php php artisan route:clear
+                        docker exec ntspi-php php artisan view:clear
+                        docker exec ntspi-php php artisan filament:clear-cached-components
+                        docker exec ntspi-php php artisan filament:optimize-clear
 
-                        docker compose exec app php artisan route:cache
-                        docker compose exec app php artisan view:cache
-                        docker compose exec app php artisan icons:cache
-                        docker compose exec app php artisan filament:cache-components
-                        docker compose exec app php artisan filament:optimize
+                        docker exec ntspi-php php artisan route:cache
+                        docker exec ntspi-php php artisan view:cache
+                        docker exec ntspi-php php artisan icons:cache
+                        docker exec ntspi-php php artisan filament:cache-components
+                        docker exec ntspi-php php artisan filament:optimize
                     '''
                 }
             }
@@ -83,8 +83,8 @@ pipeline {
         stage('Restart Services') {
             steps {
                 dir("${APP_DIR}") {
-                    sh "docker compose stop ${SERVICES}"
-                    sh 'docker compose up -d --remove-orphans'
+                    sh 'docker exec -u root ntspi-php chown -R www-data:www-data storage bootstrap/cache'
+                    sh 'docker restart ntspi-nginx ntspi-php ntspi-php-queue'
                 }
             }
         }
@@ -94,7 +94,7 @@ pipeline {
                 dir("${APP_DIR}") {
                     sh '''
                         for i in $(seq 1 30); do
-                            if docker compose exec app php artisan about > /dev/null 2>&1; then
+                            if docker exec ntspi-php php artisan about > /dev/null 2>&1; then
                                 echo "App is ready"
                                 break
                             fi
@@ -109,7 +109,7 @@ pipeline {
         stage('Enable App') {
             steps {
                 dir("${APP_DIR}") {
-                    sh 'docker compose exec app php artisan up'
+                    sh 'docker exec ntspi-php php artisan up'
                 }
             }
         }
@@ -122,7 +122,7 @@ pipeline {
         failure {
             echo "Deploy failed. Check build logs in Jenkins."
             dir("${APP_DIR}") {
-                sh 'docker compose exec app php artisan up || true'
+                sh 'docker exec ntspi-php php artisan up || true'
             }
         }
     }
