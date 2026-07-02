@@ -58,7 +58,7 @@ const startDeploy = async () => {
       alert(data.error || 'Failed to start deploy')
     }
   } catch (error) {
-    alert('Failed to start deploy')
+    alert('Failed to start deploy:' + error)
   }
 }
 
