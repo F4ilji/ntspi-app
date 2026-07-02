@@ -31,10 +31,4 @@ export const quickActions = [
     href: null,
     icon: 'cog',
   },
-  {
-    label: 'Deploy',
-    route: 'dashboard.deploy',
-    href: null,
-    icon: 'cog',
-  },
 ];
