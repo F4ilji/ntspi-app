@@ -421,6 +421,10 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     Route::get('/dashboard/deploy', function () {
         return inertia()->render('Dashboard/Deploy/Index');
     })->name('dashboard.deploy');
+
+    // Deploy API
+    Route::post('/api/deploy', [\App\Containers\Dashboard\UI\API\Controllers\DeployController::class, 'store']);
+    Route::get('/api/deploy/status', [\App\Containers\Dashboard\UI\API\Controllers\DeployController::class, 'status']);
 });
 
 
