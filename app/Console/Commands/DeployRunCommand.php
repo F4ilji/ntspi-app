@@ -89,57 +89,57 @@ class DeployRunCommand extends Command
     private function executeDeploy(): void
     {
         $this->executeStep(1, 'Maintenance mode', function () {
-            $this->runCommand('php artisan down');
+            $this->execCommand('php artisan down');
         });
 
         $this->executeStep(2, 'Git pull', function () {
-            $this->runCommand('git config --global --add safe.directory /var/www');
-            $this->runCommand('git reset --hard');
-            $this->runCommand('git pull origin master');
+            $this->execCommand('git config --global --add safe.directory /var/www');
+            $this->execCommand('git reset --hard');
+            $this->execCommand('git pull origin master');
         });
 
         $this->executeStep(3, 'Composer install', function () {
-            $this->runCommand('composer install --no-dev --no-interaction --prefer-dist --no-cache');
+            $this->execCommand('composer install --no-dev --no-interaction --prefer-dist --no-cache');
         });
 
         $this->executeStep(4, 'Migrate', function () {
-            $this->runCommand('php artisan migrate --force');
+            $this->execCommand('php artisan migrate --force');
         });
 
         $this->executeStep(5, 'NPM install', function () {
-            $this->runCommand('npm install --legacy-peer-deps');
+            $this->execCommand('npm install --legacy-peer-deps');
         });
 
         $this->executeStep(6, 'NPM build', function () {
-            $this->runCommand('npm run build');
+            $this->execCommand('npm run build');
         });
 
         $this->executeStep(7, 'Cache clear', function () {
-            $this->runCommand('php artisan cache:clear');
-            $this->runCommand('php artisan config:clear');
-            $this->runCommand('php artisan route:clear');
-            $this->runCommand('php artisan view:clear');
-            $this->runCommand('php artisan filament:clear-cached-components');
-            $this->runCommand('php artisan filament:optimize-clear');
+            $this->execCommand('php artisan cache:clear');
+            $this->execCommand('php artisan config:clear');
+            $this->execCommand('php artisan route:clear');
+            $this->execCommand('php artisan view:clear');
+            $this->execCommand('php artisan filament:clear-cached-components');
+            $this->execCommand('php artisan filament:optimize-clear');
         });
 
         $this->executeStep(8, 'Cache warm', function () {
-            $this->runCommand('php artisan routes:register');
-            $this->runCommand('php artisan route:cache');
-            $this->runCommand('php artisan view:cache');
-            $this->runCommand('php artisan icons:cache');
-            $this->runCommand('php artisan filament:cache-components');
-            $this->runCommand('php artisan filament:optimize');
+            $this->execCommand('php artisan routes:register');
+            $this->execCommand('php artisan route:cache');
+            $this->execCommand('php artisan view:cache');
+            $this->execCommand('php artisan icons:cache');
+            $this->execCommand('php artisan filament:cache-components');
+            $this->execCommand('php artisan filament:optimize');
         });
 
         $this->executeStep(9, 'Fix permissions', function () {
-            $this->runCommand('chown -R www-data:www-data storage bootstrap/cache');
-            $this->runCommand('chmod -R 775 storage bootstrap/cache');
+            $this->execCommand('chown -R www-data:www-data storage bootstrap/cache');
+            $this->execCommand('chmod -R 775 storage bootstrap/cache');
         });
 
         $this->executeStep(10, 'Restart containers', function () {
-            $this->runCommand('docker compose down');
-            $this->runCommand('docker compose up -d --remove-orphans');
+            $this->execCommand('docker compose down');
+            $this->execCommand('docker compose up -d --remove-orphans');
         });
 
         $this->executeStep(11, 'Wait 10 seconds', function () {
@@ -147,11 +147,11 @@ class DeployRunCommand extends Command
         });
 
         $this->executeStep(12, 'Maintenance off', function () {
-            $this->runCommand('php artisan up');
+            $this->execCommand('php artisan up');
         });
     }
 
-    private function runCommand(string $command): void
+    private function execCommand(string $command): void
     {
         $process = Process::run($command);
 
@@ -175,9 +175,9 @@ class DeployRunCommand extends Command
         $this->addLog('Attempting rollback...');
 
         try {
-            $this->runCommand('git checkout .');
-            $this->runCommand('composer install --no-dev --prefer-dist');
-            $this->runCommand('php artisan up');
+            $this->execCommand('git checkout .');
+            $this->execCommand('composer install --no-dev --prefer-dist');
+            $this->execCommand('php artisan up');
             $this->addLog('Rollback completed');
         } catch (\Exception $rollbackException) {
             $this->addLog("❌ Rollback failed: " . $rollbackException->getMessage());

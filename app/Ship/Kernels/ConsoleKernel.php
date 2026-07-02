@@ -5,6 +5,7 @@ namespace App\Ship\Kernels;
 use AlxDorosenco\PortoForLaravel\Loaders\CommandsLoader;
 use AlxDorosenco\PortoForLaravel\Loaders\RoutesLoader;
 use App\Containers\Dashboard\Commands\FetchEmailNewsCommand;
+use App\Console\Commands\DeployRunCommand;
 use App\Ship\Commands\InitRoles;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as LaravelConsoleKernel;
@@ -34,6 +35,7 @@ class ConsoleKernel extends LaravelConsoleKernel
     protected $commands = [
         InitRoles::class,
         FetchEmailNewsCommand::class,
+        DeployRunCommand::class,
     ];
 
     /**
