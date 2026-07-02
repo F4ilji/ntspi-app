@@ -416,6 +416,11 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
         Route::put('/{credential}', [IntegrationCredentialsController::class, 'update'])->name('update');
         Route::delete('/{credential}', [IntegrationCredentialsController::class, 'destroy'])->name('destroy');
     });
+
+    // Deploy
+    Route::get('/dashboard/deploy', function () {
+        return inertia()->render('Dashboard/Deploy/Index');
+    })->name('dashboard.deploy');
 });
 
 
