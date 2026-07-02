@@ -28,7 +28,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir("${APP_DIR}") {
-                    sh 'docker exec ntspi-php composer install --no-dev --no-interaction --prefer-dist --no-cache'
+                    sh 'docker exec ntspi-php php -d open_basedir=none /usr/local/bin/composer install --no-dev --no-interaction --prefer-dist --no-cache'
                 }
             }
         }
