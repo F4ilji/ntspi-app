@@ -74,7 +74,6 @@ class AppServiceProvider extends ServiceProvider
         self::setLocaleTime();
         Model::preventLazyLoading(!app()->isProduction());
         self::registerFilamentNavigationGroups();
-        $this->loadViewsFrom(__DIR__.'/path/to/views', 'checkpoint');
 
         FilamentView::registerRenderHook(TablesRenderHook::TOOLBAR_REORDER_TRIGGER_AFTER, function () {
             (new SliderCacheService())->clearAllCacheByModel();
