@@ -115,6 +115,7 @@ services:
       - ./:/var/www
     environment:
       - DOCKER_HOST=unix:///var/run/docker.sock
+      - JENKINS_OPTS=--prefix=/jenkins
     networks:
       - app-network
 
