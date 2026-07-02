@@ -122,13 +122,6 @@ export const menuItems = [
     ],
   },
   {
-    key: 'deploy',
-    label: 'Деплой',
-    icon: 'arrow-up-tray',
-    route: 'dashboard.deploy.index',
-    activePrefixes: ['dashboard.deploy'],
-  },
-  {
     key: 'vikon-updates',
     label: 'Обновления VIKON',
     icon: 'arrow-path',

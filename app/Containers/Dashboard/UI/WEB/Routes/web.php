@@ -10,7 +10,6 @@ use App\Containers\Dashboard\UI\WEB\Controllers\CategoryController as NewsCatego
 use App\Containers\Dashboard\UI\WEB\Controllers\ContactWidgetController;
 use App\Containers\Dashboard\UI\WEB\Controllers\CreateSliderController;
 use App\Containers\Dashboard\UI\WEB\Controllers\CustomFormController;
-use App\Containers\Dashboard\UI\WEB\Controllers\DeployController;
 use App\Containers\Dashboard\UI\WEB\Controllers\DepartmentController;
 use App\Containers\Dashboard\UI\WEB\Controllers\PageReferenceListController;
 use App\Containers\Dashboard\UI\WEB\Controllers\DepartmentProgramController;
@@ -63,13 +62,6 @@ Route::post('/dashboard/logout', [AuthenticatedSessionController::class, 'destro
 // Authenticated dashboard routes
 Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     Route::get('/dashboard', IndexDashboardController::class)->name('dashboard.index');
-    Route::get('/dashboard/deploy', [DeployController::class, 'index'])->name('dashboard.deploy.index');
-    Route::post('/dashboard/deploy', [DeployController::class, 'deploy'])->name('dashboard.deploy');
-    Route::get('/dashboard/deploy/status', [DeployController::class, 'status'])->name('dashboard.deploy.status');
-    Route::get('/dashboard/deploy/log', [DeployController::class, 'log'])->name('dashboard.deploy.log');
-    Route::get('/dashboard/deploy/history', [DeployController::class, 'history'])->name('dashboard.deploy.history');
-    Route::post('/dashboard/deploy/clear', [DeployController::class, 'clear'])->name('dashboard.deploy.clear');
-
     Route::get('/dashboard/sveden', [SvedenController::class, 'index'])->name('dashboard.sveden');
     Route::post('/dashboard/sveden', [SvedenController::class, 'store'])->name('dashboard.sveden.store');
 

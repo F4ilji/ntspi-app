@@ -118,13 +118,6 @@ return [
             'replace_placeholders' => true,
         ],
 
-        'deploy' => [
-            'driver' => 'single',
-            'path' => storage_path('logs/deploy.log'),
-            'level' => 'info',
-            'replace_placeholders' => true,
-        ],
-
         'null' => [
             'driver' => 'monolog',
             'handler' => NullHandler::class,
