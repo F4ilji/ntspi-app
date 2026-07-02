@@ -13,7 +13,7 @@ pipeline {
                     sh '''
                         mkdir -p backups
                         docker exec ntspi-db mysqldump -u admin -psecret ntspi_db | gzip > backups/ntspi_db_$(date +%F_%H%M).sql.gz
-                        find backups -name "*.sql.gz" -mtime +7 -delete
+                        find backups -name "*.sql.gz" -mtime +3 -delete
                     '''
                 }
             }
