@@ -55,7 +55,7 @@ const startDeploy = async () => {
     if (response.ok) {
       startPolling()
     } else {
-      alert(data.error || 'Failed to start deploy')
+      alert(data.error || 'Failed to start deploy:' + data.error)
     }
   } catch (error) {
     alert('Failed to start deploy:' + error)
