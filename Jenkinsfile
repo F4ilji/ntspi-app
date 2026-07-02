@@ -19,6 +19,14 @@ pipeline {
             }
         }
 
+        stage('Cleanup Old Files') {
+            steps {
+                dir("${APP_DIR}") {
+                    sh 'docker exec ntspi-php find /var/www/storage/app/email_attachments -type f -mtime +3 -delete'
+                }
+            }
+        }
+
         stage('Maintenance Mode') {
             steps {
                 dir("${APP_DIR}") {
