@@ -36,7 +36,6 @@ services:
       dockerfile: _docker/app/Dockerfile
     volumes:
       - ./:/var/www
-      - /var/run/docker.sock:/var/run/docker.sock
     container_name: ntspi-php
     restart: always
     ports:

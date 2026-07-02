@@ -13,7 +13,7 @@ class DeployRunCommand extends Command
 
     private string $statusFile = '/tmp/deploy-status.json';
     private string $lockFile = '/tmp/deploy.lock';
-    private int $totalSteps = 12;
+    private int $totalSteps = 13;
 
     public function handle(): int
     {
@@ -102,19 +102,36 @@ class DeployRunCommand extends Command
             $this->execCommand('composer install --no-dev --no-interaction --prefer-dist --no-cache');
         });
 
-        $this->executeStep(4, 'Migrate', function () {
+        $this->executeStep(4, 'Database backup', function () {
+            $backupDir = storage_path('app/backups');
+            if (!is_dir($backupDir)) {
+                mkdir($backupDir, 0755, true);
+            }
+            $filename = 'backup_' . now()->format('Y-m-d_H-i-s') . '.sql.gz';
+            $filepath = $backupDir . '/' . $filename;
+            $dbHost = env('DB_HOST', 'db');
+            $dbName = env('DB_DATABASE', 'ntspi_db');
+            $dbUser = env('DB_USERNAME', 'admin');
+            $dbPass = env('DB_PASSWORD', 'secret');
+            $this->execCommand(
+                "mysqldump -h {$dbHost} -u {$dbUser} -p{$dbPass} {$dbName} | gzip > {$filepath}"
+            );
+            $this->addLog("Backup saved: {$filepath}");
+        });
+
+        $this->executeStep(5, 'Migrate', function () {
             $this->execCommand('php artisan migrate --force');
         });
 
-        $this->executeStep(5, 'NPM install', function () {
+        $this->executeStep(6, 'NPM install', function () {
             $this->execCommand('npm install --legacy-peer-deps');
         });
 
-        $this->executeStep(6, 'NPM build', function () {
+        $this->executeStep(7, 'NPM build', function () {
             $this->execCommand('npm run build');
         });
 
-        $this->executeStep(7, 'Cache clear', function () {
+        $this->executeStep(8, 'Cache clear', function () {
             $this->execCommand('php artisan cache:clear');
             $this->execCommand('php artisan config:clear');
             $this->execCommand('php artisan route:clear');
@@ -123,7 +140,7 @@ class DeployRunCommand extends Command
             $this->execCommand('php artisan filament:optimize-clear');
         });
 
-        $this->executeStep(8, 'Cache warm', function () {
+        $this->executeStep(9, 'Cache warm', function () {
             $this->execCommand('php artisan routes:register');
             $this->execCommand('php artisan route:cache');
             $this->execCommand('php artisan view:cache');
@@ -132,21 +149,21 @@ class DeployRunCommand extends Command
             $this->execCommand('php artisan filament:optimize');
         });
 
-        $this->executeStep(9, 'Fix permissions', function () {
+        $this->executeStep(10, 'Fix permissions', function () {
             $this->execCommand('chown -R www-data:www-data storage bootstrap/cache');
             $this->execCommand('chmod -R 775 storage bootstrap/cache');
         });
 
-        $this->executeStep(10, 'Restart containers', function () {
-            $this->execCommand('docker compose down');
-            $this->execCommand('docker compose up -d --remove-orphans');
+        $this->executeStep(11, 'Restart processes', function () {
+            $this->execCommand('supervisorctl restart inertia-ssr');
+            $this->execCommand('supervisorctl restart cron');
         });
 
-        $this->executeStep(11, 'Wait 10 seconds', function () {
-            sleep(10);
+        $this->executeStep(12, 'Restart queue workers', function () {
+            $this->execCommand('php artisan queue:restart');
         });
 
-        $this->executeStep(12, 'Maintenance off', function () {
+        $this->executeStep(13, 'Maintenance off', function () {
             $this->execCommand('php artisan up');
         });
     }

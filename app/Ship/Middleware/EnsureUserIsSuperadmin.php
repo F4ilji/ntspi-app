@@ -18,6 +18,10 @@ class EnsureUserIsSuperadmin
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::check() || !Auth::user()->hasRole('super_admin')) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json(['error' => 'Forbidden'], 403);
+            }
+
             return Inertia::render('Error', ['status' => 403])
                 ->toResponse($request)
                 ->setStatusCode(403);
