@@ -39,6 +39,7 @@ pipeline {
             steps {
                 dir("${APP_DIR}") {
                     sh 'git config --global --add safe.directory ${APP_DIR}'
+                    sh 'DEPLOY_PREV_SHA=$(git rev-parse HEAD) && echo $DEPLOY_PREV_SHA > .deploy_prev_sha'
                     sh 'git reset --hard'
                     sh 'git pull origin master'
                 }
@@ -57,6 +58,26 @@ pipeline {
             steps {
                 dir("${APP_DIR}") {
                     sh 'docker exec ntspi-php php artisan migrate --force'
+                }
+            }
+            post {
+                failure {
+                    dir("${APP_DIR}") {
+                        sh '''
+                            PREV_SHA=$(cat .deploy_prev_sha 2>/dev/null || echo "")
+                            if [ -n "$PREV_SHA" ]; then
+                                echo "Rolling back to $PREV_SHA"
+                                git reset --hard $PREV_SHA
+                                docker exec ntspi-php php artisan migrate:rollback --force || true
+                                docker exec ntspi-php composer install --no-dev --no-interaction --prefer-dist --no-cache
+                                docker exec ntspi-php php artisan cache:clear
+                                docker exec ntspi-php php artisan config:clear
+                                docker exec ntspi-php php artisan route:clear
+                                docker exec ntspi-php php artisan view:clear
+                                docker restart ntspi-nginx ntspi-php ntspi-php-queue
+                            fi
+                        '''
+                    }
                 }
             }
         }
@@ -103,7 +124,6 @@ pipeline {
         stage('Restart Services') {
             steps {
                 dir("${APP_DIR}") {
-                    sh 'docker exec -u root ntspi-php chown -R www-data:www-data storage bootstrap/cache'
                     sh 'docker restart ntspi-nginx ntspi-php ntspi-php-queue'
                 }
             }
@@ -138,11 +158,15 @@ pipeline {
     post {
         success {
             echo "Deploy completed successfully"
+            dir("${APP_DIR}") {
+                sh 'rm -f .deploy_prev_sha'
+            }
         }
         failure {
             echo "Deploy failed. Check build logs in Jenkins."
             dir("${APP_DIR}") {
                 sh 'docker exec ntspi-php php artisan up || true'
+                sh 'rm -f .deploy_prev_sha'
             }
         }
     }

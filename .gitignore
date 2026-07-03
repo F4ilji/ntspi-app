@@ -1,5 +1,6 @@
 .env
 deploy.sh
+.deploy_prev_sha
 /node_modules
 /vendor
 /sourcefiles
