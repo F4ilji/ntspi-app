@@ -51,13 +51,6 @@ class UpdateCoreAction
                 );
             }
 
-            $vikonCorePath = $tempPath . '/vikon_core';
-            if (File::isDirectory($vikonCorePath)) {
-                File::deleteDirectory($vikonCorePath);
-            }
-
-            File::delete($zipFile);
-
             $extractedDirs = File::directories($tempPath);
             $syncSource = $extractedDirs[0] ?? $tempPath;
             File::makeDirectory($modulePath, 0755, true, true);
