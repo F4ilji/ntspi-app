@@ -58,7 +58,9 @@ class UpdateCoreAction
 
             File::delete($zipFile);
 
-            $this->syncFiles($tempPath, $modulePath);
+            $extractedDirs = File::directories($tempPath);
+            $syncSource = $extractedDirs[0] ?? $tempPath;
+            $this->syncFiles($syncSource, $modulePath);
             File::put($modulePath . '/.vikon', date('Y-m-d H:i:s'));
             File::deleteDirectory($tempPath);
 
