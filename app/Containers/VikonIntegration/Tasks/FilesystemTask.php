@@ -66,17 +66,22 @@ class FilesystemTask
 
     public function validateFileTypes(string $directory): array
     {
-        $blocked = [
-            'php', 'php3', 'php4', 'php5', 'php7', 'php8', 'phtml', 'phps',
-            'asp', 'aspx', 'jsp', 'jspx', 'cfm',
-            'pl', 'py', 'rb', 'cgi', 'sh', 'bash', 'bat', 'cmd', 'exe',
-            'ps1', 'htaccess', 'htpasswd',
+        $allowed = [
+            'html', 'htm',
+            'css', 'js', 'map',
+            'json', 'xml', 'txt',
+            'png', 'jpg', 'jpeg', 'gif', 'svg', 'svgz', 'webp', 'ico', 'bmp',
+            'ttf', 'woff', 'woff2', 'eot', 'otf',
+            'pdf', 'doc', 'docx', 'xls', 'xlsx',
+            'zip',
+            'vikon',
         ];
+
         $found = [];
 
         foreach (File::allFiles($directory) as $file) {
             $ext = strtolower($file->getExtension());
-            if (in_array($ext, $blocked, true)) {
+            if (!in_array($ext, $allowed, true)) {
                 $found[] = str_replace(base_path() . '/', '', $file->getPathname());
             }
         }
