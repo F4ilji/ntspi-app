@@ -126,7 +126,7 @@ const props = defineProps({
   is_authenticated: Boolean,
   current_version: String,
   modules: Object,
-  vikon_auth_domain: String,
+  vikon_api_domain: String,
   vikon_client_id: String,
 });
 
@@ -142,7 +142,7 @@ const accessInfo = ref({ has_access: false, error: null });
 
 const authUrl = computed(() => {
   const redirect = encodeURIComponent(route('dashboard.vikon-updates.index'));
-  return `${props.vikon_auth_domain}oauth2/authorize?client_id=${props.vikon_client_id}&redirect_uri=${redirect}&response_type=code`;
+  return `${props.vikon_api_domain}oauth2/authorize?client_id=${props.vikon_client_id}&redirect_uri=${redirect}&response_type=code`;
 });
 
 onMounted(() => {
