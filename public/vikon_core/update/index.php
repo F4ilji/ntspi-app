@@ -7,7 +7,7 @@ $query = http_build_query(array_filter([
     'state' => $state,
 ]));
 
-$redirectUrl = '/dashboard/vikon-updates' . ($query ? '?' . $query : '');
+$redirectUrl = '/dashboard/vikon-updates/callback' . ($query ? '?' . $query : '');
 
 header('Location: ' . $redirectUrl, true, 302);
 exit;
