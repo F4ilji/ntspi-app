@@ -218,7 +218,9 @@ async function updateModule(moduleId) {
     clearInterval(timer);
 
     if (res.data.success) {
-      setTimeout(() => router.reload({ preserveState: true }), 500);
+      updateError.value = null;
+      updating.value = false;
+      alert(res.data.message);
     } else {
       updateError.value = res.data.message;
       updating.value = false;
