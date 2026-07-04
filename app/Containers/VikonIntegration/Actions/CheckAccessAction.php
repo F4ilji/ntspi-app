@@ -32,11 +32,21 @@ class CheckAccessAction
                 ];
             }
 
-            $nonWritable = $this->findNonWritable($this->publicPath);
+            $modulePaths = array_map(
+                fn($m) => $this->publicPath . '/' . $m['path'],
+                config('vikon.modules')
+            );
+
+            $nonWritable = [];
+            foreach ($modulePaths as $mp) {
+                if (is_dir($mp) && !is_writable($mp)) {
+                    $nonWritable[] = str_replace(base_path() . '/', '', $mp);
+                }
+            }
             if (!empty($nonWritable)) {
                 return [
                     'has_access' => false,
-                    'error' => 'Нет прав на запись: ' . implode(', ', array_slice($nonWritable, 0, 3)),
+                    'error' => 'Нет прав на запись: ' . implode(', ', $nonWritable),
                 ];
             }
 
@@ -52,6 +62,8 @@ class CheckAccessAction
                 'error' => 'Не удалось проверить права: ' . $e->getMessage(),
             ];
         }
+    }
+}
     }
 
     private function findNonWritable(string $path, int $depth = 0): array
