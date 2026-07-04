@@ -60,6 +60,7 @@ class UpdateCoreAction
 
             $extractedDirs = File::directories($tempPath);
             $syncSource = $extractedDirs[0] ?? $tempPath;
+            File::makeDirectory($modulePath, 0755, true, true);
             $this->syncFiles($syncSource, $modulePath);
             File::put($modulePath . '/.vikon', date('Y-m-d H:i:s'));
             File::deleteDirectory($tempPath);
@@ -111,6 +112,8 @@ class UpdateCoreAction
 
     private function syncFiles(string $source, string $target): void
     {
+        File::makeDirectory($target, 0755, true, true);
+
         foreach (File::files($source) as $file) {
             $name = $file->getFilename();
             $targetPath = $target . '/' . $name;
