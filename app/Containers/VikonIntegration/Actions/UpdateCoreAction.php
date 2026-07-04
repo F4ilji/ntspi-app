@@ -47,7 +47,6 @@ class UpdateCoreAction
             $accessToken
         );
 
-        if (File::exists($tempPath)) File::deleteDirectory($tempPath);
         File::makeDirectory($tempPath, 0755, true, true);
 
         $zipFile = $tempPath . '/module.zip';
@@ -59,8 +58,6 @@ class UpdateCoreAction
         if (!empty($blocked)) {
             throw new \RuntimeException('Запрещённые файлы: ' . implode(', ', $blocked));
         }
-
-        File::delete($zipFile);
 
         $extractedDirs = File::directories($tempPath);
         $syncSource = $extractedDirs[0] ?? $tempPath;
