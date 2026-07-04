@@ -17,6 +17,10 @@ return [
 
     'storage_path' => storage_path('app/vikon'),
 
+    'domain_resolve' => env('VIKON_DOMAIN_RESOLVE', false),
+    'vikon_domain_resolve_ip' => env('VIKON_DOMAIN_RESOLVE_IP', '62.76.112.192'),
+    'fm_domain_resolve_ip' => env('VIKON_FM_DOMAIN_RESOLVE_IP', '62.76.112.192'),
+
     'modules' => [
         1 => [
             'name' => 'Сведения',

@@ -60,9 +60,22 @@ class HttpTask
 
     private function client(): PendingRequest
     {
-        return Http::timeout($this->timeout)
+        $client = Http::timeout($this->timeout)
             ->retry($this->retries, 500)
             ->withHeaders(['Accept' => 'application/json']);
+
+        if (config('vikon.domain_resolve')) {
+            $client = $client->withOptions([
+                'curl' => [
+                    \CURLOPT_RESOLVE => [
+                        'db-nica.ru:443:' . config('vikon.vikon_domain_resolve_ip'),
+                        'file.db-nica.ru:443:' . config('vikon.fm_domain_resolve_ip'),
+                    ],
+                ],
+            ]);
+        }
+
+        return $client;
     }
 
     private function url(string $endpoint, string $service): string

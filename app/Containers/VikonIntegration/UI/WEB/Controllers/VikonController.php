@@ -12,6 +12,8 @@ use App\Containers\VikonIntegration\UI\WEB\Requests\AuthenticateRequest;
 use App\Containers\VikonIntegration\UI\WEB\Requests\UpdateModuleRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class VikonController extends Controller
@@ -27,6 +29,39 @@ class VikonController extends Controller
 
     public function index(): \Inertia\Response
     {
+        $token = Session::get('vikon_access_token');
+        $isAuth = $token ? $this->validateToken->run($token) : false;
+
+        return inertia()->render('Dashboard/VikonUpdates/Index', [
+            'is_authenticated' => $isAuth,
+            'current_version' => config('vikon.current_version'),
+            'modules' => config('vikon.modules'),
+            'vikon_api_domain' => config('vikon.api_domain'),
+            'vikon_client_id' => config('vikon.client_id'),
+        ]);
+    }
+
+    public function oauthCallback(Request $request): \Inertia\Response
+    {
+        $state = $request->query('state');
+        $expectedState = Session::pull('oauth_state');
+
+        if ($state && $expectedState && $state !== $expectedState) {
+            Log::warning('Vikon OAuth CSRF mismatch');
+        }
+
+        $code = $request->query('code');
+        if ($code) {
+            try {
+                $redirectUri = route('dashboard.vikon-updates.callback');
+                $tokens = $this->auth->run($code, $redirectUri);
+                Session::put('vikon_access_token', $tokens['access_token']);
+                Session::put('vikon_refresh_token', $tokens['refresh_token']);
+            } catch (\Throwable $e) {
+                Log::error('OAuth callback failed', ['error' => $e->getMessage()]);
+            }
+        }
+
         $token = Session::get('vikon_access_token');
         $isAuth = $token ? $this->validateToken->run($token) : false;
 
@@ -113,5 +148,20 @@ class VikonController extends Controller
     {
         Session::forget(['vikon_access_token', 'vikon_refresh_token']);
         return response()->json(['success' => true]);
+    }
+
+    public function authorize(): JsonResponse
+    {
+        $state = \Illuminate\Support\Str::random(32);
+        Session::put('oauth_state', $state);
+
+        $redirectUri = route('dashboard.vikon-updates.callback');
+        $url = config('vikon.auth_domain') . 'oauth2/authorize'
+            . '?client_id=' . config('vikon.client_id')
+            . '&redirect_uri=' . urlencode($redirectUri)
+            . '&response_type=code'
+            . '&state=' . $state;
+
+        return response()->json(['url' => $url]);
     }
 }

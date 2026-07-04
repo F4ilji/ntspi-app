@@ -29,6 +29,11 @@ class UpdateCoreAction
 
         try {
             Log::info('Vikon: downloading module core', ['module' => $moduleId]);
+
+            if ($moduleId === 2) {
+                return $this->initAbiturModule($modulePath, $accessToken);
+            }
+
             $zipContent = $this->http->downloadWithToken(
                 'pull_updates/generateEmptyModuleCore/' . $moduleId,
                 $accessToken
@@ -79,12 +84,22 @@ class UpdateCoreAction
         }
 
         $realDest = realpath($destination);
+        $blocked = ['php', 'phtml', 'php5', 'php7', 'php8', 'phar'];
+
         for ($i = 0; $i < $zip->numFiles; $i++) {
             $name = $zip->getNameIndex($i);
+
             if (str_contains($name, '..')) {
                 $zip->close();
                 throw new \RuntimeException("Zip Slip: {$name}");
             }
+
+            $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+            if (in_array($ext, $blocked, true)) {
+                $zip->close();
+                throw new \RuntimeException("Blocked executable: {$name}");
+            }
+
             $full = realpath($realDest . '/' . $name);
             if ($full !== false && !str_starts_with($full, $realDest)) {
                 $zip->close();
@@ -156,5 +171,29 @@ class UpdateCoreAction
                 rename($old, $file->getPathname());
             }
         }
+    }
+
+    private function initAbiturModule(string $modulePath, string $accessToken): string
+    {
+        $response = $this->http->getWithToken(
+            'pull_updates/generateEmptyModuleCore/2',
+            $accessToken
+        );
+        $body = $response->json();
+
+        if (!isset($body['success']) || $body['success'] !== true) {
+            throw new \RuntimeException('ABITUR init failed: ' . ($body['message'] ?? 'Unknown error'));
+        }
+
+        if (!File::isDirectory($modulePath)) {
+            File::makeDirectory($modulePath, 0755, true, true);
+        }
+        if (!File::isDirectory($modulePath . '/files')) {
+            File::makeDirectory($modulePath . '/files', 0755, true, true);
+        }
+        File::put($modulePath . '/.vikon', date('Y-m-d H:i:s'));
+
+        Log::info('Vikon: ABITUR module initialized');
+        return 'Модуль "Абитуриент" инициализирован.';
     }
 }
