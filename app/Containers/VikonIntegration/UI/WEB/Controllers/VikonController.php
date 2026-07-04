@@ -5,6 +5,7 @@ namespace App\Containers\VikonIntegration\UI\WEB\Controllers;
 use App\Containers\VikonIntegration\Actions\Auth\AuthenticateAction;
 use App\Containers\VikonIntegration\Actions\CheckAccessAction;
 use App\Containers\VikonIntegration\Actions\CheckVersionAction;
+use App\Containers\VikonIntegration\Actions\SyncFilesAction;
 use App\Containers\VikonIntegration\Actions\UpdateCoreAction;
 use App\Containers\VikonIntegration\Tasks\RefreshTokenTask;
 use App\Containers\VikonIntegration\Tasks\ValidateTokenTask;
@@ -23,6 +24,7 @@ class VikonController extends Controller
         private readonly CheckAccessAction $checkAccess,
         private readonly CheckVersionAction $checkVersion,
         private readonly UpdateCoreAction $updateCore,
+        private readonly SyncFilesAction $syncFiles,
         private readonly RefreshTokenTask $refreshToken,
         private readonly ValidateTokenTask $validateToken,
     ) {}
@@ -141,6 +143,22 @@ class VikonController extends Controller
             return response()->json(['success' => true, 'message' => $message]);
         } catch (\Throwable $e) {
             Log::error('Vikon update failed', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function syncFiles(UpdateModuleRequest $request): JsonResponse
+    {
+        $token = Session::get('vikon_access_token');
+        if (!$token) {
+            return response()->json(['success' => false, 'requires_auth' => true], 401);
+        }
+
+        try {
+            $message = $this->syncFiles->run($request->validated('module_id'), $token);
+            return response()->json(['success' => true, 'message' => $message]);
+        } catch (\Throwable $e) {
+            Log::error('Vikon sync failed', ['error' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }

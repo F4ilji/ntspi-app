@@ -5,6 +5,7 @@ namespace App\Containers\VikonIntegration\Providers;
 use App\Containers\VikonIntegration\Actions\Auth\AuthenticateAction;
 use App\Containers\VikonIntegration\Actions\CheckAccessAction;
 use App\Containers\VikonIntegration\Actions\CheckVersionAction;
+use App\Containers\VikonIntegration\Actions\SyncFilesAction;
 use App\Containers\VikonIntegration\Actions\UpdateCoreAction;
 use App\Containers\VikonIntegration\Tasks\FilesystemTask;
 use App\Containers\VikonIntegration\Tasks\HttpTask;
@@ -62,6 +63,11 @@ class VikonServiceProvider extends ServiceProvider
             modulesConfig: config('vikon.modules'),
             storagePath: config('vikon.storage_path'),
             basePath: public_path(),
+        ));
+
+        $this->app->singleton(SyncFilesAction::class, fn () => new SyncFilesAction(
+            http: $app->make(HttpTask::class),
+            publicPath: public_path(),
         ));
     }
 
