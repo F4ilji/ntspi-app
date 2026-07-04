@@ -53,7 +53,7 @@ class VikonController extends Controller
         $code = $request->query('code');
         if ($code) {
             try {
-                $redirectUri = route('dashboard.vikon-updates.callback');
+                $redirectUri = url('/vikon_core/update/index.php');
                 $tokens = $this->auth->run($code, $redirectUri);
                 Session::put('vikon_access_token', $tokens['access_token']);
                 Session::put('vikon_refresh_token', $tokens['refresh_token']);
