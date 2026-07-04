@@ -144,6 +144,10 @@ class UpdateCoreAction
         }
         File::put($modulePath . '/.vikon', date('Y-m-d H:i:s'));
 
+        $tempPath = $this->storagePath . '/temp/abitur';
+        File::makeDirectory($tempPath, 0755, true, true);
+        File::put($tempPath . '/api_response.json', json_encode($body, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
         Log::info('Vikon: ABITUR module initialized');
         return 'Модуль "Абитуриент" инициализирован.';
     }
