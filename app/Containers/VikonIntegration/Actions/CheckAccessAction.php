@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Containers\VikonIntegration\Actions;
+
+use App\Containers\VikonIntegration\Tasks\HttpTask;
+use App\Containers\VikonIntegration\Tasks\ValidateTokenTask;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+
+class CheckAccessAction
+{
+    public function __construct(
+        private readonly ValidateTokenTask $validateToken,
+        private readonly HttpTask $http,
+        private readonly string $publicPath,
+    ) {}
+
+    public function run(string $accessToken): array
+    {
+        if (!$this->validateToken->run($accessToken)) {
+            return ['has_access' => false, 'error' => 'Токен недействителен. Выполните повторную авторизацию.'];
+        }
+
+        $nonWritable = $this->findNonWritable($this->publicPath);
+        if (!empty($nonWritable)) {
+            return [
+                'has_access' => false,
+                'error' => 'Нет прав на запись: ' . implode(', ', array_slice($nonWritable, 0, 3)),
+            ];
+        }
+
+        return ['has_access' => true, 'error' => null];
+    }
+
+    private function findNonWritable(string $path, int $depth = 0): array
+    {
+        if ($depth > 3 || !is_dir($path)) return [];
+        if (!is_writable($path)) {
+            return [str_replace(base_path() . '/', '', $path)];
+        }
+        $result = [];
+        foreach (File::directories($path) as $dir) {
+            $result = array_merge($result, $this->findNonWritable($dir, $depth + 1));
+        }
+        return $result;
+    }
+}
