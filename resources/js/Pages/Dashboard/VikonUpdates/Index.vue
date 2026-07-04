@@ -146,11 +146,14 @@ const authUrl = computed(() => {
 });
 
 onMounted(() => {
-  const code = new URLSearchParams(window.location.search).get('code');
-  if (code) {
-    authenticate(code);
-    return;
+  const url = new URL(window.location.href);
+  const isCallback = url.pathname.endsWith('/callback');
+  const code = url.searchParams.get('code');
+
+  if (isCallback && code) {
+    window.history.replaceState({}, document.title, url.pathname);
   }
+
   if (isAuthenticated.value) {
     checkAccess();
     checkVersion();
