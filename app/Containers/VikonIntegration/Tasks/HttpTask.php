@@ -13,7 +13,11 @@ class HttpTask
         private readonly string $filemanagerDomain,
         private readonly int $timeout,
         private readonly int $retries,
-    ) {}
+    ) {
+        if (php_sapi_name() !== 'cli') {
+            set_time_limit(600);
+        }
+    }
 
     public function get(string $endpoint, array $params = [], string $service = 'api'): \Illuminate\Http\Client\Response
     {
