@@ -64,6 +64,64 @@ class FilesystemTask
         return File::deleteDirectory($source);
     }
 
+    public function atomicSwap(
+        string $newEntryPath,
+        string $currentEntryPath,
+        string $baseDir,
+        int $moduleId
+    ): bool {
+        if (!$this->isPathSafe($currentEntryPath, $baseDir)) {
+            return false;
+        }
+
+        if (!File::exists($newEntryPath)) {
+            return false;
+        }
+
+        $isFile = is_file($newEntryPath);
+        $newPostfix = $currentEntryPath . '_new';
+        $oldPostfix = $currentEntryPath . '_old';
+
+        if (File::exists($currentEntryPath)) {
+            // Step 1: Remove stale _new if exists
+            if (File::exists($newPostfix)) {
+                $isFile ? File::delete($newPostfix) : File::deleteDirectory($newPostfix);
+            }
+
+            // Step 2: Move new → _new
+            if (!$this->moveEntry($newEntryPath, $newPostfix, $isFile)) {
+                return false;
+            }
+
+            // Step 3: Remove stale _old if exists
+            if (File::exists($oldPostfix)) {
+                $isFile ? File::delete($oldPostfix) : File::deleteDirectory($oldPostfix);
+            }
+
+            // Step 4: Move current → _old
+            if (!$this->moveEntry($currentEntryPath, $oldPostfix, $isFile)) {
+                return false;
+            }
+
+            // Step 5: Move _new → current
+            return $this->moveEntry($newPostfix, $currentEntryPath, $isFile);
+        }
+
+        // Entry doesn't exist — move directly
+        return $this->moveEntry($newEntryPath, $currentEntryPath, $isFile);
+    }
+
+    private function moveEntry(string $source, string $dest, bool $isFile): bool
+    {
+        if ($isFile) {
+            $parent = dirname($dest);
+            if (!File::isDirectory($parent)) {
+                File::makeDirectory($parent, 0755, true, true);
+            }
+        }
+        return rename($source, $dest);
+    }
+
     public function validateFileTypes(string $directory): array
     {
         $allowed = [
