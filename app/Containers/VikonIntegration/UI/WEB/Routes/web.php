@@ -16,5 +16,6 @@ Route::prefix('/dashboard/vikon-updates')
         Route::post('/check-version', [VikonController::class, 'checkVersion'])->name('check-version');
         Route::post('/update-module', [VikonController::class, 'updateModule'])->name('update-module');
         Route::post('/sync-files', [VikonController::class, 'syncFiles'])->name('sync-files');
+        Route::post('/update-part', [VikonController::class, 'updatePart'])->name('update-part');
         Route::post('/logout', [VikonController::class, 'logout'])->name('logout');
     });

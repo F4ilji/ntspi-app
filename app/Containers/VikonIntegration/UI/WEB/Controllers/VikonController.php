@@ -7,10 +7,12 @@ use App\Containers\VikonIntegration\Actions\CheckAccessAction;
 use App\Containers\VikonIntegration\Actions\CheckVersionAction;
 use App\Containers\VikonIntegration\Actions\SyncFilesAction;
 use App\Containers\VikonIntegration\Actions\UpdateCoreAction;
+use App\Containers\VikonIntegration\Actions\UpdatePartAction;
 use App\Containers\VikonIntegration\Tasks\RefreshTokenTask;
 use App\Containers\VikonIntegration\Tasks\ValidateTokenTask;
 use App\Containers\VikonIntegration\UI\WEB\Requests\AuthenticateRequest;
 use App\Containers\VikonIntegration\UI\WEB\Requests\UpdateModuleRequest;
+use App\Containers\VikonIntegration\UI\WEB\Requests\UpdatePartRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,6 +27,7 @@ class VikonController extends Controller
         private readonly CheckVersionAction $checkVersion,
         private readonly UpdateCoreAction $updateCore,
         private readonly SyncFilesAction $syncFiles,
+        private readonly UpdatePartAction $updatePart,
         private readonly RefreshTokenTask $refreshToken,
         private readonly ValidateTokenTask $validateToken,
     ) {}
@@ -159,6 +162,26 @@ class VikonController extends Controller
             return response()->json(['success' => true, 'message' => $message]);
         } catch (\Throwable $e) {
             Log::error('Vikon sync failed', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function updatePart(UpdatePartRequest $request): JsonResponse
+    {
+        $token = Session::get('vikon_access_token');
+        if (!$token) {
+            return response()->json(['success' => false, 'requires_auth' => true], 401);
+        }
+
+        try {
+            $result = $this->updatePart->run(
+                $request->validated('module_id'),
+                $request->validated('part'),
+                $token
+            );
+            return response()->json($result);
+        } catch (\Throwable $e) {
+            Log::error('Vikon part update failed', ['error' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }

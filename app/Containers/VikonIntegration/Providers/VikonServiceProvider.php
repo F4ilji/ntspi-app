@@ -7,7 +7,9 @@ use App\Containers\VikonIntegration\Actions\CheckAccessAction;
 use App\Containers\VikonIntegration\Actions\CheckVersionAction;
 use App\Containers\VikonIntegration\Actions\SyncFilesAction;
 use App\Containers\VikonIntegration\Actions\UpdateCoreAction;
+use App\Containers\VikonIntegration\Actions\UpdatePartAction;
 use App\Containers\VikonIntegration\Tasks\FilesystemTask;
+use App\Containers\VikonIntegration\Tasks\PollPartStatusTask;
 use App\Containers\VikonIntegration\Tasks\HttpTask;
 use App\Containers\VikonIntegration\Tasks\RefreshTokenTask;
 use App\Containers\VikonIntegration\Tasks\ValidateTokenTask;
@@ -39,6 +41,21 @@ class VikonServiceProvider extends ServiceProvider
         ));
 
         $this->app->singleton(FilesystemTask::class, fn () => new FilesystemTask);
+
+        $this->app->singleton(PollPartStatusTask::class, fn ($app) => new PollPartStatusTask(
+            http: $app->make(HttpTask::class),
+            interval: config('vikon.poll_interval', 3),
+            maxAttempts: config('vikon.poll_max_attempts', 50),
+        ));
+
+        $this->app->singleton(UpdatePartAction::class, fn ($app) => new UpdatePartAction(
+            http: $app->make(HttpTask::class),
+            fs: $app->make(FilesystemTask::class),
+            pollStatus: $app->make(PollPartStatusTask::class),
+            storagePath: config('vikon.storage_path'),
+            basePath: public_path(),
+            modulesConfig: config('vikon.modules'),
+        ));
 
         $this->app->singleton(AuthenticateAction::class, fn ($app) => new AuthenticateAction(
             http: $app->make(HttpTask::class),
