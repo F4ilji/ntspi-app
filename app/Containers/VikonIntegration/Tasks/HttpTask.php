@@ -24,7 +24,7 @@ class HttpTask
     public function post(string $endpoint, array $data = [], string $service = 'api'): \Illuminate\Http\Client\Response
     {
         $url = $this->url($endpoint, $service);
-        return $this->client()->post($url, $data);
+        return $this->client()->asForm()->post($url, $data);
     }
 
     public function getWithToken(string $endpoint, string $token, string $service = 'api'): \Illuminate\Http\Client\Response

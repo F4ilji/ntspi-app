@@ -23,7 +23,7 @@ class AuthenticateAction
             'client_secret' => $this->clientSecret,
             'redirect_uri' => $redirectUri,
             'grant_type' => 'authorization_code',
-        ], 'auth');
+        ]);
 
         $body = $response->json();
 
