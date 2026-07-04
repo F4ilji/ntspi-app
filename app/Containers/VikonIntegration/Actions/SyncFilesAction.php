@@ -27,13 +27,13 @@ class SyncFilesAction
 
         $synced = 0;
 
-        $synced += $this->syncRootDir($moduleId, $modulePath, $accessToken);
+        $synced += $this->syncRootDir($moduleId, $filesDir, $accessToken);
 
         foreach ($dirIds as $dirId) {
             $synced += $this->syncSubDir($dirId, $moduleId, $filesDir, $accessToken);
         }
 
-        $newSynced = $this->syncNewFiles($moduleId, $accessToken, $modulePath);
+        $newSynced = $this->syncNewFiles($moduleId, $accessToken, $filesDir);
 
         $total = $synced + $newSynced;
         Log::info('Vikon FM: sync complete', ['downloaded' => $synced, 'new' => $newSynced]);
@@ -61,7 +61,7 @@ class SyncFilesAction
         return $body['directories'] ?? [];
     }
 
-    private function syncRootDir(int $moduleId, string $modulePath, string $accessToken): int
+    private function syncRootDir(int $moduleId, string $filesDir, string $accessToken): int
     {
         $response = $this->http->getWithToken(
             "sync/getFileNamesFromRootDirectoryByModule?moduleId={$moduleId}",
@@ -84,7 +84,7 @@ class SyncFilesAction
                     $accessToken,
                     'filemanager'
                 );
-                file_put_contents($modulePath . '/' . $name, $content);
+                file_put_contents($filesDir . '/' . $name, $content);
                 $synced++;
             } catch (\Throwable $e) {
                 Log::warning('Vikon FM: root download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
@@ -128,7 +128,7 @@ class SyncFilesAction
         return $synced;
     }
 
-    private function syncNewFiles(int $moduleId, string $accessToken, string $modulePath): int
+    private function syncNewFiles(int $moduleId, string $accessToken, string $filesDir): int
     {
         $synced = 0;
 
@@ -148,10 +148,7 @@ class SyncFilesAction
             $filename = $body['file_name'];
             $directory = $body['dir_name'] ?? null;
 
-            $targetDir = $modulePath;
-            if ($directory) {
-                $targetDir = $modulePath . '/' . $directory;
-            }
+            $targetDir = $directory ? $filesDir . '/' . $directory : $filesDir;
 
             $content = $this->http->downloadWithToken(
                 "sync/downloadFileBinary?identity={$identity}",
