@@ -65,7 +65,7 @@ class VikonServiceProvider extends ServiceProvider
             basePath: public_path(),
         ));
 
-        $this->app->singleton(SyncFilesAction::class, fn () => new SyncFilesAction(
+        $this->app->singleton(SyncFilesAction::class, fn ($app) => new SyncFilesAction(
             http: $app->make(HttpTask::class),
             publicPath: public_path(),
         ));
