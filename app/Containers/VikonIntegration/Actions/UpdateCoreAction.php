@@ -99,34 +99,44 @@ class UpdateCoreAction
                 $accessToken,
                 'filemanager'
             );
-            $targetDir = $filesDir;
         } else {
             $response = $this->http->getWithToken(
                 "sync/getFileNamesFromSubDirectoryByModule?dir={$dirId}&moduleId={$moduleId}",
                 $accessToken,
                 'filemanager'
             );
-            $targetDir = $filesDir . '/' . $dirId;
         }
 
         $files = $response->json()['files'] ?? [];
         if (empty($files)) return 0;
 
-        File::makeDirectory($targetDir, 0755, true, true);
-
         $synced = 0;
         foreach ($files as $file) {
-            $name = $file['n'] ?? null;
             $identity = $file['i'] ?? null;
-            if (!$name || !$identity) continue;
+            if (!$identity) continue;
 
             try {
+                $infoResp = $this->http->getWithToken(
+                    "sync/getFileByIdentityInfo?identity={$identity}",
+                    $accessToken,
+                    'filemanager'
+                );
+                $info = $infoResp->json();
+
+                $filename = $info['file_name'] ?? $file['n'] ?? null;
+                $dirName = $info['dir_name'] ?? null;
+
+                if (!$filename) continue;
+
+                $targetDir = $dirName ? $filesDir . '/' . $dirName : $filesDir;
+                File::makeDirectory($targetDir, 0755, true, true);
+
                 $content = $this->http->downloadWithToken(
                     "sync/downloadFileBinaryForSync?identity={$identity}&moduleId={$moduleId}",
                     $accessToken,
                     'filemanager'
                 );
-                file_put_contents($targetDir . '/' . $name, $content);
+                file_put_contents($targetDir . '/' . $filename, $content);
                 $synced++;
             } catch (\Throwable $e) {
                 Log::warning('Vikon FM: download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
