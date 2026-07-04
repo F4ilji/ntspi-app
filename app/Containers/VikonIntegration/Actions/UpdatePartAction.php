@@ -87,13 +87,22 @@ class UpdatePartAction
         $zip->close();
         File::delete($zipFile);
 
+        // Validate extracted file types
+        $blocked = $this->fs->validateFileTypes($tempPath);
+        if (!empty($blocked)) {
+            File::deleteDirectory($tempPath);
+            throw new \RuntimeException('Blocked files in ZIP: ' . implode(', ', $blocked));
+        }
+
         $modulePath = $this->basePath . '/' . $config['path'];
 
-        // Step 5: Apply
-        $syncedCount = $this->applyPart($part, $tempPath, $modulePath, $moduleId, $config);
-
-        // Step 6: Clean temp
-        File::deleteDirectory($tempPath);
+        try {
+            // Step 5: Apply
+            $syncedCount = $this->applyPart($part, $tempPath, $modulePath, $moduleId, $config);
+        } finally {
+            // Step 6: Clean temp (always runs, even on exception)
+            File::deleteDirectory($tempPath);
+        }
 
         Log::info('Vikon: part update complete', ['module' => $moduleId, 'part' => $part, 'synced' => $syncedCount]);
 
