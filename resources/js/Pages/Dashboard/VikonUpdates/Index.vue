@@ -228,7 +228,9 @@ async function updateModule(moduleId) {
   } catch (e) {
     clearInterval(timer);
     updating.value = false;
-    updateError.value = e.response?.data?.message || 'Ошибка обновления';
+    const msg = e.response?.data?.message || e.message || 'Неизвестная ошибка';
+    const code = e.response?.status || '';
+    updateError.value = code ? `[${code}] ${msg}` : msg;
   }
 }
 
