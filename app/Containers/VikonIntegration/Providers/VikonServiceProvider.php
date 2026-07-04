@@ -28,6 +28,7 @@ class VikonServiceProvider extends ServiceProvider
 
         $this->app->singleton(ValidateTokenTask::class, fn ($app) => new ValidateTokenTask(
             http: $app->make(HttpTask::class),
+            clientId: config('vikon.client_id'),
         ));
 
         $this->app->singleton(RefreshTokenTask::class, fn ($app) => new RefreshTokenTask(
