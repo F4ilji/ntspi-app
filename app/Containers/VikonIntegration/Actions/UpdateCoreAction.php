@@ -63,7 +63,6 @@ class UpdateCoreAction
             File::makeDirectory($modulePath, 0755, true, true);
             $this->syncFiles($syncSource, $modulePath);
             File::put($modulePath . '/.vikon', date('Y-m-d H:i:s'));
-            File::deleteDirectory($tempPath);
 
             Log::info('Vikon: module updated', ['module' => $config['name']]);
             return 'Модуль "' . $config['name'] . '" обновлён.';
