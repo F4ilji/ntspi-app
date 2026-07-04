@@ -79,10 +79,6 @@
               class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover disabled:opacity-50">
               {{ updating ? 'Обновление...' : 'Обновить' }}
             </button>
-            <button @click="syncModuleFiles(id)" :disabled="syncing || !accessInfo.has_access"
-              class="px-4 py-2 bg-surface border border-layer-line rounded-lg hover:bg-muted-hover disabled:opacity-50">
-              {{ syncing ? 'Синхронизация...' : 'Синхронизировать файлы' }}
-            </button>
           </div>
         </div>
       </div>
@@ -139,7 +135,6 @@ const currentVersion = ref(props.current_version);
 const checkingVersion = ref(false);
 const checkingAccess = ref(false);
 const updating = ref(false);
-const syncing = ref(false);
 const progress = ref(0);
 const updateError = ref(null);
 const versionInfo = ref({ current_version: props.current_version, has_update: false, latest_version: null });
@@ -245,26 +240,6 @@ async function logout() {
     versionInfo.value = { current_version: currentVersion.value, has_update: false, latest_version: null };
   } catch (e) {
     console.error('Logout failed:', e);
-  }
-}
-
-async function syncModuleFiles(moduleId) {
-  if (!confirm('Синхронизировать файлы модуля?')) return;
-
-  syncing.value = true;
-  updateError.value = null;
-
-  try {
-    const res = await axios.post(route('dashboard.vikon-updates.sync-files'), { module_id: moduleId });
-    syncing.value = false;
-    if (res.data.success) {
-      alert(res.data.message);
-    } else {
-      updateError.value = res.data.message;
-    }
-  } catch (e) {
-    syncing.value = false;
-    updateError.value = e.response?.data?.message || 'Ошибка синхронизации';
   }
 }
 </script>
