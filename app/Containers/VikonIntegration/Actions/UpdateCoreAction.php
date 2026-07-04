@@ -99,16 +99,20 @@ class UpdateCoreAction
                 $accessToken,
                 'filemanager'
             );
+            $targetDir = $filesDir;
         } else {
             $response = $this->http->getWithToken(
                 "sync/getFileNamesFromSubDirectoryByModule?dir={$dirId}&moduleId={$moduleId}",
                 $accessToken,
                 'filemanager'
             );
+            $targetDir = $filesDir . '/' . $dirId;
         }
 
         $files = $response->json()['files'] ?? [];
         if (empty($files)) return 0;
+
+        File::makeDirectory($targetDir, 0755, true, true);
 
         $synced = 0;
         foreach ($files as $file) {
@@ -122,7 +126,7 @@ class UpdateCoreAction
                     $accessToken,
                     'filemanager'
                 );
-                file_put_contents($filesDir . '/' . $name, $content);
+                file_put_contents($targetDir . '/' . $name, $content);
                 $synced++;
             } catch (\Throwable $e) {
                 Log::warning('Vikon FM: download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
