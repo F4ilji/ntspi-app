@@ -110,6 +110,10 @@ class UpdatePartActionTest extends TestCase
             ->once()
             ->andReturn($zipContent);
 
+        $fs->shouldReceive('validateFileTypes')
+            ->once()
+            ->andReturn([]);
+
         $fs->shouldReceive('atomicSwap')
             ->once()
             ->andReturn(true);
