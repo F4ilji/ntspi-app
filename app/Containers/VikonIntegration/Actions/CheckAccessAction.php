@@ -4,7 +4,6 @@ namespace App\Containers\VikonIntegration\Actions;
 
 use App\Containers\VikonIntegration\Tasks\HttpTask;
 use App\Containers\VikonIntegration\Tasks\ValidateTokenTask;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
 class CheckAccessAction
@@ -62,42 +61,5 @@ class CheckAccessAction
                 'error' => 'Не удалось проверить права: ' . $e->getMessage(),
             ];
         }
-    }
-}
-    }
-
-    private function findNonWritable(string $path, int $depth = 0): array
-    {
-        if ($depth > 3 || !is_dir($path)) return [];
-
-        $relative = str_replace(base_path() . '/', '', $path);
-
-        $excluded = ['vendor', 'node_modules', 'storage', '.git', 'bootstrap/cache', 'build', 'vikon_core'];
-        foreach ($excluded as $ex) {
-            if (str_contains($relative, '/' . $ex) || $relative === $ex || str_starts_with($relative, $ex . '/')) {
-                return [];
-            }
-        }
-
-        if (!is_writable($path)) {
-            return [$relative];
-        }
-
-        $result = [];
-        foreach (File::directories($path) as $dir) {
-            $result = array_merge($result, $this->findNonWritable($dir, $depth + 1));
-        }
-        return $result;
-    }
-
-        if (!is_writable($path)) {
-            return [$relative];
-        }
-
-        $result = [];
-        foreach (File::directories($path) as $dir) {
-            $result = array_merge($result, $this->findNonWritable($dir, $depth + 1));
-        }
-        return $result;
     }
 }
