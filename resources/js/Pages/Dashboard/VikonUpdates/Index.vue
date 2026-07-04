@@ -141,7 +141,7 @@ const versionInfo = ref({ current_version: props.current_version, has_update: fa
 const accessInfo = ref({ has_access: false, error: null });
 
 const authUrl = computed(() => {
-  const redirect = encodeURIComponent(route('dashboard.vikon-updates.index'));
+  const redirect = encodeURIComponent(`${window.location.origin}/vikon_core/update/index.php`);
   return `${props.vikon_api_domain}oauth2/authorize?client_id=${props.vikon_client_id}&redirect_uri=${redirect}&response_type=code`;
 });
 
@@ -161,7 +161,7 @@ async function authenticate(code) {
   try {
     const res = await axios.post(route('dashboard.vikon-updates.authenticate'), {
       code,
-      redirect_uri: window.location.origin + window.location.pathname,
+      redirect_uri: `${window.location.origin}/vikon_core/update/index.php`,
     });
     if (res.data.success) {
       isAuthenticated.value = true;
