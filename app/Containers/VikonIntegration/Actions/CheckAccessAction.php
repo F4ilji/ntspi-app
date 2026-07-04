@@ -60,10 +60,23 @@ class CheckAccessAction
 
         $relative = str_replace(base_path() . '/', '', $path);
 
-        $excluded = ['vendor', 'node_modules', 'storage', '.git', 'bootstrap/cache'];
+        $excluded = ['vendor', 'node_modules', 'storage', '.git', 'bootstrap/cache', 'build', 'vikon_core'];
         foreach ($excluded as $ex) {
-            if (str_starts_with($relative, $ex)) return [];
+            if (str_contains($relative, '/' . $ex) || $relative === $ex || str_starts_with($relative, $ex . '/')) {
+                return [];
+            }
         }
+
+        if (!is_writable($path)) {
+            return [$relative];
+        }
+
+        $result = [];
+        foreach (File::directories($path) as $dir) {
+            $result = array_merge($result, $this->findNonWritable($dir, $depth + 1));
+        }
+        return $result;
+    }
 
         if (!is_writable($path)) {
             return [$relative];
