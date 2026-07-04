@@ -150,7 +150,7 @@ class VikonController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function authorize(): JsonResponse
+    public function getAuthUrl(): JsonResponse
     {
         $state = \Illuminate\Support\Str::random(32);
         Session::put('oauth_state', $state);
