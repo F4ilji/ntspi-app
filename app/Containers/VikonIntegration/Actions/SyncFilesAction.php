@@ -16,31 +16,35 @@ class SyncFilesAction
     public function run(int $moduleId, string $accessToken): string
     {
         $modulePath = $this->publicPath . '/' . $this->getModuleName($moduleId);
-        $filesDir = $modulePath . '/files';
 
         Log::info('Vikon FM: starting sync', ['module' => $moduleId]);
 
-        $dirs = $this->getUsedDirNames($moduleId, $accessToken);
-        Log::info('Vikon FM: directories from FM', ['dirs' => $dirs]);
+        $dirIds = $this->getUsedDirNames($moduleId, $accessToken);
+        Log::info('Vikon FM: got dir identifiers', ['count' => count($dirIds)]);
 
-        foreach ($dirs as $dir) {
-            if (!File::isDirectory($filesDir . '/' . $dir)) {
-                File::makeDirectory($filesDir . '/' . $dir, 0755, true, true);
-            }
+        $identities = [];
+
+        $rootFiles = $this->getFileIdentitiesFromRoot($moduleId, $accessToken);
+        $identities = array_merge($identities, $rootFiles);
+        Log::info('Vikon FM: root file identities', ['count' => count($rootFiles)]);
+
+        foreach ($dirIds as $dirId) {
+            $dirFiles = $this->getFileIdentitiesFromSubDir($dirId, $moduleId, $accessToken);
+            $identities = array_merge($identities, $dirFiles);
         }
+        Log::info('Vikon FM: total file identities', ['count' => count($identities)]);
 
         $synced = 0;
-
-        $synced += $this->syncRootDir($moduleId, $accessToken, $filesDir);
-
-        foreach ($dirs as $dir) {
-            $synced += $this->syncSubDir($dir, $moduleId, $accessToken, $filesDir);
+        foreach ($identities as $identity) {
+            $result = $this->downloadByIdentity($identity, $moduleId, $modulePath, $accessToken);
+            if ($result) $synced++;
         }
 
-        $synced += $this->syncNewFiles($moduleId, $accessToken, $filesDir);
+        $newSynced = $this->syncNewFiles($moduleId, $accessToken, $modulePath);
 
-        Log::info('Vikon FM: sync done', ['module' => $moduleId, 'synced' => $synced]);
-        return "Синхронизировано: {$synced} файлов";
+        $total = $synced + $newSynced;
+        Log::info('Vikon FM: sync complete', ['downloaded' => $synced, 'new' => $newSynced]);
+        return "Синхронизировано: {$total} файлов";
     }
 
     private function getModuleName(int $moduleId): string
@@ -60,77 +64,76 @@ class SyncFilesAction
             $accessToken,
             'filemanager'
         );
-
         $body = $response->json();
         return $body['directories'] ?? [];
     }
 
-    private function syncRootDir(int $moduleId, string $accessToken, string $filesDir): int
+    private function getFileIdentitiesFromRoot(int $moduleId, string $accessToken): array
     {
         $response = $this->http->getWithToken(
             "sync/getFileNamesFromRootDirectoryByModule?moduleId={$moduleId}",
             $accessToken,
             'filemanager'
         );
-
         $body = $response->json();
         $files = $body['files'] ?? [];
 
-        if (empty($files)) {
-            return 0;
-        }
-
-        $synced = 0;
-        foreach ($files as $file) {
-            $name = $file['n'] ?? null;
-            $identity = $file['i'] ?? null;
-
-            if (!$name || !$identity) continue;
-
-            $filePath = $filesDir . '/' . $name;
-            $this->downloadAndSave($identity, $moduleId, $filePath, $accessToken);
-            $synced++;
-        }
-
-        return $synced;
+        return array_map(fn($f) => $f['i'], array_filter($files, fn($f) => !empty($f['i'])));
     }
 
-    private function syncSubDir(string $dir, int $moduleId, string $accessToken, string $filesDir): int
+    private function getFileIdentitiesFromSubDir(string $dirId, int $moduleId, string $accessToken): array
     {
         $response = $this->http->getWithToken(
-            "sync/getFileNamesFromSubDirectoryByModule?dir={$dir}&moduleId={$moduleId}",
+            "sync/getFileNamesFromSubDirectoryByModule?dir={$dirId}&moduleId={$moduleId}",
             $accessToken,
             'filemanager'
         );
-
         $body = $response->json();
         $files = $body['files'] ?? [];
 
-        if (empty($files)) {
-            return 0;
-        }
-
-        $dirPath = $filesDir . '/' . $dir;
-        if (!File::isDirectory($dirPath)) {
-            File::makeDirectory($dirPath, 0755, true, true);
-        }
-
-        $synced = 0;
-        foreach ($files as $file) {
-            $name = $file['n'] ?? null;
-            $identity = $file['i'] ?? null;
-
-            if (!$name || !$identity) continue;
-
-            $filePath = $dirPath . '/' . $name;
-            $this->downloadAndSave($identity, $moduleId, $filePath, $accessToken);
-            $synced++;
-        }
-
-        return $synced;
+        return array_map(fn($f) => $f['i'], array_filter($files, fn($f) => !empty($f['i'])));
     }
 
-    private function syncNewFiles(int $moduleId, string $accessToken, string $filesDir): int
+    private function downloadByIdentity(string $identity, int $moduleId, string $modulePath, string $accessToken): bool
+    {
+        try {
+            $infoResp = $this->http->getWithToken(
+                "sync/getFileByIdentityInfo?identity={$identity}",
+                $accessToken,
+                'filemanager'
+            );
+            $info = $infoResp->json();
+
+            if (empty($info['identity']) || empty($info['file_name'])) {
+                return false;
+            }
+
+            $dirName = $info['dir_name'] ?? null;
+            $targetDir = $modulePath;
+            if ($dirName) {
+                $targetDir = $modulePath . '/' . $dirName;
+            }
+
+            $content = $this->http->downloadWithToken(
+                "sync/downloadFileBinaryForSync?identity={$info['identity']}&moduleId={$moduleId}",
+                $accessToken,
+                'filemanager'
+            );
+
+            if (!File::isDirectory($targetDir)) {
+                File::makeDirectory($targetDir, 0755, true, true);
+            }
+
+            $targetPath = $targetDir . '/' . $info['file_name'];
+            file_put_contents($targetPath, $content);
+            return true;
+        } catch (\Throwable $e) {
+            Log::warning('Vikon FM: download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
+    private function syncNewFiles(int $moduleId, string $accessToken, string $modulePath): int
     {
         $synced = 0;
 
@@ -140,7 +143,6 @@ class SyncFilesAction
                 $accessToken,
                 'filemanager'
             );
-
             $body = $response->json();
 
             if (empty($body['file_name']) && empty($body['identity'])) {
@@ -151,15 +153,19 @@ class SyncFilesAction
             $filename = $body['file_name'];
             $directory = $body['dir_name'] ?? null;
 
-            $targetDir = $filesDir;
-            if ($directory) {
-                $targetDir = $filesDir . '/' . $directory;
-                if (!File::isDirectory($targetDir)) {
-                    File::makeDirectory($targetDir, 0775, true, true);
-                }
+            $targetDir = $directory ? $modulePath . '/' . $directory : $modulePath;
+
+            $content = $this->http->downloadWithToken(
+                "sync/downloadFileBinary?identity={$identity}",
+                $accessToken,
+                'filemanager'
+            );
+
+            if (!File::isDirectory($targetDir)) {
+                File::makeDirectory($targetDir, 0755, true, true);
             }
 
-            $this->downloadAndSave($identity, $moduleId, $targetDir . '/' . $filename, $accessToken);
+            file_put_contents($targetDir . '/' . $filename, $content);
 
             $this->http->getWithToken(
                 "sync/markNewFileAsLoaded?identity={$identity}&moduleId={$moduleId}",
@@ -171,41 +177,5 @@ class SyncFilesAction
         }
 
         return $synced;
-    }
-
-    private function downloadAndSave(string $identity, int $moduleId, string $targetPath, string $accessToken): void
-    {
-        try {
-            $infoResponse = $this->http->getWithToken(
-                "sync/getFileByIdentityInfo?identity={$identity}",
-                $accessToken,
-                'filemanager'
-            );
-            $info = $infoResponse->json();
-
-            if (empty($info['identity'])) {
-                Log::warning('Vikon FM: no identity in info response', ['identity' => $identity]);
-                return;
-            }
-
-            $content = $this->http->downloadWithToken(
-                "sync/downloadFileBinaryForSync?identity={$info['identity']}&moduleId={$moduleId}",
-                $accessToken,
-                'filemanager'
-            );
-
-            $dir = dirname($targetPath);
-            if (!File::isDirectory($dir)) {
-                File::makeDirectory($dir, 0755, true, true);
-            }
-
-            file_put_contents($targetPath, $content);
-        } catch (\Throwable $e) {
-            Log::warning('Vikon FM: failed to download file', [
-                'identity' => $identity,
-                'target' => $targetPath,
-                'error' => $e->getMessage(),
-            ]);
-        }
     }
 }

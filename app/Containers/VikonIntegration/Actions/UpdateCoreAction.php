@@ -72,26 +72,25 @@ class UpdateCoreAction
 
     private function syncFromFM(int $moduleId, string $modulePath, string $accessToken): void
     {
-        $filesDir = $modulePath . '/files';
-        File::makeDirectory($filesDir, 0755, true, true);
+        File::makeDirectory($modulePath, 0755, true, true);
 
         $dirIds = $this->getUsedDirNames($moduleId, $accessToken);
         Log::info('Vikon FM: dir identifiers', ['count' => count($dirIds)]);
 
         $synced = 0;
 
-        $synced += $this->syncDirFiles('root', $moduleId, $filesDir, $accessToken);
+        $synced += $this->syncDirFiles('root', $moduleId, $modulePath, $accessToken);
 
         foreach ($dirIds as $dirId) {
-            $synced += $this->syncDirFiles($dirId, $moduleId, $filesDir, $accessToken);
+            $synced += $this->syncDirFiles($dirId, $moduleId, $modulePath, $accessToken);
         }
 
-        $newSynced = $this->syncNewFiles($moduleId, $accessToken, $filesDir);
+        $newSynced = $this->syncNewFiles($moduleId, $accessToken, $modulePath);
 
         Log::info('Vikon FM: sync done', ['synced' => $synced, 'new' => $newSynced]);
     }
 
-    private function syncDirFiles(string $dirId, int $moduleId, string $filesDir, string $accessToken): int
+    private function syncDirFiles(string $dirId, int $moduleId, string $modulePath, string $accessToken): int
     {
         if ($dirId === 'root') {
             $response = $this->http->getWithToken(
@@ -99,14 +98,14 @@ class UpdateCoreAction
                 $accessToken,
                 'filemanager'
             );
-            $targetDir = $filesDir;
+            $targetDir = $modulePath;
         } else {
             $response = $this->http->getWithToken(
                 "sync/getFileNamesFromSubDirectoryByModule?dir={$dirId}&moduleId={$moduleId}",
                 $accessToken,
                 'filemanager'
             );
-            $targetDir = $filesDir . '/' . $dirId;
+            $targetDir = $modulePath . '/' . $dirId;
         }
 
         $files = $response->json()['files'] ?? [];
@@ -136,7 +135,7 @@ class UpdateCoreAction
         return $synced;
     }
 
-    private function syncNewFiles(int $moduleId, string $accessToken, string $filesDir): int
+    private function syncNewFiles(int $moduleId, string $accessToken, string $modulePath): int
     {
         $synced = 0;
         while (true) {
@@ -153,7 +152,7 @@ class UpdateCoreAction
             $filename = $body['file_name'];
             $directory = $body['dir_name'] ?? null;
 
-            $targetDir = $directory ? $filesDir . '/' . $directory : $filesDir;
+            $targetDir = $directory ? $modulePath . '/' . $directory : $modulePath;
 
             try {
                 $content = $this->http->downloadWithToken(
