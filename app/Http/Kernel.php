@@ -89,7 +89,6 @@ class Kernel extends HttpKernel
         'dashboard.auth' => \App\Containers\Dashboard\UI\WEB\Middleware\EnsureDashboardAuthenticated::class,
         'limit.post' => LimitPost::class,
         'form.time.period' => FormTimePeriodMiddleware::class,
-        'vikon.refresh' => \App\Http\Middleware\VikonTokenRefresh::class,
 
     );
 }
