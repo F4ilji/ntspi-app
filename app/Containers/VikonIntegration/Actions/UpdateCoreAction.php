@@ -10,9 +10,6 @@ use ZipArchive;
 
 class UpdateCoreAction
 {
-    private const NEW_SUFFIX = '_new';
-    private const OLD_SUFFIX = '_old';
-
     public function __construct(
         private readonly HttpTask $http,
         private readonly FilesystemTask $fs,
@@ -62,7 +59,6 @@ class UpdateCoreAction
             File::delete($zipFile);
 
             $this->syncFiles($tempPath, $modulePath);
-            $this->cleanModule($modulePath, $config['allowed_folders']);
             File::put($modulePath . '/.vikon', date('Y-m-d H:i:s'));
             File::deleteDirectory($tempPath);
 
@@ -71,7 +67,7 @@ class UpdateCoreAction
 
         } catch (\Throwable $e) {
             Log::error('Vikon update failed', ['module' => $moduleId, 'error' => $e->getMessage()]);
-            $this->rollback($modulePath);
+            File::deleteDirectory($tempPath);
             throw new \RuntimeException('Ошибка обновления: ' . $e->getMessage());
         }
     }
@@ -116,12 +112,6 @@ class UpdateCoreAction
         foreach (File::files($source) as $file) {
             $name = $file->getFilename();
             $targetPath = $target . '/' . $name;
-
-            if (File::exists($targetPath)) {
-                $oldPath = $targetPath . self::OLD_SUFFIX;
-                @unlink($oldPath);
-                rename($targetPath, $oldPath);
-            }
             rename($file->getPathname(), $targetPath);
         }
 
@@ -129,46 +119,10 @@ class UpdateCoreAction
             $name = basename($dir);
             $targetPath = $target . '/' . $name;
 
-            if (File::exists($targetPath)) {
-                $oldPath = $targetPath . self::OLD_SUFFIX;
-                $this->fs->safeRemove($oldPath, $target, true);
-                rename($targetPath, $oldPath);
-            }
-
-            rename($dir, $targetPath);
-        }
-    }
-
-    private function cleanModule(string $modulePath, array $allowed): void
-    {
-        foreach (File::directories($modulePath) as $dir) {
-            $name = basename($dir);
-            if (!in_array($name, $allowed, true) && !is_link($dir)) {
-                File::deleteDirectory($dir);
-            }
-        }
-        foreach (File::files($modulePath) as $file) {
-            $name = $file->getFilename();
-            if (!in_array($name, $allowed, true) && !in_array($name, ['.vikon', '.htaccess'], true)) {
-                File::delete($file);
-            }
-        }
-    }
-
-    private function rollback(string $modulePath): void
-    {
-        foreach (File::directories($modulePath) as $dir) {
-            $old = $dir . self::OLD_SUFFIX;
-            if (File::exists($old)) {
-                File::deleteDirectory($dir);
-                File::move($old, $dir);
-            }
-        }
-        foreach (File::files($modulePath) as $file) {
-            $old = $file->getPathname() . self::OLD_SUFFIX;
-            if (File::exists($old)) {
-                File::delete($file);
-                rename($old, $file->getPathname());
+            if (!File::isDirectory($targetPath)) {
+                rename($dir, $targetPath);
+            } else {
+                $this->syncFiles($dir, $targetPath);
             }
         }
     }
