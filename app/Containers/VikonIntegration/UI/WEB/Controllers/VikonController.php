@@ -41,6 +41,7 @@ class VikonController extends Controller
             'is_authenticated' => $isAuth,
             'current_version' => config('vikon.current_version'),
             'modules' => config('vikon.modules'),
+            'parts' => config('vikon.parts'),
             'vikon_api_domain' => config('vikon.api_domain'),
             'vikon_client_id' => config('vikon.client_id'),
         ]);
@@ -74,6 +75,7 @@ class VikonController extends Controller
             'is_authenticated' => $isAuth,
             'current_version' => config('vikon.current_version'),
             'modules' => config('vikon.modules'),
+            'parts' => config('vikon.parts'),
             'vikon_api_domain' => config('vikon.api_domain'),
             'vikon_client_id' => config('vikon.client_id'),
         ]);

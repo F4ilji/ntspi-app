@@ -67,18 +67,34 @@
           <h3 class="text-sm font-medium">Модули для обновления</h3>
         </div>
         <div class="divide-y divide-line-2">
-          <div v-for="(mod, id) in modules" :key="id" class="px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <DashboardIcon name="cube" size="6" class="text-primary" />
-              <div>
-                <p class="text-sm font-medium">{{ mod.name }}</p>
-                <p class="text-xs text-muted-foreground-1">ID: {{ id }}</p>
+          <div v-for="(mod, id) in modules" :key="id" class="px-6 py-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <DashboardIcon name="cube" size="6" class="text-primary" />
+                <div>
+                  <p class="text-sm font-medium">{{ mod.name }}</p>
+                  <p class="text-xs text-muted-foreground-1">ID: {{ id }}</p>
+                </div>
               </div>
+              <button @click="updateModule(id)" :disabled="updating || !accessInfo.has_access"
+                class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover disabled:opacity-50">
+                {{ updating ? 'Обновление...' : 'Обновить' }}
+              </button>
             </div>
-            <button @click="updateModule(id)" :disabled="updating || !accessInfo.has_access"
-              class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover disabled:opacity-50">
-              {{ updating ? 'Обновление...' : 'Обновить' }}
-            </button>
+            <div v-if="parts && parts[id]" class="mt-3 flex items-center gap-2">
+              <select v-model="selectedPart[id]" class="text-sm bg-layer border border-layer-line rounded-md px-2 py-1.5">
+                <option value="">Выберите часть...</option>
+                <option v-for="p in parts[id]" :key="p" :value="p">{{ p }}</option>
+              </select>
+              <button
+                @click="updatePart(id, selectedPart[id])"
+                :disabled="!selectedPart[id] || updatingPart"
+                class="text-sm bg-surface border border-layer-line px-3 py-1.5 rounded-md hover:bg-muted-hover disabled:opacity-50"
+              >
+                <span v-if="updatingPart === `${id}-${selectedPart[id]}`">Обновление...</span>
+                <span v-else>Обновить часть</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -93,6 +109,13 @@
           <div class="bg-primary h-2.5 rounded-full transition-all" :style="{ width: progress + '%' }"></div>
         </div>
         <p class="text-xs text-muted-foreground-1 mt-2">{{ progress }}%</p>
+      </div>
+
+      <!-- Результат обновления части -->
+      <div v-if="partResult" class="bg-layer border border-layer-line rounded-lg p-4">
+        <p class="text-sm" :class="partResult.success ? 'text-green-600' : 'text-red-600'">
+          {{ partResult.message }}
+        </p>
       </div>
 
       <!-- Ошибка -->
@@ -126,6 +149,7 @@ const props = defineProps({
   is_authenticated: Boolean,
   current_version: String,
   modules: Object,
+  parts: Object,
   vikon_api_domain: String,
   vikon_client_id: String,
 });
@@ -139,6 +163,9 @@ const progress = ref(0);
 const updateError = ref(null);
 const versionInfo = ref({ current_version: props.current_version, has_update: false, latest_version: null });
 const accessInfo = ref({ has_access: false, error: null });
+const selectedPart = ref({});
+const updatingPart = ref(null);
+const partResult = ref(null);
 
 const authUrl = computed(() => {
   const redirect = encodeURIComponent(`${window.location.origin}/vikon_core/update/index.php`);
@@ -231,6 +258,32 @@ async function updateModule(moduleId) {
     const msg = e.response?.data?.message || e.message || 'Неизвестная ошибка';
     const code = e.response?.status || '';
     updateError.value = code ? `[${code}] ${msg}` : msg;
+  }
+}
+
+async function updatePart(moduleId, part) {
+  if (!part) return;
+
+  updatingPart.value = `${moduleId}-${part}`;
+  partResult.value = null;
+
+  try {
+    const res = await fetch('/dashboard/vikon-updates/update-part', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ module_id: moduleId, part }),
+    });
+
+    const data = await res.json();
+    partResult.value = data;
+  } catch (e) {
+    partResult.value = { success: false, message: e.message };
+  } finally {
+    updatingPart.value = null;
   }
 }
 
