@@ -119,10 +119,10 @@ class UpdateCoreAction
 
             if (File::exists($targetPath)) {
                 $oldPath = $targetPath . self::OLD_SUFFIX;
-                File::delete($oldPath);
+                @unlink($oldPath);
                 rename($targetPath, $oldPath);
             }
-            copy($file->getPathname(), $targetPath);
+            rename($file->getPathname(), $targetPath);
         }
 
         foreach (File::directories($source) as $dir) {
@@ -131,11 +131,11 @@ class UpdateCoreAction
 
             if (File::exists($targetPath)) {
                 $oldPath = $targetPath . self::OLD_SUFFIX;
-                File::deleteDirectory($oldPath);
-                File::move($targetPath, $oldPath);
+                $this->fs->safeRemove($oldPath, $target, true);
+                rename($targetPath, $oldPath);
             }
 
-            File::copyDirectory($dir, $targetPath);
+            rename($dir, $targetPath);
         }
     }
 
