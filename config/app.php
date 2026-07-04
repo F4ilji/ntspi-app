@@ -172,7 +172,7 @@ return [
 //        App\Providers\Filament\DashboardPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
         \App\Providers\ForceHttpsServiceProvider::class,
-        \App\Containers\VikonIntegration\Providers\VikonIntegrationServiceProvider::class,
+        // \App\Containers\VikonIntegration\Providers\VikonServiceProvider::class, // will be re-added
     ])->toArray(),
 
     /*
