@@ -21,15 +21,37 @@ class CheckAccessAction
             return ['has_access' => false, 'error' => 'Токен недействителен. Выполните повторную авторизацию.'];
         }
 
-        $nonWritable = $this->findNonWritable($this->publicPath);
-        if (!empty($nonWritable)) {
+        try {
+            $response = $this->http->getWithToken('pull_updates/assist/getModulesTreeAsync', $accessToken);
+            $body = $response->json();
+
+            if (!isset($body['tree_access'])) {
+                return [
+                    'has_access' => false,
+                    'error' => 'Нет прав на обновление. Обратитесь к администратору VIKON.',
+                ];
+            }
+
+            $nonWritable = $this->findNonWritable($this->publicPath);
+            if (!empty($nonWritable)) {
+                return [
+                    'has_access' => false,
+                    'error' => 'Нет прав на запись: ' . implode(', ', array_slice($nonWritable, 0, 3)),
+                ];
+            }
+
+            return [
+                'has_access' => true,
+                'error' => null,
+                'modules_tree' => $body['tree_access'],
+            ];
+        } catch (\Throwable $e) {
+            Log::error('Vikon access check failed', ['error' => $e->getMessage()]);
             return [
                 'has_access' => false,
-                'error' => 'Нет прав на запись: ' . implode(', ', array_slice($nonWritable, 0, 3)),
+                'error' => 'Не удалось проверить права: ' . $e->getMessage(),
             ];
         }
-
-        return ['has_access' => true, 'error' => null];
     }
 
     private function findNonWritable(string $path, int $depth = 0): array

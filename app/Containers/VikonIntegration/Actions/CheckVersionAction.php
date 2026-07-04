@@ -15,7 +15,7 @@ class CheckVersionAction
     public function run(string $accessToken): array
     {
         try {
-            $response = $this->http->getWithToken('pull_updates/getLatestVersion', $accessToken);
+            $response = $this->http->getWithToken('pull_updates/assist/getUpdateVersionJson', $accessToken);
             $body = $response->json();
             $latest = $body['version'] ?? null;
             return [
