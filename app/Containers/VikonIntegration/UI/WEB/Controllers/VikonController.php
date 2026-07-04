@@ -140,7 +140,8 @@ class VikonController extends Controller
             $message = $this->updateCore->run($request->validated('module_id'), $token);
             return response()->json(['success' => true, 'message' => $message]);
         } catch (\Throwable $e) {
-            return response()->json(['success' => false, 'message' => 'Ошибка обновления'], 500);
+            Log::error('Vikon update failed', ['error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
