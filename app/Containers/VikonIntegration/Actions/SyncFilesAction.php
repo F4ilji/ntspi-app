@@ -72,11 +72,22 @@ class SyncFilesAction
         $files = $response->json()['files'] ?? [];
         if (empty($files)) return 0;
 
+        $existingFiles = [];
+        if (File::isDirectory($filesDir)) {
+            foreach (File::files($filesDir) as $f) {
+                $existingFiles[$f->getFilename()] = $f->getSize();
+            }
+        }
+
         $synced = 0;
         foreach ($files as $file) {
             $name = $file['n'] ?? null;
             $identity = $file['i'] ?? null;
             if (!$name || !$identity) continue;
+
+            if (isset($existingFiles[$name]) && $existingFiles[$name] > 0) {
+                continue;
+            }
 
             try {
                 $content = $this->http->downloadWithToken(
@@ -107,11 +118,20 @@ class SyncFilesAction
         $targetDir = $filesDir . '/' . $dirId;
         File::makeDirectory($targetDir, 0755, true, true);
 
+        $existingFiles = [];
+        foreach (File::files($targetDir) as $f) {
+            $existingFiles[$f->getFilename()] = $f->getSize();
+        }
+
         $synced = 0;
         foreach ($files as $file) {
             $name = $file['n'] ?? null;
             $identity = $file['i'] ?? null;
             if (!$name || !$identity) continue;
+
+            if (isset($existingFiles[$name]) && $existingFiles[$name] > 0) {
+                continue;
+            }
 
             try {
                 $content = $this->http->downloadWithToken(
