@@ -82,4 +82,23 @@ class FilesystemTaskTest extends TestCase
 
         $this->assertFalse($result);
     }
+
+    public function test_restore_after_fail_removes_new_and_restores_old(): void
+    {
+        $base = $this->tempDir . '/module';
+        File::makeDirectory($base, 0755, true, true);
+
+        // Simulate partial swap state: _old has backup
+        File::makeDirectory($base . '/common', 0755, true, true);
+        file_put_contents($base . '/common/index.php', '<?php echo "current";');
+        File::makeDirectory($base . '/common_old', 0755, true, true);
+        file_put_contents($base . '/common_old/index.php', '<?php echo "original";');
+
+        $result = $this->fs->restoreAfterFail($base, ['common'], 1);
+
+        $this->assertTrue($result);
+        $this->assertFileExists($base . '/common/index.php');
+        $this->assertStringContainsString('original', file_get_contents($base . '/common/index.php'));
+        $this->assertDirectoryDoesNotExist($base . '/common_old');
+    }
 }

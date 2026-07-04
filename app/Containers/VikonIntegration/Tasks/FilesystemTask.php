@@ -111,6 +111,44 @@ class FilesystemTask
         return $this->moveEntry($newEntryPath, $currentEntryPath, $isFile);
     }
 
+    public function restoreAfterFail(string $modulePath, array $allowedEntries, int $moduleId): bool
+    {
+        $entries = File::directories($modulePath);
+        $entries = array_merge($entries, File::files($modulePath));
+
+        foreach ($entries as $entryPath) {
+            $name = basename($entryPath);
+
+            if (str_ends_with($name, '_new')) {
+                $baseName = substr($name, 0, -4);
+                if (in_array($baseName, $allowedEntries, true)) {
+                    if (is_dir($entryPath)) {
+                        File::deleteDirectory($entryPath);
+                    } else {
+                        File::delete($entryPath);
+                    }
+                }
+            }
+
+            if (str_ends_with($name, '_old')) {
+                $baseName = substr($name, 0, -4);
+                if (in_array($baseName, $allowedEntries, true)) {
+                    $originalPath = $modulePath . '/' . $baseName;
+                    if (File::exists($originalPath)) {
+                        if (is_dir($originalPath)) {
+                            File::deleteDirectory($originalPath);
+                        } else {
+                            File::delete($originalPath);
+                        }
+                    }
+                    rename($entryPath, $originalPath);
+                }
+            }
+        }
+
+        return true;
+    }
+
     private function moveEntry(string $source, string $dest, bool $isFile): bool
     {
         if ($isFile) {
