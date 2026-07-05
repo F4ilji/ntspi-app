@@ -21,7 +21,7 @@ class PollPartStatusTask
             );
 
             $body = $response->json();
-            $status = $body['status'] ?? 'unknown';
+            $status = $body['status'] ?? -2;
 
             Log::info('Vikon poll part status', [
                 'operation' => $operationIdentity,
@@ -29,14 +29,15 @@ class PollPartStatusTask
                 'attempt' => $attempt + 1,
             ]);
 
-            if ($status === 'completed') {
+            // VIKON API returns numeric status: -1 = failed, 1 = completed
+            if ($status === 1) {
                 return ['status' => 'completed'];
             }
 
-            if ($status === 'failed') {
+            if ($status === -1) {
                 return [
                     'status' => 'failed',
-                    'error' => $body['message'] ?? 'Unknown error',
+                    'error' => $body['message'] ?? 'Generation failed on server',
                 ];
             }
 

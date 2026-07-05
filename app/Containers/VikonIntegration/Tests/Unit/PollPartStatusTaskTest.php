@@ -16,11 +16,11 @@ class PollPartStatusTaskTest extends TestCase
         parent::tearDown();
     }
 
-    public function test_returns_completed_when_status_is_completed(): void
+    public function test_returns_completed_when_status_is_1(): void
     {
         $http = Mockery::mock(HttpTask::class);
         $response = Mockery::mock(Response::class);
-        $response->shouldReceive('json')->once()->andReturn(['status' => 'completed']);
+        $response->shouldReceive('json')->once()->andReturn(['status' => 1]);
 
         $http->shouldReceive('getWithToken')
             ->once()
@@ -36,12 +36,12 @@ class PollPartStatusTaskTest extends TestCase
         $this->assertEquals('completed', $result['status']);
     }
 
-    public function test_returns_failed_when_status_is_failed(): void
+    public function test_returns_failed_when_status_is_negative_1(): void
     {
         $http = Mockery::mock(HttpTask::class);
         $response = Mockery::mock(Response::class);
         $response->shouldReceive('json')->once()->andReturn([
-            'status' => 'failed',
+            'status' => -1,
             'message' => 'Generation error',
         ]);
 
@@ -53,20 +53,20 @@ class PollPartStatusTaskTest extends TestCase
         $result = $task->run('op-123', 'test-token');
 
         $this->assertEquals('failed', $result['status']);
-        $this->assertEquals('Generation error', $result['error'] ?? null);
+        $this->assertEquals('Generation error', $result['error']);
     }
 
     public function test_returns_timeout_after_max_attempts(): void
     {
         $http = Mockery::mock(HttpTask::class);
         $response = Mockery::mock(Response::class);
-        $response->shouldReceive('json')->andReturn(['status' => 'pending']);
+        $response->shouldReceive('json')->andReturn(['status' => 0]);
 
         $http->shouldReceive('getWithToken')
             ->times(3)
             ->andReturn($response);
 
-        $task = new PollPartStatusTask($http, 0, 3); // interval=0, max=3
+        $task = new PollPartStatusTask($http, 0, 3);
         $result = $task->run('op-123', 'test-token');
 
         $this->assertEquals('timeout', $result['status']);
