@@ -42,7 +42,7 @@ class CreateEducationalProgram implements ShouldQueue
             if ($program !== null) {
                 array_push($programs, $program);
             } else {
-                Log::error("Не удалось получить данные о программе с UUID: $uuid");
+                Log::channel('education')->error('Failed to get program data by UUID', ['uuid' => $uuid]);
             }
         }
 
@@ -63,7 +63,7 @@ class CreateEducationalProgram implements ShouldQueue
                     ]
                 );
             } else {
-                Log::error("Не удалось найти направление обучения с UUID: {$program->napr_uuid}");
+                Log::channel('education')->error('Direction study not found', ['uuid' => $program->napr_uuid]);
             }
         }
     }

@@ -38,21 +38,21 @@ class CreateAdmissionPlan implements ShouldQueue
             $items = $this->admissionPlanService->getCampaigns();
 
             if (empty($items)) {
-                Log::warning('Empty campaigns list received');
+                Log::channel('education')->warning('Empty campaigns list received');
                 return; // или обработка пустого случая
             }
 
             $campaign = $this->admissionPlanService->findActiveCampaign($items);
 
             if (empty($campaign)) {
-                Log::warning('No active campaign found in the list');
+                Log::channel('education')->warning('No active campaign found in the list');
                 return;
             }
 
             $levels_codes = $this->admissionPlanService->getLevelEducationCodes($campaign);
 
             if (empty($levels_codes)) {
-                Log::warning('No education level codes found for campaign');
+                Log::channel('education')->warning('No education level codes found for campaign');
                 return;
             }
 
@@ -61,7 +61,7 @@ class CreateAdmissionPlan implements ShouldQueue
 
                 // Проверка на пустой результат или отсутствие нужного свойства
                 if (empty($admissionPlans) || !isset($admissionPlans->competitons_groups)) {
-                    Log::warning("Empty admission plans or missing property for code: {$code}", [
+                    Log::channel('education')->warning("Empty admission plans or missing property for code: {$code}", [
                         'admissionPlans' => $admissionPlans
                     ]);
                     continue;
@@ -70,28 +70,28 @@ class CreateAdmissionPlan implements ShouldQueue
                 $filteredPlans = $this->admissionPlanService->filterEmptyNaprOrProg($admissionPlans->competitons_groups);
 
                 if (empty($filteredPlans)) {
-                    Log::info("No valid plans after filtering for code: {$code}");
+                    Log::channel('education')->info("No valid plans after filtering for code: {$code}");
                     continue;
                 }
 
                 $items = $this->admissionPlanService->transformData($filteredPlans);
 
                 if (empty($items)) {
-                    Log::info("No items after transformation for code: {$code}");
+                    Log::channel('education')->info("No items after transformation for code: {$code}");
                     continue;
                 }
 
                 foreach ($items as $item) {
                     // Проверка структуры $item
                     if (!isset($item['id'], $item['plan']->competitions, $item['plan']->exams)) {
-                        Log::warning("Invalid item structure", ['item' => $item]);
+                        Log::channel('education')->warning("Invalid item structure", ['item' => $item]);
                         continue;
                     }
 
                     $eduPrograms = EducationalProgram::where('inner_code', $item['id'])->get();
 
                     if ($eduPrograms->isEmpty()) {
-                        Log::info("No educational programs found for inner_code: {$item['id']}");
+                        Log::channel('education')->info("No educational programs found for inner_code: {$item['id']}");
                         continue;
                     }
 
@@ -107,7 +107,7 @@ class CreateAdmissionPlan implements ShouldQueue
                             ]);
                         }
                     } catch (\Exception $e) {
-                        Log::error("Error processing admission plan for item: {$item['id']}", [
+                        Log::channel('education')->error("Error processing admission plan for item: {$item['id']}", [
                             'error' => $e->getMessage(),
                             'item' => $item
                         ]);
@@ -116,7 +116,7 @@ class CreateAdmissionPlan implements ShouldQueue
                 }
             }
         } catch (\Exception $e) {
-            Log::error('Error in admission plans processing', [
+            Log::channel('education')->error('Error in admission plans processing', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
