@@ -4,6 +4,7 @@ import createServer from '@inertiajs/vue3/server'
 import { renderToString } from '@vue/server-renderer'
 import { createSSRApp, h } from 'vue'
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import { Ziggy } from './ziggy';
 import { createSsrErrorHandler, logSsrError } from './ssr/errorHandler.js';
 
 createServer(page =>
@@ -24,14 +25,12 @@ createServer(page =>
             ssrApp.config.warnHandler = () => null;
 
             const ziggyConfig = {
+                ...Ziggy,
                 ...page.props.ziggy,
+                location: page.props.ziggy?.location
+                    ? new URL(page.props.ziggy.location)
+                    : new URL(process.env.APP_URL || 'http://localhost'),
             };
-
-            if (page.props.ziggy?.location) {
-                ziggyConfig.location = new URL(page.props.ziggy.location);
-            } else {
-                ziggyConfig.location = new URL(process.env.APP_URL || 'http://localhost');
-            }
 
             return ssrApp
                 .use(plugin)
