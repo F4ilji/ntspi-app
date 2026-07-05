@@ -87,12 +87,18 @@ export default {
         plugins: [
           'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
           'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-          'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount',
+          'insertdatetime', 'media', 'table', 'paste', 'code', 'help', 'wordcount',
           'autoresize'
         ],
         invalid_styles: 'all',
+        paste_as_text: true,
+        paste_remove_styles: true,
         paste_remove_styles_if_webkit: true,
+        paste_remove_spans: true,
+        paste_strip_class_attributes: 'all',
         paste_merge_formats: true,
+        paste_word_valid_elements: 'b,strong,i,em,p,br,ul,ol,li,span',
+        paste_data_images: false,
         toolbar: 'undo redo | blocks | ' +
           'bold italic forecolor link | alignleft aligncenter ' +
           'alignright alignjustify | bullist numlist outdent indent | ' +

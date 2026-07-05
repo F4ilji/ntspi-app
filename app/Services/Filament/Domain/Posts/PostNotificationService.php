@@ -20,7 +20,11 @@ class PostNotificationService
     public function send(Post $post): void
     {
         // Находим всех пользователей с ролью "editor"
-        $editors = Role::findByName('editor')->users;
+        $role = Role::findByName('editor');
+        if (!$role) {
+            return;
+        }
+        $editors = $role->users;
 
         // Отправляем уведомление каждому редактору
         foreach ($editors as $editor) {
