@@ -81,18 +81,24 @@
                 {{ updating ? 'Обновление...' : 'Обновить' }}
               </button>
             </div>
-            <div v-if="parts && parts[id]" class="mt-3 flex items-center gap-2">
-              <select v-model="selectedPart[id]" class="text-sm bg-layer border border-layer-line rounded-md px-2 py-1.5">
-                <option value="">Выберите часть...</option>
-                <option v-for="p in parts[id]" :key="p" :value="p">{{ p }}</option>
-              </select>
+            <div v-if="parts && parts[id]" class="mt-3 space-y-2">
+              <label class="flex items-center gap-2 text-xs font-medium text-muted-foreground-1 cursor-pointer">
+                <input type="checkbox" :checked="isAllPartsSelected(id)" @change="toggleAllParts(id)" class="rounded" />
+                Выбрать все
+              </label>
+              <div class="flex flex-wrap gap-x-4 gap-y-1 pl-5">
+                <label v-for="p in parts[id]" :key="p" class="flex items-center gap-1.5 text-sm cursor-pointer">
+                  <input type="checkbox" :value="p" v-model="selectedParts[id]" class="rounded" />
+                  {{ p }}
+                </label>
+              </div>
               <button
-                @click="updatePart(id, selectedPart[id])"
-                :disabled="!selectedPart[id] || updatingPart"
+                @click="updateSelectedParts(id)"
+                :disabled="!selectedParts[id]?.length || updatingPart"
                 class="text-sm bg-surface border border-layer-line px-3 py-1.5 rounded-md hover:bg-muted-hover disabled:opacity-50"
               >
-                <span v-if="updatingPart === `${id}-${selectedPart[id]}`">Обновление...</span>
-                <span v-else>Обновить часть</span>
+                <span v-if="updatingPart">Обновление...</span>
+                <span v-else>Обновить выбранные ({{ selectedParts[id]?.length || 0 }})</span>
               </button>
             </div>
           </div>
@@ -111,11 +117,16 @@
         <p class="text-xs text-muted-foreground-1 mt-2">{{ progress }}%</p>
       </div>
 
-      <!-- Результат обновления части -->
-      <div v-if="partResult" class="bg-layer border border-layer-line rounded-lg p-4">
-        <p class="text-sm" :class="partResult.success ? 'text-green-600' : 'text-red-600'">
-          {{ partResult.message }}
-        </p>
+      <!-- Результаты обновления частей -->
+      <div v-if="partResults.length" class="bg-layer border border-layer-line rounded-lg p-4 space-y-2">
+        <div v-for="(r, i) in partResults" :key="i" class="text-sm flex items-center gap-2">
+          <span :class="r.success ? 'text-green-600' : 'text-red-600'">
+            {{ r.success ? '✓' : '✗' }}
+          </span>
+          <span :class="r.success ? 'text-green-600' : 'text-red-600'">
+            {{ r.message }}
+          </span>
+        </div>
       </div>
 
       <!-- Ошибка -->
@@ -163,9 +174,9 @@ const progress = ref(0);
 const updateError = ref(null);
 const versionInfo = ref({ current_version: props.current_version, has_update: false, latest_version: null });
 const accessInfo = ref({ has_access: false, error: null });
-const selectedPart = ref({});
+const selectedParts = ref({});
 const updatingPart = ref(null);
-const partResult = ref(null);
+const partResults = ref([]);
 
 const authUrl = computed(() => {
   const redirect = encodeURIComponent(`${window.location.origin}/vikon_core/update/index.php`);
@@ -261,30 +272,45 @@ async function updateModule(moduleId) {
   }
 }
 
-async function updatePart(moduleId, part) {
-  if (!part) return;
+function isAllPartsSelected(moduleId) {
+  const moduleParts = props.parts?.[moduleId] || [];
+  const selected = selectedParts.value[moduleId] || [];
+  return moduleParts.length > 0 && moduleParts.every(p => selected.includes(p));
+}
 
-  updatingPart.value = `${moduleId}-${part}`;
-  partResult.value = null;
-
-  try {
-    const res = await fetch('/dashboard/vikon-updates/update-part', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({ module_id: moduleId, part }),
-    });
-
-    const data = await res.json();
-    partResult.value = data;
-  } catch (e) {
-    partResult.value = { success: false, message: e.message };
-  } finally {
-    updatingPart.value = null;
+function toggleAllParts(moduleId) {
+  const moduleParts = props.parts?.[moduleId] || [];
+  if (isAllPartsSelected(moduleId)) {
+    selectedParts.value[moduleId] = [];
+  } else {
+    selectedParts.value[moduleId] = [...moduleParts];
   }
+}
+
+async function updateSelectedParts(moduleId) {
+  const partsToUpdate = selectedParts.value[moduleId] || [];
+  if (!partsToUpdate.length) return;
+
+  updatingPart.value = moduleId;
+  partResults.value = [];
+
+  for (const part of partsToUpdate) {
+    try {
+      const res = await axios.post(route('dashboard.vikon-updates.update-part'), {
+        module_id: moduleId,
+        part,
+      });
+      partResults.value.push(res.data);
+    } catch (e) {
+      partResults.value.push({
+        success: false,
+        message: e.response?.data?.message || e.message,
+        part,
+      });
+    }
+  }
+
+  updatingPart.value = null;
 }
 
 async function logout() {
