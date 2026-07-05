@@ -74,7 +74,7 @@ class UpdatePartActionTest extends TestCase
 
         $http->shouldReceive('postWithToken')
             ->once()
-            ->with('pull_updates/requestGeneratePartByNewCoreJson', 'token', ['part' => 'common'])
+            ->with('pull_updates/generatePartByNewCoreJson', 'token', ['part' => 'common'])
             ->andReturn($this->mockResponse([
                 'operation_identity' => 'op-abc-123',
                 'ttl' => 60,
@@ -85,12 +85,9 @@ class UpdatePartActionTest extends TestCase
             ->with('op-abc-123', 'token')
             ->andReturn(['status' => 'completed']);
 
-        $http->shouldReceive('postWithToken')
+        $http->shouldReceive('getWithToken')
             ->once()
-            ->with('pull_updates/checkPartGenerationByNewCoreResultJson', 'token', [
-                'operation_identity' => 'op-abc-123',
-                'part' => 'common',
-            ])
+            ->with('pull_updates/checkPartGenerationByNewCoreResultJson?operation_identity=op-abc-123&part=common', 'token')
             ->andReturn($this->mockResponse(['success' => true]));
 
         // Create a minimal ZIP

@@ -33,7 +33,7 @@ class UpdatePartAction
 
         // Step 1: Request generation
         $genResponse = $this->http->postWithToken(
-            'pull_updates/requestGeneratePartByNewCoreJson',
+            'pull_updates/generatePartByNewCoreJson',
             $accessToken,
             ['part' => $part]
         );
@@ -56,10 +56,9 @@ class UpdatePartAction
         }
 
         // Step 3: Check result
-        $checkResponse = $this->http->postWithToken(
-            'pull_updates/checkPartGenerationByNewCoreResultJson',
-            $accessToken,
-            ['operation_identity' => $operationIdentity, 'part' => $part]
+        $checkResponse = $this->http->getWithToken(
+            "pull_updates/checkPartGenerationByNewCoreResultJson?operation_identity={$operationIdentity}&part={$part}",
+            $accessToken
         );
         $checkBody = $checkResponse->json();
 
