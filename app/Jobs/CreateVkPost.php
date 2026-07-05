@@ -50,7 +50,7 @@ class CreateVkPost implements ShouldQueue
             );
 
         } catch (\Exception $e) {
-            Log::error('Ошибка при создании поста: ' . $e->getMessage());
+            Log::channel('vk')->error('Failed to create VK post', ['error' => $e->getMessage()]);
             throw $e; // Перебрасываем исключение для повторной попытки
         }
     }

@@ -46,8 +46,7 @@ class CreateVkPostJob implements ShouldQueue
 
     public function handle()
     {
-        $logPrefix = "[VK Job {$this->post_id}]";
-        Log::info("{$logPrefix} Начало обработки поста. Входящие изображения: " . count($this->images));
+        Log::channel('vk')->info('Processing VK post', ['post_id' => $this->post_id, 'images' => count($this->images)]);
 
         $vk = new VKApiClient();
         $wallService = new VkWallService($vk);
@@ -64,44 +63,48 @@ class CreateVkPostJob implements ShouldQueue
         $attached_videos = array_slice($video_list, 0, count($video_list));
         $remaining_slots = $available_slots;
 
-        Log::info("{$logPrefix} Видео: " . count($attached_videos) . ", Осталось слотов для фото: {$remaining_slots}");
+        Log::channel('vk')->debug('Attachment slots calculated', [
+            'post_id' => $this->post_id,
+            'videos' => count($attached_videos),
+            'remaining_photo_slots' => $remaining_slots,
+        ]);
 
         $image_list = [];
         if ($remaining_slots > 0 && !empty($this->images)) {
             $images_to_attach = array_slice($this->images, 0, $remaining_slots);
 
-            Log::info("{$logPrefix} Начинаем подготовку фото для стены", ['files' => $images_to_attach]);
+            Log::channel('vk')->debug('Preparing wall photos', ['files' => $images_to_attach]);
 
             $image_attachments = $this->prepareWallPhotos($images_to_attach);
 
-            Log::info("{$logPrefix} Результат подготовки фото (строка): '{$image_attachments}'");
+            Log::channel('vk')->debug('Photo preparation result', ['attachments' => $image_attachments]);
 
             $image_list = $image_attachments ? explode(',', $image_attachments) : [];
         } else {
-            Log::info("{$logPrefix} Фото не будут добавлены (нет слотов или нет фото).");
+            Log::channel('vk')->debug('No photos to attach — no slots or no images', ['post_id' => $this->post_id]);
         }
 
         $selected_attachments = array_merge($attached_videos, $image_list);
 
         if (count($this->images) > count($image_list)) {
-            Log::info("{$logPrefix} Не все фото вошли в пост. Создаем альбом.");
+            Log::channel('vk')->debug('Not all photos fit in post — creating album', ['post_id' => $this->post_id]);
 
             $album = $this->createAlbum($this->title, $this->images);
             if (isset($album['id'])) {
                 $albumLink = "https://vk.ru/album-{$this->public_id}_{$album['id']}";
                 $this->message .= "\n\n[{$albumLink}|Ссылка на все фотографии]";
             } else {
-                Log::error("{$logPrefix} Не удалось создать альбом");
+                Log::channel('vk')->error('Failed to create VK album', ['post_id' => $this->post_id]);
             }
         }
 
         $attachmentString = implode(',', $selected_attachments);
-        Log::info("{$logPrefix} Финальная строка вложений: '{$attachmentString}'");
+        Log::channel('vk')->debug('Final attachment string', ['post_id' => $this->post_id, 'attachments' => $attachmentString]);
 
         $vk_post = $wallService->createPost($this->message, $from_group, $attachmentString, $this->publish_date, $this->primary_attachments_mode);
 
         if (isset($vk_post['post_id'])) {
-            Log::info("{$logPrefix} Пост успешно создан ID: {$vk_post['post_id']}");
+            Log::channel('vk')->info('VK post created successfully', ['post_id' => $this->post_id, 'vk_post_id' => $vk_post['post_id']]);
             DB::table('posts_vk_posts')->insert(
                 [
                     'post_id' => $this->post_id,
@@ -110,7 +113,7 @@ class CreateVkPostJob implements ShouldQueue
                 ]
             );
         } else {
-            Log::error("{$logPrefix} Ошибка создания поста в VK", ['response' => $vk_post]);
+            Log::channel('vk')->error('Failed to create VK post', ['post_id' => $this->post_id, 'response' => $vk_post]);
         }
     }
 
@@ -131,16 +134,16 @@ class CreateVkPostJob implements ShouldQueue
                 if (file_exists($fullPath)) {
                     $imagePaths[] = $fullPath;
                 } else {
-                    Log::warning("Файл не найден на диске: {$img} (Искали: {$fullPath})");
+                    Log::channel('vk')->warning('Image file not found on disk', ['image' => $img, 'expected_path' => $fullPath]);
                 }
             }
 
             if (empty($imagePaths)) {
-                Log::info("Нет валидных локальных путей для фото.");
+                Log::channel('vk')->debug('No valid local image paths found', ['post_id' => $this->post_id]);
                 return '';
             }
 
-            Log::info("Локальные пути изображений для загрузки:", $imagePaths);
+            Log::channel('vk')->debug('Local image paths for upload', ['paths' => $imagePaths]);
 
             $photos = $this->uploadWallPhotos($imagePaths, $this->public_id);
 
@@ -151,7 +154,7 @@ class CreateVkPostJob implements ShouldQueue
             return $result;
 
         } catch (\Exception $e) {
-            Log::error("Ошибка при подготовке фотографий: " . $e->getMessage());
+            Log::channel('vk')->error('Failed to prepare wall photos', ['error' => $e->getMessage()]);
             return '';
         }
     }
@@ -162,14 +165,14 @@ class CreateVkPostJob implements ShouldQueue
 
         foreach ($imagePaths as $imagePath) {
             try {
-                Log::info("--- Загрузка фото: {$imagePath} ---");
+                Log::channel('vk')->debug('Uploading photo', ['path' => $imagePath]);
 
                 // 1. Проверка доступности файла
                 $fileContent = @file_get_contents($imagePath);
                 if ($fileContent === false) {
                     throw new \Exception("Не удалось прочитать файл по ссылке: {$imagePath}. Проверьте доступность URL.");
                 }
-                Log::info("Файл прочитан, размер: " . strlen($fileContent) . " байт.");
+                Log::channel('vk')->debug('File read successfully', ['path' => $imagePath, 'size_bytes' => strlen($fileContent)]);
 
                 // 2. Получение сервера
                 $uploadServerResponse = Http::get('https://api.vk.ru/method/photos.getWallUploadServer', [
@@ -181,16 +184,16 @@ class CreateVkPostJob implements ShouldQueue
                 $uploadServerData = $uploadServerResponse->json();
 
                 if (isset($uploadServerData['error'])) {
-                    Log::error("VK API Error getWallUploadServer: ", $uploadServerData['error']);
+                    Log::channel('vk')->error('VK API getWallUploadServer error', ['error' => $uploadServerData['error']]);
                     continue;
                 }
 
                 if (!isset($uploadServerData['response']['upload_url'])) {
-                    Log::error("Ответ getWallUploadServer не содержит upload_url", $uploadServerData);
+                    Log::channel('vk')->error('getWallUploadServer response missing upload_url', ['response' => $uploadServerData]);
                     throw new \Exception('Не удалось получить сервер для загрузки: ' . $imagePath);
                 }
                 $uploadUrl = $uploadServerData['response']['upload_url'];
-                Log::info("Upload URL получен: {$uploadUrl}");
+                Log::channel('vk')->debug('Upload URL obtained', ['url' => $uploadUrl]);
 
                 // 3. Отправка файла
                 $uploadResponse = Http::attach(
@@ -202,7 +205,7 @@ class CreateVkPostJob implements ShouldQueue
                 $uploadData = $uploadResponse->json();
 
                 // Логируем сырой ответ от сервера загрузки, часто ошибка тут
-                Log::info("Результат POST загрузки:", $uploadData ?? []);
+                Log::channel('vk')->debug('Upload POST response', ['response' => $uploadData ?? []]);
 
                 if (!isset($uploadData['photo']) || !isset($uploadData['server']) || !isset($uploadData['hash'])) {
                     // Иногда VK возвращает пустой photo: "[]" или error внутри JSON
@@ -222,21 +225,20 @@ class CreateVkPostJob implements ShouldQueue
                 $saveData = $saveResponse->json();
 
                 if (isset($saveData['error'])) {
-                    Log::error("VK API Error photos.saveWallPhoto: ", $saveData['error']);
+                    Log::channel('vk')->error('VK API saveWallPhoto error', ['error' => $saveData['error']]);
                     continue;
                 }
 
                 if (!isset($saveData['response'][0])) {
-                    Log::error("Не удалось сохранить фото (нет response[0])", $saveData);
+                    Log::channel('vk')->error('saveWallPhoto missing response[0]', ['response' => $saveData]);
                     throw new \Exception('Не удалось сохранить фотографию: ' . $imagePath);
                 }
 
                 $uploadedPhotos[] = $saveData['response'][0];
-                Log::info("Фотография успешно сохранена. ID: " . $saveData['response'][0]['id']);
+                Log::channel('vk')->debug('Photo saved successfully', ['photo_id' => $saveData['response'][0]['id']]);
 
             } catch (\Exception $e) {
-                Log::error("Критическая ошибка при загрузке {$imagePath}: " . $e->getMessage());
-                Log::error($e->getTraceAsString());
+                Log::channel('vk')->error('Critical error uploading photo', ['path' => $imagePath, 'error' => $e->getMessage()]);
             }
         }
 
@@ -289,7 +291,7 @@ class CreateVkPostJob implements ShouldQueue
                 $attachment = "video{$uploadData['owner_id']}_{$uploadData['video_id']}";
                 $uploadedVideos[] = $attachment;
             } catch (\Exception $e) {
-                Log::error("Ошибка при загрузке видео {$videoPath}: " . $e->getMessage());
+                Log::channel('vk')->error('Failed to upload video', ['path' => $videoPath, 'error' => $e->getMessage()]);
             }
         }
         return $uploadedVideos;

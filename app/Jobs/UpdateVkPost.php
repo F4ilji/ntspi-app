@@ -34,7 +34,7 @@ class UpdateVkPost implements ShouldQueue
             $vkService = new VkService();
             $vkService->updatePost($postRelation->vk_post_id, $this->title, $this->text, $this->images, $this->publish_date);
         } catch (\Exception $e) {
-            Log::error('Ошибка при создании поста: ' . $e->getMessage());
+            Log::channel('vk')->error('Failed to update VK post', ['error' => $e->getMessage()]);
             throw $e; // Перебрасываем исключение для повторной попытки
         }
     }

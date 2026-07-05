@@ -151,7 +151,7 @@ class VkAlbumService
 
             ));
         } catch (\Exception $e) {
-            Log::error('Ошибка при создании альбома: ' . $e->getMessage());
+            Log::channel('vk')->error('Failed to create VK album', ['error' => $e->getMessage()]);
             return [
                 'success' => false,
                 'message' => 'Не удалось создать альбом: ' . $e->getMessage(),
@@ -167,7 +167,7 @@ class VkAlbumService
                 'group_id' => $group_id,
             ));
         } catch (\Exception $e) {
-            Log::error('Ошибка при удалении альбома: ' . $e->getMessage());
+            Log::channel('vk')->error('Failed to delete VK album', ['error' => $e->getMessage()]);
             return [
                 'success' => false,
                 'message' => 'Не удалось удалить альбом: ' . $e->getMessage(),

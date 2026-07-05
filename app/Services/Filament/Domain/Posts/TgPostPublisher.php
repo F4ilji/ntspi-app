@@ -38,7 +38,7 @@ class TgPostPublisher
 
    public function update(array $settings, Post $post): void
    {
-       Log::info(json_encode($settings));
+       Log::channel('vk')->debug('Telegram publisher settings', ['settings' => $settings]);
        if ($post->status === PostStatus::PUBLISHED) {
            if ($settings['telegram']) {
                $text = $this->generateContentForTg($post->title, $post->content, $post->slug, $post->images);

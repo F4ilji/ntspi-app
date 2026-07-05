@@ -69,7 +69,7 @@ class VkService
                     $albumLink = "https://vk.ru/album-{$this->public_id}_{$album['id']}";
                     $message .= "\n[{$albumLink}|Ссылка на все фотографии]";
                 } else {
-                    Log::error('Не удалось создать альбом');
+                    Log::channel('vk')->error('Failed to create VK album');
                 }
             }
         }
@@ -156,7 +156,7 @@ class VkService
                 return "photo{$photo['owner_id']}_{$photo['id']}";
             }, $photos));
         } catch (Exception $e) {
-            Log::error("Ошибка: " . $e->getMessage());
+            Log::channel('vk')->error('Failed to prepare wall photos', ['error' => $e->getMessage()]);
         }
     }
 
@@ -204,7 +204,7 @@ class VkService
                 $attachment = "video{$uploadData['owner_id']}_{$uploadData['video_id']}";
                 $uploadedVideos[] = $attachment;
             } catch (Exception $e) {
-                Log::error("Ошибка при загрузке видео {$videoPath}: " . $e->getMessage());
+                Log::channel('vk')->error('Failed to upload video', ['path' => $videoPath, 'error' => $e->getMessage()]);
             }
         }
 
@@ -258,10 +258,10 @@ class VkService
 
                 // Добавляем данные о загруженной фотографии в массив
                 $uploadedPhotos[] = $saveData['response'][0];
-                Log::info("Фотография успешно загружена. ID: " . $saveData['response'][0]['id']);
+                Log::channel('vk')->debug('Photo uploaded successfully', ['photo_id' => $saveData['response'][0]['id']]);
             } catch (Exception $e) {
                 // Логируем ошибку, но продолжаем загрузку остальных изображений
-                Log::error("Ошибка при загрузке изображения {$imagePath}: " . $e->getMessage());
+                Log::channel('vk')->error('Failed to upload image', ['path' => $imagePath, 'error' => $e->getMessage()]);
             }
         }
 

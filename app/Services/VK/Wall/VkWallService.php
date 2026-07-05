@@ -44,7 +44,7 @@ class VkWallService
             ));
             return $post[0];
         } catch (\Exception $e) {
-            Log::error('Ошибка при попытке получения айди ' . $e->getMessage());
+            Log::channel('vk')->error('Failed to get VK post by ID', ['error' => $e->getMessage()]);
         }
     }
 
@@ -75,7 +75,7 @@ class VkWallService
             }
 
         } catch (\Exception $e) {
-            Log::error('Ошибка при создании поста: ' . $e->getMessage());
+            Log::channel('vk')->error('Failed to create VK wall post', ['error' => $e->getMessage()]);
             return [
                 'success' => false,
                 'message' => 'Не удалось создать пост: ' . $e->getMessage(),
@@ -104,7 +104,7 @@ class VkWallService
                 ),
             );
         } catch (\Exception $e) {
-            Log::error('Ошибка при обновлении новости SDK: ' . $e->getMessage());
+            Log::channel('vk')->error('Failed to update VK post via SDK', ['error' => $e->getMessage()]);
             return [
                 'success' => false,
                 'message' => 'Не удалось обновить новость SDK: ' . $e->getMessage(),
@@ -133,7 +133,7 @@ class VkWallService
                 throw new \Exception('Ошибка API: ' . json_encode($response->json()));
             }
         } catch (\Exception $e) {
-            Log::error('Ошибка при удалении поста: ' . $e->getMessage());
+            Log::channel('vk')->error('Failed to delete VK post', ['error' => $e->getMessage()]);
             return [
                 'success' => false,
                 'message' => 'Не удалось удалить пост: ' . $e->getMessage(),

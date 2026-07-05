@@ -28,7 +28,7 @@ class VkAuthService
             return $token;
         } catch (\Exception $e) {
             // Обработка ошибок, например, логирование
-            Log::error('Ошибка при получении токена: ' . $e->getMessage());
+            Log::channel('vk')->error('Failed to get VK token', ['error' => $e->getMessage()]);
             return null; // Или выбросьте исключение, если это необходимо
         }
     }
@@ -143,7 +143,7 @@ class VkAuthService
                 ]
             );
         } catch (\Exception $e) {
-            Log::error('Ошибка при обновлении или вставке токена: ' . $e->getMessage());
+            Log::channel('vk')->error('Failed to store VK token', ['error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
@@ -181,7 +181,7 @@ class VkAuthService
                 'message' => 'Запись не найдена для обновления.',
             ], 404);
         } catch (\Exception $e) {
-            Log::error('Ошибка при обновлении токена: ' . $e->getMessage());
+            Log::channel('vk')->error('Failed to refresh VK token', ['error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,

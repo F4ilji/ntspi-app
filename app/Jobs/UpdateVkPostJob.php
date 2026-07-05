@@ -55,13 +55,10 @@ class UpdateVkPostJob implements ShouldQueue
 
         $vk_post = $wallService->getPostById($this->post_id);
 
-        // доделать
         if ($vk_post['attachments']) {
-            Log::info($vk_post);
             if ($this->getAlbumAttachment($vk_post['attachments'])) {
-                Log::info('вход в аттачментс вк');
                 $album = $this->getAlbumAttachment($vk_post['attachments']);
-                Log::info($album);
+                Log::channel('vk')->debug('Deleting existing album before update', ['album_id' => $album['album']['id']]);
                 $albumService->deleteAlbum($album['album']['id'], $this->public_id);
             }
         }
@@ -85,7 +82,7 @@ class UpdateVkPostJob implements ShouldQueue
             $image_attachments = $this->prepareWallPhotos($images_to_attach);
             $image_list = $image_attachments ? explode(',', $image_attachments) : [];
         } else {
-            Log::info("Фото не будут добавлены (нет слотов или нет фото).");
+            Log::channel('vk')->debug('No photos to attach — no slots or no images', ['post_id' => $this->post_id]);
         }
 
         // Собираем все вложения с учетом приоритетов
@@ -99,7 +96,7 @@ class UpdateVkPostJob implements ShouldQueue
                 $albumLink = "https://vk.ru/album-{$this->public_id}_{$album['id']}";
                 $this->message .= "\n\n[{$albumLink}|Ссылка на все фотографии]";
             } else {
-                Log::error('Не удалось создать альбом');
+                Log::channel('vk')->error('Failed to create VK album', ['post_id' => $this->post_id]);
             }
         }
 
@@ -131,7 +128,7 @@ class UpdateVkPostJob implements ShouldQueue
                 return "photo{$photo['owner_id']}_{$photo['id']}";
             }, $photos));
         } catch (\Exception $e) {
-            Log::error("Ошибка при подготовке фотографий: " . $e->getMessage());
+            Log::channel('vk')->error('Failed to prepare wall photos', ['error' => $e->getMessage()]);
             return '';
         }
     }
@@ -190,9 +187,9 @@ class UpdateVkPostJob implements ShouldQueue
                 }
 
                 $uploadedPhotos[] = $saveData['response'][0];
-                Log::info("Фотография загружена. ID: " . $saveData['response'][0]['id']);
+                Log::channel('vk')->debug('Photo uploaded successfully', ['photo_id' => $saveData['response'][0]['id']]);
             } catch (\Exception $e) {
-                Log::error("Ошибка при загрузке {$imagePath}: " . $e->getMessage());
+                Log::channel('vk')->error('Failed to upload photo', ['path' => $imagePath, 'error' => $e->getMessage()]);
             }
         }
 
@@ -231,7 +228,7 @@ class UpdateVkPostJob implements ShouldQueue
                 $attachment = "video{$uploadData['owner_id']}_{$uploadData['video_id']}";
                 $uploadedVideos[] = $attachment;
             } catch (\Exception $e) {
-                Log::error("Ошибка при загрузке видео {$videoPath}: " . $e->getMessage());
+                Log::channel('vk')->error('Failed to upload video', ['path' => $videoPath, 'error' => $e->getMessage()]);
             }
         }
 
