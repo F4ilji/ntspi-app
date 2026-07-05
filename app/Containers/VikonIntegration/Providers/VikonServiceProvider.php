@@ -70,14 +70,9 @@ class VikonServiceProvider extends ServiceProvider
         ));
 
         $this->app->singleton(CheckVersionAction::class, function ($app) {
-            $versionFile = config('vikon.current_version_file');
-            $version = '1.0.0';
-            if ($versionFile && file_exists($versionFile)) {
-                $version = trim(file_get_contents($versionFile)) ?: '1.0.0';
-            }
             return new CheckVersionAction(
                 http: $app->make(HttpTask::class),
-                currentVersion: $version,
+                currentVersion: $app->make('vikon.version'),
             );
         });
 
@@ -98,5 +93,11 @@ class VikonServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadRoutesFrom(app_path('Containers/VikonIntegration/UI/WEB/Routes/web.php'));
+
+        $this->app->bind('vikon.version', function () {
+            return cache()->remember('vikon:current_version', 3600, function () {
+                return config('vikon.current_version', '5.90.8.1');
+            });
+        });
     }
 }

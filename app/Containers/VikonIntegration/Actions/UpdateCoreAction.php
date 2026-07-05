@@ -345,14 +345,11 @@ class UpdateCoreAction
             $latestVersion = $body['version'] ?? null;
 
             if ($latestVersion) {
-                $versionFile = config('vikon.current_version_file');
-                if ($versionFile) {
-                    file_put_contents($versionFile, $latestVersion);
-                    Log::info('Vikon: version updated', ['version' => $latestVersion]);
-                }
+                cache()->put('vikon:current_version', $latestVersion, 3600);
+                Log::info('Vikon: version updated', ['version' => $latestVersion]);
             }
         } catch (\Throwable $e) {
-            Log::warning('Vikon: failed to update version file', ['error' => $e->getMessage()]);
+            Log::warning('Vikon: failed to update version', ['error' => $e->getMessage()]);
         }
     }
 }
