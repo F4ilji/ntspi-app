@@ -63,21 +63,24 @@
 
       <!-- Модули -->
       <div class="bg-layer border border-layer-line rounded-lg">
-        <div class="px-6 py-4 border-b border-layer-line">
+        <div class="px-6 py-4 border-b border-layer-line flex items-center justify-between">
           <h3 class="text-sm font-medium">Модули для обновления</h3>
+          <button @click="updateAllModules" :disabled="updatingAll || !accessInfo.has_access"
+            class="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary-hover disabled:opacity-50 flex items-center gap-2">
+            <svg v-if="updatingAll" class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+            <DashboardIcon v-else name="arrow-path" size="4" />
+            {{ updatingAll ? 'Обновление...' : 'Обновить все' }}
+          </button>
         </div>
         <div class="divide-y divide-line-2">
           <div v-for="(mod, id) in modules" :key="id" class="px-6 py-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3">
-                <DashboardIcon name="cube" size="6" class="text-primary" />
-                <div>
-                  <p class="text-sm font-medium">{{ mod.name }}</p>
-                  <p class="text-xs text-muted-foreground-1">ID: {{ id }}</p>
-                </div>
+                <DashboardIcon :name="moduleIcon(id)" size="6" class="text-primary" />
+                <p class="text-sm font-medium">{{ moduleName(id) }}</p>
               </div>
-              <button @click="updateModule(id)" :disabled="updating === id || !accessInfo.has_access || parts[id]?.disabled"
-                class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover disabled:opacity-50">
+              <button @click="updateModule(id)" :disabled="updating === id || updatingAll || !accessInfo.has_access || parts[id]?.disabled"
+                class="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary-hover disabled:opacity-50">
                 <span v-if="updating === id">Обновление...</span>
                 <span v-else>Обновить</span>
               </button>
@@ -86,7 +89,7 @@
               <p class="text-sm text-yellow-800">Обновление модуля запрещено сервером VIKON</p>
             </div>
             <div v-else-if="parts && parts[id]?.parts?.length" class="mt-3">
-              <div v-if="updating === id" class="flex items-center gap-2 text-sm text-muted-foreground-1 mb-2">
+              <div v-if="updating === id || updatingAll" class="flex items-center gap-2 text-sm text-muted-foreground-1 mb-2">
                 <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                 <span>{{ updatePhase }}</span>
               </div>
@@ -94,7 +97,7 @@
                 <div v-for="p in parts[id]?.parts || []" :key="p.id"
                      class="flex items-center gap-2 text-sm"
                      :class="p.access ? '' : 'opacity-50'">
-                  <input type="checkbox" :value="p.id" v-model="selectedParts[id]" :disabled="!p.access || updating === id" class="rounded" />
+                  <input type="checkbox" :value="p.id" v-model="selectedParts[id]" :disabled="!p.access || updating === id || updatingAll" class="rounded" />
                   <span class="flex-1" :class="p.access ? '' : 'cursor-not-allowed'">{{ p.name }}</span>
                   <span v-if="partStatus[`${id}-${p.id}`] === 'loading'" class="text-primary">
                     <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
@@ -104,6 +107,35 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ручное обновление -->
+      <div class="bg-layer border border-layer-line rounded-lg p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <DashboardIcon name="cloud-arrow-up" size="6" class="text-primary" />
+          <div>
+            <h3 class="text-sm font-medium">Ручное обновление</h3>
+            <p class="text-xs text-muted-foreground-1">Загрузите ZIP-архив для обновления данных модуля</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <input ref="fileInput" type="file" accept=".zip" class="hidden" @change="handleFileSelect" />
+          <button @click="$refs.fileInput.click()" :disabled="uploading"
+            class="px-4 py-2 bg-surface border border-layer-line text-sm rounded-lg hover:bg-muted-hover disabled:opacity-50">
+            {{ selectedFile ? selectedFile.name : 'Выберите ZIP-архив' }}
+          </button>
+          <button @click="uploadManual" :disabled="!selectedFile || uploading"
+            class="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary-hover disabled:opacity-50 flex items-center gap-2">
+            <svg v-if="uploading" class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+            {{ uploading ? 'Загрузка...' : 'Загрузить' }}
+          </button>
+        </div>
+        <div v-if="uploadResult" class="mt-4 p-3 rounded-lg" :class="uploadResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'">
+          <p class="text-sm" :class="uploadResult.success ? 'text-green-800' : 'text-red-800'">{{ uploadResult.message }}</p>
+          <div v-if="uploadResult.updated?.length" class="mt-2 flex flex-wrap gap-1">
+            <span v-for="f in uploadResult.updated" :key="f" class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">{{ f }}</span>
           </div>
         </div>
       </div>
@@ -120,7 +152,7 @@
       </div>
 
       <div class="flex justify-end">
-        <button @click="logout" class="px-4 py-2 bg-surface border border-layer-line rounded-lg hover:bg-muted-hover">
+        <button @click="logout" class="px-4 py-2 bg-surface border border-layer-line rounded-lg hover:bg-muted-hover text-sm">
           Выйти из VIKON
         </button>
       </div>
@@ -129,8 +161,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { ref, onMounted } from 'vue';
 import DashboardLayout from '../Components/DashboardLayout.vue';
 import DashboardIcon from '../Components/DashboardIcon.vue';
 import FlashMessages from '../Components/shared/FlashMessages.vue';
@@ -144,11 +175,18 @@ const props = defineProps({
   vikon_client_id: String,
 });
 
+const moduleIcons = { 1: 'document-text', 2: 'academic-cap', 6: 'globe-alt' };
+const moduleNames = { 1: 'Сведения', 2: 'Абитуриент', 6: 'ВСОКО' };
+
+function moduleIcon(id) { return moduleIcons[id] || 'cube'; }
+function moduleName(id) { return moduleNames[id] || `Модуль ${id}`; }
+
 const isAuthenticated = ref(props.is_authenticated);
 const currentVersion = ref(props.current_version);
 const checkingVersion = ref(false);
 const checkingAccess = ref(false);
 const updating = ref(null);
+const updatingAll = ref(false);
 const updatePhase = ref('');
 const updateError = ref(null);
 const versionInfo = ref({ current_version: props.current_version, has_update: false, latest_version: null });
@@ -164,49 +202,30 @@ if (props.parts) {
 const partStatus = ref({});
 const partErrors = ref({});
 
-const authUrl = computed(() => {
-  const redirect = encodeURIComponent(`${window.location.origin}/vikon_core/update/index.php`);
-  return `${props.vikon_api_domain}oauth2/authorize?client_id=${props.vikon_client_id}&redirect_uri=${redirect}&response_type=code`;
-});
+const fileInput = ref(null);
+const selectedFile = ref(null);
+const uploading = ref(false);
+const uploadResult = ref(null);
+
+const authUrl = `${props.vikon_api_domain}oauth2/authorize?client_id=${props.vikon_client_id}&redirect_uri=${encodeURIComponent(window.location.origin + '/dashboard/vikon-updates/callback')}&response_type=code`;
 
 onMounted(() => {
   const url = new URL(window.location.href);
-  const isCallback = url.pathname.endsWith('/callback');
-  const code = url.searchParams.get('code');
-
-  if (isCallback && code) {
+  if (url.pathname.endsWith('/callback') && url.searchParams.get('code')) {
     window.history.replaceState({}, document.title, url.pathname);
   }
-
   if (isAuthenticated.value) {
     checkAccess();
     checkVersion();
   }
 });
 
-async function authenticate(code) {
-  try {
-    const res = await axios.post(route('dashboard.vikon-updates.authenticate'), {
-      code,
-      redirect_uri: `${window.location.origin}/vikon_core/update/index.php`,
-    });
-    if (res.data.success) {
-      isAuthenticated.value = true;
-      window.history.replaceState({}, document.title, window.location.pathname);
-      checkAccess();
-      checkVersion();
-    }
-  } catch (e) {
-    console.error('Auth failed:', e);
-  }
-}
-
 async function checkAccess() {
   checkingAccess.value = true;
   try {
     const res = await axios.post(route('dashboard.vikon-updates.check-access'));
     accessInfo.value = res.data;
-  } catch (e) {
+  } catch {
     accessInfo.value = { has_access: false, error: 'Ошибка проверки прав' };
   } finally {
     checkingAccess.value = false;
@@ -218,8 +237,6 @@ async function checkVersion() {
   try {
     const res = await axios.post(route('dashboard.vikon-updates.check-version'));
     versionInfo.value = res.data;
-  } catch (e) {
-    console.error('Version check failed:', e);
   } finally {
     checkingVersion.value = false;
   }
@@ -235,33 +252,25 @@ async function updateModule(moduleId) {
   updating.value = moduleId;
   updatePhase.value = 'Обновление ядра модуля...';
   updateError.value = null;
-  // Clear previous part statuses
   for (const p of partsToUpdate) {
     delete partStatus.value[`${moduleId}-${p}`];
     delete partErrors.value[`${moduleId}-${p}`];
   }
 
   try {
-    // Phase 1: Core + FM sync
     const res = await axios.post(route('dashboard.vikon-updates.update-module'), { module_id: moduleId });
     if (!res.data.success) {
       updateError.value = res.data.message;
-      updating.value = null;
       return;
     }
 
-    // Phase 2: Update selected parts
     if (partsToUpdate.length) {
       updatePhase.value = 'Обновление разделов...';
       for (const part of partsToUpdate) {
         const key = `${moduleId}-${part}`;
         partStatus.value[key] = 'loading';
-
         try {
-          await axios.post(route('dashboard.vikon-updates.update-part'), {
-            module_id: moduleId,
-            part,
-          });
+          await axios.post(route('dashboard.vikon-updates.update-part'), { module_id: moduleId, part });
           partStatus.value[key] = 'success';
         } catch (e) {
           partStatus.value[key] = 'error';
@@ -269,31 +278,67 @@ async function updateModule(moduleId) {
         }
       }
     }
-
-    updateError.value = null;
     alert('Модуль обновлён.');
   } catch (e) {
-    const msg = e.response?.data?.message || e.message || 'Неизвестная ошибка';
-    const code = e.response?.status || '';
-    updateError.value = code ? `[${code}] ${msg}` : msg;
+    updateError.value = e.response?.data?.message || e.message || 'Неизвестная ошибка';
   } finally {
     updating.value = null;
     updatePhase.value = '';
   }
 }
 
-function isAllPartsSelected(moduleId) {
-  const moduleParts = (props.parts?.[moduleId]?.parts || []).filter(p => p.access);
-  const selected = selectedParts.value[moduleId] || [];
-  return moduleParts.length > 0 && moduleParts.every(p => selected.includes(p.id));
+async function updateAllModules() {
+  if (!confirm('Обновить все модули?')) return;
+
+  updatingAll.value = true;
+  updateError.value = null;
+
+  for (const [id] of Object.entries(props.parts || {})) {
+    const moduleId = Number(id);
+    if (props.parts[id]?.disabled) continue;
+    await updateModule(moduleId);
+  }
+
+  updatingAll.value = false;
+  alert('Все модули обновлены.');
 }
 
-function toggleAllParts(moduleId) {
-  const moduleParts = (props.parts?.[moduleId]?.parts || []).filter(p => p.access);
-  if (isAllPartsSelected(moduleId)) {
-    selectedParts.value[moduleId] = [];
-  } else {
-    selectedParts.value[moduleId] = moduleParts.map(p => p.id);
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) {
+    selectedFile.value = file;
+    uploadResult.value = null;
+  }
+}
+
+async function uploadManual() {
+  if (!selectedFile.value) return;
+  uploading.value = true;
+  uploadResult.value = null;
+
+  const formData = new FormData();
+  formData.append('archive', selectedFile.value);
+
+  try {
+    const res = await fetch(route('dashboard.sveden.store'), {
+      method: 'POST',
+      body: formData,
+      credentials: 'same-origin',
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    });
+    const data = await res.json();
+    uploadResult.value = data;
+    if (data.success) {
+      selectedFile.value = null;
+      if (fileInput.value) fileInput.value.value = '';
+    }
+  } catch (e) {
+    uploadResult.value = { success: false, message: 'Ошибка загрузки: ' + e.message };
+  } finally {
+    uploading.value = false;
   }
 }
 
@@ -303,8 +348,6 @@ async function logout() {
     isAuthenticated.value = false;
     accessInfo.value = { has_access: false, error: null };
     versionInfo.value = { current_version: currentVersion.value, has_update: false, latest_version: null };
-  } catch (e) {
-    console.error('Logout failed:', e);
-  }
+  } catch {}
 }
 </script>
