@@ -52,7 +52,13 @@ class UpdateCoreAction
             $zipFile
         );
 
+        Log::info('Vikon: ZIP downloaded', ['size' => filesize($zipFile), 'module' => $moduleId]);
+
         $this->extractZip($zipFile, $tempPath);
+
+        // Log what was extracted
+        $extracted = array_map(fn($f) => basename($f), File::allFiles($tempPath));
+        Log::info('Vikon: extracted files', ['count' => count($extracted), 'sample' => array_slice($extracted, 0, 10)]);
 
         $blocked = $this->fs->validateFileTypes($tempPath);
         if (!empty($blocked)) {
@@ -74,7 +80,7 @@ class UpdateCoreAction
         File::makeDirectory($filesDir, 0755, true, true);
 
         $dirIds = $this->getUsedDirNames($moduleId, $accessToken);
-        Log::info('Vikon FM: dir identifiers', ['count' => count($dirIds)]);
+        Log::info('Vikon FM: dir identifiers', ['count' => count($dirIds), 'dirs' => $dirIds]);
 
         $synced = 0;
 
@@ -107,6 +113,10 @@ class UpdateCoreAction
             }
         }
 
+        $serverCount = count($files);
+        $localCount = count($existingFiles);
+        $toDownload = 0;
+
         $synced = 0;
         foreach ($files as $file) {
             $name = $file['n'] ?? null;
@@ -117,6 +127,7 @@ class UpdateCoreAction
                 continue;
             }
 
+            $toDownload++;
             try {
                 $content = $this->http->downloadWithToken(
                     "sync/downloadFileBinaryForSync?identity={$identity}&moduleId={$moduleId}",
@@ -129,6 +140,14 @@ class UpdateCoreAction
                 Log::warning('Vikon FM: root download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
             }
         }
+
+        Log::info('Vikon FM: root dir stats', [
+            'server' => $serverCount,
+            'local' => $localCount,
+            'to_download' => $toDownload,
+            'synced' => $synced,
+        ]);
+
         return $synced;
     }
 
