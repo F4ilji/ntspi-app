@@ -55,15 +55,15 @@ class UpdatePartAction
             throw new \RuntimeException("Part generation failed: {$error}");
         }
 
-        // Step 3: Check result
+        // Step 3: Check result (API returns HTTP 200 on success, no JSON body needed)
         $checkResponse = $this->http->getWithToken(
             "pull_updates/checkPartGenerationByNewCoreResultJson?operation_identity={$operationIdentity}&part={$part}",
             $accessToken
         );
-        $checkBody = $checkResponse->json();
 
-        if (empty($checkBody['success'])) {
-            throw new \RuntimeException('Part not ready: ' . ($checkBody['message'] ?? 'Unknown'));
+        if ($checkResponse->failed()) {
+            $body = $checkResponse->json([]);
+            throw new \RuntimeException('Part not ready: ' . ($body['message'] ?? 'HTTP ' . $checkResponse->status()));
         }
 
         // Step 4: Download ZIP

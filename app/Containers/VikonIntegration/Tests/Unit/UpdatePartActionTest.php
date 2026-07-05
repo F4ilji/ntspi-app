@@ -85,10 +85,12 @@ class UpdatePartActionTest extends TestCase
             ->with('op-abc-123', 'token')
             ->andReturn(['status' => 'completed']);
 
+        $checkResponse = Mockery::mock(Response::class);
+        $checkResponse->shouldReceive('failed')->once()->andReturn(false);
         $http->shouldReceive('getWithToken')
             ->once()
             ->with('pull_updates/checkPartGenerationByNewCoreResultJson?operation_identity=op-abc-123&part=common', 'token')
-            ->andReturn($this->mockResponse(['success' => true]));
+            ->andReturn($checkResponse);
 
         // Create a minimal ZIP
         $tempZipDir = $this->tempDir . '/zip_source';
