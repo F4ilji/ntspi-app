@@ -44,6 +44,7 @@ class HttpTask
         $url = $this->url($endpoint, $service);
         return $this->client()
             ->withToken($token)
+            ->asForm()
             ->post($url, $data);
     }
 
