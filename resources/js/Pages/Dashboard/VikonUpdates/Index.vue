@@ -76,24 +76,25 @@
                   <p class="text-xs text-muted-foreground-1">ID: {{ id }}</p>
                 </div>
               </div>
-              <button @click="updateModule(id)" :disabled="updating || !accessInfo.has_access || parts[id]?.disabled"
+              <button @click="updateModule(id)" :disabled="updating === id || !accessInfo.has_access || parts[id]?.disabled"
                 class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover disabled:opacity-50">
-                {{ updating ? 'Обновление...' : 'Обновить' }}
+                <span v-if="updating === id">Обновление...</span>
+                <span v-else>Обновить</span>
               </button>
             </div>
             <div v-if="parts && parts[id]?.disabled" class="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
               <p class="text-sm text-yellow-800">Обновление модуля запрещено сервером VIKON</p>
             </div>
-            <div v-else-if="parts && parts[id]?.parts?.length" class="mt-3 space-y-2">
-              <label class="flex items-center gap-2 text-xs font-medium text-muted-foreground-1 cursor-pointer">
-                <input type="checkbox" :checked="isAllPartsSelected(id)" @change="toggleAllParts(id)" class="rounded" />
-                Выбрать все
-              </label>
+            <div v-else-if="parts && parts[id]?.parts?.length" class="mt-3">
+              <div v-if="updating === id" class="flex items-center gap-2 text-sm text-muted-foreground-1 mb-2">
+                <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                <span>{{ updatePhase }}</span>
+              </div>
               <div class="pl-5 space-y-1">
                 <div v-for="p in parts[id]?.parts || []" :key="p.id"
                      class="flex items-center gap-2 text-sm"
                      :class="p.access ? '' : 'opacity-50'">
-                  <input type="checkbox" :value="p.id" v-model="selectedParts[id]" :disabled="!p.access || !!partStatus[`${id}-${p.id}`]" class="rounded" />
+                  <input type="checkbox" :value="p.id" v-model="selectedParts[id]" :disabled="!p.access || updating === id" class="rounded" />
                   <span class="flex-1" :class="p.access ? '' : 'cursor-not-allowed'">{{ p.name }}</span>
                   <span v-if="partStatus[`${id}-${p.id}`] === 'loading'" class="text-primary">
                     <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
@@ -102,29 +103,9 @@
                   <span v-else-if="partStatus[`${id}-${p.id}`] === 'error'" class="text-red-600 text-xs" :title="partErrors[`${id}-${p.id}`]">✗</span>
                 </div>
               </div>
-              <button
-                @click="updateSelectedParts(id)"
-                :disabled="!selectedParts[id]?.length || updatingPart === id"
-                class="text-sm bg-surface border border-layer-line px-3 py-1.5 rounded-md hover:bg-muted-hover disabled:opacity-50"
-              >
-                <span v-if="updatingPart === id">Обновление...</span>
-                <span v-else>Обновить выбранные ({{ selectedParts[id]?.length || 0 }})</span>
-              </button>
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Прогресс -->
-      <div v-if="updating" class="bg-layer border border-layer-line rounded-lg p-6">
-        <div class="flex items-center gap-3 mb-3">
-          <DashboardIcon name="arrow-path" size="5" class="text-primary animate-spin" />
-          <p class="text-sm font-medium">Обновление...</p>
-        </div>
-        <div class="w-full bg-muted rounded-full h-2.5">
-          <div class="bg-primary h-2.5 rounded-full transition-all" :style="{ width: progress + '%' }"></div>
-        </div>
-        <p class="text-xs text-muted-foreground-1 mt-2">{{ progress }}%</p>
       </div>
 
       <!-- Ошибка -->
@@ -167,20 +148,19 @@ const isAuthenticated = ref(props.is_authenticated);
 const currentVersion = ref(props.current_version);
 const checkingVersion = ref(false);
 const checkingAccess = ref(false);
-const updating = ref(false);
-const progress = ref(0);
+const updating = ref(null);
+const updatePhase = ref('');
 const updateError = ref(null);
 const versionInfo = ref({ current_version: props.current_version, has_update: false, latest_version: null });
 const accessInfo = ref({ has_access: false, error: null });
 const selectedParts = ref({});
 if (props.parts) {
   for (const [id, moduleData] of Object.entries(props.parts)) {
-    if (!moduleData.disabled) {
-      selectedParts.value[id] = [];
+    if (!moduleData.disabled && moduleData.parts) {
+      selectedParts.value[id] = moduleData.parts.filter(p => p.access).map(p => p.id);
     }
   }
 }
-const updatingPart = ref(null);
 const partStatus = ref({});
 const partErrors = ref({});
 
@@ -246,35 +226,59 @@ async function checkVersion() {
 }
 
 async function updateModule(moduleId) {
-  if (!confirm('Обновить модуль?')) return;
+  const partsToUpdate = selectedParts.value[moduleId] || [];
+  const msg = partsToUpdate.length
+    ? `Обновить модуль и ${partsToUpdate.length} раздел(ов)?`
+    : 'Обновить модуль (только ядро и файлы)?';
+  if (!confirm(msg)) return;
 
-  updating.value = true;
-  progress.value = 0;
+  updating.value = moduleId;
+  updatePhase.value = 'Обновление ядра модуля...';
   updateError.value = null;
-
-  const timer = setInterval(() => {
-    if (progress.value < 90) progress.value += 10;
-  }, 500);
+  // Clear previous part statuses
+  for (const p of partsToUpdate) {
+    delete partStatus.value[`${moduleId}-${p}`];
+    delete partErrors.value[`${moduleId}-${p}`];
+  }
 
   try {
+    // Phase 1: Core + FM sync
     const res = await axios.post(route('dashboard.vikon-updates.update-module'), { module_id: moduleId });
-    progress.value = 100;
-    clearInterval(timer);
-
-    if (res.data.success) {
-      updateError.value = null;
-      updating.value = false;
-      alert(res.data.message);
-    } else {
+    if (!res.data.success) {
       updateError.value = res.data.message;
-      updating.value = false;
+      updating.value = null;
+      return;
     }
+
+    // Phase 2: Update selected parts
+    if (partsToUpdate.length) {
+      updatePhase.value = 'Обновление разделов...';
+      for (const part of partsToUpdate) {
+        const key = `${moduleId}-${part}`;
+        partStatus.value[key] = 'loading';
+
+        try {
+          await axios.post(route('dashboard.vikon-updates.update-part'), {
+            module_id: moduleId,
+            part,
+          });
+          partStatus.value[key] = 'success';
+        } catch (e) {
+          partStatus.value[key] = 'error';
+          partErrors.value[key] = e.response?.data?.message || e.message;
+        }
+      }
+    }
+
+    updateError.value = null;
+    alert('Модуль обновлён.');
   } catch (e) {
-    clearInterval(timer);
-    updating.value = false;
     const msg = e.response?.data?.message || e.message || 'Неизвестная ошибка';
     const code = e.response?.status || '';
     updateError.value = code ? `[${code}] ${msg}` : msg;
+  } finally {
+    updating.value = null;
+    updatePhase.value = '';
   }
 }
 
@@ -291,37 +295,6 @@ function toggleAllParts(moduleId) {
   } else {
     selectedParts.value[moduleId] = moduleParts.map(p => p.id);
   }
-}
-
-async function updateSelectedParts(moduleId) {
-  const partsToUpdate = selectedParts.value[moduleId] || [];
-  if (!partsToUpdate.length) return;
-
-  updatingPart.value = moduleId;
-  // Clear previous statuses for this module
-  for (const part of partsToUpdate) {
-    delete partStatus.value[`${moduleId}-${part}`];
-    delete partErrors.value[`${moduleId}-${part}`];
-  }
-
-  for (const part of partsToUpdate) {
-    const key = `${moduleId}-${part}`;
-    partStatus.value[key] = 'loading';
-    partErrors.value[key] = null;
-
-    try {
-      await axios.post(route('dashboard.vikon-updates.update-part'), {
-        module_id: moduleId,
-        part,
-      });
-      partStatus.value[key] = 'success';
-    } catch (e) {
-      partStatus.value[key] = 'error';
-      partErrors.value[key] = e.response?.data?.message || e.message;
-    }
-  }
-
-  updatingPart.value = null;
 }
 
 async function logout() {
