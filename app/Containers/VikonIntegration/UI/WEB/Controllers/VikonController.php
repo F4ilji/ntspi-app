@@ -49,7 +49,6 @@ class VikonController extends Controller
             'modules' => config('vikon.modules'),
             'parts' => $parts,
             'vikon_api_domain' => config('vikon.api_domain'),
-            'vikon_auth_domain' => config('vikon.auth_domain'),
             'vikon_client_id' => config('vikon.client_id'),
         ]);
     }
@@ -90,7 +89,6 @@ class VikonController extends Controller
             'modules' => config('vikon.modules'),
             'parts' => $parts,
             'vikon_api_domain' => config('vikon.api_domain'),
-            'vikon_auth_domain' => config('vikon.auth_domain'),
             'vikon_client_id' => config('vikon.client_id'),
         ]);
     }

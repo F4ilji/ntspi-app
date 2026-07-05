@@ -172,7 +172,6 @@ const props = defineProps({
   modules: Object,
   parts: Object,
   vikon_api_domain: String,
-  vikon_auth_domain: String,
   vikon_client_id: String,
 });
 
@@ -208,7 +207,7 @@ const selectedFile = ref(null);
 const uploading = ref(false);
 const uploadResult = ref(null);
 
-const authUrl = `${props.vikon_auth_domain}oauth2/authorize?client_id=${props.vikon_client_id}&redirect_uri=${encodeURIComponent(window.location.origin + '/dashboard/vikon-updates/callback')}&response_type=code`;
+const authUrl = `${props.vikon_api_domain}oauth2/authorize?client_id=${props.vikon_client_id}&redirect_uri=${encodeURIComponent(window.location.origin + '/vikon_core/update/index.php')}&response_type=code`;
 
 onMounted(() => {
   const url = new URL(window.location.href);
