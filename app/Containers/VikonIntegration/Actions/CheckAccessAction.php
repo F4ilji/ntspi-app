@@ -50,11 +50,13 @@ class CheckAccessAction
             }
 
             // Extract parts per module from the API response
+            // API returns string keys ("1", "2", "6"), cast to int for Vue compatibility
             $partsByModule = [];
             if (isset($body['tree_access']) && is_array($body['tree_access'])) {
                 foreach ($body['tree_access'] as $moduleId => $moduleData) {
+                    $intId = (int) $moduleId;
                     if (isset($moduleData['parts']) && is_array($moduleData['parts'])) {
-                        $partsByModule[$moduleId] = array_map(
+                        $partsByModule[$intId] = array_map(
                             fn($p) => ['id' => $p['id'], 'name' => $p['name'] ?? $p['id'], 'access' => $p['access'] ?? true],
                             $moduleData['parts']
                         );
