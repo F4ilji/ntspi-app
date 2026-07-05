@@ -93,8 +93,9 @@ class UpdatePartAction
             // Step 5: Apply
             $syncedCount = $this->applyPart($part, $tempPath, $modulePath, $moduleId, $config);
         } finally {
-            // Step 6: Clean temp
+            // Step 6: Clean temp and post-sync artifacts
             File::deleteDirectory($tempPath);
+            $this->cleanupPostSync($modulePath);
         }
 
         Log::info('Vikon: part update complete', ['module' => $moduleId, 'part' => $part, 'synced' => $syncedCount]);
@@ -194,5 +195,34 @@ class UpdatePartAction
         }
 
         return $synced;
+    }
+
+    private function cleanupPostSync(string $modulePath): void
+    {
+        if (!File::isDirectory($modulePath)) {
+            return;
+        }
+
+        $removed = 0;
+
+        foreach (File::directories($modulePath) as $dir) {
+            $name = basename($dir);
+            if (str_ends_with($name, '_old') || str_ends_with($name, '_new')) {
+                File::deleteDirectory($dir);
+                $removed++;
+            }
+        }
+
+        foreach (File::files($modulePath) as $file) {
+            $name = $file->getFilename();
+            if (str_ends_with($name, '_old') || str_ends_with($name, '_new')) {
+                File::delete($file->getPathname());
+                $removed++;
+            }
+        }
+
+        if ($removed > 0) {
+            Log::info('Vikon: cleaned up post-sync', ['removed' => $removed, 'path' => $modulePath]);
+        }
     }
 }

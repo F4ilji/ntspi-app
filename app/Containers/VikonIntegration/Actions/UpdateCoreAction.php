@@ -28,6 +28,7 @@ class UpdateCoreAction
 
         $this->downloadCore($moduleId, $modulePath, $tempPath, $accessToken);
         $this->syncFromFM($moduleId, $modulePath, $accessToken);
+        $this->cleanupPostSync($modulePath);
 
         File::put($modulePath . '/.vikon', date('Y-m-d H:i:s'));
 
@@ -300,6 +301,36 @@ class UpdateCoreAction
             } else {
                 $this->copyFiles($dir, $targetPath);
             }
+        }
+    }
+
+    private function cleanupPostSync(string $modulePath): void
+    {
+        if (!File::isDirectory($modulePath)) {
+            return;
+        }
+
+        $removed = 0;
+
+        // Remove _old and _new directories/files left after successful atomic swap
+        foreach (File::directories($modulePath) as $dir) {
+            $name = basename($dir);
+            if (str_ends_with($name, '_old') || str_ends_with($name, '_new')) {
+                File::deleteDirectory($dir);
+                $removed++;
+            }
+        }
+
+        foreach (File::files($modulePath) as $file) {
+            $name = $file->getFilename();
+            if (str_ends_with($name, '_old') || str_ends_with($name, '_new')) {
+                File::delete($file->getPathname());
+                $removed++;
+            }
+        }
+
+        if ($removed > 0) {
+            Log::info('Vikon: cleaned up post-sync', ['removed' => $removed]);
         }
     }
 }
