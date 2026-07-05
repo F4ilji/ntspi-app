@@ -10,7 +10,7 @@ return [
     'auth_domain' => env('VIKON_AUTH_DOMAIN', 'https://auth.db-nica.ru/'),
     'filemanager_domain' => env('VIKON_FILEMANAGER_DOMAIN', 'https://file.db-nica.ru/'),
 
-    'current_version' => env('VIKON_CURRENT_VERSION', '5.90.8.1'),
+    'current_version' => '5.90.8.1',
 
     'http_timeout' => env('VIKON_HTTP_TIMEOUT', 60),
     'http_retries' => env('VIKON_HTTP_RETRIES', 3),
