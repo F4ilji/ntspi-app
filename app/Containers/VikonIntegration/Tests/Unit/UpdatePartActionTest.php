@@ -51,21 +51,6 @@ class UpdatePartActionTest extends TestCase
         $action->run(999, 'common', 'token');
     }
 
-    public function test_rejects_invalid_part(): void
-    {
-        $http = Mockery::mock(HttpTask::class);
-        $fs = Mockery::mock(FilesystemTask::class);
-        $poll = Mockery::mock(PollPartStatusTask::class);
-
-        $action = new UpdatePartAction($http, $fs, $poll, $this->tempDir, $this->tempDir, [
-            1 => ['path' => 'sveden', 'allowed_folders' => ['common']],
-        ]);
-
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage("Invalid part 'nonexistent' for module 1");
-        $action->run(1, 'nonexistent', 'token');
-    }
-
     public function test_requests_generation_and_polls_status(): void
     {
         $http = Mockery::mock(HttpTask::class);
@@ -117,8 +102,6 @@ class UpdatePartActionTest extends TestCase
             ->once()
             ->andReturn(true);
 
-        config(['vikon.parts' => [1 => ['common']]]);
-
         $action = new UpdatePartAction($http, $fs, $poll, $this->tempDir, $this->tempDir, [
             1 => ['path' => 'sveden', 'allowed_folders' => ['common']],
         ]);
@@ -140,8 +123,6 @@ class UpdatePartActionTest extends TestCase
             ->andReturn($this->mockResponse([
                 'message' => 'Generation not available',
             ]));
-
-        config(['vikon.parts' => [1 => ['common']]]);
 
         $action = new UpdatePartAction($http, $fs, $poll, $this->tempDir, $this->tempDir, [
             1 => ['path' => 'sveden', 'allowed_folders' => ['common']],
@@ -168,8 +149,6 @@ class UpdatePartActionTest extends TestCase
         $poll->shouldReceive('run')
             ->once()
             ->andReturn(['status' => 'failed', 'error' => 'Server error']);
-
-        config(['vikon.parts' => [1 => ['common']]]);
 
         $action = new UpdatePartAction($http, $fs, $poll, $this->tempDir, $this->tempDir, [
             1 => ['path' => 'sveden', 'allowed_folders' => ['common']],

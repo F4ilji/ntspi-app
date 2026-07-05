@@ -24,11 +24,6 @@ class UpdatePartAction
     {
         $config = $this->modulesConfig[$moduleId] ?? throw new \RuntimeException("Unknown module: {$moduleId}");
 
-        $allowedParts = config('vikon.parts', [])[$moduleId] ?? [];
-        if (!in_array($part, $allowedParts, true)) {
-            throw new \RuntimeException("Invalid part '{$part}' for module {$moduleId}");
-        }
-
         Log::info('Vikon: starting part update', ['module' => $moduleId, 'part' => $part]);
 
         // Step 1: Request generation

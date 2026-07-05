@@ -36,12 +36,18 @@ class VikonController extends Controller
     {
         $token = Session::get('vikon_access_token');
         $isAuth = $token ? $this->validateToken->run($token) : false;
+        $parts = [];
+
+        if ($isAuth && $token) {
+            $accessResult = $this->checkAccess->run($token);
+            $parts = $accessResult['parts'] ?? [];
+        }
 
         return inertia()->render('Dashboard/VikonUpdates/Index', [
             'is_authenticated' => $isAuth,
             'current_version' => config('vikon.current_version'),
             'modules' => config('vikon.modules'),
-            'parts' => config('vikon.parts'),
+            'parts' => $parts,
             'vikon_api_domain' => config('vikon.api_domain'),
             'vikon_client_id' => config('vikon.client_id'),
         ]);
@@ -70,12 +76,18 @@ class VikonController extends Controller
 
         $token = Session::get('vikon_access_token');
         $isAuth = $token ? $this->validateToken->run($token) : false;
+        $parts = [];
+
+        if ($isAuth && $token) {
+            $accessResult = $this->checkAccess->run($token);
+            $parts = $accessResult['parts'] ?? [];
+        }
 
         return inertia()->render('Dashboard/VikonUpdates/Index', [
             'is_authenticated' => $isAuth,
             'current_version' => config('vikon.current_version'),
             'modules' => config('vikon.modules'),
-            'parts' => config('vikon.parts'),
+            'parts' => $parts,
             'vikon_api_domain' => config('vikon.api_domain'),
             'vikon_client_id' => config('vikon.client_id'),
         ]);

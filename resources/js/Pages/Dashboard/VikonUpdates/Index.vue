@@ -87,9 +87,9 @@
                 Выбрать все
               </label>
               <div class="flex flex-wrap gap-x-4 gap-y-1 pl-5">
-                <label v-for="p in parts[id]" :key="p" class="flex items-center gap-1.5 text-sm cursor-pointer">
-                  <input type="checkbox" :value="p" v-model="selectedParts[id]" class="rounded" />
-                  {{ p }}
+                <label v-for="p in parts[id]" :key="p.id" class="flex items-center gap-1.5 text-sm" :class="p.access ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'">
+                  <input type="checkbox" :value="p.id" v-model="selectedParts[id]" :disabled="!p.access" class="rounded" />
+                  {{ p.name }}
                 </label>
               </div>
               <button
@@ -278,17 +278,17 @@ async function updateModule(moduleId) {
 }
 
 function isAllPartsSelected(moduleId) {
-  const moduleParts = props.parts?.[moduleId] || [];
+  const moduleParts = (props.parts?.[moduleId] || []).filter(p => p.access);
   const selected = selectedParts.value[moduleId] || [];
-  return moduleParts.length > 0 && moduleParts.every(p => selected.includes(p));
+  return moduleParts.length > 0 && moduleParts.every(p => selected.includes(p.id));
 }
 
 function toggleAllParts(moduleId) {
-  const moduleParts = props.parts?.[moduleId] || [];
+  const moduleParts = (props.parts?.[moduleId] || []).filter(p => p.access);
   if (isAllPartsSelected(moduleId)) {
     selectedParts.value[moduleId] = [];
   } else {
-    selectedParts.value[moduleId] = [...moduleParts];
+    selectedParts.value[moduleId] = moduleParts.map(p => p.id);
   }
 }
 

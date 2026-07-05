@@ -49,10 +49,24 @@ class CheckAccessAction
                 ];
             }
 
+            // Extract parts per module from the API response
+            $partsByModule = [];
+            if (isset($body['tree_access']) && is_array($body['tree_access'])) {
+                foreach ($body['tree_access'] as $moduleId => $moduleData) {
+                    if (isset($moduleData['parts']) && is_array($moduleData['parts'])) {
+                        $partsByModule[$moduleId] = array_map(
+                            fn($p) => ['id' => $p['id'], 'name' => $p['name'] ?? $p['id'], 'access' => $p['access'] ?? true],
+                            $moduleData['parts']
+                        );
+                    }
+                }
+            }
+
             return [
                 'has_access' => true,
                 'error' => null,
                 'modules_tree' => $body['tree_access'],
+                'parts' => $partsByModule,
             ];
         } catch (\Throwable $e) {
             Log::error('Vikon access check failed', ['error' => $e->getMessage()]);

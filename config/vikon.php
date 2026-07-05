@@ -49,12 +49,6 @@ return [
         ],
     ],
 
-    'parts' => [
-        1 => ['common', 'struct', 'document', 'education', 'managers', 'employees', 'objects', 'paid_edu', 'budget', 'vacant', 'grants', 'inter', 'catering', 'eduStandarts', 'corruption', 'antiterrorism'],
-        2 => ['abitur'],
-        6 => ['general', 'structure', 'faq', 'procedures', 'results-and-reports', 'plans', 'survey'],
-    ],
-
     'poll_interval' => (int) env('VIKON_POLL_INTERVAL', 3),
     'poll_max_attempts' => (int) env('VIKON_POLL_MAX_ATTEMPTS', 50),
 
