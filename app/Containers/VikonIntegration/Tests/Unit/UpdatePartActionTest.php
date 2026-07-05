@@ -47,7 +47,7 @@ class UpdatePartActionTest extends TestCase
         ]);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Unknown module: 999');
+        $this->expectExceptionMessage('Неизвестный модуль: 999');
         $action->run(999, 'common', 'token');
     }
 
@@ -109,7 +109,7 @@ class UpdatePartActionTest extends TestCase
         $result = $action->run(1, 'common', 'token');
 
         $this->assertTrue($result['success']);
-        $this->assertEquals("Part 'common' updated successfully.", $result['message']);
+        $this->assertEquals("Раздел «common» обновлён.", $result['message']);
     }
 
     public function test_throws_on_generation_failure(): void
@@ -129,7 +129,7 @@ class UpdatePartActionTest extends TestCase
         ]);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Failed to request part generation');
+        $this->expectExceptionMessage('Не удалось запросить генерацию');
         $action->run(1, 'common', 'token');
     }
 
@@ -155,7 +155,7 @@ class UpdatePartActionTest extends TestCase
         ]);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Part generation failed: Server error');
+        $this->expectExceptionMessage('Ошибка генерации: Server error');
         $action->run(1, 'common', 'token');
     }
 }

@@ -89,18 +89,25 @@
                 <input type="checkbox" :checked="isAllPartsSelected(id)" @change="toggleAllParts(id)" class="rounded" />
                 Выбрать все
               </label>
-              <div class="flex flex-wrap gap-x-4 gap-y-1 pl-5">
-                <label v-for="p in parts[id]?.parts || []" :key="p.id" class="flex items-center gap-1.5 text-sm" :class="p.access ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'">
-                  <input type="checkbox" :value="p.id" v-model="selectedParts[id]" :disabled="!p.access" class="rounded" />
-                  {{ p.name }}
-                </label>
+              <div class="pl-5 space-y-1">
+                <div v-for="p in parts[id]?.parts || []" :key="p.id"
+                     class="flex items-center gap-2 text-sm"
+                     :class="p.access ? '' : 'opacity-50'">
+                  <input type="checkbox" :value="p.id" v-model="selectedParts[id]" :disabled="!p.access || !!partStatus[`${id}-${p.id}`]" class="rounded" />
+                  <span class="flex-1" :class="p.access ? '' : 'cursor-not-allowed'">{{ p.name }}</span>
+                  <span v-if="partStatus[`${id}-${p.id}`] === 'loading'" class="text-primary">
+                    <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                  </span>
+                  <span v-else-if="partStatus[`${id}-${p.id}`] === 'success'" class="text-green-600 text-xs">✓</span>
+                  <span v-else-if="partStatus[`${id}-${p.id}`] === 'error'" class="text-red-600 text-xs" :title="partErrors[`${id}-${p.id}`]">✗</span>
+                </div>
               </div>
               <button
                 @click="updateSelectedParts(id)"
-                :disabled="!selectedParts[id]?.length || updatingPart"
+                :disabled="!selectedParts[id]?.length || updatingPart === id"
                 class="text-sm bg-surface border border-layer-line px-3 py-1.5 rounded-md hover:bg-muted-hover disabled:opacity-50"
               >
-                <span v-if="updatingPart">Обновление...</span>
+                <span v-if="updatingPart === id">Обновление...</span>
                 <span v-else>Обновить выбранные ({{ selectedParts[id]?.length || 0 }})</span>
               </button>
             </div>
@@ -118,18 +125,6 @@
           <div class="bg-primary h-2.5 rounded-full transition-all" :style="{ width: progress + '%' }"></div>
         </div>
         <p class="text-xs text-muted-foreground-1 mt-2">{{ progress }}%</p>
-      </div>
-
-      <!-- Результаты обновления частей -->
-      <div v-if="partResults.length" class="bg-layer border border-layer-line rounded-lg p-4 space-y-2">
-        <div v-for="(r, i) in partResults" :key="i" class="text-sm flex items-center gap-2">
-          <span :class="r.success ? 'text-green-600' : 'text-red-600'">
-            {{ r.success ? '✓' : '✗' }}
-          </span>
-          <span :class="r.success ? 'text-green-600' : 'text-red-600'">
-            {{ r.message }}
-          </span>
-        </div>
       </div>
 
       <!-- Ошибка -->
@@ -186,7 +181,8 @@ if (props.parts) {
   }
 }
 const updatingPart = ref(null);
-const partResults = ref([]);
+const partStatus = ref({});
+const partErrors = ref({});
 
 const authUrl = computed(() => {
   const redirect = encodeURIComponent(`${window.location.origin}/vikon_core/update/index.php`);
@@ -302,21 +298,26 @@ async function updateSelectedParts(moduleId) {
   if (!partsToUpdate.length) return;
 
   updatingPart.value = moduleId;
-  partResults.value = [];
+  // Clear previous statuses for this module
+  for (const part of partsToUpdate) {
+    delete partStatus.value[`${moduleId}-${part}`];
+    delete partErrors.value[`${moduleId}-${part}`];
+  }
 
   for (const part of partsToUpdate) {
+    const key = `${moduleId}-${part}`;
+    partStatus.value[key] = 'loading';
+    partErrors.value[key] = null;
+
     try {
-      const res = await axios.post(route('dashboard.vikon-updates.update-part'), {
+      await axios.post(route('dashboard.vikon-updates.update-part'), {
         module_id: moduleId,
         part,
       });
-      partResults.value.push(res.data);
+      partStatus.value[key] = 'success';
     } catch (e) {
-      partResults.value.push({
-        success: false,
-        message: e.response?.data?.message || e.message,
-        part,
-      });
+      partStatus.value[key] = 'error';
+      partErrors.value[key] = e.response?.data?.message || e.message;
     }
   }
 

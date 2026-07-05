@@ -22,7 +22,7 @@ class UpdatePartAction
 
     public function run(int $moduleId, string $part, string $accessToken): array
     {
-        $config = $this->modulesConfig[$moduleId] ?? throw new \RuntimeException("Unknown module: {$moduleId}");
+        $config = $this->modulesConfig[$moduleId] ?? throw new \RuntimeException("Неизвестный модуль: {$moduleId}");
 
         Log::info('Vikon: starting part update', ['module' => $moduleId, 'part' => $part]);
 
@@ -35,7 +35,7 @@ class UpdatePartAction
         $genBody = $genResponse->json();
 
         if (empty($genBody['operation_identity'])) {
-            throw new \RuntimeException('Failed to request part generation: ' . ($genBody['message'] ?? 'Unknown'));
+            throw new \RuntimeException('Не удалось запросить генерацию: ' . ($genBody['message'] ?? 'Неизвестная ошибка'));
         }
 
         $operationIdentity = $genBody['operation_identity'];
@@ -47,10 +47,10 @@ class UpdatePartAction
 
         if ($pollResult['status'] !== 'completed') {
             $error = $pollResult['error'] ?? $pollResult['status'];
-            throw new \RuntimeException("Part generation failed: {$error}");
+            throw new \RuntimeException("Ошибка генерации: {$error}");
         }
 
-        // Step 3: Check result (API returns HTTP 200 on success, no JSON body needed)
+        // Step 3: Check result
         $checkResponse = $this->http->getWithToken(
             "pull_updates/checkPartGenerationByNewCoreResultJson?operation_identity={$operationIdentity}&part={$part}",
             $accessToken
@@ -58,7 +58,7 @@ class UpdatePartAction
 
         if ($checkResponse->failed()) {
             $body = $checkResponse->json([]);
-            throw new \RuntimeException('Part not ready: ' . ($body['message'] ?? 'HTTP ' . $checkResponse->status()));
+            throw new \RuntimeException('Раздел не готов: ' . ($body['message'] ?? 'HTTP ' . $checkResponse->status()));
         }
 
         // Step 4: Download ZIP
@@ -75,7 +75,7 @@ class UpdatePartAction
 
         $zip = new ZipArchive();
         if ($zip->open($zipFile) !== true) {
-            throw new \RuntimeException('Failed to open part ZIP');
+            throw new \RuntimeException('Не удалось открыть ZIP-архив');
         }
         $zip->extractTo($tempPath);
         $zip->close();
@@ -85,7 +85,7 @@ class UpdatePartAction
         $blocked = $this->fs->validateFileTypes($tempPath);
         if (!empty($blocked)) {
             File::deleteDirectory($tempPath);
-            throw new \RuntimeException('Blocked files in ZIP: ' . implode(', ', $blocked));
+            throw new \RuntimeException('Запрещённые файлы в архиве: ' . implode(', ', $blocked));
         }
 
         $modulePath = $this->basePath . '/' . $config['path'];
@@ -94,7 +94,7 @@ class UpdatePartAction
             // Step 5: Apply
             $syncedCount = $this->applyPart($part, $tempPath, $modulePath, $moduleId, $config);
         } finally {
-            // Step 6: Clean temp (always runs, even on exception)
+            // Step 6: Clean temp
             File::deleteDirectory($tempPath);
         }
 
@@ -102,7 +102,7 @@ class UpdatePartAction
 
         return [
             'success' => true,
-            'message' => "Part '{$part}' updated successfully.",
+            'message' => "Раздел «{$part}» обновлён.",
             'synced_count' => $syncedCount,
         ];
     }
@@ -138,13 +138,13 @@ class UpdatePartAction
         }
 
         if (!File::exists($partSource)) {
-            throw new \RuntimeException("Part directory not found in ZIP: {$part}");
+            throw new \RuntimeException("Директория «{$part}» не найдена в архиве");
         }
 
         $result = $this->fs->atomicSwap($partSource, $partTarget, $modulePath, $moduleId);
         if (!$result) {
             $this->fs->restoreAfterFail($modulePath, [$part], $moduleId);
-            throw new \RuntimeException("Failed to apply part: {$part}");
+            throw new \RuntimeException("Не удалось применить раздел: {$part}");
         }
 
         return 1;
@@ -164,7 +164,7 @@ class UpdatePartAction
         }
 
         if (!File::exists($abiturSource)) {
-            throw new \RuntimeException('ABITUR directory not found in ZIP');
+            throw new \RuntimeException('Директория abitur не найдена в архиве');
         }
 
         $entries = File::allFiles($abiturSource);
@@ -188,7 +188,7 @@ class UpdatePartAction
 
             if (!$result) {
                 $this->fs->restoreAfterFail($modulePath, ['abitur'], $moduleId);
-                throw new \RuntimeException("Failed to sync ABITUR file: {$relative}");
+                throw new \RuntimeException("Ошибка синхронизации файла: {$relative}");
             }
 
             $synced++;
