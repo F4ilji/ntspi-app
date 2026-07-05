@@ -50,7 +50,6 @@ class CheckAccessAction
             }
 
             // Extract parts per module from the API response
-            // API returns string keys ("1", "2", "6"), cast to int for Vue compatibility
             $partsByModule = [];
             if (isset($body['tree_access']) && is_array($body['tree_access'])) {
                 foreach ($body['tree_access'] as $moduleId => $moduleData) {
@@ -63,6 +62,9 @@ class CheckAccessAction
                     }
                 }
             }
+
+            Log::info('Vikon modules tree raw', ['tree_access' => $body['tree_access']]);
+            Log::info('Vikon parts extracted', ['parts' => $partsByModule]);
 
             return [
                 'has_access' => true,
