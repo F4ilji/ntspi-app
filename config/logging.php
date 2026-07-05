@@ -54,7 +54,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['ai', 'email', 'vikon', 'vk', 'education', 'app'],
             'ignore_exceptions' => false,
         ],
 
@@ -125,6 +125,54 @@ return [
 
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
+        ],
+
+        'ai' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ai.log'),
+            'level' => env('LOG_AI_LEVEL', 'debug'),
+            'days' => 14,
+            'replace_placeholders' => true,
+        ],
+
+        'email' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/email.log'),
+            'level' => env('LOG_EMAIL_LEVEL', 'debug'),
+            'days' => 14,
+            'replace_placeholders' => true,
+        ],
+
+        'vikon' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/vikon.log'),
+            'level' => env('LOG_VIKON_LEVEL', 'debug'),
+            'days' => 14,
+            'replace_placeholders' => true,
+        ],
+
+        'vk' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/vk.log'),
+            'level' => env('LOG_VK_LEVEL', 'debug'),
+            'days' => 14,
+            'replace_placeholders' => true,
+        ],
+
+        'education' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/education.log'),
+            'level' => env('LOG_EDUCATION_LEVEL', 'debug'),
+            'days' => 14,
+            'replace_placeholders' => true,
+        ],
+
+        'app' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/app.log'),
+            'level' => env('LOG_APP_LEVEL', 'debug'),
+            'days' => 14,
+            'replace_placeholders' => true,
         ],
     ],
 
