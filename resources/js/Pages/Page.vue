@@ -19,7 +19,7 @@
       <div class="w-full min-w-0 mt-1 max-w-6xl px-1 md:px-6" style="">
         <div class="space-y-2 md:space-y-5">
           <BaseBreadcrumbs
-            v-if="!settings?.hide_breadcrumbs"
+            v-if="!settings?.hide_breadcrumbs && breadcrumbs?.page"
             :breadcrumbs="breadcrumbs"
           >
             <BreadcrumbsItem
