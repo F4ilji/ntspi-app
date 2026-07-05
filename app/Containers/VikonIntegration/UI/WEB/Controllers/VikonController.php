@@ -45,7 +45,7 @@ class VikonController extends Controller
 
         return inertia()->render('Dashboard/VikonUpdates/Index', [
             'is_authenticated' => $isAuth,
-            'current_version' => config('vikon.current_version'),
+            'current_version' => $this->getCurrentVersion(),
             'modules' => config('vikon.modules'),
             'parts' => $parts,
             'vikon_api_domain' => config('vikon.api_domain'),
@@ -219,5 +219,17 @@ class VikonController extends Controller
             . '&state=' . $state;
 
         return response()->json(['url' => $url]);
+    }
+
+    private function getCurrentVersion(): string
+    {
+        $versionFile = config('vikon.current_version_file');
+        if ($versionFile && file_exists($versionFile)) {
+            $version = trim(file_get_contents($versionFile));
+            if ($version !== '') {
+                return $version;
+            }
+        }
+        return '1.0.0';
     }
 }

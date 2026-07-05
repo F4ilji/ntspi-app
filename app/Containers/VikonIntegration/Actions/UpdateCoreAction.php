@@ -32,6 +32,9 @@ class UpdateCoreAction
 
         File::put($modulePath . '/.vikon', date('Y-m-d H:i:s'));
 
+        // Update version file from API
+        $this->updateVersionFile($accessToken);
+
         Log::info('Vikon: full update complete', ['module' => $config['name']]);
         return 'Модуль "' . $config['name'] . '" полностью обновлён.';
     }
@@ -331,6 +334,25 @@ class UpdateCoreAction
 
         if ($removed > 0) {
             Log::info('Vikon: cleaned up post-sync', ['removed' => $removed]);
+        }
+    }
+
+    private function updateVersionFile(string $accessToken): void
+    {
+        try {
+            $response = $this->http->getWithToken('pull_updates/assist/getUpdateVersionJson', $accessToken);
+            $body = $response->json();
+            $latestVersion = $body['version'] ?? null;
+
+            if ($latestVersion) {
+                $versionFile = config('vikon.current_version_file');
+                if ($versionFile) {
+                    file_put_contents($versionFile, $latestVersion);
+                    Log::info('Vikon: version updated', ['version' => $latestVersion]);
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Vikon: failed to update version file', ['error' => $e->getMessage()]);
         }
     }
 }

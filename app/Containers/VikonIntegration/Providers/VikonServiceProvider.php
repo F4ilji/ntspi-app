@@ -69,10 +69,17 @@ class VikonServiceProvider extends ServiceProvider
             publicPath: public_path(),
         ));
 
-        $this->app->singleton(CheckVersionAction::class, fn ($app) => new CheckVersionAction(
-            http: $app->make(HttpTask::class),
-            currentVersion: config('vikon.current_version', '1.0.0'),
-        ));
+        $this->app->singleton(CheckVersionAction::class, function ($app) {
+            $versionFile = config('vikon.current_version_file');
+            $version = '1.0.0';
+            if ($versionFile && file_exists($versionFile)) {
+                $version = trim(file_get_contents($versionFile)) ?: '1.0.0';
+            }
+            return new CheckVersionAction(
+                http: $app->make(HttpTask::class),
+                currentVersion: $version,
+            );
+        });
 
         $this->app->singleton(UpdateCoreAction::class, fn ($app) => new UpdateCoreAction(
             http: $app->make(HttpTask::class),
