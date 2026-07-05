@@ -33,7 +33,7 @@ class DownloadAttachmentsTask
     {
         $disk = $disk ?? config('email-news.attachments_folder', 'email_attachments');
 
-        Log::debug('[DownloadAttachmentsTask] Начало загрузки вложений', [
+        Log::channel('email')->debug('Начало загрузки вложений', [
             'message_id' => $message->getMessageId(),
             'disk' => $disk,
             'memory_usage' => round(memory_get_usage(true) / 1024 / 1024, 2) . 'MB',
@@ -44,11 +44,11 @@ class DownloadAttachmentsTask
         $attachments = $message->getAttachments();
 
         if (empty($attachments)) {
-            Log::warning('[DownloadAttachmentsTask] Вложения не найдены');
+            Log::channel('email')->warning('Вложения не найдены');
             throw EmailFetchException::noAttachmentsFound();
         }
 
-        Log::debug('[DownloadAttachmentsTask] Найдено вложений', [
+        Log::channel('email')->debug('Найдено вложений', [
             'count' => count($attachments),
         ]);
 
@@ -60,7 +60,7 @@ class DownloadAttachmentsTask
             try {
                 // Проверяем размер
                 if ($maxSize > 0 && $attachment->getSize() > $maxSize) {
-                    Log::warning('[DownloadAttachmentsTask] Вложение превышает максимальный размер', [
+                    Log::channel('email')->warning('Вложение превышает максимальный размер', [
                         'filename' => $attachment->getName(),
                         'size' => $attachment->getSize(),
                         'max_size' => $maxSize,
@@ -83,7 +83,7 @@ class DownloadAttachmentsTask
                         contentId: $attachment->getContentId(),
                     );
 
-                    Log::debug('[DownloadAttachmentsTask] Вложение сохранено', [
+                    Log::channel('email')->debug('Вложение сохранено', [
                         'filename' => $attachment->getName(),
                         'path' => $savedPath,
                         'size' => $attachment->getSize(),
@@ -92,13 +92,13 @@ class DownloadAttachmentsTask
 
                 // OPTIMIZATION: Логирование памяти для больших вложений
                 if (memory_get_usage(true) > self::MEMORY_LOG_THRESHOLD) {
-                    Log::debug('[DownloadAttachmentsTask] Высокое использование памяти', [
+                    Log::channel('email')->debug('Высокое использование памяти', [
                         'memory_usage' => round(memory_get_usage(true) / 1024 / 1024, 2) . 'MB',
                         'peak_memory' => round(memory_get_peak_usage(true) / 1024 / 1024, 2) . 'MB',
                     ]);
                 }
             } catch (\Exception $e) {
-                Log::error('[DownloadAttachmentsTask] Ошибка сохранения вложения', [
+                Log::channel('email')->error('Ошибка сохранения вложения', [
                     'filename' => $attachment->getName(),
                     'error' => $e->getMessage(),
                 ]);
@@ -107,11 +107,11 @@ class DownloadAttachmentsTask
         }
 
         if (empty($savedAttachments)) {
-            Log::error('[DownloadAttachmentsTask] Не удалось сохранить ни одно вложение');
+            Log::channel('email')->error('Не удалось сохранить ни одно вложение');
             throw EmailFetchException::noAttachmentsFound();
         }
 
-        Log::debug('[DownloadAttachmentsTask] Загрузка вложений завершена', [
+        Log::channel('email')->debug('Загрузка вложений завершена', [
             'saved_count' => count($savedAttachments),
             'memory_usage' => round(memory_get_usage(true) / 1024 / 1024, 2) . 'MB',
         ]);
@@ -145,7 +145,7 @@ class DownloadAttachmentsTask
                 return $disk . '/' . $filename;
             }
         } catch (\Exception $e) {
-            Log::error('[DownloadAttachmentsTask:saveAttachment] Ошибка сохранения', [
+            Log::channel('email')->error('Ошибка сохранения', [
                 'filename' => $attachment->getName(),
                 'error' => $e->getMessage(),
             ]);

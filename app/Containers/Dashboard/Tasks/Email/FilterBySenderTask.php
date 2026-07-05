@@ -32,13 +32,13 @@ class FilterBySenderTask
             }
         }
 
-        Log::debug('[FilterBySenderTask] Фильтрация писем', [
+        Log::channel('email')->debug('Фильтрация писем', [
             'total_emails' => count($emails),
             'allowed_senders' => $allowedSenders,
         ]);
 
         if (empty($allowedSenders)) {
-            Log::warning('[FilterBySenderTask] Не указан разрешённый отправитель, пропускаем все письма');
+            Log::channel('email')->warning('Не указан разрешённый отправитель, пропускаем все письма');
             return [];
         }
 
@@ -54,7 +54,7 @@ class FilterBySenderTask
                 
                 // Логируем только если включено логирование
                 if (config('email-news.log_skipped_emails', true)) {
-                    Log::debug('[FilterBySenderTask] Пропущено письмо от неразрешённого отправителя', [
+                    Log::channel('email')->debug('Пропущено письмо от неразрешённого отправителя', [
                         'from' => $fromEmail,
                         'subject' => $email['subject'],
                         'date' => $email['date'],
@@ -66,7 +66,7 @@ class FilterBySenderTask
             $filtered[] = $email;
         }
 
-        Log::debug('[FilterBySenderTask] Фильтрация завершена', [
+        Log::channel('email')->debug('Фильтрация завершена', [
             'total' => count($emails),
             'filtered' => count($filtered),
             'skipped' => $skippedCount,

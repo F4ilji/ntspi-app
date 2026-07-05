@@ -102,7 +102,7 @@ class ProcessUploadedFilesAction
             }
         }
 
-        Log::info('[ProcessUploadedFilesAction] Статистика сжатия', [
+        Log::channel('email')->info('[ProcessUploadedFilesAction] Статистика сжатия', [
             'total_images' => $compressionStats['total'],
             'compressed' => $compressionStats['compressed'],
             'saved' => $this->formatFileSize($compressionStats['saved_bytes']),

@@ -53,11 +53,11 @@ class FetchEmailNewsAction
     {
         // Проверяем, включена ли функция
         if (!config('email-news.enabled', true)) {
-            Log::warning('[FetchEmailNewsAction] Функция отключена в конфиге');
+            Log::channel('email')->warning('Функция отключена в конфиге');
             throw EmailFetchException::featureDisabled();
         }
 
-        Log::info('[FetchEmailNewsAction] Начало получения новостей из Email');
+        Log::channel('email')->info('Начало получения новостей из Email');
 
         $result = [
             'processed_emails' => 0,
@@ -82,7 +82,7 @@ class FetchEmailNewsAction
             $hasMoreEmails = true;
 
             while ($hasMoreEmails) {
-                Log::info('[FetchEmailNewsAction] Обработка batch', [
+                Log::channel('email')->info('Обработка batch', [
                     'batch' => $result['batches_processed'] + 1,
                     'batch_size' => self::BATCH_SIZE,
                     'memory_usage' => round(memory_get_usage(true) / 1024 / 1024, 2) . 'MB',
@@ -96,7 +96,7 @@ class FetchEmailNewsAction
 
                 if (empty($emails)) {
                     $hasMoreEmails = false;
-                    Log::info('[FetchEmailNewsAction] Нет больше писем для обработки');
+                    Log::channel('email')->info('Нет больше писем для обработки');
                     break;
                 }
 
@@ -127,7 +127,7 @@ class FetchEmailNewsAction
                 $this->collectGarbageIfNeeded();
             }
 
-            Log::info('[FetchEmailNewsAction] Завершено', [
+            Log::channel('email')->info('Завершено', [
                 'processed' => $result['processed_emails'],
                 'created_posts' => $result['created_posts'],
                 'skipped' => $result['skipped_emails'],
@@ -141,7 +141,7 @@ class FetchEmailNewsAction
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('[FetchEmailNewsAction] Критическая ошибка', [
+            Log::channel('email')->error('Критическая ошибка', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -159,7 +159,7 @@ class FetchEmailNewsAction
      */
     private function processEmail(array $email, Folder $folder): array
     {
-        Log::info('[FetchEmailNewsAction:processEmail] Обработка письма', [
+        Log::channel('email')->info('Обработка письма', [
             'subject' => $email['subject'] ?? 'unknown',
             'from' => $email['from_email'] ?? 'unknown',
             'uid' => $email['uid'] ?? 'unknown',
@@ -168,7 +168,7 @@ class FetchEmailNewsAction
         try {
             // SAFETY: Проверка наличия валидного IMAP message объекта
             if (!isset($email['message']) || !is_object($email['message'])) {
-                Log::warning('[FetchEmailNewsAction:processEmail] Отсутствует IMAP message объект', [
+                Log::channel('email')->warning('Отсутствует IMAP message объект', [
                     'subject' => $email['subject'] ?? 'unknown',
                 ]);
 
@@ -185,7 +185,7 @@ class FetchEmailNewsAction
             $hasDocument = collect($attachments)->contains(fn($att) => $att->isDocument());
 
             if (!$hasDocument) {
-                Log::warning('[FetchEmailNewsAction:processEmail] Нет DOC/DOCX файла во вложениях', [
+                Log::channel('email')->warning('Нет DOC/DOCX файла во вложениях', [
                     'subject' => $email['subject'] ?? 'unknown',
                 ]);
 
@@ -207,7 +207,7 @@ class FetchEmailNewsAction
             // Помечаем письмо как прочитанное
             $this->markEmail($email['message'], $folder);
 
-            Log::info('[FetchEmailNewsAction:processEmail] Письмо успешно обработано', [
+            Log::channel('email')->info('Письмо успешно обработано', [
                 'subject' => $email['subject'] ?? 'unknown',
                 'post_id' => $postResult['post']->id,
             ]);
@@ -218,7 +218,7 @@ class FetchEmailNewsAction
                 'attachments_count' => count($attachments),
             ];
         } catch (\Exception $e) {
-            Log::error('[FetchEmailNewsAction:processEmail] Ошибка обработки письма', [
+            Log::channel('email')->error('Ошибка обработки письма', [
                 'subject' => $email['subject'] ?? 'unknown',
                 'error' => $e->getMessage(),
             ]);
@@ -244,7 +244,7 @@ class FetchEmailNewsAction
             $fullPath = storage_path('app/' . $attachment->path);
 
             if (!file_exists($fullPath)) {
-                Log::warning('[FetchEmailNewsAction:convertToUploadedFiles] Файл не найден', [
+                Log::channel('email')->warning('Файл не найден', [
                     'path' => $attachment->path,
                 ]);
                 continue;
@@ -262,7 +262,7 @@ class FetchEmailNewsAction
             $uploadedFiles[] = $uploadedFile;
         }
 
-        Log::info('[FetchEmailNewsAction:convertToUploadedFiles] Конвертировано файлов', [
+        Log::channel('email')->info('Конвертировано файлов', [
             'count' => count($uploadedFiles),
         ]);
 
@@ -304,7 +304,7 @@ class FetchEmailNewsAction
             $memoryAfter = round(memory_get_usage(true) / 1024 / 1024, 2);
             $freed = round(($memoryBefore - $memoryAfter), 2);
 
-            Log::info('[FetchEmailNewsAction] Сборка мусора', [
+            Log::channel('email')->info('Сборка мусора', [
                 'memory_before' => $memoryBefore . 'MB',
                 'memory_after' => $memoryAfter . 'MB',
                 'freed' => $freed . 'MB',

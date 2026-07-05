@@ -34,7 +34,7 @@ class ProcessMixedFilesAction
         // Принудительная очистка памяти перед обработкой
         gc_collect_cycles();
 
-        Log::info('[ProcessMixedFilesAction] Начало обработки файлов', [
+        Log::channel('email')->info('Начало обработки файлов', [
             'files_count' => $files->count(),
             'files' => $files->map(fn($f) => $f->getClientOriginalName())->toArray(),
             'memory_usage' => round(memory_get_usage(true) / 1024 / 1024, 2) . ' MB',
@@ -45,11 +45,11 @@ class ProcessMixedFilesAction
         $mainFile = $this->findMainNewsFileTask->run($files);
 
         if (!$mainFile) {
-            Log::error('[ProcessMixedFilesAction] Не найден файл для извлечения текста');
+            Log::channel('email')->error('Не найден файл для извлечения текста');
             throw new \RuntimeException('Не найден DOC/DOCX файл для извлечения текста');
         }
 
-        Log::info('[ProcessMixedFilesAction] Основной файл найден', [
+        Log::channel('email')->info('Основной файл найден', [
             'file' => $mainFile->getClientOriginalName(),
             'extension' => $mainFile->getClientOriginalExtension(),
             'real_path' => $mainFile->getRealPath(),
@@ -57,28 +57,28 @@ class ProcessMixedFilesAction
         ]);
 
         // Извлекаем текст из основного файла (поддерживает и .doc, и .docx)
-        Log::info('[ProcessMixedFilesAction] Начало извлечения текста из документа');
+        Log::channel('email')->info('Начало извлечения текста из документа');
         try {
             $extractedText = $this->extractTextFromDocumentTask->run($mainFile);
-            Log::info('[ProcessMixedFilesAction] Текст извлечен', [
+            Log::channel('email')->info('Текст извлечен', [
                 'text_length' => strlen($extractedText ?? ''),
                 'text_preview' => substr($extractedText ?? '', 0, 100),
             ]);
         } catch (\Exception $e) {
-            Log::error('[ProcessMixedFilesAction] Ошибка при извлечении текста', [
+            Log::channel('email')->error('Ошибка при извлечении текста', [
                 'error' => $e->getMessage(),
                 'file' => $mainFile->getClientOriginalName(),
             ]);
             throw $e;
         }
 
-        Log::info('[ProcessMixedFilesAction] Результат извлечения текста', [
+        Log::channel('email')->info('Результат извлечения текста', [
             'text_length' => strlen($extractedText ?? ''),
             'has_text' => !empty($extractedText),
         ]);
 
         if (empty($extractedText)) {
-            Log::warning('[ProcessMixedFilesAction] Пустой текст после извлечения', [
+            Log::channel('email')->warning('Пустой текст после извлечения', [
                 'file' => $mainFile->getClientOriginalName(),
             ]);
         }
@@ -93,7 +93,7 @@ class ProcessMixedFilesAction
         $categories = Category::all();
 
         // Отправляем текст в AI
-        Log::info('[ProcessMixedFilesAction] Отправка текста в AI сервис', [
+        Log::channel('email')->info('Отправка текста в AI сервис', [
             'text_length' => strlen($extractedText ?? ''),
             'categories_count' => $categories->count(),
         ]);
@@ -101,7 +101,7 @@ class ProcessMixedFilesAction
         try {
             $newsData = $this->callAiServiceTask->run($extractedText, $categories);
         } catch (\Exception $e) {
-            Log::error('[ProcessMixedFilesAction] Ошибка вызова AI сервиса', [
+            Log::channel('email')->error('Ошибка вызова AI сервиса', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -109,11 +109,11 @@ class ProcessMixedFilesAction
         }
 
         if (!$newsData) {
-            Log::error('[ProcessMixedFilesAction] AI сервис вернул пустой ответ');
+            Log::channel('email')->error('AI сервис вернул пустой ответ');
             throw new \RuntimeException('Не удалось распознать данные через AI сервис. Проверьте логи AI запроса.');
         }
 
-        Log::info('[ProcessMixedFilesAction] AI данные успешно получены', [
+        Log::channel('email')->info('AI данные успешно получены', [
             'title' => $newsData['title'] ?? 'N/A',
             'category_id' => $newsData['category_id'] ?? 'N/A',
         ]);
@@ -130,7 +130,7 @@ class ProcessMixedFilesAction
      */
     private function saveFiles(Collection $files, UploadedFile $mainFile): array
     {
-        Log::info('[ProcessMixedFilesAction:saveFiles] Начало сохранения файлов', [
+        Log::channel('email')->info('Начало сохранения файлов', [
             'total_files' => $files->count(),
         ]);
 
@@ -151,7 +151,7 @@ class ProcessMixedFilesAction
 
             // Если это изображение - сжимаем
             if ($this->compressImageTask->isImage($file)) {
-                Log::info('[ProcessMixedFilesAction:saveFiles] Обработка изображения', [
+                Log::channel('email')->info('Обработка изображения', [
                     'file' => $file->getClientOriginalName(),
                 ]);
 
@@ -161,7 +161,7 @@ class ProcessMixedFilesAction
                     $compressionStats['compressed']++;
                     $compressionStats['saved_bytes'] += $result['original_size'] - $result['size'];
 
-                    Log::info('[ProcessMixedFilesAction:saveFiles] Изображение сжато', [
+                    Log::channel('email')->info('Изображение сжато', [
                         'file' => $file->getClientOriginalName(),
                         'original_size' => $this->formatFileSize($result['original_size']),
                         'compressed_size' => $this->formatFileSize($result['size']),
@@ -185,7 +185,7 @@ class ProcessMixedFilesAction
             }
         }
 
-        Log::info('[ProcessMixedFilesAction:saveFiles] Статистика сжатия', [
+        Log::channel('email')->info('Статистика сжатия', [
             'total_images' => $compressionStats['total'],
             'compressed' => $compressionStats['compressed'],
             'saved' => $this->formatFileSize($compressionStats['saved_bytes']),

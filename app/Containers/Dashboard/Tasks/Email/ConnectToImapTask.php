@@ -31,7 +31,7 @@ class ConnectToImapTask
         // Получаем конфиг для webklex/php-imap
         $imapConfig = config('imap');
 
-        Log::debug('[ConnectToImapTask] Попытка подключения к IMAP', [
+        Log::channel('email')->debug('Попытка подключения к IMAP', [
             'account' => $accountName,
             'host' => $imapConfig['accounts'][$accountName]['host'] ?? 'unknown',
         ]);
@@ -47,13 +47,13 @@ class ConnectToImapTask
             $client = $clientManager->account($accountName);
             $client->connect();
 
-            Log::debug('[ConnectToImapTask] Успешное подключение к IMAP', [
+            Log::channel('email')->debug('Успешное подключение к IMAP', [
                 'account' => $accountName,
             ]);
 
             return $client;
         } catch (\Exception $e) {
-            Log::error('[ConnectToImapTask] Ошибка подключения к IMAP', [
+            Log::channel('email')->error('Ошибка подключения к IMAP', [
                 'account' => $accountName,
                 'error' => $e->getMessage(),
             ]);
@@ -72,7 +72,7 @@ class ConnectToImapTask
      */
     public function getFolder(Client $client, string $folderName): Folder
     {
-        Log::debug('[ConnectToImapTask] Получение папки', [
+        Log::channel('email')->debug('Получение папки', [
             'folder' => $folderName,
         ]);
 
@@ -95,7 +95,7 @@ class ConnectToImapTask
                 throw EmailFetchException::folderNotFound($folderName);
             }
 
-            Log::debug('[ConnectToImapTask] Папка получена успешно', [
+            Log::channel('email')->debug('Папка получена успешно', [
                 'folder' => $folderName,
                 'fullName' => $folder->full_name ?? $folder->name ?? $folderName,
             ]);
@@ -104,7 +104,7 @@ class ConnectToImapTask
         } catch (EmailFetchException $e) {
             throw $e;
         } catch (\Exception $e) {
-            Log::error('[ConnectToImapTask] Ошибка получения папки', [
+            Log::channel('email')->error('Ошибка получения папки', [
                 'folder' => $folderName,
                 'error' => $e->getMessage(),
             ]);

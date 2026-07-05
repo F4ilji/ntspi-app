@@ -29,7 +29,7 @@ class FetchUnreadEmailsTask
     {
         $limit = $limit ?? config('imap.options.fetch_limit', 20);
 
-        Log::debug('[FetchUnreadEmailsTask] Получение непрочитанных писем', [
+        Log::channel('email')->debug('Получение непрочитанных писем', [
             'folder' => $folder->full_name ?? $folder->name ?? 'unknown',
             'limit' => $limit,
         ]);
@@ -75,7 +75,7 @@ class FetchUnreadEmailsTask
                 'emails_count' => count($emails),
             ]);
 
-            Log::debug('[FetchUnreadEmailsTask] Получены письма', [
+            Log::channel('email')->debug('Получены письма', [
                 'count' => count($emails),
                 'folder' => $folder->full_name ?? $folder->name ?? 'unknown',
             ]);
@@ -85,7 +85,7 @@ class FetchUnreadEmailsTask
             // Пробрасываем наши кастомные исключения
             throw $e;
         } catch (\Exception $e) {
-            Log::error('[FetchUnreadEmailsTask] Ошибка получения писем', [
+            Log::channel('email')->error('Ошибка получения писем', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
