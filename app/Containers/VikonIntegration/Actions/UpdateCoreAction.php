@@ -43,15 +43,14 @@ class UpdateCoreAction
             return;
         }
 
-        $zipContent = $this->http->downloadWithToken(
-            'pull_updates/generateEmptyModuleCore/' . $moduleId,
-            $accessToken
-        );
-
         File::makeDirectory($tempPath, 0755, true, true);
 
         $zipFile = $tempPath . '/module.zip';
-        file_put_contents($zipFile, $zipContent);
+        $this->http->downloadToFile(
+            'pull_updates/generateEmptyModuleCore/' . $moduleId,
+            $accessToken,
+            $zipFile
+        );
 
         $this->extractZip($zipFile, $tempPath);
 

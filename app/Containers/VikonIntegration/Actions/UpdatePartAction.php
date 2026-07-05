@@ -62,16 +62,15 @@ class UpdatePartAction
         }
 
         // Step 4: Download ZIP
-        $zipContent = $this->http->downloadWithToken(
-            "pull_updates/downloadPartByNewCoreResult?operation_identity={$operationIdentity}&part={$part}",
-            $accessToken
-        );
-
         $tempPath = $this->storagePath . '/temp/' . $config['path'] . '_part';
         File::makeDirectory($tempPath, 0755, true, true);
 
         $zipFile = $tempPath . '/part.zip';
-        file_put_contents($zipFile, $zipContent);
+        $this->http->downloadToFile(
+            "pull_updates/downloadPartByNewCoreResult?operation_identity={$operationIdentity}&part={$part}",
+            $accessToken,
+            $zipFile
+        );
 
         $zip = new ZipArchive();
         if ($zip->open($zipFile) !== true) {

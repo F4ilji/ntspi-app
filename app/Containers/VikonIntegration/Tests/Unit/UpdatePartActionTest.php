@@ -90,9 +90,11 @@ class UpdatePartActionTest extends TestCase
 
         $zipContent = file_get_contents($zipPath);
 
-        $http->shouldReceive('downloadWithToken')
+        $http->shouldReceive('downloadToFile')
             ->once()
-            ->andReturn($zipContent);
+            ->andReturnUsing(function ($endpoint, $token, $filePath) use ($zipContent) {
+                file_put_contents($filePath, $zipContent);
+            });
 
         $fs->shouldReceive('validateFileTypes')
             ->once()

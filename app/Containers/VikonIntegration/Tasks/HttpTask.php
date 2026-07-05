@@ -54,6 +54,7 @@ class HttpTask
         $response = $this->client()
             ->withToken($token)
             ->withHeaders(['Accept-Encoding' => 'zip, gzip'])
+            ->timeout(300)
             ->get($url);
 
         if ($response->failed()) {
@@ -61,6 +62,66 @@ class HttpTask
         }
 
         return $response->body();
+    }
+
+    /**
+     * Download a file directly to disk using cURL streaming (avoids memory limit for large files).
+     */
+    public function downloadToFile(string $endpoint, string $token, string $filePath, string $service = 'api'): void
+    {
+        $url = $this->url($endpoint, $service);
+
+        $headers = [
+            'Authorization: Bearer ' . $token,
+            'Accept-Encoding: zip, gzip',
+        ];
+
+        if (config('vikon.domain_resolve')) {
+            $resolve = [
+                'db-nica.ru:443:' . config('vikon.vikon_domain_resolve_ip'),
+                'file.db-nica.ru:443:' . config('vikon.fm_domain_resolve_ip'),
+            ];
+        }
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => false,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_TIMEOUT => 300,
+            CURLOPT_CONNECTTIMEOUT => 30,
+        ]);
+
+        if (!empty($resolve)) {
+            curl_setopt($ch, CURLOPT_RESOLVE, $resolve);
+        }
+
+        $fp = fopen($filePath, 'w');
+        if (!$fp) {
+            curl_close($ch);
+            throw new \RuntimeException("Cannot open file for writing: {$filePath}");
+        }
+
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        curl_exec($ch);
+
+        $error = curl_error($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        fclose($fp);
+
+        if ($error) {
+            @unlink($filePath);
+            throw new \RuntimeException('cURL download error: ' . $error);
+        }
+
+        if ($httpCode !== 200) {
+            @unlink($filePath);
+            throw new \RuntimeException("Download failed with HTTP {$httpCode}");
+        }
     }
 
     private function client(): PendingRequest
