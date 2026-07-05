@@ -175,6 +175,11 @@ const updateError = ref(null);
 const versionInfo = ref({ current_version: props.current_version, has_update: false, latest_version: null });
 const accessInfo = ref({ has_access: false, error: null });
 const selectedParts = ref({});
+if (props.parts) {
+  for (const [id, moduleParts] of Object.entries(props.parts)) {
+    selectedParts.value[id] = [];
+  }
+}
 const updatingPart = ref(null);
 const partResults = ref([]);
 
