@@ -32,7 +32,7 @@ class ValidateTokenTask
 
             return $valid;
         } catch (\Throwable $e) {
-            Log::warning('Vikon token validation failed', ['error' => $e->getMessage()]);
+            Log::channel('vikon')->warning('Vikon token validation failed', ['error' => $e->getMessage()]);
             return false;
         }
     }

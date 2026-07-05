@@ -24,7 +24,7 @@ class FilesystemTask
     public function safeRemove(string $path, string $base, bool $recursive = false): bool
     {
         if (!$this->isPathSafe($path, $base)) {
-            Log::warning('Path traversal blocked', ['path' => $path, 'base' => $base]);
+            Log::channel('vikon')->warning('Path traversal blocked', ['path' => $path, 'base' => $base]);
             return false;
         }
         if (!file_exists($path)) return true;

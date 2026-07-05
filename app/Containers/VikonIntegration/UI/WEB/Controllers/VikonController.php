@@ -59,7 +59,7 @@ class VikonController extends Controller
         $expectedState = Session::pull('oauth_state');
 
         if ($state && $expectedState && $state !== $expectedState) {
-            Log::warning('Vikon OAuth CSRF mismatch');
+            Log::channel('vikon')->warning('Vikon OAuth CSRF mismatch');
         }
 
         $code = $request->query('code');
@@ -70,7 +70,7 @@ class VikonController extends Controller
                 Session::put('vikon_access_token', $tokens['access_token']);
                 Session::put('vikon_refresh_token', $tokens['refresh_token']);
             } catch (\Throwable $e) {
-                Log::error('OAuth callback failed', ['error' => $e->getMessage()]);
+                Log::channel('vikon')->error('OAuth callback failed', ['error' => $e->getMessage()]);
             }
         }
 
@@ -159,7 +159,7 @@ class VikonController extends Controller
             $message = $this->updateCore->run($request->validated('module_id'), $token);
             return response()->json(['success' => true, 'message' => $message]);
         } catch (\Throwable $e) {
-            Log::error('Vikon update failed', ['error' => $e->getMessage()]);
+            Log::channel('vikon')->error('Vikon update failed', ['error' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
@@ -175,7 +175,7 @@ class VikonController extends Controller
             $message = $this->syncFiles->run($request->validated('module_id'), $token);
             return response()->json(['success' => true, 'message' => $message]);
         } catch (\Throwable $e) {
-            Log::error('Vikon sync failed', ['error' => $e->getMessage()]);
+            Log::channel('vikon')->error('Vikon sync failed', ['error' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
@@ -195,7 +195,7 @@ class VikonController extends Controller
             );
             return response()->json($result);
         } catch (\Throwable $e) {
-            Log::error('Vikon part update failed', ['error' => $e->getMessage()]);
+            Log::channel('vikon')->error('Vikon part update failed', ['error' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }

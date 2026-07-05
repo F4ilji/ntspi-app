@@ -24,7 +24,7 @@ class UpdateCoreAction
         $modulePath = $this->basePath . '/' . $config['path'];
         $tempPath = $this->storagePath . '/temp/' . $config['path'];
 
-        Log::info('Vikon: starting full update', ['module' => $moduleId]);
+        Log::channel('vikon')->info('Vikon: starting full update', ['module' => $moduleId]);
 
         $this->downloadCore($moduleId, $modulePath, $tempPath, $accessToken);
         $this->syncFromFM($moduleId, $modulePath, $accessToken);
@@ -35,7 +35,7 @@ class UpdateCoreAction
         // Update version file from API
         $this->updateVersionFile($accessToken);
 
-        Log::info('Vikon: full update complete', ['module' => $config['name']]);
+        Log::channel('vikon')->info('Vikon: full update complete', ['module' => $config['name']]);
         return 'Модуль "' . $config['name'] . '" полностью обновлён.';
     }
 
@@ -56,13 +56,13 @@ class UpdateCoreAction
             $zipFile
         );
 
-        Log::info('Vikon: ZIP downloaded', ['size' => filesize($zipFile), 'module' => $moduleId]);
+        Log::channel('vikon')->info('Vikon: ZIP downloaded', ['size' => filesize($zipFile), 'module' => $moduleId]);
 
         $this->extractZip($zipFile, $tempPath);
 
         // Log what was extracted
         $extracted = array_map(fn($f) => basename($f), File::allFiles($tempPath));
-        Log::info('Vikon: extracted files', ['count' => count($extracted), 'sample' => array_slice($extracted, 0, 10)]);
+        Log::channel('vikon')->info('Vikon: extracted files', ['count' => count($extracted), 'sample' => array_slice($extracted, 0, 10)]);
 
         $blocked = $this->fs->validateFileTypes($tempPath);
         if (!empty($blocked)) {
@@ -74,7 +74,7 @@ class UpdateCoreAction
         File::makeDirectory($modulePath, 0755, true, true);
         $this->copyFiles($syncSource, $modulePath);
 
-        Log::info('Vikon: core downloaded', ['module' => $moduleId]);
+        Log::channel('vikon')->info('Vikon: core downloaded', ['module' => $moduleId]);
     }
 
     private function syncFromFM(int $moduleId, string $modulePath, string $accessToken): void
@@ -84,7 +84,7 @@ class UpdateCoreAction
         File::makeDirectory($filesDir, 0755, true, true);
 
         $dirIds = $this->getUsedDirNames($moduleId, $accessToken);
-        Log::info('Vikon FM: dir identifiers', ['count' => count($dirIds), 'dirs' => $dirIds]);
+        Log::channel('vikon')->info('Vikon FM: dir identifiers', ['count' => count($dirIds), 'dirs' => $dirIds]);
 
         $synced = 0;
 
@@ -96,7 +96,7 @@ class UpdateCoreAction
 
         $newSynced = $this->syncNewFiles($moduleId, $accessToken, $filesDir);
 
-        Log::info('Vikon FM: sync done', ['synced' => $synced, 'new' => $newSynced]);
+        Log::channel('vikon')->info('Vikon FM: sync done', ['synced' => $synced, 'new' => $newSynced]);
     }
 
     private function syncRootDir(int $moduleId, string $filesDir, string $accessToken): int
@@ -141,11 +141,11 @@ class UpdateCoreAction
                 file_put_contents($filesDir . '/' . $name, $content);
                 $synced++;
             } catch (\Throwable $e) {
-                Log::warning('Vikon FM: root download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
+                Log::channel('vikon')->warning('Vikon FM: root download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
             }
         }
 
-        Log::info('Vikon FM: root dir stats', [
+        Log::channel('vikon')->info('Vikon FM: root dir stats', [
             'server' => $serverCount,
             'local' => $localCount,
             'to_download' => $toDownload,
@@ -193,7 +193,7 @@ class UpdateCoreAction
                 file_put_contents($targetDir . '/' . $name, $content);
                 $synced++;
             } catch (\Throwable $e) {
-                Log::warning('Vikon FM: sub download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
+                Log::channel('vikon')->warning('Vikon FM: sub download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
             }
         }
         return $synced;
@@ -236,7 +236,7 @@ class UpdateCoreAction
 
                 $synced++;
             } catch (\Throwable $e) {
-                Log::warning('Vikon FM: new file failed', ['identity' => $identity, 'error' => $e->getMessage()]);
+                Log::channel('vikon')->warning('Vikon FM: new file failed', ['identity' => $identity, 'error' => $e->getMessage()]);
             }
         }
         return $synced;
@@ -333,7 +333,7 @@ class UpdateCoreAction
         }
 
         if ($removed > 0) {
-            Log::info('Vikon: cleaned up post-sync', ['removed' => $removed]);
+            Log::channel('vikon')->info('Vikon: cleaned up post-sync', ['removed' => $removed]);
         }
     }
 
@@ -346,10 +346,10 @@ class UpdateCoreAction
 
             if ($latestVersion) {
                 cache()->put('vikon:current_version', $latestVersion, 3600);
-                Log::info('Vikon: version updated', ['version' => $latestVersion]);
+                Log::channel('vikon')->info('Vikon: version updated', ['version' => $latestVersion]);
             }
         } catch (\Throwable $e) {
-            Log::warning('Vikon: failed to update version', ['error' => $e->getMessage()]);
+            Log::channel('vikon')->warning('Vikon: failed to update version', ['error' => $e->getMessage()]);
         }
     }
 }

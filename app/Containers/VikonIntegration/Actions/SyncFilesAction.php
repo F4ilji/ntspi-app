@@ -20,10 +20,10 @@ class SyncFilesAction
         File::makeDirectory($modulePath, 0755, true, true);
         File::makeDirectory($filesDir, 0755, true, true);
 
-        Log::info('Vikon FM: starting sync', ['module' => $moduleId]);
+        Log::channel('vikon')->info('Vikon FM: starting sync', ['module' => $moduleId]);
 
         $dirIds = $this->getUsedDirNames($moduleId, $accessToken);
-        Log::info('Vikon FM: dir identifiers', ['count' => count($dirIds)]);
+        Log::channel('vikon')->info('Vikon FM: dir identifiers', ['count' => count($dirIds)]);
 
         $synced = 0;
 
@@ -36,7 +36,7 @@ class SyncFilesAction
         $newSynced = $this->syncNewFiles($moduleId, $accessToken, $filesDir);
 
         $total = $synced + $newSynced;
-        Log::info('Vikon FM: sync complete', ['downloaded' => $synced, 'new' => $newSynced]);
+        Log::channel('vikon')->info('Vikon FM: sync complete', ['downloaded' => $synced, 'new' => $newSynced]);
         return "Синхронизировано: {$total} файлов";
     }
 
@@ -94,7 +94,7 @@ class SyncFilesAction
                 file_put_contents($filesDir . '/' . $name, $content);
                 $synced++;
             } catch (\Throwable $e) {
-                Log::warning('Vikon FM: root download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
+                Log::channel('vikon')->warning('Vikon FM: root download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
             }
         }
         return $synced;
@@ -138,7 +138,7 @@ class SyncFilesAction
                 file_put_contents($targetDir . '/' . $name, $content);
                 $synced++;
             } catch (\Throwable $e) {
-                Log::warning('Vikon FM: sub download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
+                Log::channel('vikon')->warning('Vikon FM: sub download failed', ['identity' => $identity, 'error' => $e->getMessage()]);
             }
         }
         return $synced;

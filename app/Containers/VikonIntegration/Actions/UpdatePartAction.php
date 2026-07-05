@@ -24,7 +24,7 @@ class UpdatePartAction
     {
         $config = $this->modulesConfig[$moduleId] ?? throw new \RuntimeException("Неизвестный модуль: {$moduleId}");
 
-        Log::info('Vikon: starting part update', ['module' => $moduleId, 'part' => $part]);
+        Log::channel('vikon')->info('Vikon: starting part update', ['module' => $moduleId, 'part' => $part]);
 
         // Step 1: Request generation
         $genResponse = $this->http->postWithToken(
@@ -40,7 +40,7 @@ class UpdatePartAction
 
         $operationIdentity = $genBody['operation_identity'];
 
-        Log::info('Vikon: part generation requested', ['operation' => $operationIdentity]);
+        Log::channel('vikon')->info('Vikon: part generation requested', ['operation' => $operationIdentity]);
 
         // Step 2: Poll status
         $pollResult = $this->pollStatus->run($operationIdentity, $accessToken);
@@ -98,7 +98,7 @@ class UpdatePartAction
             $this->cleanupPostSync($modulePath);
         }
 
-        Log::info('Vikon: part update complete', ['module' => $moduleId, 'part' => $part, 'synced' => $syncedCount]);
+        Log::channel('vikon')->info('Vikon: part update complete', ['module' => $moduleId, 'part' => $part, 'synced' => $syncedCount]);
 
         return [
             'success' => true,
@@ -222,7 +222,7 @@ class UpdatePartAction
         }
 
         if ($removed > 0) {
-            Log::info('Vikon: cleaned up post-sync', ['removed' => $removed, 'path' => $modulePath]);
+            Log::channel('vikon')->info('Vikon: cleaned up post-sync', ['removed' => $removed, 'path' => $modulePath]);
         }
     }
 }

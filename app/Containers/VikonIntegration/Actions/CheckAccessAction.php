@@ -88,7 +88,7 @@ class CheckAccessAction
                 'parts' => $partsByModule,
             ];
         } catch (\Throwable $e) {
-            Log::error('Vikon access check failed', ['error' => $e->getMessage()]);
+            Log::channel('vikon')->error('Vikon access check failed', ['error' => $e->getMessage()]);
             return [
                 'has_access' => false,
                 'error' => 'Не удалось проверить права: ' . $e->getMessage(),

@@ -24,7 +24,7 @@ class CheckVersionAction
                 'has_update' => $latest && version_compare($latest, $this->currentVersion, '>'),
             ];
         } catch (\Throwable $e) {
-            Log::warning('Version check failed', ['error' => $e->getMessage()]);
+            Log::channel('vikon')->warning('Version check failed', ['error' => $e->getMessage()]);
             return [
                 'current_version' => $this->currentVersion,
                 'latest_version' => null,

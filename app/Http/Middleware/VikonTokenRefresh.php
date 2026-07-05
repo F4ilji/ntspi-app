@@ -25,7 +25,7 @@ class VikonTokenRefresh
                     Session::put('vikon_access_token', $tokens['access_token']);
                     Session::put('vikon_refresh_token', $tokens['refresh_token']);
                 } catch (\Throwable $e) {
-                    Log::warning('Vikon auto-refresh failed', ['error' => $e->getMessage()]);
+                    Log::channel('vikon')->warning('Vikon auto-refresh failed', ['error' => $e->getMessage()]);
                     Session::forget(['vikon_access_token', 'vikon_refresh_token']);
                 }
             }

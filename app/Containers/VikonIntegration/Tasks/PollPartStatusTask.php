@@ -23,7 +23,7 @@ class PollPartStatusTask
             $body = $response->json();
             $status = $body['status'] ?? -2;
 
-            Log::info('Vikon poll part status', [
+            Log::channel('vikon')->info('Vikon poll part status', [
                 'operation' => $operationIdentity,
                 'status' => $status,
                 'attempt' => $attempt + 1,
