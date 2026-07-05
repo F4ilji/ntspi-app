@@ -17,13 +17,13 @@ class ConvertDocToDocxTask
      */
     public function run(UploadedFile $file): ?string
     {
-        Log::info('[ConvertDocToDocxTask] Начало конвертации', [
+        Log::channel('ai')->info('Начало конвертации', [
             'file' => $file->getClientOriginalName(),
             'extension' => $file->getClientOriginalExtension(),
         ]);
 
         if (strtolower($file->getClientOriginalExtension()) !== 'doc') {
-            Log::warning('[ConvertDocToDocxTask] Неверное расширение', ['extension' => $file->getClientOriginalExtension()]);
+            Log::channel('ai')->warning('Неверное расширение', ['extension' => $file->getClientOriginalExtension()]);
             return null;
         }
 
@@ -32,7 +32,7 @@ class ConvertDocToDocxTask
         $absoluteOriginalPath = Storage::disk('local')->path($originalPath);
 
         if (!file_exists($absoluteOriginalPath)) {
-            Log::error('[ConvertDocToDocxTask] Файл не сохранен', ['path' => $absoluteOriginalPath]);
+            Log::channel('ai')->error('Файл не сохранен', ['path' => $absoluteOriginalPath]);
             return null;
         }
 
@@ -50,7 +50,7 @@ class ConvertDocToDocxTask
             escapeshellarg($absoluteOriginalPath)
         );
 
-        Log::info('[ConvertDocToDocxTask] Выполнение команды', ['command' => $command]);
+        Log::channel('ai')->info('Выполнение команды', ['command' => $command]);
 
         $output = shell_exec($command);
 
@@ -63,7 +63,7 @@ class ConvertDocToDocxTask
         }
 
         if (!file_exists($docxPath)) {
-            Log::error('[ConvertDocToDocxTask] Конвертация не удалась', [
+            Log::channel('ai')->error('Конвертация не удалась', [
                 'file' => $file->getClientOriginalName(),
                 'output' => $output,
                 'expected_path' => $docxPath,
@@ -78,7 +78,7 @@ class ConvertDocToDocxTask
 
         $relativeDocxPath = preg_replace('/\.doc$/i', '.docx', $originalPath);
 
-        Log::info('[ConvertDocToDocxTask] Конвертация успешна', ['result_path' => $relativeDocxPath]);
+        Log::channel('ai')->info('Конвертация успешна', ['result_path' => $relativeDocxPath]);
 
         return $relativeDocxPath;
     }

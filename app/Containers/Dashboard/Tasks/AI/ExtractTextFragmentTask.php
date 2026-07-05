@@ -13,7 +13,7 @@ class ExtractTextFragmentTask
      */
     public function run(UploadedFile $file, int $maxLength = 300): string
     {
-        Log::info('[ExtractTextFragmentTask] Начало извлечения фрагмента', [
+        Log::channel('ai')->info('Начало извлечения фрагмента', [
             'file' => $file->getClientOriginalName(),
             'extension' => $file->getClientOriginalExtension(),
         ]);
@@ -30,7 +30,7 @@ class ExtractTextFragmentTask
             return $this->extractFromDoc($file, $maxLength);
         }
 
-        Log::warning('[ExtractTextFragmentTask] Неизвестный формат', [
+        Log::channel('ai')->warning('Неизвестный формат', [
             'extension' => $extension,
         ]);
 

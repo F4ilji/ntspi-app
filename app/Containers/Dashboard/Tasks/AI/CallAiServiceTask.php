@@ -23,14 +23,14 @@ class CallAiServiceTask
     public function run(string $text, Collection $categories): ?array
     {
         try {
-            Log::info('[CallAiServiceTask] Начало AI запроса', [
+            Log::channel('ai')->info('Начало AI запроса', [
                 'text_length' => strlen($text),
                 'categories_count' => $categories->count(),
             ]);
 
             $credential = $this->getCredentialTask->run('qwen');
             if (!$credential) {
-                Log::error('[CallAiServiceTask] API ключ не настроен', [
+                Log::channel('ai')->error('API ключ не настроен', [
                     'provider' => 'qwen',
                 ]);
                 throw new \RuntimeException('AI API ключ не настроен');
@@ -43,7 +43,7 @@ class CallAiServiceTask
 
             $systemPrompt = $this->buildSystemPrompt($categoryList);
 
-            Log::info('[CallAiServiceTask] Отправка запроса к AI', [
+            Log::channel('ai')->info('Отправка запроса к AI', [
                 'url' => 'https://routerai.ru/api/v1/chat/completions',
                 'model' => 'qwen/qwen3.5-flash-02-23',
             ]);
@@ -58,7 +58,7 @@ class CallAiServiceTask
                     if ($response && $response->successful()) {
                         return false;
                     }
-                    Log::warning('[CallAiServiceTask] Попытка не удалась, повтор...', [
+                    Log::channel('ai')->warning('Попытка не удалась, повтор...', [
                         'exception' => $exception->getMessage(),
                     ]);
                     return true;
@@ -75,7 +75,7 @@ class CallAiServiceTask
                     'max_tokens' => 2000,
                 ]);
 
-            Log::info('[CallAiServiceTask] Ответ от AI', [
+            Log::channel('ai')->info('Ответ от AI', [
                 'status' => $response->status(),
                 'successful' => $response->successful(),
             ]);
@@ -85,7 +85,7 @@ class CallAiServiceTask
                 $content = $result['choices'][0]['message']['content'] ?? null;
 
                 if (empty($content)) {
-                    Log::error('[CallAiServiceTask] Пустой ответ от AI', [
+                    Log::channel('ai')->error('Пустой ответ от AI', [
                         'response' => $result,
                     ]);
                     return null;
@@ -94,14 +94,14 @@ class CallAiServiceTask
                 $data = json_decode($content, true);
 
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    Log::error('[CallAiServiceTask] Ошибка парсинга JSON ответа', [
+                    Log::channel('ai')->error('Ошибка парсинга JSON ответа', [
                         'error' => json_last_error_msg(),
                         'content' => substr($content, 0, 500),
                     ]);
                     return null;
                 }
 
-                Log::info('[CallAiServiceTask] AI данные успешно распознаны', [
+                Log::channel('ai')->info('AI данные успешно распознаны', [
                     'title' => $data['title'] ?? 'N/A',
                     'has_body' => isset($data['body']),
                     'category_id' => $data['category_id'] ?? 'N/A',
@@ -110,7 +110,7 @@ class CallAiServiceTask
                 return $data;
             }
 
-            Log::error('[CallAiServiceTask] AI запрос не удался', [
+            Log::channel('ai')->error('AI запрос не удался', [
                 'status' => $response->status(),
                 'body' => $response->body(),
                 'headers' => $response->headers(),
@@ -118,7 +118,7 @@ class CallAiServiceTask
 
             return null;
         } catch (\Exception $e) {
-            Log::error('[CallAiServiceTask] Критическая ошибка AI запроса', [
+            Log::channel('ai')->error('Критическая ошибка AI запроса', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);

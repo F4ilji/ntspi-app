@@ -23,7 +23,7 @@ class ExtractTextFromDocumentTask
     {
         $extension = strtolower($file->getClientOriginalExtension());
 
-        Log::info('[ExtractTextFromDocumentTask] Начало извлечения текста', [
+        Log::channel('ai')->info('Начало извлечения текста', [
             'file' => $file->getClientOriginalName(),
             'extension' => $extension,
             'size' => $file->getSize(),
@@ -31,17 +31,17 @@ class ExtractTextFromDocumentTask
 
         // Если DOCX — парсим напрямую
         if ($extension === 'docx') {
-            Log::info('[ExtractTextFromDocumentTask] Обработка DOCX файла');
+            Log::channel('ai')->info('Обработка DOCX файла');
             return $this->extractFromDocx($file);
         }
 
         // Если DOC — конвертируем в DOCX, затем парсим
         if ($extension === 'doc') {
-            Log::info('[ExtractTextFromDocumentTask] Обработка DOC файла (требуется конвертация)');
+            Log::channel('ai')->info('Обработка DOC файла (требуется конвертация)');
             return $this->extractFromDoc($file);
         }
 
-        Log::warning('[ExtractTextFromDocumentTask] Неизвестный формат файла', [
+        Log::channel('ai')->warning('Неизвестный формат файла', [
             'extension' => $extension,
         ]);
 
@@ -53,13 +53,13 @@ class ExtractTextFromDocumentTask
      */
     private function extractFromDocx(UploadedFile $file): ?string
     {
-        Log::info('[ExtractTextFromDocumentTask:extractFromDocx] Начало');
+        Log::channel('ai')->info('Начало');
 
         // Сохраняем во временную директорию
         $tempPath = $file->storeAs('temp', 'temp_doc_' . time() . '.docx', 'local');
         $absoluteTempPath = Storage::disk('local')->path($tempPath);
 
-        Log::info('[ExtractTextFromDocumentTask:extractFromDocx] Файл сохранен', [
+        Log::channel('ai')->info('Файл сохранен', [
             'path' => $tempPath,
             'absolute_path' => $absoluteTempPath,
         ]);
@@ -67,7 +67,7 @@ class ExtractTextFromDocumentTask
         // Парсим файл
         $extractedText = $this->parseDocxTask->run($absoluteTempPath);
 
-        Log::info('[ExtractTextFromDocumentTask:extractFromDocx] Результат парсинга', [
+        Log::channel('ai')->info('Результат парсинга', [
             'text_length' => strlen($extractedText ?? ''),
         ]);
 
@@ -82,19 +82,19 @@ class ExtractTextFromDocumentTask
      */
     private function extractFromDoc(UploadedFile $file): ?string
     {
-        Log::info('[ExtractTextFromDocumentTask:extractFromDoc] Начало конвертации');
+        Log::channel('ai')->info('Начало конвертации');
 
         // Конвертируем DOC → DOCX
         $docxPath = $this->convertDocToDocxTask->run($file);
 
         if (!$docxPath) {
-            Log::error('[ExtractTextFromDocumentTask:extractFromDoc] Не удалось конвертировать DOC файл', [
+            Log::channel('ai')->error('Не удалось конвертировать DOC файл', [
                 'file' => $file->getClientOriginalName(),
             ]);
             return null;
         }
 
-        Log::info('[ExtractTextFromDocumentTask:extractFromDoc] Конвертация успешна', [
+        Log::channel('ai')->info('Конвертация успешна', [
             'docx_path' => $docxPath,
         ]);
 
@@ -104,7 +104,7 @@ class ExtractTextFromDocumentTask
         // Парсим конвертированный файл
         $extractedText = $this->parseDocxTask->run($absoluteDocxPath);
 
-        Log::info('[ExtractTextFromDocumentTask:extractFromDoc] Результат парсинга', [
+        Log::channel('ai')->info('Результат парсинга', [
             'text_length' => strlen($extractedText ?? ''),
         ]);
 

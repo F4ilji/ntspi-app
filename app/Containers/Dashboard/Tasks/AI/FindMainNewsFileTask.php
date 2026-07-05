@@ -26,7 +26,7 @@ class FindMainNewsFileTask
      */
     public function run(Collection $files): ?UploadedFile
     {
-        Log::info('[FindMainNewsFileTask] Начало поиска основного файла', [
+        Log::channel('ai')->info('Начало поиска основного файла', [
             'files_count' => $files->count(),
             'files' => $files->map(function($f) {
                 return $f->getClientOriginalName() . ' (' . $f->getClientOriginalExtension() . ')';
@@ -61,19 +61,19 @@ class FindMainNewsFileTask
             return false;
         });
 
-        Log::info('[FindMainNewsFileTask] Найдено DOC/DOCX файлов', [
+        Log::channel('ai')->info('Найдено DOC/DOCX файлов', [
             'count' => $docFiles->count(),
             'files' => $docFiles->map(fn($f) => $f->getClientOriginalName())->toArray(),
         ]);
 
         if ($docFiles->isEmpty()) {
-            Log::warning('[FindMainNewsFileTask] Не найдено DOC/DOCX файлов');
+            Log::channel('ai')->warning('Не найдено DOC/DOCX файлов');
             return null;
         }
 
         // Если только один файл — используем его
         if ($docFiles->count() === 1) {
-            Log::info('[FindMainNewsFileTask] Найден один файл, используем его', [
+            Log::channel('ai')->info('Найден один файл, используем его', [
                 'file' => $docFiles->first()->getClientOriginalName(),
             ]);
             return $docFiles->first();
@@ -84,7 +84,7 @@ class FindMainNewsFileTask
             $filename = mb_strtolower($file->getClientOriginalName());
             foreach (self::NEWS_KEYWORDS as $keyword) {
                 if (str_contains($filename, $keyword)) {
-                    Log::info('[FindMainNewsFileTask] Найден файл по ключевому слову', [
+                    Log::channel('ai')->info('Найден файл по ключевому слову', [
                         'file' => $file->getClientOriginalName(),
                         'keyword' => $keyword,
                     ]);
@@ -93,7 +93,7 @@ class FindMainNewsFileTask
             }
         }
 
-        Log::info('[FindMainNewsFileTask] Не найдено файлов по ключевым словам, используем LLM');
+        Log::channel('ai')->info('Не найдено файлов по ключевым словам, используем LLM');
 
         // Если не нашли по ключевым словам — используем LLM
         return $this->findViaLLM($docFiles);
@@ -104,7 +104,7 @@ class FindMainNewsFileTask
      */
     private function findViaLLM(Collection $docFiles): ?UploadedFile
     {
-        Log::info('[FindMainNewsFileTask:findViaLLM] Начало LLM определения', [
+        Log::channel('ai')->info('Начало LLM определения', [
             'files_count' => $docFiles->count(),
         ]);
 
@@ -119,7 +119,7 @@ class FindMainNewsFileTask
         // Собираем фрагменты текста из каждого файла
         $fragments = [];
         foreach ($docFiles as $file) {
-            Log::info('[FindMainNewsFileTask:findViaLLM] Извлечение фрагмента', [
+            Log::channel('ai')->info('Извлечение фрагмента', [
                 'file' => $file->getClientOriginalName(),
             ]);
             
@@ -131,11 +131,11 @@ class FindMainNewsFileTask
         }
 
         // Отправляем запрос к LLM
-        Log::info('[FindMainNewsFileTask:findViaLLM] Отправка запроса к LLM');
+        Log::channel('ai')->info('Отправка запроса к LLM');
         $llmResponse = app(CallAiServiceForFileSelectionTask::class)->run($fragments);
 
         if ($llmResponse && isset($llmResponse['main_file'])) {
-            Log::info('[FindMainNewsFileTask:findViaLLM] LLM вернула результат', [
+            Log::channel('ai')->info('LLM вернула результат', [
                 'main_file' => $llmResponse['main_file'],
             ]);
             
@@ -147,7 +147,7 @@ class FindMainNewsFileTask
             }
         }
 
-        Log::warning('[FindMainNewsFileTask:findViaLLM] LLM не помогла, используем первый файл');
+        Log::channel('ai')->warning('LLM не помогла, используем первый файл');
         
         // Fallback — первый файл
         return $docFiles->first();

@@ -20,13 +20,13 @@ class CallAiServiceForFileSelectionTask
      */
     public function run(array $fragments): ?array
     {
-        Log::info('[CallAiServiceForFileSelectionTask] Начало LLM запроса', [
+        Log::channel('ai')->info('Начало LLM запроса', [
             'fragments_count' => count($fragments),
         ]);
 
         $credential = $this->getCredentialTask->run('qwen');
         if (!$credential) {
-            Log::error('[CallAiServiceForFileSelectionTask] API ключ не настроен', [
+            Log::channel('ai')->error('API ключ не настроен', [
                 'provider' => 'qwen',
             ]);
             return null;
@@ -35,7 +35,7 @@ class CallAiServiceForFileSelectionTask
 
         $prompt = $this->buildPrompt($fragments);
 
-        Log::info('[CallAiServiceForFileSelectionTask] Отправка запроса к AI');
+        Log::channel('ai')->info('Отправка запроса к AI');
 
         try {
             $response = Http::timeout(30) // Таймаут 30 секунд
@@ -52,7 +52,7 @@ class CallAiServiceForFileSelectionTask
                     'max_tokens' => 500,
                 ]);
 
-            Log::info('[CallAiServiceForFileSelectionTask] Ответ от AI', [
+            Log::channel('ai')->info('Ответ от AI', [
                 'status' => $response->status(),
                 'successful' => $response->successful(),
             ]);
@@ -61,19 +61,19 @@ class CallAiServiceForFileSelectionTask
                 $result = $response->json();
                 $llmResponse = json_decode($result['choices'][0]['message']['content'], true);
                 
-                Log::info('[CallAiServiceForFileSelectionTask] Распознан ответ', [
+                Log::channel('ai')->info('Распознан ответ', [
                     'main_file' => $llmResponse['main_file'] ?? null,
                 ]);
                 
                 return $llmResponse;
             } else {
-                Log::error('[CallAiServiceForFileSelectionTask] Ошибка AI запроса', [
+                Log::channel('ai')->error('Ошибка AI запроса', [
                     'status' => $response->status(),
                     'body' => $response->body(),
                 ]);
             }
         } catch (\Exception $e) {
-            Log::error('[CallAiServiceForFileSelectionTask] Исключение при запросе к AI', [
+            Log::channel('ai')->error('Исключение при запросе к AI', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
