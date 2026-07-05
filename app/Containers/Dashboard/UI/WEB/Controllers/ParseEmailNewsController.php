@@ -18,7 +18,7 @@ class ParseEmailNewsController extends Controller
     public function __invoke(Request $request): RedirectResponse
     {
         try {
-            Log::info('[ParseEmailNewsController] Принудительный запуск парсинга email');
+            Log::channel('app')->info('Принудительный запуск парсинга email');
 
             $result = $this->fetchEmailNewsAction->run();
 
@@ -38,13 +38,13 @@ class ParseEmailNewsController extends Controller
                 "Обработано писем: {$result['processed_emails']}, но новостей не создано"
             );
         } catch (EmailFetchException $e) {
-            Log::error('[ParseEmailNewsController] EmailFetchException', [
+            Log::channel('app')->error('EmailFetchException', [
                 'error' => $e->getMessage(),
             ]);
 
             return redirect()->back()->with('error', $e->getMessage());
         } catch (\Exception $e) {
-            Log::error('[ParseEmailNewsController] Критическая ошибка', [
+            Log::channel('app')->error('Критическая ошибка', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);

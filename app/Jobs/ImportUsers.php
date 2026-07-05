@@ -79,7 +79,7 @@ class ImportUsers implements ShouldQueue
                 }
             }
         } catch (\Exception $e) {
-            Log::error('Error fetching posts: ' . $e->getMessage());
+            Log::channel('app')->error('Error fetching posts: ' . $e->getMessage());
         }
     }
 }

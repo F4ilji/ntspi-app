@@ -61,7 +61,7 @@ class StaticFileSearch
 
             return $this->paginateResults($results, $page, $categories);
         } catch (\Exception $e) {
-            Log::error('Search error: ' . $e->getMessage());
+            Log::channel('app')->error('Search error: ' . $e->getMessage());
             return [
                 'data' => [],
                 'meta' => [
@@ -103,7 +103,7 @@ class StaticFileSearch
                 $directory = public_path(self::FILES_DIR);
 
                 if (!is_dir($directory)) {
-                    Log::error("Directory not found: {$directory}");
+                    Log::channel('app')->error("Directory not found: {$directory}");
                     return [];
                 }
 
@@ -130,7 +130,7 @@ class StaticFileSearch
 
                 return $index;
             } catch (\Exception $e) {
-                Log::error('Index creation error: ' . $e->getMessage());
+                Log::channel('app')->error('Index creation error: ' . $e->getMessage());
                 return [];
             }
         });
@@ -181,7 +181,7 @@ class StaticFileSearch
             Cache::forget(self::CACHE_KEY);
             return true;
         } catch (\Exception $e) {
-            Log::error('Cache clear error: ' . $e->getMessage());
+            Log::channel('app')->error('Cache clear error: ' . $e->getMessage());
             return false;
         }
     }
@@ -212,7 +212,7 @@ class StaticFileSearch
 
             return null;
         } catch (\Exception $e) {
-            Log::error('Failed to get H1: ' . $e->getMessage());
+            Log::channel('app')->error('Failed to get H1: ' . $e->getMessage());
             return null;
         }
     }

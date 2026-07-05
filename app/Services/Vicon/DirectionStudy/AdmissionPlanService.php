@@ -31,7 +31,7 @@ class AdmissionPlanService
                 config('services.vicon.token')
             );
             if (!is_array($response)) {
-                Log::warning('Unexpected response type in getCampaigns', [
+                Log::channel('app')->warning('Unexpected response type in getCampaigns', [
                     'type' => gettype($response),
                     'response' => $response
                 ]);
@@ -39,7 +39,7 @@ class AdmissionPlanService
 
             return $response;
         } catch (\Exception $e) {
-            Log::error('API call failed in getCampaigns', [
+            Log::channel('app')->error('API call failed in getCampaigns', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -56,7 +56,7 @@ class AdmissionPlanService
             );
 
             if (!is_object($response)) {
-                Log::warning('Unexpected response type in getAdmissionPlans', [
+                Log::channel('app')->warning('Unexpected response type in getAdmissionPlans', [
                     'expected' => 'object',
                     'actual' => gettype($response),
                     'campaign_levels_code' => $campaign_levels_code,
@@ -68,7 +68,7 @@ class AdmissionPlanService
 
             return $response;
         } catch (\Exception $e) {
-            Log::error('API call failed in getAdmissionPlans', [
+            Log::channel('app')->error('API call failed in getAdmissionPlans', [
                 'error' => $e->getMessage(),
                 'campaign_levels_code' => $campaign_levels_code,
                 'trace' => $e->getTraceAsString()
@@ -137,7 +137,7 @@ class AdmissionPlanService
 
             return $data;
         } catch (\Exception $e) {
-            Log::error('Ошибка при вызове API: ' . $e->getMessage());
+            Log::channel('app')->error('Ошибка при вызове API: ' . $e->getMessage());
             throw $e; // Перебрасываем исключение
         }
     }

@@ -34,7 +34,7 @@ class ImportApiDataPost implements ShouldQueue
             // Получаем первую страницу данных
             $response = Http::get(config('TRANSFER_PROXY_URL') . '/api/posts')->object();
             $last_page = $response->last_page;
-            Log::info('Last page: ' . $last_page);
+            Log::channel('app')->info('Last page: ' . $last_page);
 
             // Проходим по всем страницам
             for ($page = 1; $page <= $last_page; $page++) {
@@ -43,7 +43,7 @@ class ImportApiDataPost implements ShouldQueue
 
                 // Обрабатываем каждую запись
                 foreach ($results as $post) {
-                    Log::info('Processing post ID: ' . $post->ID);
+                    Log::channel('app')->info('Processing post ID: ' . $post->ID);
 
                     try {
                         // Получаем массив изображений
@@ -52,7 +52,7 @@ class ImportApiDataPost implements ShouldQueue
 
                         // Проверяем, есть ли изображения
                         if (empty($images)) {
-                            Log::warning('No images found for post ID: ' . $post->ID);
+                            Log::channel('app')->warning('No images found for post ID: ' . $post->ID);
                         } else {
                             // Проходимся по массиву изображений
                             foreach ($images as $image) {
@@ -60,13 +60,13 @@ class ImportApiDataPost implements ShouldQueue
                                 if (isset($image->SUBDIR) && isset($image->FILE_NAME)) {
                                     $imagePaths[] = 'upload/' . $image->SUBDIR . '/' . $image->FILE_NAME;
                                 } else {
-                                    Log::warning('Image data is incomplete for post ID: ' . $post->ID);
+                                    Log::channel('app')->warning('Image data is incomplete for post ID: ' . $post->ID);
                                 }
                             }
                         }
 
                         // Логируем пути к изображениям для отладки
-                        Log::info('Image paths for post ID ' . $post->ID . ': ' . json_encode($imagePaths));
+                        Log::channel('app')->debug('Image paths for post', ['post_id' => $post->ID, 'paths' => $imagePaths]);
 
                         // Обработка контента поста
                         $content = strip_tags($post->DETAIL_TEXT, '<a>');
@@ -110,12 +110,12 @@ class ImportApiDataPost implements ShouldQueue
 
                         $this->createSeo($createdPost);
                     } catch (\Exception $e) {
-                        Log::error('Error importing post ID: ' . $post->ID . ' - ' . $e->getMessage());
+                        Log::channel('app')->error('Error importing post ID: ' . $post->ID . ' - ' . $e->getMessage());
                     }
                 }
             }
         } catch (\Exception $e) {
-            Log::error('Error fetching posts: ' . $e->getMessage());
+            Log::channel('app')->error('Error fetching posts: ' . $e->getMessage());
         }
     }
 

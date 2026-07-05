@@ -43,7 +43,7 @@ class CompressImageTask
     {
         $extension = strtolower($file->getClientOriginalExtension());
 
-        Log::info('[CompressImageTask] Начало обработки изображения', [
+        Log::channel('app')->info('Начало обработки изображения', [
             'file' => $file->getClientOriginalName(),
             'extension' => $extension,
             'size' => $this->formatFileSize($file->getSize()),
@@ -52,7 +52,7 @@ class CompressImageTask
 
         // Если файл уже меньше порога и это WebP - пропускаем сжатие
         if ($file->getSize() <= self::SIZE_THRESHOLD && $extension === 'webp') {
-            Log::info('[CompressImageTask] Файл уже оптимизирован, пропускаем', [
+            Log::channel('app')->info('Файл уже оптимизирован, пропускаем', [
                 'file' => $file->getClientOriginalName(),
             ]);
 
@@ -71,7 +71,7 @@ class CompressImageTask
         $originalWidth = $img->width();
         $originalHeight = $img->height();
 
-        Log::info('[CompressImageTask] Исходные размеры', [
+        Log::channel('app')->info('Исходные размеры', [
             'width' => $originalWidth,
             'height' => $originalHeight,
         ]);
@@ -83,7 +83,7 @@ class CompressImageTask
                 $constraint->upsize();
             });
 
-            Log::info('[CompressImageTask] Изображение ресайзнуто', [
+            Log::channel('app')->info('Изображение ресайзнуто', [
                 'new_width' => $img->width(),
                 'new_height' => $img->height(),
             ]);
@@ -99,7 +99,7 @@ class CompressImageTask
 
         $newSize = filesize($tempPath);
 
-        Log::info('[CompressImageTask] Сжатие завершено', [
+        Log::channel('app')->info('Сжатие завершено', [
             'original_size' => $this->formatFileSize($file->getSize()),
             'compressed_size' => $this->formatFileSize($newSize),
             'compression_ratio' => round((1 - $newSize / $file->getSize()) * 100, 2) . '%',

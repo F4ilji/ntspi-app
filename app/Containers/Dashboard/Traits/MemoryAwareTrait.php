@@ -47,7 +47,7 @@ trait MemoryAwareTrait
 
         // Логируем только если превышен порог
         if ($currentMemory > $this->memoryLogThreshold) {
-            Log::info('[MemoryMonitor] Использование памяти', [
+            Log::channel('app')->info('Использование памяти', [
                 'context' => $context,
                 'current' => round($currentMemory / 1024 / 1024, 2) . 'MB',
                 'peak' => round($peakMemory / 1024 / 1024, 2) . 'MB',
@@ -75,7 +75,7 @@ trait MemoryAwareTrait
             $memoryAfter = round(memory_get_usage(true) / 1024 / 1024, 2);
             $freed = round(($memoryBefore - $memoryAfter), 2);
 
-            Log::info('[MemoryMonitor] Сборка мусора выполнена', [
+            Log::channel('app')->info('Сборка мусора выполнена', [
                 'memory_before' => $memoryBefore . 'MB',
                 'memory_after' => $memoryAfter . 'MB',
                 'freed' => $freed . 'MB',

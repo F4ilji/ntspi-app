@@ -47,7 +47,7 @@ class SearchStaticFilesAction
 
             return app(PaginateSearchResultsTask::class)->run($results, $page, self::PER_PAGE, $categories);
         } catch (\Exception $e) {
-            Log::error('Search error: ' . $e->getMessage());
+            Log::channel('app')->error('Search error: ' . $e->getMessage());
             return [
                 'data' => [],
                 'meta' => [
@@ -77,7 +77,7 @@ class SearchStaticFilesAction
 
             return null;
         } catch (\Exception $e) {
-            Log::error('Failed to get H1: ' . $e->getMessage());
+            Log::channel('app')->error('Failed to get H1: ' . $e->getMessage());
             return null;
         }
     }

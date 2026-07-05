@@ -14,7 +14,7 @@ class GetStaticFileCategoriesTask
         try {
             $file = public_path(self::FILES_DIR . '/' . 'index.html');
             if (!file_exists($file)) {
-                Log::error("Category index file not found: {$file}");
+                Log::channel('app')->error("Category index file not found: {$file}");
                 return [];
             }
 
@@ -24,7 +24,7 @@ class GetStaticFileCategoriesTask
             $dropdownMenu = $document->first('ul.dropdown-menu');
 
             if ($dropdownMenu === null) {
-                Log::warning("Dropdown menu not found in category index file: {$file}");
+                Log::channel('app')->warning("Dropdown menu not found in category index file: {$file}");
                 return [];
             }
 
@@ -38,7 +38,7 @@ class GetStaticFileCategoriesTask
 
             return $categories;
         } catch (\Exception $e) {
-            Log::error('Error extracting categories: ' . $e->getMessage());
+            Log::channel('app')->error('Error extracting categories: ' . $e->getMessage());
             return [];
         }
     }

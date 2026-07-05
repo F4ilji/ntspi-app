@@ -32,7 +32,7 @@ class RunBackup implements ShouldQueue
         ]);
 
         // Логируем вывод
-        Log::info('Backup command output: ' . Artisan::output());
-        Log::error('Backup command exit code: ' . $exitCode);
+        Log::channel('app')->info('Backup command output: ' . Artisan::output());
+        Log::channel('app')->error('Backup command exit code: ' . $exitCode);
     }
 }

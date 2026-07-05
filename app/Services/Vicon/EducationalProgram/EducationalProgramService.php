@@ -50,7 +50,7 @@ class EducationalProgramService
 
             return $data;
         } catch (\Exception $e) {
-            Log::error('Ошибка при вызове API: ' . $e->getMessage());
+            Log::channel('app')->error('API call failed', ['error' => $e->getMessage()]);
             throw $e; // Перебрасываем исключение
         }
     }

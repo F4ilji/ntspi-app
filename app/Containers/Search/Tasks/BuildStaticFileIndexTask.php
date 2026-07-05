@@ -24,7 +24,7 @@ class BuildStaticFileIndexTask
                 $directory = public_path(self::FILES_DIR);
 
                 if (!is_dir($directory)) {
-                    Log::error("Directory not found: {$directory}");
+                    Log::channel('app')->error("Directory not found: {$directory}");
                     return [];
                 }
 
@@ -51,7 +51,7 @@ class BuildStaticFileIndexTask
 
                 return $index;
             } catch (\Exception $e) {
-                Log::error('Index creation error: ' . $e->getMessage());
+                Log::channel('app')->error('Index creation error: ' . $e->getMessage());
                 return [];
             }
         });
@@ -80,7 +80,7 @@ class BuildStaticFileIndexTask
 
             return null;
         } catch (\Exception $e) {
-            Log::error('Failed to get H1: ' . $e->getMessage());
+            Log::channel('app')->error('Failed to get H1: ' . $e->getMessage());
             return null;
         }
     }

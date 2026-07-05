@@ -38,9 +38,9 @@ class PostSliderService
             ]);
             $post->slide()->save($slide);
 
-            Log::info('Slide created successfully', ['postTitle' => $this->post->title]);
+            Log::channel('app')->info('Slide created successfully', ['postTitle' => $this->post->title]);
         } catch (\Exception $e) {
-            Log::error('Failed to create slide', [
+            Log::channel('app')->error('Failed to create slide', [
                 'postTitle' => $this->post->title,
                 'error' => $e->getMessage(),
             ]);
@@ -71,7 +71,7 @@ class PostSliderService
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Failed to update MainSlider', [
+            Log::channel('app')->error('Failed to update MainSlider', [
                 'postTitle' => $this->post->title,
                 'error' => $e->getMessage(),
             ]);

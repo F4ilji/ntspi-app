@@ -15,7 +15,7 @@ class ClearStaticSearchCacheAction
             Cache::forget(self::CACHE_KEY);
             return true;
         } catch (\Exception $e) {
-            Log::error('Cache clear error: ' . $e->getMessage());
+            Log::channel('app')->error('Cache clear error: ' . $e->getMessage());
             return false;
         }
     }

@@ -57,7 +57,7 @@ class ProcessEmailNewsJob implements ShouldQueue
      */
     public function handle(FetchEmailNewsAction $fetchEmailNewsAction): void
     {
-        Log::info('[ProcessEmailNewsJob] Начало обработки job', [
+        Log::channel('app')->info('Начало обработки job', [
             'job_id' => $this->job?->getJobId() ?? 'unknown',
             'attempt' => $this->attempts(),
             'memory_limit' => ini_get('memory_limit'),
@@ -66,7 +66,7 @@ class ProcessEmailNewsJob implements ShouldQueue
         // Выполняем обработку — если выбросит исключение, Laravel автоматически повторит job
         $result = $fetchEmailNewsAction->run();
 
-        Log::info('[ProcessEmailNewsJob] Обработка завершена успешно', [
+        Log::channel('app')->info('Обработка завершена успешно', [
             'job_id' => $this->job?->getJobId() ?? 'unknown',
             'processed_emails' => $result['processed_emails'],
             'created_posts' => $result['created_posts'],
@@ -79,7 +79,7 @@ class ProcessEmailNewsJob implements ShouldQueue
         // Если были ошибки, логируем их как warning
         if (!empty($result['errors'])) {
             foreach ($result['errors'] as $error) {
-                Log::warning('[ProcessEmailNewsJob] Ошибка обработки письма', [
+                Log::channel('app')->warning('Ошибка обработки письма', [
                     'subject' => $error['email_subject'] ?? 'unknown',
                     'error' => $error['error'],
                 ]);
@@ -95,7 +95,7 @@ class ProcessEmailNewsJob implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
-        Log::critical('[ProcessEmailNewsJob] Job окончательно провален', [
+        Log::channel('app')->critical('Job окончательно провален', [
             'total_attempts' => $this->tries,
             'error' => $exception->getMessage(),
         ]);
