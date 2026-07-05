@@ -60,11 +60,10 @@ class CheckAccessAction
                     }
                     $moduleId = (int) $moduleData['id'];
 
-                    // Skip modules disabled by additional_access_flags
-                    $moduleFlag = 'no_update_' . config("vikon.modules.{$moduleId}.path", '');
-                    if (in_array($moduleFlag, $flags)) {
-                        continue;
-                    }
+                    // Check if entire module is disabled
+                    $modulePath = config("vikon.modules.{$moduleId}.path", '');
+                    $moduleFlag = 'no_update_' . $modulePath;
+                    $moduleDisabled = in_array($moduleFlag, $flags);
 
                     // Filter out parts disabled by flags
                     $parts = array_filter($moduleData['parts'], function ($p) use ($flags) {
@@ -72,10 +71,13 @@ class CheckAccessAction
                         return !in_array($partFlag, $flags);
                     });
 
-                    $partsByModule[$moduleId] = array_map(
-                        fn($p) => ['id' => $p['id'], 'name' => $p['name'] ?? $p['id'], 'access' => $p['access'] ?? true],
-                        array_values($parts)
-                    );
+                    $partsByModule[$moduleId] = [
+                        'disabled' => $moduleDisabled,
+                        'parts' => array_map(
+                            fn($p) => ['id' => $p['id'], 'name' => $p['name'] ?? $p['id'], 'access' => $p['access'] ?? true],
+                            array_values($parts)
+                        ),
+                    ];
                 }
             }
 

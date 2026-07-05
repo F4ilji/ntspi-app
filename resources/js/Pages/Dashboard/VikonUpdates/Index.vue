@@ -76,18 +76,21 @@
                   <p class="text-xs text-muted-foreground-1">ID: {{ id }}</p>
                 </div>
               </div>
-              <button @click="updateModule(id)" :disabled="updating || !accessInfo.has_access"
+              <button @click="updateModule(id)" :disabled="updating || !accessInfo.has_access || parts[id]?.disabled"
                 class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover disabled:opacity-50">
                 {{ updating ? 'Обновление...' : 'Обновить' }}
               </button>
             </div>
-            <div v-if="parts && parts[id]" class="mt-3 space-y-2">
+            <div v-if="parts && parts[id]?.disabled" class="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p class="text-sm text-yellow-800">Обновление модуля запрещено сервером VIKON</p>
+            </div>
+            <div v-else-if="parts && parts[id]?.parts?.length" class="mt-3 space-y-2">
               <label class="flex items-center gap-2 text-xs font-medium text-muted-foreground-1 cursor-pointer">
                 <input type="checkbox" :checked="isAllPartsSelected(id)" @change="toggleAllParts(id)" class="rounded" />
                 Выбрать все
               </label>
               <div class="flex flex-wrap gap-x-4 gap-y-1 pl-5">
-                <label v-for="p in parts[id]" :key="p.id" class="flex items-center gap-1.5 text-sm" :class="p.access ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'">
+                <label v-for="p in parts[id]?.parts || []" :key="p.id" class="flex items-center gap-1.5 text-sm" :class="p.access ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'">
                   <input type="checkbox" :value="p.id" v-model="selectedParts[id]" :disabled="!p.access" class="rounded" />
                   {{ p.name }}
                 </label>
@@ -176,8 +179,10 @@ const versionInfo = ref({ current_version: props.current_version, has_update: fa
 const accessInfo = ref({ has_access: false, error: null });
 const selectedParts = ref({});
 if (props.parts) {
-  for (const [id, moduleParts] of Object.entries(props.parts)) {
-    selectedParts.value[id] = [];
+  for (const [id, moduleData] of Object.entries(props.parts)) {
+    if (!moduleData.disabled) {
+      selectedParts.value[id] = [];
+    }
   }
 }
 const updatingPart = ref(null);
@@ -278,13 +283,13 @@ async function updateModule(moduleId) {
 }
 
 function isAllPartsSelected(moduleId) {
-  const moduleParts = (props.parts?.[moduleId] || []).filter(p => p.access);
+  const moduleParts = (props.parts?.[moduleId]?.parts || []).filter(p => p.access);
   const selected = selectedParts.value[moduleId] || [];
   return moduleParts.length > 0 && moduleParts.every(p => selected.includes(p.id));
 }
 
 function toggleAllParts(moduleId) {
-  const moduleParts = (props.parts?.[moduleId] || []).filter(p => p.access);
+  const moduleParts = (props.parts?.[moduleId]?.parts || []).filter(p => p.access);
   if (isAllPartsSelected(moduleId)) {
     selectedParts.value[moduleId] = [];
   } else {
