@@ -50,21 +50,34 @@ class CheckAccessAction
             }
 
             // Extract parts per module from the API response
+            // API keys are sequential ("0","1","2"), real module ID is in $moduleData['id']
             $partsByModule = [];
+            $flags = $body['tree_access']['additional_access_flags'] ?? [];
             if (isset($body['tree_access']) && is_array($body['tree_access'])) {
-                foreach ($body['tree_access'] as $moduleId => $moduleData) {
-                    $intId = (int) $moduleId;
-                    if (isset($moduleData['parts']) && is_array($moduleData['parts'])) {
-                        $partsByModule[$intId] = array_map(
-                            fn($p) => ['id' => $p['id'], 'name' => $p['name'] ?? $p['id'], 'access' => $p['access'] ?? true],
-                            $moduleData['parts']
-                        );
+                foreach ($body['tree_access'] as $moduleData) {
+                    if (!isset($moduleData['id']) || !isset($moduleData['parts']) || !is_array($moduleData['parts'])) {
+                        continue;
                     }
+                    $moduleId = (int) $moduleData['id'];
+
+                    // Skip modules disabled by additional_access_flags
+                    $moduleFlag = 'no_update_' . config("vikon.modules.{$moduleId}.path", '');
+                    if (in_array($moduleFlag, $flags)) {
+                        continue;
+                    }
+
+                    // Filter out parts disabled by flags
+                    $parts = array_filter($moduleData['parts'], function ($p) use ($flags) {
+                        $partFlag = 'no_update_' . $p['id'] . '_part';
+                        return !in_array($partFlag, $flags);
+                    });
+
+                    $partsByModule[$moduleId] = array_map(
+                        fn($p) => ['id' => $p['id'], 'name' => $p['name'] ?? $p['id'], 'access' => $p['access'] ?? true],
+                        array_values($parts)
+                    );
                 }
             }
-
-            Log::info('Vikon modules tree raw', ['tree_access' => $body['tree_access']]);
-            Log::info('Vikon parts extracted', ['parts' => $partsByModule]);
 
             return [
                 'has_access' => true,
