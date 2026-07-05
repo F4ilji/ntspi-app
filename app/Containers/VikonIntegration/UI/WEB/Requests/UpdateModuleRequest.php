@@ -12,7 +12,7 @@ class UpdateModuleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'module_id' => ['required', 'integer', Rule::in([1, 2, 6])],
+            'module_id' => ['required', 'integer', Rule::in(array_keys(config('vikon.modules')))],
         ];
     }
 }

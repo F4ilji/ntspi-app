@@ -37,8 +37,9 @@ class UpdateCoreAction
 
     private function downloadCore(int $moduleId, string $modulePath, string $tempPath, string $accessToken): void
     {
-        if ($moduleId === 2) {
-            $this->initAbiturModule($modulePath, $accessToken);
+        $moduleConfig = $this->modulesConfig[$moduleId] ?? [];
+        if (!empty($moduleConfig['init_only'])) {
+            $this->initModuleFromApi($moduleId, $modulePath, $accessToken);
             return;
         }
 
@@ -229,13 +230,13 @@ class UpdateCoreAction
         return $response->json()['directories'] ?? [];
     }
 
-    private function initAbiturModule(string $modulePath, string $accessToken): void
+    private function initModuleFromApi(int $moduleId, string $modulePath, string $accessToken): void
     {
-        $response = $this->http->getWithToken('pull_updates/generateEmptyModuleCore/2', $accessToken);
+        $response = $this->http->getWithToken("pull_updates/generateEmptyModuleCore/{$moduleId}", $accessToken);
         $body = $response->json();
 
         if (!isset($body['success']) || $body['success'] !== true) {
-            throw new \RuntimeException('ABITUR init failed: ' . ($body['message'] ?? 'Unknown'));
+            throw new \RuntimeException("Module init failed for module {$moduleId}: " . ($body['message'] ?? 'Unknown'));
         }
 
         File::makeDirectory($modulePath, 0755, true, true);

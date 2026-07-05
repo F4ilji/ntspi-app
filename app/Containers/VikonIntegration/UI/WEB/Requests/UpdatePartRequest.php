@@ -14,7 +14,7 @@ class UpdatePartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'module_id' => ['required', 'integer', 'in:1,2,6'],
+            'module_id' => ['required', 'integer', 'in:' . implode(',', array_keys(config('vikon.modules')))],
             'part' => ['required', 'string', 'max:50'],
         ];
     }

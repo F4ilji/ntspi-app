@@ -36,6 +36,7 @@ return [
         2 => [
             'name' => 'Абитуриент',
             'path' => 'abitur',
+            'init_only' => true,
             'allowed_folders' => ['abitur'],
         ],
         6 => [

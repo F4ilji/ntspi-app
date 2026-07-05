@@ -42,12 +42,8 @@ class SyncFilesAction
 
     private function getModuleName(int $moduleId): string
     {
-        return match ($moduleId) {
-            1 => 'sveden',
-            2 => 'abitur',
-            6 => 'vsoko',
-            default => throw new \RuntimeException("Unknown module: {$moduleId}"),
-        };
+        $modules = config('vikon.modules');
+        return $modules[$moduleId]['path'] ?? throw new \RuntimeException("Unknown module: {$moduleId}");
     }
 
     private function getUsedDirNames(int $moduleId, string $accessToken): array
