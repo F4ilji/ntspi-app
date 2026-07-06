@@ -1,3 +1,18 @@
+// Suppress unhandled errors from browser API calls in SSR lifecycle hooks
+// (e.g. Inertia Link tries this.$el.nextSibling which is null in SSR)
+process.on('unhandledRejection', (reason) => {
+    if (reason instanceof TypeError && reason.message?.includes('nextSibling')) {
+        return; // Suppress known SSR lifecycle hook errors
+    }
+    console.error('SSR unhandled rejection:', reason);
+});
+process.on('uncaughtException', (err) => {
+    if (err instanceof TypeError && err.message?.includes('nextSibling')) {
+        return;
+    }
+    console.error('SSR uncaught exception:', err);
+});
+
 if (typeof globalThis.IntersectionObserver === 'undefined') {
     globalThis.IntersectionObserver = class {
         constructor() {}
