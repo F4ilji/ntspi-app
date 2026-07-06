@@ -22,7 +22,18 @@ if (typeof globalThis.window === 'undefined') {
 }
 
 if (typeof globalThis.document === 'undefined') {
-    globalThis.document = { createElement: () => ({ style: {} }), querySelector: () => null, head: { appendChild: () => {} }, body: { appendChild: () => {} } };
+    const el = { style: {}, appendChild: () => {}, removeChild: () => {} };
+    globalThis.document = {
+        createElement: () => el,
+        querySelector: () => null,
+        querySelectorAll: () => [],
+        getElementById: () => null,
+        createTextNode: () => el,
+        createComment: () => el,
+        createDocumentFragment: () => el,
+        head: { appendChild: () => {}, removeChild: () => {} },
+        body: { appendChild: () => {}, removeChild: () => {} },
+    };
 }
 
 import '../css/app.css';
