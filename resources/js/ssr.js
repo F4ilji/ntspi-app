@@ -80,6 +80,6 @@ createServer(page =>
         },
     }).catch(error => {
         logSsrError(error);
-        throw error;
+        return '';
     })
 );
