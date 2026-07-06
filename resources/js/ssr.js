@@ -45,6 +45,8 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { Ziggy } from './ziggy';
 import { createSsrErrorHandler, logSsrError } from './ssr/errorHandler.js';
 
+const EMPTY_RESPONSE = { head: [], body: '' };
+
 createServer(page =>
     createInertiaApp({
         page,
@@ -74,8 +76,8 @@ createServer(page =>
                 .use(plugin)
                 .use(ZiggyVue, ziggyConfig);
         },
-    }).catch(error => {
+    }).then(result => result ?? EMPTY_RESPONSE).catch(error => {
         logSsrError(error);
-        return '';
+        return EMPTY_RESPONSE;
     })
 );
