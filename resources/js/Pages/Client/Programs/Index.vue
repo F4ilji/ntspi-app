@@ -103,7 +103,7 @@ export default {
   <BasicPageWrapper>
     <BasicPageContainer>
       <div class="space-y-5 md:space-y-4">
-        <ProgramTitle class="text-center" :header="this.campaignName" />
+        <ProgramTitle class="text-center" :header="campaignName" />
         <div class="space-y-5 md:space-y-4 mx-auto max-w-3xl w-full">
           <div>
             <div class="">

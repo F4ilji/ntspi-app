@@ -21,7 +21,7 @@ export default {
 	name: "Index",
 	data() {
 		return {
-			favoriteGroups: JSON.parse(localStorage.getItem('favoriteGroups')),
+			favoriteGroups: typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('favoriteGroups') || '[]') : [],
 			showFavorites: false,
 			loading: false,
       currentPageLoaded: this.schedules_paginator.current_page,

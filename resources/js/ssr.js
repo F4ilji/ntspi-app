@@ -7,6 +7,24 @@ if (typeof globalThis.IntersectionObserver === 'undefined') {
     };
 }
 
+if (typeof globalThis.localStorage === 'undefined') {
+    const noop = () => '';
+    globalThis.localStorage = { getItem: noop, setItem: noop, removeItem: noop, clear: noop, get length() { return 0; }, key: noop };
+}
+
+if (typeof globalThis.sessionStorage === 'undefined') {
+    const noop = () => '';
+    globalThis.sessionStorage = { getItem: noop, setItem: noop, removeItem: noop, clear: noop, get length() { return 0; }, key: noop };
+}
+
+if (typeof globalThis.window === 'undefined') {
+    globalThis.window = globalThis;
+}
+
+if (typeof globalThis.document === 'undefined') {
+    globalThis.document = { createElement: () => ({ style: {} }), querySelector: () => null, head: { appendChild: () => {} }, body: { appendChild: () => {} } };
+}
+
 import '../css/app.css';
 import { createInertiaApp } from '@inertiajs/vue3'
 import createServer from '@inertiajs/vue3/server'
