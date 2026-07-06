@@ -61,9 +61,7 @@ class Handler extends AbstractHandler
             }
 
             if (! app()->environment(['local', 'testing'])) {
-                return Inertia::render('Error', ['status' => $statusCode])
-                    ->toResponse($request)
-                    ->setStatusCode($statusCode);
+                return $this->renderInertiaError($request, $statusCode);
             }
         } elseif ($statusCode === 419) {
             return back()->with([
@@ -72,6 +70,33 @@ class Handler extends AbstractHandler
         }
 
         return $response;
+    }
+
+    /**
+     * Render Inertia error page with Vite manifest fallback.
+     */
+    private function renderInertiaError(Request $request, int $statusCode)
+    {
+        try {
+            return Inertia::render('Error', ['status' => $statusCode])
+                ->toResponse($request)
+                ->setStatusCode($statusCode);
+        } catch (\Throwable $e) {
+            $messages = [
+                503 => 'Сервис временно недоступен. Попробуйте позже.',
+                500 => 'Внутренняя ошибка сервера.',
+                404 => 'Запрашиваемая страница не найдена.',
+                403 => 'У вас нет доступа к этой странице.',
+            ];
+            $message = $messages[$statusCode] ?? 'Произошла ошибка.';
+
+            return response(
+                '<!DOCTYPE html><html><head><title>Error ' . $statusCode . '</title></head>'
+                . '<body style="font-family:sans-serif;text-align:center;padding:50px">'
+                . '<h1>' . $statusCode . '</h1><p>' . $message . '</p></body></html>',
+                $statusCode
+            );
+        }
     }
 
     /**
@@ -110,9 +135,18 @@ class Handler extends AbstractHandler
             ]);
         }
 
-        return Inertia::render('Dashboard/DashboardError', $props)
-            ->toResponse($request)
-            ->setStatusCode($statusCode);
+        try {
+            return Inertia::render('Dashboard/DashboardError', $props)
+                ->toResponse($request)
+                ->setStatusCode($statusCode);
+        } catch (\Throwable $e) {
+            return response(
+                '<!DOCTYPE html><html><head><title>Error ' . $statusCode . '</title></head>'
+                . '<body style="font-family:sans-serif;text-align:center;padding:50px">'
+                . '<h1>' . $statusCode . '</h1><p>' . ($props['message'] ?? 'Ошибка') . '</p></body></html>',
+                $statusCode
+            );
+        }
     }
 
     /**
