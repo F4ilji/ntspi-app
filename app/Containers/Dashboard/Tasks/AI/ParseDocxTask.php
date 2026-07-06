@@ -14,7 +14,7 @@ class ParseDocxTask
     {
         // 1. Проверяем, существует ли физически файл по этому пути
         if (!file_exists($filePath)) {
-            Log::channel('ai')->error('Файл не найден по пути: {$filePath}");
+            Log::channel('ai')->error("Файл не найден по пути: {$filePath}");
             return "ОШИБКА ДЕБАГА: Файл не найден на сервере.";
         }
 
@@ -26,7 +26,7 @@ class ParseDocxTask
         // Если не true, значит произошла ошибка
         if ($res !== true) {
             $errorMsg = $this->getZipError($res);
-            Log::channel('ai')->error('Ошибка ZipArchive: {$errorMsg} | Путь: {$filePath}");
+            Log::channel('ai')->error("Ошибка ZipArchive: {$errorMsg} | Путь: {$filePath}");
 
             // Возвращаем текст ошибки прямо на фронт, чтобы сразу увидеть причину!
             return "ОШИБКА ДЕБАГА ZipArchive: {$errorMsg}";
@@ -39,7 +39,7 @@ class ParseDocxTask
         $zip->close();
 
         if ($xmlString === false) {
-            Log::channel('ai')->error('Файл word/document.xml не найден внутри архива. Возможно, это не настоящий DOCX.");
+            Log::channel('ai')->error('Файл word/document.xml не найден внутри архива. Возможно, это не настоящий DOCX.');
             return "ОШИБКА ДЕБАГА: Внутри архива нет word/document.xml";
         }
 
@@ -49,7 +49,7 @@ class ParseDocxTask
             $text = strip_tags($text);
             return trim($text);
         } catch (\Exception $e) {
-            Log::channel('ai')->error('Ошибка очистки тегов: " . $e->getMessage());
+            Log::channel('ai')->error("Ошибка очистки тегов: " . $e->getMessage());
             return "ОШИБКА ДЕБАГА при очистке текста.";
         }
     }
