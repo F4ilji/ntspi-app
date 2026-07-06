@@ -9,7 +9,7 @@ if (typeof globalThis.IntersectionObserver === 'undefined') {
 
 if (typeof globalThis.localStorage === 'undefined') {
     const noop = () => '';
-    globalThis.localStorage = { getItem: noop, setItem: noop, removeItem: noop, clear: noop, get length() { return 0; }, key: noop };
+    globalThis.localStorage = { getItem: noop, setItem: noop, removeEventListener: noop, removeItem: noop, clear: noop, get length() { return 0; }, key: noop };
 }
 
 if (typeof globalThis.sessionStorage === 'undefined') {
@@ -17,11 +17,7 @@ if (typeof globalThis.sessionStorage === 'undefined') {
     globalThis.sessionStorage = { getItem: noop, setItem: noop, removeItem: noop, clear: noop, get length() { return 0; }, key: noop };
 }
 
-if (typeof globalThis.window === 'undefined') {
-    globalThis.window = globalThis;
-    globalThis.window.addEventListener = () => {};
-    globalThis.window.removeEventListener = () => {};
-}
+// NOTE: Do NOT polyfill globalThis.window — Inertia checks `typeof window === "undefined"` to detect SSR
 
 if (typeof globalThis.document === 'undefined') {
     const el = { style: {}, appendChild: () => {}, removeChild: () => {}, addEventListener: () => {}, removeEventListener: () => {} };
