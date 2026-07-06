@@ -7,22 +7,25 @@ pipeline {
     }
 
     stages {
-        stage('Backup Database') {
-            steps {
-                dir("${APP_DIR}") {
-                    sh '''
-                        mkdir -p backups
-                        docker exec ntspi-db mysqldump -u admin -psecret ntspi_db | gzip > backups/ntspi_db_$(date +%F_%H%M).sql.gz
-                        find backups -name "*.sql.gz" -mtime +3 -delete
-                    '''
+        stage('Pre-deploy') {
+            parallel {
+                stage('Backup Database') {
+                    steps {
+                        dir("${APP_DIR}") {
+                            sh '''
+                                mkdir -p backups
+                                docker exec ntspi-db mysqldump -u admin -psecret ntspi_db | gzip > backups/ntspi_db_$(date +%F_%H%M).sql.gz
+                                find backups -name "*.sql.gz" -mtime +3 -delete
+                            '''
+                        }
+                    }
                 }
-            }
-        }
-
-        stage('Cleanup Old Files') {
-            steps {
-                dir("${APP_DIR}") {
-                    sh 'docker exec ntspi-php find /var/www/storage/app/email_attachments -type f -mtime +3 -delete'
+                stage('Cleanup Old Files') {
+                    steps {
+                        dir("${APP_DIR}") {
+                            sh 'docker exec ntspi-php find /var/www/storage/app/email_attachments -type f -mtime +3 -delete'
+                        }
+                    }
                 }
             }
         }
@@ -49,7 +52,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir("${APP_DIR}") {
-                    sh 'docker exec ntspi-php php -d open_basedir=none /usr/local/bin/composer install --no-dev --no-interaction --prefer-dist --no-cache'
+                    sh 'docker exec ntspi-php php -d open_basedir=none /usr/local/bin/composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader'
                 }
             }
         }
@@ -69,11 +72,8 @@ pipeline {
                                 echo "Rolling back to $PREV_SHA"
                                 git reset --hard $PREV_SHA
                                 docker exec ntspi-php php artisan migrate:rollback --force || true
-                                docker exec ntspi-php composer install --no-dev --no-interaction --prefer-dist --no-cache
+                                docker exec ntspi-php sh -c "php -d open_basedir=none /usr/local/bin/composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader"
                                 docker exec ntspi-php php artisan cache:clear
-                                docker exec ntspi-php php artisan config:clear
-                                docker exec ntspi-php php artisan route:clear
-                                docker exec ntspi-php php artisan view:clear
                                 docker restart ntspi-nginx ntspi-php ntspi-php-queue
                             fi
                         '''
@@ -85,8 +85,7 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir("${APP_DIR}") {
-                    sh 'docker exec ntspi-php npm install --legacy-peer-deps'
-                    sh 'docker exec ntspi-php npm run build'
+                    sh 'docker exec ntspi-php sh -c "npm ci --legacy-peer-deps && npm run build"'
                 }
             }
         }
@@ -102,8 +101,7 @@ pipeline {
                         docker exec ntspi-php php artisan filament:clear-cached-components
                         docker exec ntspi-php php artisan filament:optimize-clear
 
-                        docker exec ntspi-php php artisan route:cache
-                        docker exec ntspi-php php artisan view:cache
+                        docker exec ntspi-php php artisan optimize
                         docker exec ntspi-php php artisan icons:cache
                         docker exec ntspi-php php artisan filament:cache-components
                         docker exec ntspi-php php artisan filament:optimize
@@ -139,7 +137,7 @@ pipeline {
                                 break
                             fi
                             echo "Waiting for app... ($i/30)"
-                            sleep 2
+                            sleep 1
                         done
                     '''
                 }
