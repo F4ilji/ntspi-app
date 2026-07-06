@@ -41,6 +41,11 @@ class VikonController extends Controller
         if ($isAuth && $token) {
             $accessResult = $this->checkAccess->run($token);
             $parts = $accessResult['parts'] ?? [];
+
+            $versionResult = $this->checkVersion->run($token);
+            if (!empty($versionResult['latest_version'])) {
+                $this->writeVersionFile($versionResult['latest_version']);
+            }
         }
 
         return inertia()->render('Dashboard/VikonUpdates/Index', [
@@ -85,7 +90,7 @@ class VikonController extends Controller
 
         return inertia()->render('Dashboard/VikonUpdates/Index', [
             'is_authenticated' => $isAuth,
-            'current_version' => config('vikon.current_version'),
+            'current_version' => app('vikon.version'),
             'modules' => config('vikon.modules'),
             'parts' => $parts,
             'vikon_api_domain' => config('vikon.api_domain'),
@@ -136,16 +141,6 @@ class VikonController extends Controller
 
         $result = $this->checkAccess->run($token);
         return response()->json($result);
-    }
-
-    public function checkVersion(): JsonResponse
-    {
-        $token = Session::get('vikon_access_token');
-        if (!$token) {
-            return response()->json(['success' => false, 'requires_auth' => true], 401);
-        }
-
-        return response()->json($this->checkVersion->run($token));
     }
 
     public function updateModule(UpdateModuleRequest $request): JsonResponse
@@ -219,5 +214,17 @@ class VikonController extends Controller
             . '&state=' . $state;
 
         return response()->json(['url' => $url]);
+    }
+
+    private function writeVersionFile(string $version): void
+    {
+        $file = config('vikon.version_file');
+        if ($file) {
+            $dir = dirname($file);
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            file_put_contents($file, $version);
+        }
     }
 }

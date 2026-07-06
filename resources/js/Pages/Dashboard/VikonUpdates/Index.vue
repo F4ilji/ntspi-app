@@ -31,16 +31,6 @@
               <p class="text-2xl font-semibold mt-1">{{ currentVersion }}</p>
             </div>
           </div>
-          <div v-if="versionInfo.has_update" class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg mt-4">
-            <p class="text-sm font-medium text-yellow-800">Доступно обновление: {{ versionInfo.latest_version }}</p>
-          </div>
-          <div v-else-if="versionInfo.latest_version" class="p-3 bg-green-50 border border-green-200 rounded-lg mt-4">
-            <p class="text-sm font-medium text-green-800">Установлена последняя версия</p>
-          </div>
-          <button @click="checkVersion" :disabled="checkingVersion"
-            class="mt-4 w-full px-4 py-2 bg-surface border border-layer-line rounded-lg hover:bg-muted-hover disabled:opacity-50">
-            {{ checkingVersion ? 'Проверка...' : 'Проверить обновления' }}
-          </button>
         </div>
 
         <div class="bg-layer border border-layer-line rounded-lg p-6">
@@ -183,13 +173,11 @@ function moduleName(id) { return moduleNames[id] || `Модуль ${id}`; }
 
 const isAuthenticated = ref(props.is_authenticated);
 const currentVersion = ref(props.current_version);
-const checkingVersion = ref(false);
 const checkingAccess = ref(false);
 const updating = ref(null);
 const updatingAll = ref(false);
 const updatePhase = ref('');
 const updateError = ref(null);
-const versionInfo = ref({ current_version: props.current_version, has_update: false, latest_version: null });
 const accessInfo = ref({ has_access: false, error: null });
 const selectedParts = ref({});
 if (props.parts) {
@@ -216,7 +204,6 @@ onMounted(() => {
   }
   if (isAuthenticated.value) {
     checkAccess();
-    checkVersion();
   }
 });
 
@@ -229,16 +216,6 @@ async function checkAccess() {
     accessInfo.value = { has_access: false, error: 'Ошибка проверки прав' };
   } finally {
     checkingAccess.value = false;
-  }
-}
-
-async function checkVersion() {
-  checkingVersion.value = true;
-  try {
-    const res = await axios.post(route('dashboard.vikon-updates.check-version'));
-    versionInfo.value = res.data;
-  } finally {
-    checkingVersion.value = false;
   }
 }
 
@@ -347,7 +324,6 @@ async function logout() {
     await axios.post(route('dashboard.vikon-updates.logout'));
     isAuthenticated.value = false;
     accessInfo.value = { has_access: false, error: null };
-    versionInfo.value = { current_version: currentVersion.value, has_update: false, latest_version: null };
   } catch {}
 }
 </script>

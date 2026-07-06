@@ -95,13 +95,11 @@ class VikonServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(app_path('Containers/VikonIntegration/UI/WEB/Routes/web.php'));
 
         $this->app->bind('vikon.version', function () {
-            $cached = cache()->get('vikon:current_version');
-            if ($cached) {
-                return $cached;
+            $file = config('vikon.version_file');
+            if ($file && file_exists($file)) {
+                return trim(file_get_contents($file));
             }
-            $version = config('vikon.current_version', '5.90.8.1');
-            cache()->put('vikon:current_version', $version, 3600);
-            return $version;
+            return config('vikon.current_version', '5.90.8.1');
         });
     }
 }

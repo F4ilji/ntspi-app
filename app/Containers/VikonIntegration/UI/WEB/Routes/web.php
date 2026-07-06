@@ -13,7 +13,6 @@ Route::prefix('/dashboard/vikon-updates')
         Route::post('/authenticate', [VikonController::class, 'authenticate'])->name('authenticate');
         Route::post('/refresh-token', [VikonController::class, 'refreshToken'])->name('refresh-token');
         Route::post('/check-access', [VikonController::class, 'checkAccess'])->name('check-access');
-        Route::post('/check-version', [VikonController::class, 'checkVersion'])->name('check-version');
         Route::post('/update-module', [VikonController::class, 'updateModule'])->name('update-module');
         Route::post('/sync-files', [VikonController::class, 'syncFiles'])->name('sync-files');
         Route::post('/update-part', [VikonController::class, 'updatePart'])->name('update-part');

@@ -11,6 +11,7 @@ return [
     'filemanager_domain' => env('VIKON_FILEMANAGER_DOMAIN', 'https://file.db-nica.ru/'),
 
     'current_version' => '5.90.8.1',
+    'version_file' => storage_path('app/vikon/current_version.txt'),
 
     'http_timeout' => env('VIKON_HTTP_TIMEOUT', 60),
     'http_retries' => env('VIKON_HTTP_RETRIES', 3),

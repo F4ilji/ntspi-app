@@ -345,7 +345,14 @@ class UpdateCoreAction
             $latestVersion = $body['version'] ?? null;
 
             if ($latestVersion) {
-                cache()->put('vikon:current_version', $latestVersion, 3600);
+                $file = config('vikon.version_file');
+                if ($file) {
+                    $dir = dirname($file);
+                    if (!is_dir($dir)) {
+                        mkdir($dir, 0755, true);
+                    }
+                    file_put_contents($file, $latestVersion);
+                }
                 Log::channel('vikon')->info('Vikon: version updated', ['version' => $latestVersion]);
             }
         } catch (\Throwable $e) {
