@@ -58,9 +58,34 @@ import { renderToString } from '@vue/server-renderer'
 import { createSSRApp, h } from 'vue'
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { Ziggy } from './ziggy';
-import { createSsrErrorHandler, logSsrError } from './ssr/errorHandler.js';
+import { logSsrError } from './ssr/errorHandler.js';
 
 const EMPTY_RESPONSE = { head: [], body: '' };
+
+// Vue plugin that wraps lifecycle hooks with try-catch during SSR
+// Prevents browser-only API errors (IntersectionObserver, $el, etc) from flooding logs
+const ssrLifecycleGuard = {
+    install(app) {
+        const lifecycleHooks = ['mounted', 'updated', 'activated', 'deactivated', 'beforeUnmount', 'unmounted'];
+        const safeHooks = ['serverPrefetch'];
+
+        app.mixin({
+            ...Object.fromEntries(lifecycleHooks.map(hook => [hook, function (...args) {
+                try {
+                    // Call original if defined in options
+                    const original = this.$options?.[hook];
+                    if (typeof original === 'function') {
+                        original.apply(this, args);
+                    } else if (Array.isArray(original)) {
+                        original.forEach(fn => fn.apply(this, args));
+                    }
+                } catch (e) {
+                    // Suppress SSR lifecycle errors silently
+                }
+            }])),
+        });
+    }
+};
 
 createServer(page =>
     createInertiaApp({
@@ -88,6 +113,7 @@ createServer(page =>
             };
 
             return ssrApp
+                .use(ssrLifecycleGuard)
                 .use(plugin)
                 .use(ZiggyVue, ziggyConfig);
         },
