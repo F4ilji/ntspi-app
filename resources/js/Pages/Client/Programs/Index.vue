@@ -45,7 +45,8 @@ export default {
   props: {
 		campaignName: {
 			type: String,
-    },
+			default: '',
+		},
 		levelsEducational: {
 			type: Object,
 		},

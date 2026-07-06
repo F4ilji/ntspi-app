@@ -14,7 +14,7 @@ class GetAdmissionCampaignNameTask
 
         return Cache::remember($cacheKey, now()->addHours(1), function () {
             $campaign = AdmissionCampaign::query()->where('status', 1)->first();
-            return $campaign->name;
+            return $campaign?->name ?? '';
         });
     }
 }
