@@ -38,13 +38,13 @@ class ParseEmailNewsController extends Controller
                 "Обработано писем: {$result['processed_emails']}, но новостей не создано"
             );
         } catch (EmailFetchException $e) {
-            Log::channel('app')->error('EmailFetchException', [
+            Log::channel('email')->error('EmailFetchException', [
                 'error' => $e->getMessage(),
             ]);
 
             return redirect()->back()->with('error', $e->getMessage());
         } catch (\Exception $e) {
-            Log::channel('app')->error('Критическая ошибка', [
+            Log::channel('email')->error('Критическая ошибка', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);

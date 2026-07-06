@@ -66,7 +66,7 @@ class FetchEmailNewsCommand extends ConsoleCommand
             return $this->handleSync($fetchEmailNewsAction, $verbose);
         } catch (EmailFetchException $e) {
             $this->error('❌ Ошибка Email: ' . $e->getMessage());
-            Log::channel('app')->error('EmailFetchException', [
+            Log::channel('email')->error('EmailFetchException', [
                 'code' => $e->getCode(),
                 'message' => $e->getMessage(),
             ]);
@@ -76,7 +76,7 @@ class FetchEmailNewsCommand extends ConsoleCommand
             $this->error('❌ Критическая ошибка: ' . $e->getMessage());
             $this->warn('Проверьте логи: storage/logs/laravel.log');
 
-            Log::channel('app')->error('Critical Error', [
+            Log::channel('email')->error('Critical Error', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
