@@ -19,10 +19,12 @@ if (typeof globalThis.sessionStorage === 'undefined') {
 
 if (typeof globalThis.window === 'undefined') {
     globalThis.window = globalThis;
+    globalThis.window.addEventListener = () => {};
+    globalThis.window.removeEventListener = () => {};
 }
 
 if (typeof globalThis.document === 'undefined') {
-    const el = { style: {}, appendChild: () => {}, removeChild: () => {} };
+    const el = { style: {}, appendChild: () => {}, removeChild: () => {}, addEventListener: () => {}, removeEventListener: () => {} };
     globalThis.document = {
         createElement: () => el,
         querySelector: () => null,
@@ -31,8 +33,10 @@ if (typeof globalThis.document === 'undefined') {
         createTextNode: () => el,
         createComment: () => el,
         createDocumentFragment: () => el,
+        addEventListener: () => {},
+        removeEventListener: () => {},
         head: { appendChild: () => {}, removeChild: () => {} },
-        body: { appendChild: () => {}, removeChild: () => {} },
+        body: { appendChild: () => {}, removeChild: () => {}, addEventListener: () => {}, removeEventListener: () => {} },
     };
 }
 
