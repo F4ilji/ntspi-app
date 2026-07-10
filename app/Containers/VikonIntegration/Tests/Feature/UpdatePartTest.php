@@ -4,11 +4,11 @@ namespace App\Containers\VikonIntegration\Tests\Feature;
 
 use App\Containers\User\Models\User;
 use App\Ship\Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class UpdatePartTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private function createUser(): User
     {

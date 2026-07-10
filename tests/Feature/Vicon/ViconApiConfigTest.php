@@ -5,13 +5,13 @@ namespace Tests\Feature\Vicon;
 use App\Containers\Dashboard\Models\IntegrationCredential;
 use App\Services\Vicon\ViconApiConfig;
 use App\Ship\Enums\CacheKeys;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class ViconApiConfigTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     protected function setUp(): void
     {
@@ -21,11 +21,10 @@ class ViconApiConfigTest extends TestCase
 
     private function createCredential(array $payload, bool $active = true): void
     {
-        IntegrationCredential::create([
-            'provider' => 'vikon_api',
-            'payload' => $payload,
-            'is_active' => $active,
-        ]);
+        IntegrationCredential::updateOrCreate(
+            ['provider' => 'vikon_api'],
+            ['payload' => $payload, 'is_active' => $active],
+        );
     }
 
     public function test_token_returns_value_from_db(): void
@@ -57,6 +56,9 @@ class ViconApiConfigTest extends TestCase
 
     public function test_token_throws_when_not_configured(): void
     {
+        IntegrationCredential::where('provider', 'vikon_api')->delete();
+        Cache::flush();
+
         $config = app(ViconApiConfig::class);
 
         $this->expectException(\RuntimeException::class);
