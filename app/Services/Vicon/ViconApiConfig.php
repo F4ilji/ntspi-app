@@ -4,13 +4,15 @@ namespace App\Services\Vicon;
 
 use App\Containers\Dashboard\Tasks\IntegrationCredentials\GetIntegrationCredentialTask;
 
-class ViconApiToken
+class ViconApiConfig
 {
+    private const FALLBACK_API_URL = 'https://db-nica.ru/api/v1';
+
     public function __construct(
         private readonly GetIntegrationCredentialTask $getCredential,
     ) {}
 
-    public function get(): string
+    public function token(): string
     {
         $credential = $this->getCredential->run('vikon_api');
 
@@ -19,5 +21,12 @@ class ViconApiToken
         }
 
         return $credential->payload['token'];
+    }
+
+    public function apiUrl(): string
+    {
+        $credential = $this->getCredential->run('vikon_api');
+
+        return $credential->payload['api_url'] ?? self::FALLBACK_API_URL;
     }
 }

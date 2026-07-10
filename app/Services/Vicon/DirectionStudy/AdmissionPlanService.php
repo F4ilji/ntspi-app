@@ -4,14 +4,14 @@ namespace App\Services\Vicon\DirectionStudy;
 
 use App\Jobs\CreateDirectionStudy;
 use App\Jobs\CreateEducationalProgram;
-use App\Services\Vicon\ViconApiToken;
+use App\Services\Vicon\ViconApiConfig;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class AdmissionPlanService
 {
     public function __construct(
-        private readonly ViconApiToken $viconApiToken,
+        private readonly ViconApiConfig $viconApiConfig,
     ) {}
     public function getLevelEducationCodes(object $campaign) : array
     {
@@ -31,8 +31,8 @@ class AdmissionPlanService
     {
         try {
             $response = $this->callAPI(
-                "https://db-nica.ru/api/v1/campaigns",
-                $this->viconApiToken->get()
+                "{$this->viconApiConfig->apiUrl()}/campaigns",
+                $this->viconApiConfig->token()
             );
             if (!is_array($response)) {
                 Log::channel('app')->warning('Unexpected response type in getCampaigns', [
@@ -55,8 +55,8 @@ class AdmissionPlanService
     {
         try {
             $response = $this->callAPI(
-                "https://db-nica.ru/api/v1/planPriema/$campaign_levels_code",
-                $this->viconApiToken->get()
+                "{$this->viconApiConfig->apiUrl()}/planPriema/$campaign_levels_code",
+                $this->viconApiConfig->token()
             );
 
             if (!is_object($response)) {
