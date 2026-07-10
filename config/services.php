@@ -46,9 +46,8 @@ return [
     ],
 
     'vicon' => [
-        'token' => env('VICON_TOKEN'),
+        'token' => env('VIKON_API_TOKEN'),
         'api_url' => 'https://db-nica.ru/api/v1',
     ],
-
 
 ];

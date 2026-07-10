@@ -4,11 +4,15 @@ namespace App\Services\Vicon\EducationalProgram;
 
 use App\Jobs\CreateDirectionStudy;
 use App\Jobs\CreateEducationalProgram;
+use App\Services\Vicon\ViconApiToken;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class EducationalProgramService
 {
+    public function __construct(
+        private readonly ViconApiToken $viconApiToken,
+    ) {}
     const EDU_LEVELS = [1,2,3,4,5,6];
 
     public function getAllProgramsUuid() : array
@@ -27,13 +31,13 @@ class EducationalProgramService
 
     public function getPrograms(int $edu_level) : object
     {
-        $data = $this->callAPI("https://db-nica.ru/api/v1/programs?filter_edu_level=$edu_level&perPage=200", config('services.vicon.token'));
+        $data = $this->callAPI("https://db-nica.ru/api/v1/programs?filter_edu_level=$edu_level&perPage=200", $this->viconApiToken->get());
         return $data;
     }
 
     public function getProgram(string $uuid) : object
     {
-        $data = $this->callAPI("https://db-nica.ru/api/v1/program/$uuid", config('services.vicon.token'));
+        $data = $this->callAPI("https://db-nica.ru/api/v1/program/$uuid", $this->viconApiToken->get());
         return $data;
     }
 
