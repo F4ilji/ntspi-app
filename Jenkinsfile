@@ -61,6 +61,7 @@ pipeline {
             steps {
                 dir("${APP_DIR}") {
                     sh 'docker exec ntspi-php php artisan migrate --force'
+                    sh 'docker exec ntspi-php php artisan dashboard:sync-permissions'
                 }
             }
             post {
