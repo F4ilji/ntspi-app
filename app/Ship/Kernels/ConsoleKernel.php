@@ -6,6 +6,7 @@ use AlxDorosenco\PortoForLaravel\Loaders\CommandsLoader;
 use AlxDorosenco\PortoForLaravel\Loaders\RoutesLoader;
 use App\Containers\Dashboard\Commands\FetchEmailNewsCommand;
 use App\Ship\Commands\InitRoles;
+use App\Ship\Commands\SyncDashboardPermissions;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as LaravelConsoleKernel;
 
@@ -34,6 +35,7 @@ class ConsoleKernel extends LaravelConsoleKernel
     protected $commands = [
         InitRoles::class,
         FetchEmailNewsCommand::class,
+        SyncDashboardPermissions::class,
     ];
 
     /**
