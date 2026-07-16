@@ -61,13 +61,13 @@ Route::middleware('guest')->group(function () {
 Route::post('/dashboard/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 // Authenticated dashboard routes
-Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
+Route::middleware(['access-check', 'dashboard.auth', 'dashboard.permission'])->group(function () {
     Route::get('/dashboard', IndexDashboardController::class)->name('dashboard.index');
     Route::get('/dashboard/sveden', [SvedenController::class, 'index'])->name('dashboard.sveden');
     Route::post('/dashboard/sveden', [SvedenController::class, 'store'])->name('dashboard.sveden.store');
 
     // CRUD постов
-    Route::prefix('/dashboard/posts')->name('dashboard.posts.')->middleware('permission:view_any_post')->group(function () {
+    Route::prefix('/dashboard/posts')->name('dashboard.posts.')->group(function () {
         Route::get('/', [PostController::class, 'index'])->name('index');
         Route::get('/ai-prepared', [PostController::class, 'aiPrepared'])->name('ai-prepared');
         Route::post('/ai-prepared/parse-email', [ParseEmailNewsController::class, '__invoke'])->name('ai-prepared.parse-email');
@@ -84,7 +84,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD категорий новостей
-    Route::prefix('/dashboard/categories')->name('dashboard.categories.')->middleware('permission:view_any_category')->group(function () {
+    Route::prefix('/dashboard/categories')->name('dashboard.categories.')->group(function () {
         Route::get('/', [NewsCategoryController::class, 'index'])->name('index');
         Route::get('/create', [NewsCategoryController::class, 'create'])->name('create');
         Route::post('/', [NewsCategoryController::class, 'store'])->name('store');
@@ -94,7 +94,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD учебных групп
-    Route::prefix('/dashboard/educational-groups')->name('dashboard.educational-groups.')->middleware('permission:view_any_educational_group')->group(function () {
+    Route::prefix('/dashboard/educational-groups')->name('dashboard.educational-groups.')->group(function () {
         Route::get('/', [EducationalGroupController::class, 'index'])->name('index');
         Route::get('/create', [EducationalGroupController::class, 'create'])->name('create');
         Route::post('/', [EducationalGroupController::class, 'store'])->name('store');
@@ -104,7 +104,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD программ дополнительного образования
-    Route::prefix('/dashboard/additional-educations')->name('dashboard.additional-educations.')->middleware('permission:view_any_additional_education')->group(function () {
+    Route::prefix('/dashboard/additional-educations')->name('dashboard.additional-educations.')->group(function () {
         Route::get('/', [AdditionalEducationController::class, 'index'])->name('index');
         Route::get('/create', [AdditionalEducationController::class, 'create'])->name('create');
         Route::post('/', [AdditionalEducationController::class, 'store'])->name('store');
@@ -134,7 +134,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD приемных кампаний
-    Route::prefix('/dashboard/admission-campaigns')->name('dashboard.admission-campaigns.')->middleware('permission:view_any_admission_campaign')->group(function () {
+    Route::prefix('/dashboard/admission-campaigns')->name('dashboard.admission-campaigns.')->group(function () {
         Route::get('/', [AdmissionCampaignController::class, 'index'])->name('index');
         Route::get('/create', [AdmissionCampaignController::class, 'create'])->name('create');
         Route::post('/', [AdmissionCampaignController::class, 'store'])->name('store');
@@ -144,7 +144,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD направлений подготовки
-    Route::prefix('/dashboard/direction-studies')->name('dashboard.direction-studies.')->middleware('permission:view_any_direction_study')->group(function () {
+    Route::prefix('/dashboard/direction-studies')->name('dashboard.direction-studies.')->group(function () {
         Route::get('/', [DirectionStudyController::class, 'index'])->name('index');
         Route::get('/create', [DirectionStudyController::class, 'create'])->name('create');
         Route::post('/', [DirectionStudyController::class, 'store'])->name('store');
@@ -154,7 +154,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD образовательных программ
-    Route::prefix('/dashboard/educational-programs')->name('dashboard.educational-programs.')->middleware('permission:view_any_educational_program')->group(function () {
+    Route::prefix('/dashboard/educational-programs')->name('dashboard.educational-programs.')->group(function () {
         Route::get('/', [EducationalProgramController::class, 'index'])->name('index');
         Route::get('/create', [EducationalProgramController::class, 'create'])->name('create');
         Route::post('/', [EducationalProgramController::class, 'store'])->name('store');
@@ -164,7 +164,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD планов приема
-    Route::prefix('/dashboard/admission-plans')->name('dashboard.admission-plans.')->middleware('permission:view_any_admission_plan')->group(function () {
+    Route::prefix('/dashboard/admission-plans')->name('dashboard.admission-plans.')->group(function () {
         Route::get('/', [AdmissionPlanController::class, 'index'])->name('index');
         Route::get('/create', [AdmissionPlanController::class, 'create'])->name('create');
         Route::post('/', [AdmissionPlanController::class, 'store'])->name('store');
@@ -174,7 +174,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD научных журналов
-    Route::prefix('/dashboard/academic-journals')->name('dashboard.academic-journals.')->middleware('permission:view_any_academic_journal')->group(function () {
+    Route::prefix('/dashboard/academic-journals')->name('dashboard.academic-journals.')->group(function () {
         Route::get('/', [AcademicJournalController::class, 'index'])->name('index');
         Route::get('/create', [AcademicJournalController::class, 'create'])->name('create');
         Route::post('/', [AcademicJournalController::class, 'store'])->name('store');
@@ -194,7 +194,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD расписаний
-    Route::prefix('/dashboard/schedules')->name('dashboard.schedules.')->middleware('permission:view_any_schedule')->group(function () {
+    Route::prefix('/dashboard/schedules')->name('dashboard.schedules.')->group(function () {
         Route::get('/', [ScheduleController::class, 'index'])->name('index');
         Route::get('/create', [ScheduleController::class, 'create'])->name('create');
         Route::post('/', [ScheduleController::class, 'store'])->name('store');
@@ -204,7 +204,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // Быстрая загрузка расписаний
-    Route::prefix('/dashboard/schedules/upload')->name('dashboard.schedules.upload.')->middleware('permission:view_any_schedule')->group(function () {
+    Route::prefix('/dashboard/schedules/upload')->name('dashboard.schedules.upload.')->group(function () {
         Route::get('/', [UploadSchedulesController::class, 'create'])->name('create');
         Route::post('/', [UploadSchedulesController::class, 'store'])->name('store');
     });
@@ -225,7 +225,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD слайдеров
-    Route::prefix('/dashboard/sliders')->name('dashboard.sliders.')->middleware('permission:view_any_slider')->group(function () {
+    Route::prefix('/dashboard/sliders')->name('dashboard.sliders.')->group(function () {
         Route::get('/', [SliderController::class, 'index'])->name('index');
         Route::get('/create', [CreateSliderController::class, '__invoke'])->name('create');
         Route::post('/', [StoreSliderController::class, '__invoke'])->name('store');
@@ -243,7 +243,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD факультетов
-    Route::prefix('/dashboard/faculties')->name('dashboard.faculties.')->middleware('permission:view_any_faculty')->group(function () {
+    Route::prefix('/dashboard/faculties')->name('dashboard.faculties.')->group(function () {
         Route::get('/', [FacultyController::class, 'index'])->name('index');
         Route::get('/create', [FacultyController::class, 'create'])->name('create');
         Route::post('/', [FacultyController::class, 'store'])->name('store');
@@ -253,7 +253,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // Сотрудники факультетов
-    Route::prefix('/dashboard/faculties/{faculty}/workers')->name('dashboard.faculties.workers.')->middleware('permission:view_any_faculty')->group(function () {
+    Route::prefix('/dashboard/faculties/{faculty}/workers')->name('dashboard.faculties.workers.')->group(function () {
         Route::get('/', [FacultyWorkerController::class, 'index'])->name('index');
         Route::post('/', [FacultyWorkerController::class, 'attach'])->name('attach');
         Route::put('/{worker}', [FacultyWorkerController::class, 'update'])->name('update');
@@ -261,7 +261,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD подразделений
-    Route::prefix('/dashboard/divisions')->name('dashboard.divisions.')->middleware('permission:view_any_division')->group(function () {
+    Route::prefix('/dashboard/divisions')->name('dashboard.divisions.')->group(function () {
         Route::get('/', [DivisionController::class, 'index'])->name('index');
         Route::get('/create', [DivisionController::class, 'create'])->name('create');
         Route::post('/', [DivisionController::class, 'store'])->name('store');
@@ -271,7 +271,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // Сотрудники подразделений
-    Route::prefix('/dashboard/divisions/{division}/workers')->name('dashboard.divisions.workers.')->middleware('permission:view_any_division')->group(function () {
+    Route::prefix('/dashboard/divisions/{division}/workers')->name('dashboard.divisions.workers.')->group(function () {
         Route::get('/', [DivisionWorkerController::class, 'index'])->name('index');
         Route::post('/', [DivisionWorkerController::class, 'attach'])->name('attach');
         Route::put('/{worker}', [DivisionWorkerController::class, 'update'])->name('update');
@@ -279,7 +279,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD кафедр
-    Route::prefix('/dashboard/departments')->name('dashboard.departments.')->middleware('permission:view_any_department')->group(function () {
+    Route::prefix('/dashboard/departments')->name('dashboard.departments.')->group(function () {
         Route::get('/', [DepartmentController::class, 'index'])->name('index');
         Route::get('/create', [DepartmentController::class, 'create'])->name('create');
         Route::post('/', [DepartmentController::class, 'store'])->name('store');
@@ -289,7 +289,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // Сотрудники кафедр
-    Route::prefix('/dashboard/departments/{department}/workers')->name('dashboard.departments.workers.')->middleware('permission:view_any_department')->group(function () {
+    Route::prefix('/dashboard/departments/{department}/workers')->name('dashboard.departments.workers.')->group(function () {
         Route::get('/', [DepartmentWorkerController::class, 'index'])->name('index');
         Route::post('/', [DepartmentWorkerController::class, 'attach'])->name('attach');
         Route::put('/{worker}', [DepartmentWorkerController::class, 'update'])->name('update');
@@ -297,7 +297,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // Преподаватели кафедр
-    Route::prefix('/dashboard/departments/{department}/teachers')->name('dashboard.departments.teachers.')->middleware('permission:view_any_department')->group(function () {
+    Route::prefix('/dashboard/departments/{department}/teachers')->name('dashboard.departments.teachers.')->group(function () {
         Route::get('/', [DepartmentTeacherController::class, 'index'])->name('index');
         Route::post('/', [DepartmentTeacherController::class, 'attach'])->name('attach');
         Route::put('/{teacher}', [DepartmentTeacherController::class, 'update'])->name('update');
@@ -305,14 +305,14 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // Образовательные программы кафедр
-    Route::prefix('/dashboard/departments/{department}/programs')->name('dashboard.departments.programs.')->middleware('permission:view_any_department')->group(function () {
+    Route::prefix('/dashboard/departments/{department}/programs')->name('dashboard.departments.programs.')->group(function () {
         Route::get('/', [DepartmentProgramController::class, 'index'])->name('index');
         Route::post('/', [DepartmentProgramController::class, 'attach'])->name('attach');
         Route::delete('/{program}', [DepartmentProgramController::class, 'detach'])->name('detach');
     });
 
     // CRUD пользователей
-    Route::prefix('/dashboard/users')->name('dashboard.users.')->middleware('permission:view_any_user')->group(function () {
+    Route::prefix('/dashboard/users')->name('dashboard.users.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
         Route::get('/create', [UserController::class, 'create'])->name('create');
         Route::post('/', [UserController::class, 'store'])->name('store');
@@ -332,7 +332,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD ролей
-    Route::prefix('/dashboard/roles')->name('dashboard.roles.')->middleware('permission:view_any_role')->group(function () {
+    Route::prefix('/dashboard/roles')->name('dashboard.roles.')->group(function () {
         Route::get('/', [RolesController::class, 'index'])->name('index');
         Route::get('/create', [RolesController::class, 'create'])->name('create');
         Route::post('/', [RolesController::class, 'store'])->name('store');
@@ -342,7 +342,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD главных разделов
-    Route::prefix('/dashboard/main-sections')->name('dashboard.main-sections.')->middleware('permission:view_any_main_section')->group(function () {
+    Route::prefix('/dashboard/main-sections')->name('dashboard.main-sections.')->group(function () {
         Route::get('/', [MainSectionController::class, 'index'])->name('index');
         Route::get('/create', [MainSectionController::class, 'create'])->name('create');
         Route::post('/', [MainSectionController::class, 'store'])->name('store');
@@ -352,7 +352,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD подразделов
-    Route::prefix('/dashboard/sub-sections')->name('dashboard.sub-sections.')->middleware('permission:view_any_sub_section')->group(function () {
+    Route::prefix('/dashboard/sub-sections')->name('dashboard.sub-sections.')->group(function () {
         Route::get('/', [SubSectionController::class, 'index'])->name('index');
         Route::get('/create', [SubSectionController::class, 'create'])->name('create');
         Route::post('/', [SubSectionController::class, 'store'])->name('store');
@@ -371,7 +371,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD страниц
-    Route::prefix('/dashboard/pages')->name('dashboard.pages.')->middleware('permission:view_any_page')->group(function () {
+    Route::prefix('/dashboard/pages')->name('dashboard.pages.')->group(function () {
         Route::get('/', [PageController::class, 'index'])->name('index');
         Route::get('/create', [PageController::class, 'create'])->name('create');
         Route::post('/', [PageController::class, 'store'])->name('store');
@@ -382,7 +382,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD контактных виджетов
-    Route::prefix('/dashboard/contact-widgets')->name('dashboard.contact-widgets.')->middleware('permission:view_any_contactwidget')->group(function () {
+    Route::prefix('/dashboard/contact-widgets')->name('dashboard.contact-widgets.')->group(function () {
         Route::get('/', [ContactWidgetController::class, 'index'])->name('index');
         Route::get('/create', [ContactWidgetController::class, 'create'])->name('create');
         Route::post('/', [ContactWidgetController::class, 'store'])->name('store');
@@ -392,7 +392,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD пользовательских форм
-    Route::prefix('/dashboard/custom-forms')->name('dashboard.custom-forms.')->middleware('permission:view_any_widget')->group(function () {
+    Route::prefix('/dashboard/custom-forms')->name('dashboard.custom-forms.')->group(function () {
         Route::get('/', [CustomFormController::class, 'index'])->name('index');
         Route::get('/create', [CustomFormController::class, 'create'])->name('create');
         Route::post('/', [CustomFormController::class, 'store'])->name('store');
@@ -409,7 +409,7 @@ Route::middleware(['access-check', 'dashboard.auth'])->group(function () {
     });
 
     // CRUD списков ресурсов
-    Route::prefix('/dashboard/page-reference-lists')->name('dashboard.page-reference-lists.')->middleware('permission:view_any_widget')->group(function () {
+    Route::prefix('/dashboard/page-reference-lists')->name('dashboard.page-reference-lists.')->group(function () {
         Route::get('/', [PageReferenceListController::class, 'index'])->name('index');
         Route::get('/create', [PageReferenceListController::class, 'create'])->name('create');
         Route::post('/', [PageReferenceListController::class, 'store'])->name('store');

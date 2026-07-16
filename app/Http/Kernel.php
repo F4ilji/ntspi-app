@@ -89,6 +89,7 @@ class Kernel extends HttpKernel
         'dashboard.auth' => \App\Containers\Dashboard\UI\WEB\Middleware\EnsureDashboardAuthenticated::class,
         'limit.post' => LimitPost::class,
         'form.time.period' => FormTimePeriodMiddleware::class,
+        'dashboard.permission' => \App\Ship\Middleware\CheckDashboardPermission::class,
 
     );
 }
