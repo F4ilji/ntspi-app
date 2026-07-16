@@ -7,6 +7,7 @@
  * @property {string} label          - Display name
  * @property {string} icon           - Icon name (mapped in SidebarNavItem)
  * @property {string|null} route     - Parent route name (null for simple links)
+ * @property {string|null} permission - Required permission to view (null = always visible)
  * @property {Array<{label: string, route: string}>} [children] - Sub-items
  * @property {string[]} [activePrefixes] - Route prefixes to detect active state
  */
@@ -18,6 +19,7 @@ export const menuItems = [
     label: 'Главная',
     icon: 'home',
     route: 'dashboard.index',
+    permission: null,
   },
   {
     key: 'posts',
@@ -25,6 +27,7 @@ export const menuItems = [
     icon: 'document',
     route: null,
     activePrefixes: ['dashboard.posts', 'dashboard.sliders'],
+    permission: 'view_any_post',
     children: [
       { label: 'Все новости', route: 'dashboard.posts.index' },
       { label: 'AI подготовка', route: 'dashboard.posts.ai-prepared' },
@@ -37,6 +40,7 @@ export const menuItems = [
     icon: 'academic-cap',
     route: null,
     activePrefixes: ['dashboard.additional-educations'],
+    permission: 'view_any_additional_education',
     children: [
       { label: 'Все программы ДПО', route: 'dashboard.additional-educations.index' },
       { label: 'Направления', route: 'dashboard.additional-educations.directions.index' },
@@ -49,6 +53,7 @@ export const menuItems = [
     icon: 'clipboard-document-check',
     route: null,
     activePrefixes: ['dashboard.admission-campaigns', 'dashboard.direction-studies', 'dashboard.educational-programs', 'dashboard.admission-plans'],
+    permission: 'view_any_admission_campaign',
     children: [
       { label: 'Все кампании', route: 'dashboard.admission-campaigns.index' },
       { label: 'Направления подготовки', route: 'dashboard.direction-studies.index' },
@@ -62,6 +67,7 @@ export const menuItems = [
     icon: 'calendar',
     route: null,
     activePrefixes: ['dashboard.schedules', 'dashboard.schedules.upload', 'dashboard.educational-groups'],
+    permission: 'view_any_schedule',
     children: [
       { label: 'Все расписания', route: 'dashboard.schedules.index' },
       { label: 'Загрузить файл', route: 'dashboard.schedules.upload.create' },
@@ -74,6 +80,7 @@ export const menuItems = [
     icon: 'building',
     route: null,
     activePrefixes: ['dashboard.faculties', 'dashboard.divisions', 'dashboard.departments'],
+    permission: 'view_any_faculty',
     children: [
       { label: 'Факультеты', route: 'dashboard.faculties.index' },
       { label: 'Кафедры', route: 'dashboard.departments.index' },
@@ -86,6 +93,7 @@ export const menuItems = [
     icon: 'beaker',
     route: 'dashboard.academic-journals.index',
     activePrefixes: ['dashboard.academic-journals'],
+    permission: 'view_any_academic_journal',
   },
   {
     key: 'site-structure',
@@ -93,6 +101,7 @@ export const menuItems = [
     icon: 'folder',
     route: null,
     activePrefixes: ['dashboard.main-sections', 'dashboard.sub-sections', 'dashboard.pages'],
+    permission: 'view_any_main_section',
     children: [
       { label: 'Главные разделы', route: 'dashboard.main-sections.index' },
       { label: 'Подразделы', route: 'dashboard.sub-sections.index' },
@@ -105,6 +114,7 @@ export const menuItems = [
     icon: 'rectangle-stack',
     route: null,
     activePrefixes: ['dashboard.contact-widgets', 'dashboard.custom-forms', 'dashboard.page-reference-lists'],
+    permission: 'view_any_contact_widget',
     children: [
       { label: 'Контактные виджеты', route: 'dashboard.contact-widgets.index' },
       { label: 'Пользовательские формы', route: 'dashboard.custom-forms.index' },
@@ -117,8 +127,20 @@ export const menuItems = [
     icon: 'user-circle',
     route: null,
     activePrefixes: ['dashboard.users'],
+    permission: 'view_any_user',
     children: [
       { label: 'Все пользователи', route: 'dashboard.users.index' },
+    ],
+  },
+  {
+    key: 'roles',
+    label: 'Роли',
+    icon: 'shield-check',
+    route: null,
+    activePrefixes: ['dashboard.roles'],
+    permission: 'view_any_role',
+    children: [
+      { label: 'Все роли', route: 'dashboard.roles.index' },
     ],
   },
   {
@@ -127,6 +149,7 @@ export const menuItems = [
     icon: 'arrow-path',
     route: 'dashboard.vikon-updates.index',
     activePrefixes: ['dashboard.vikon-updates'],
+    permission: null,
   },
   {
     key: 'integration-credentials',
@@ -134,5 +157,6 @@ export const menuItems = [
     icon: 'key',
     route: 'dashboard.integration-credentials.index',
     activePrefixes: ['dashboard.integration-credentials'],
+    permission: null,
   },
 ];
