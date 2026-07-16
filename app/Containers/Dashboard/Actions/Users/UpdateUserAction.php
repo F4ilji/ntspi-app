@@ -19,9 +19,8 @@ class UpdateUserAction
             unset($data['password']);
         }
 
-        // Извлекаем роли и пермисшены — они не в $fillable и не колонки таблицы
+        // Извлекаем роли — они не в $fillable и не колонки таблицы
         $roles = $data['roles'] ?? null;
-        $permissions = $data['permissions'] ?? null;
         unset($data['roles'], $data['permissions']);
 
         $user->update($data);
@@ -29,11 +28,6 @@ class UpdateUserAction
         // Синхронизация ролей
         if ($roles !== null && is_array($roles)) {
             $user->syncRoles($roles);
-        }
-
-        // Синхронизация разрешений
-        if ($permissions !== null && is_array($permissions)) {
-            $user->syncPermissions($permissions);
         }
 
         return $user->fresh(['roles', 'permissions']);

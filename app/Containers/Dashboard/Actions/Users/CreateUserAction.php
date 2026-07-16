@@ -19,11 +19,6 @@ class CreateUserAction
             $user->syncRoles($data['roles']);
         }
 
-        // Назначение разрешений если переданы
-        if (isset($data['permissions']) && is_array($data['permissions'])) {
-            $user->syncPermissions($data['permissions']);
-        }
-
         return $user->load(['roles', 'permissions']);
     }
 
