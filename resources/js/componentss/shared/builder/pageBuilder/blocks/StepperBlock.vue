@@ -36,7 +36,7 @@ export default {
 	},
 	methods: {
 		generateSlug: function (text) {
-			return slugify(text, {
+			return slugify(text ?? '', {
 				lower: true,
 				strict: true,
 				locale: 'ru'
