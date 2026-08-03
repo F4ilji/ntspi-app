@@ -375,8 +375,10 @@ Route::middleware(['access-check', 'dashboard.auth', 'dashboard.permission'])->g
         Route::get('/', [PageController::class, 'index'])->name('index');
         Route::get('/create', [PageController::class, 'create'])->name('create');
         Route::post('/', [PageController::class, 'store'])->name('store');
+        Route::post('/import', [PageController::class, 'import'])->name('import');
         Route::post('/upload-files', [PageController::class, 'uploadFiles'])->name('upload-files');
         Route::get('/{page}/edit', [PageController::class, 'edit'])->name('edit');
+        Route::get('/{page}/export', [PageController::class, 'export'])->name('export');
         Route::put('/{page}', [PageController::class, 'update'])->name('update');
         Route::delete('/{page}', [PageController::class, 'destroy'])->name('destroy');
     });

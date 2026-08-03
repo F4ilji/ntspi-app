@@ -6,6 +6,8 @@ use App\Containers\AppStructure\Models\Page;
 use App\Containers\Dashboard\Actions\ContentBuilder\UploadContentBuilderFilesAction;
 use App\Containers\Dashboard\Actions\Pages\CreatePageAction;
 use App\Containers\Dashboard\Actions\Pages\DeletePageAction;
+use App\Containers\Dashboard\Actions\Pages\ExportPageAction;
+use App\Containers\Dashboard\Actions\Pages\ImportPageAction;
 use App\Containers\Dashboard\Actions\Pages\ListPagesAction;
 use App\Containers\Dashboard\Actions\Pages\UpdatePageAction;
 use App\Containers\Dashboard\UI\WEB\Requests\StorePageRequest;
@@ -14,6 +16,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Inertia\Inertia;
 
 class PageController extends Controller
@@ -23,6 +26,8 @@ class PageController extends Controller
         private readonly CreatePageAction $createPageAction,
         private readonly UpdatePageAction $updatePageAction,
         private readonly DeletePageAction $deletePageAction,
+        private readonly ExportPageAction $exportPageAction,
+        private readonly ImportPageAction $importPageAction,
         private readonly UploadContentBuilderFilesAction $uploadContentBuilderFilesAction,
     ) {}
 
@@ -116,6 +121,58 @@ class PageController extends Controller
         } catch (\Exception $e) {
             return back()
                 ->with('error', 'Ошибка при удалении страницы: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Экспортирует страницу в JSON-файл
+     */
+    public function export(Page $page): Response
+    {
+        try {
+            $data = $this->exportPageAction->run($page);
+
+            $filename = $page->slug . '_' . now()->format('Y-m-d_H-i-s') . '.json';
+
+            return response(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), 200, [
+                'Content-Type' => 'application/json',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ]);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Ошибка при экспорте страницы: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Импортирует страницу из JSON-файла
+     */
+    public function import(Request $request): RedirectResponse
+    {
+        if (config('app.env') !== 'local') {
+            return back()->with('error', 'Импорт доступен только в окружении local');
+        }
+
+        try {
+            $request->validate([
+                'import_file' => 'required|file|mimes:json,txt|max:512',
+            ]);
+
+            $file = $request->file('import_file');
+            $content = file_get_contents($file->getRealPath());
+            $data = json_decode($content, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return back()->with('error', 'Некорректный JSON: ' . json_last_error_msg());
+            }
+
+            $page = $this->importPageAction->run($data);
+
+            return redirect()->route('dashboard.pages.edit', $page)
+                ->with('success', 'Страница "' . $page->title . '" успешно импортирована!');
+        } catch (\InvalidArgumentException $e) {
+            return back()->with('error', 'Ошибка валидации: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            return back()->with('error', 'Ошибка при импорте страницы: ' . $e->getMessage());
         }
     }
 

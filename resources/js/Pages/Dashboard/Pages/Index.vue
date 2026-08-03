@@ -6,13 +6,31 @@
     <template #header-title>Страницы</template>
     <template #header-subtitle>Управление страницами сайта</template>
     <template #header-actions>
-      <a
-        :href="route('dashboard.pages.create')"
-        class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-all duration-200 shadow-sm hover:shadow-md"
-      >
-        <DashboardIcon name="plus" size="4" />
-        Создать страницу
-      </a>
+      <div class="flex items-center gap-3">
+        <button
+          v-if="isLocal"
+          type="button"
+          @click="triggerImport"
+          class="inline-flex items-center gap-2 px-4 py-2 border border-layer-line bg-layer text-foreground text-sm font-medium rounded-lg hover:bg-muted-hover transition-all duration-200"
+        >
+          <DashboardIcon name="arrow-up-tray" size="4" />
+          Импортировать страницу
+        </button>
+        <a
+          :href="route('dashboard.pages.create')"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-all duration-200 shadow-sm hover:shadow-md"
+        >
+          <DashboardIcon name="plus" size="4" />
+          Создать страницу
+        </a>
+      </div>
+      <input
+        ref="importInput"
+        type="file"
+        accept=".json"
+        class="hidden"
+        @change="handleImportFile"
+      />
     </template>
 
     <!-- Flash Messages -->
@@ -140,6 +158,13 @@
                     <DashboardIcon name="pencil-square" size="4" />
                   </a>
                   <button
+                    @click.prevent="exportPage(page)"
+                    class="p-2 text-muted-foreground-1 hover:text-emerald-600 hover:bg-emerald-500/10 rounded-lg transition-all"
+                    title="Экспорт в JSON"
+                  >
+                    <DashboardIcon name="arrow-down-tray" size="4" />
+                  </button>
+                  <button
                     @click.prevent="confirmDeletePage(page)"
                     class="p-2 text-muted-foreground-1 hover:text-rose-600 hover:bg-rose-500/10 rounded-lg transition-all"
                     title="Удалить"
@@ -220,6 +245,12 @@ export default {
     }
   },
 
+  computed: {
+    isLocal() {
+      return this.$page?.props?.app?.env === 'local';
+    }
+  },
+
   mounted() {
     this.SET_DOCUMENT_TITLE('Страницы');
   },
@@ -268,6 +299,29 @@ export default {
         search: this.searchQuery,
         tab: this.tabQuery,
         sub_section_id: this.subSectionQuery
+      });
+    },
+
+    triggerImport() {
+      this.$refs.importInput.click();
+    },
+
+    exportPage(page) {
+      window.location.href = route('dashboard.pages.export', page.id);
+    },
+
+    handleImportFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('import_file', file);
+
+      this.$inertia.post(route('dashboard.pages.import'), formData, {
+        preserveScroll: true,
+        onFinish: () => {
+          event.target.value = '';
+        }
       });
     }
   }
