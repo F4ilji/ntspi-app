@@ -33,6 +33,8 @@ class HandleInertiaRequests extends Middleware
             ],
             'auth' => [
                 'user' => $request->user() ? $request->user()->only('id', 'name', 'email', 'created_at') : null,
+                'permissions' => $request->user()?->getAllPermissions()->pluck('name')->toArray() ?? [],
+                'roles' => $request->user()?->getRoleNames()->toArray() ?? [],
             ],
             'ziggy' => function() {
                 return array_merge((new Ziggy())->toArray(), [

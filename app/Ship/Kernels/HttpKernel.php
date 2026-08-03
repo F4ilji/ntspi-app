@@ -91,5 +91,6 @@ class HttpKernel extends LaravelHttpKernel
         'limit.post' => LimitPost::class,
         'form.time.period' => FormTimePeriodMiddleware::class,
         'vikon.refresh' => \App\Http\Middleware\VikonTokenRefresh::class,
+        'dashboard.permission' => \App\Ship\Middleware\CheckDashboardPermission::class,
     ];
 }

@@ -2,7 +2,7 @@
   <nav class="flex-1 overflow-y-auto px-3 py-4">
     <div class="space-y-1">
       <SidebarNavItem
-        v-for="item in menuItems"
+        v-for="item in visibleMenuItems"
         :key="item.key"
         :item="item"
         :mobile="mobile"
@@ -44,6 +44,7 @@
 
 <script setup>
 import { computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import { menuItems } from './menuConfig';
 import { quickActions } from './quickActionsConfig';
 import SidebarNavItem from './SidebarNavItem.vue';
@@ -55,15 +56,24 @@ defineProps({
 
 defineEmits(['child-click']);
 
+const page = usePage();
+const userPermissions = computed(() => page.props.auth?.permissions ?? []);
+
+const visibleMenuItems = computed(() => {
+  return menuItems.filter(item => {
+    if (!item.permission) return true;
+    return userPermissions.value.includes(item.permission);
+  });
+});
+
 const iconMap = {
   cog: DashboardIcon,
 };
 
-// Открываем только аккордеон активной страницы
 const expandedKey = computed(() => {
   const currentRoute = route().current();
 
-  for (const item of menuItems) {
+  for (const item of visibleMenuItems.value) {
     if (item.activePrefixes && item.activePrefixes.some(prefix => currentRoute.startsWith(prefix))) {
       return item.key;
     }
