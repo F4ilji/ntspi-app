@@ -40,7 +40,6 @@ class ScheduleMockSeeder extends Seeder
 
             Schedule::create([
                 'educational_group_id' => $group->id,
-                'is_zaoch' => (bool) rand(0, 1),
                 'file' => [
                     [
                         'title' => "{$title} ({$semester})",
