@@ -25,6 +25,34 @@
     <!-- Flash Messages -->
     <FlashMessages />
 
+    <!-- Bulk Actions Bar -->
+    <transition enter-active-class="transition duration-200" enter-from-class="opacity-0 -translate-y-2"
+                enter-to-class="opacity-100 translate-y-0" leave-active-class="transition duration-150"
+                leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 -translate-y-2">
+      <div v-if="selectedSchedules.length > 0"
+           class="px-6 py-3 bg-primary/5 border-b border-primary/20 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-medium text-primary">{{ selectedSchedules.length }} выбрано</span>
+          <button @click="selectAllOnPage"
+                  class="text-xs text-muted-foreground-1 hover:text-primary transition-colors">
+            Выбрать все на странице
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <button @click="bulkDelete" :disabled="bulkProcessing"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 text-white text-xs font-medium rounded-lg hover:bg-rose-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+            <DashboardIcon name="trash" size="4" />
+            Удалить
+          </button>
+          <button @click="clearSelection"
+                  class="p-1.5 text-muted-foreground-1 hover:text-foreground hover:bg-muted-hover rounded-lg transition-all"
+                  title="Снять выделение">
+            <DashboardIcon name="x-mark" size="4" />
+          </button>
+        </div>
+      </div>
+    </transition>
+
     <!-- Filters Card -->
     <DataFilters title="Фильтры" @reset="resetFilters">
       <SearchInput 
@@ -88,6 +116,15 @@
           <table class="min-w-full divide-y divide-line-2">
             <thead class="bg-surface/50">
               <tr>
+                <th class="w-10 px-6 py-3">
+                  <input
+                    type="checkbox"
+                    :checked="isAllSelected"
+                    :indeterminate.prop="isIndeterminate"
+                    @change="toggleSelectAll"
+                    class="w-4 h-4 text-primary border-layer-line rounded focus:ring-primary/20 cursor-pointer"
+                  />
+                </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground-1 uppercase tracking-wider">
                   Название
                 </th>
@@ -113,7 +150,16 @@
                 v-for="schedule in schedules.data"
                 :key="schedule.id"
                 class="group hover:bg-muted-hover/50 transition-all duration-200"
+                :class="{ 'bg-primary/5': selectedSchedules.includes(schedule.id) }"
               >
+                <td class="px-6 py-4">
+                  <input
+                    type="checkbox"
+                    :value="schedule.id"
+                    v-model="selectedSchedules"
+                    class="w-4 h-4 text-primary border-layer-line rounded focus:ring-primary/20 cursor-pointer"
+                  />
+                </td>
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
                     <div class="w-10 h-10 flex-shrink-0 rounded-lg border border-layer-line bg-surface flex items-center justify-center">
@@ -178,7 +224,7 @@
               <!-- Empty State -->
               <EmptyState 
                 v-if="schedules.data.length === 0"
-                :columns="6"
+                :columns="7"
                 title="Расписания не найдены"
                 description="Добавьте первое расписание или измените параметры поиска"
                 :action-url="route('dashboard.schedules.create')"
@@ -248,8 +294,19 @@ export default {
       educationalGroupQuery: this.filters?.educational_group_id || '',
       educationFormQuery: this.filters?.education_form_id || '',
       deletingSchedule: null,
+      selectedSchedules: [],
+      bulkProcessing: false,
       EducationForm
     }
+  },
+
+  computed: {
+    isAllSelected() {
+      return this.schedules.data.length > 0 && this.selectedSchedules.length === this.schedules.data.length;
+    },
+    isIndeterminate() {
+      return this.selectedSchedules.length > 0 && this.selectedSchedules.length < this.schedules.data.length;
+    },
   },
 
   mounted() {
@@ -332,6 +389,39 @@ export default {
     deleteSchedule(schedule) {
       this.$inertia.delete(route('dashboard.schedules.destroy', schedule.id), {
         preserveScroll: true
+      });
+    },
+
+    toggleSelectAll(event) {
+      if (event.target.checked) {
+        this.selectedSchedules = [...new Set([...this.selectedSchedules, ...this.schedules.data.map(s => s.id)])];
+      } else {
+        const pageIds = new Set(this.schedules.data.map(s => s.id));
+        this.selectedSchedules = this.selectedSchedules.filter(id => !pageIds.has(id));
+      }
+    },
+
+    selectAllOnPage() {
+      this.selectedSchedules = [...new Set([...this.selectedSchedules, ...this.schedules.data.map(s => s.id)])];
+    },
+
+    clearSelection() {
+      this.selectedSchedules = [];
+    },
+
+    bulkDelete() {
+      if (!confirm(`Удалить ${this.selectedSchedules.length} расписаний?`)) return;
+      this.bulkProcessing = true;
+      this.$inertia.delete(route('dashboard.schedules.bulk-destroy'), {
+        data: { ids: this.selectedSchedules },
+        preserveScroll: true,
+        onSuccess: () => {
+          this.selectedSchedules = [];
+          this.bulkProcessing = false;
+        },
+        onError: () => {
+          this.bulkProcessing = false;
+        },
       });
     },
 

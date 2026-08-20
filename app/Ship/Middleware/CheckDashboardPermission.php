@@ -4,6 +4,7 @@ namespace App\Ship\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckDashboardPermission
@@ -72,7 +73,8 @@ class CheckDashboardPermission
         // Convert: additional-educations → additional_education
         // Convert: admission-campaigns → admission_campaign
         // Convert: main-sections → main_section
-        $resource = preg_replace('/s$/', '', $resource); // strip trailing 's'
+        // Convert: faculties → faculty, categories → category
+        $resource = Str::singular($resource);
         $resource = str_replace('-', '_', $resource);
 
         return 'view_any_' . $resource;

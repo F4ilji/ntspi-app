@@ -198,6 +198,7 @@ Route::middleware(['access-check', 'dashboard.auth', 'dashboard.permission'])->g
         Route::get('/', [ScheduleController::class, 'index'])->name('index');
         Route::get('/create', [ScheduleController::class, 'create'])->name('create');
         Route::post('/', [ScheduleController::class, 'store'])->name('store');
+        Route::delete('/bulk-destroy', [ScheduleController::class, 'bulkDestroy'])->name('bulk-destroy');
         Route::get('/{schedule}/edit', [ScheduleController::class, 'edit'])->name('edit');
         Route::put('/{schedule}', [ScheduleController::class, 'update'])->name('update');
         Route::delete('/{schedule}', [ScheduleController::class, 'destroy'])->name('destroy');

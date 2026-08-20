@@ -5,6 +5,7 @@ namespace App\Containers\Dashboard\UI\WEB\Controllers;
 use App\Containers\Dashboard\Actions\Schedules\CreateScheduleAction;
 use App\Containers\Dashboard\Actions\Schedules\UpdateScheduleAction;
 use App\Containers\Dashboard\Actions\Schedules\DeleteScheduleAction;
+use App\Containers\Dashboard\Actions\Schedules\BulkDeleteSchedulesAction;
 use App\Containers\Dashboard\Actions\Schedules\ListSchedulesAction;
 use App\Containers\Dashboard\UI\WEB\Requests\StoreScheduleRequest;
 use App\Containers\Dashboard\UI\WEB\Requests\UpdateScheduleRequest;
@@ -23,6 +24,7 @@ class ScheduleController extends Controller
         private readonly CreateScheduleAction $createScheduleAction,
         private readonly UpdateScheduleAction $updateScheduleAction,
         private readonly DeleteScheduleAction $deleteScheduleAction,
+        private readonly BulkDeleteSchedulesAction $bulkDeleteSchedulesAction,
     ) {}
 
     /**
@@ -148,6 +150,24 @@ class ScheduleController extends Controller
         } catch (\Exception $e) {
             return back()
                 ->with('error', 'Ошибка при удалении расписания: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Массовое удаление расписаний
+     */
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $request->validate(['ids' => 'required|array', 'ids.*' => 'integer|exists:schedules,id']);
+
+        try {
+            $count = $this->bulkDeleteSchedulesAction->run($request->ids);
+
+            return redirect()->back()
+                ->with('success', "Удалено {$count} расписаний");
+        } catch (\Exception $e) {
+            return back()
+                ->with('error', 'Ошибка при удалении: ' . $e->getMessage());
         }
     }
 }
