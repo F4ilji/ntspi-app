@@ -6,6 +6,7 @@ use App\Containers\Dashboard\Actions\Schedules\CreateScheduleAction;
 use App\Containers\Dashboard\Actions\Schedules\UpdateScheduleAction;
 use App\Containers\Dashboard\Actions\Schedules\DeleteScheduleAction;
 use App\Containers\Dashboard\Actions\Schedules\BulkDeleteSchedulesAction;
+use App\Containers\Dashboard\Actions\Schedules\GetAllScheduleIdsAction;
 use App\Containers\Dashboard\Actions\Schedules\ListSchedulesAction;
 use App\Containers\Dashboard\UI\WEB\Requests\StoreScheduleRequest;
 use App\Containers\Dashboard\UI\WEB\Requests\UpdateScheduleRequest;
@@ -25,6 +26,7 @@ class ScheduleController extends Controller
         private readonly UpdateScheduleAction $updateScheduleAction,
         private readonly DeleteScheduleAction $deleteScheduleAction,
         private readonly BulkDeleteSchedulesAction $bulkDeleteSchedulesAction,
+        private readonly GetAllScheduleIdsAction $getAllScheduleIdsAction,
     ) {}
 
     /**
@@ -169,5 +171,17 @@ class ScheduleController extends Controller
             return back()
                 ->with('error', 'Ошибка при удалении: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Все ID расписаний с учётом фильтров (для массового выделения)
+     */
+    public function allIds(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $filters = $request->only(['search', 'educational_group_id', 'education_form_id']);
+
+        $ids = $this->getAllScheduleIdsAction->run($filters);
+
+        return response()->json(['ids' => $ids, 'total' => count($ids)]);
     }
 }

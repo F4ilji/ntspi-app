@@ -37,6 +37,11 @@
                   class="text-xs text-muted-foreground-1 hover:text-primary transition-colors">
             Выбрать все на странице
           </button>
+          <button v-if="schedules.total > schedules.data.length"
+                  @click="selectAllFiltered" :disabled="bulkProcessing"
+                  class="text-xs text-muted-foreground-1 hover:text-primary transition-colors disabled:opacity-50">
+            Выбрать все {{ schedules.total }}
+          </button>
         </div>
         <div class="flex items-center gap-2">
           <button @click="bulkDelete" :disabled="bulkProcessing"
@@ -403,6 +408,23 @@ export default {
 
     selectAllOnPage() {
       this.selectedSchedules = [...new Set([...this.selectedSchedules, ...this.schedules.data.map(s => s.id)])];
+    },
+
+    selectAllFiltered() {
+      this.bulkProcessing = true;
+      fetch(route('dashboard.schedules.all-ids') + '?' + new URLSearchParams({
+        search: this.searchQuery,
+        educational_group_id: this.educationalGroupQuery,
+        education_form_id: this.educationFormQuery,
+      }).toString())
+        .then(res => res.json())
+        .then(data => {
+          this.selectedSchedules = [...new Set([...this.selectedSchedules, ...data.ids])];
+          this.bulkProcessing = false;
+        })
+        .catch(() => {
+          this.bulkProcessing = false;
+        });
     },
 
     clearSelection() {
