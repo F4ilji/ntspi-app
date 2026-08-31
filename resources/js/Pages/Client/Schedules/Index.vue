@@ -24,7 +24,7 @@ export default {
 			favoriteGroups: typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('favoriteGroups') || '[]') : [],
 			showFavorites: false,
 			loading: false,
-      currentPageLoaded: this.schedules_paginator.current_page,
+      currentPageLoaded: this.schedules_paginator?.current_page ?? 1,
     };
 	},
 	components: {
@@ -57,13 +57,16 @@ export default {
       type: Object
     },
     seo: {
-      type: Object
+      type: Object,
+      default: () => ({})
     },
     breadcrumbs: {
-      type: Object
+      type: Object,
+      default: () => ({})
     },
     faculties: {
-      type: Object
+      type: Object,
+      default: () => ({})
     },
 	},
 	methods: {
@@ -94,8 +97,8 @@ export default {
 </script>
 
 <template>
-  <MetaTags :seo="this.seo" />
-	<MainPageNavBar :sections="$page.props.navigation" />
+  <MetaTags :seo="seo" />
+	<MainPageNavBar :sections="$page.props?.navigation" />
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
