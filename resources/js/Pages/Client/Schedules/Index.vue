@@ -1,5 +1,5 @@
 <script>
-import MainPageNavBar from "@/Navbars/MainPageNavBar.vue";
+import MainPageNavbar from "@/Navbars/MainPageNavbar.vue";
 import ScheduleListTitle from "@/componentss/features/schedules/components/ScheduleListTitle.vue";
 import MetaTags from "@/componentss/shared/SEO/MetaTags.vue";
 import BasicFooter from "@/footers/BasicFooter.vue";
@@ -11,7 +11,7 @@ export default {
 		MetaTags,
 		BasicFooter,
 		ScheduleListTitle,
-		MainPageNavBar,
+		MainPageNavbar,
 		Link,
 	},
 	props: {
@@ -39,7 +39,7 @@ export default {
 
 <template>
 	<MetaTags :seo="seo" />
-	<MainPageNavBar :sections="$page.props?.navigation" />
+	<MainPageNavbar :sections="$page.props?.navigation" />
 
 	<div class="flex flex-col h-screen">
 		<main class="flex-grow">
