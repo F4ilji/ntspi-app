@@ -124,10 +124,10 @@ pipeline {
             steps {
                 dir("${APP_DIR}") {
                     sh '''
-                        docker exec ntspi-php php artisan inertia:stop-ssr || true
                         docker restart ntspi-nginx ntspi-php ntspi-php-queue
                         sleep 5
                         docker exec ntspi-php php artisan inertia:stop-ssr || true
+                        sleep 2
                         docker exec ntspi-php php artisan inertia:start-ssr || true
                     '''
                 }
