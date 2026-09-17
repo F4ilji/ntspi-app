@@ -26,15 +26,15 @@
             <button
               type="button"
               @click="submitForm"
-              :disabled="form.processing"
+              :disabled="form.processing || uploadingImages"
               class="inline-flex items-center gap-2 px-5 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-hover transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
             >
-              <svg v-if="form.processing" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+              <svg v-if="form.processing || uploadingImages" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
               <DashboardIcon v-else name="check" size="4" />
-              {{ isEdit ? 'Сохранить' : 'Создать' }}
+              {{ uploadStatusText }}
             </button>
           </div>
         </div>
@@ -72,6 +72,28 @@
           <div class="flex items-start gap-3">
             <DashboardIcon name="exclamation-circle" size="5" class="text-rose-600 flex-shrink-0 mt-0.5" />
             <span class="text-sm text-foreground font-medium">{{ $page.props.flash.error }}</span>
+          </div>
+        </div>
+      </transition>
+
+      <!-- Upload Error -->
+      <transition
+        enter-active-class="transition duration-300 ease-out"
+        enter-from-class="opacity-0 -translate-y-2"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition duration-200 ease-in"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 -translate-y-2"
+      >
+        <div v-if="uploadError" class="mb-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+          <div class="flex items-start gap-3">
+            <DashboardIcon name="exclamation-triangle" size="5" class="text-amber-600 flex-shrink-0 mt-0.5" />
+            <div class="flex-1">
+              <span class="text-sm text-foreground font-medium">{{ uploadError }}</span>
+            </div>
+            <button @click="uploadError = null" class="text-muted-foreground-1 hover:text-foreground">
+              <DashboardIcon name="x-mark" size="4" />
+            </button>
           </div>
         </div>
       </transition>
@@ -497,7 +519,7 @@
                     ref="galleryInput"
                     type="file"
                     class="hidden"
-                    accept="image/jpeg,image/png"
+                    accept="image/jpeg,image/png,image/webp"
                     multiple
                     @change="handleGalleryFileSelect"
                   />
@@ -596,6 +618,7 @@ export default {
       isDraggingPreview: false,
       isDraggingGallery: false,
       uploadingImages: false,
+      uploadError: null,
       newTag: '',
       newAuthor: '',
       PostStatus,
@@ -697,6 +720,11 @@ export default {
         }
         return null;
       }).filter(url => url !== null);
+    },
+
+    uploadStatusText() {
+      if (this.uploadingImages) return 'Загрузка файлов...';
+      return this.isEdit ? 'Сохранить' : 'Создать';
     },
   },
 
@@ -812,6 +840,7 @@ export default {
       if (!file) return;
 
       this.uploadingImages = true;
+      this.uploadError = null;
 
       try {
         const formData = new FormData();
@@ -830,9 +859,12 @@ export default {
 
         if (result.success && result.paths && result.paths.length > 0) {
           this.form.preview = result.paths[0];
+        } else {
+          this.uploadError = result.error || 'Не удалось загрузить главное изображение';
         }
       } catch (error) {
         console.error('Preview upload error:', error);
+        this.uploadError = 'Ошибка сети при загрузке главного изображения. Проверьте подключение.';
       } finally {
         this.uploadingImages = false;
       }
@@ -858,6 +890,7 @@ export default {
       if (files.length === 0) return;
 
       this.uploadingImages = true;
+      this.uploadError = null;
 
       try {
         const formData = new FormData();
@@ -880,9 +913,12 @@ export default {
           result.paths.forEach(path => {
             this.form.images.push(path);
           });
+        } else {
+          this.uploadError = result.error || 'Не удалось загрузить изображения галереи';
         }
       } catch (error) {
         console.error('Image upload error:', error);
+        this.uploadError = 'Ошибка сети при загрузке изображений. Проверьте подключение.';
       } finally {
         this.uploadingImages = false;
       }
@@ -951,8 +987,14 @@ export default {
     },
 
     submitForm() {
+      if (this.uploadingImages) {
+        this.uploadError = 'Дождитесь завершения загрузки изображений перед сохранением.';
+        return;
+      }
+
       this.form.processing = true;
       this.form.errors = {};
+      this.uploadError = null;
 
       // Фильтруем изображения - оставляем только строки (пути)
       this.form.images = this.form.images.filter(img => typeof img === 'string' && img.length > 0);

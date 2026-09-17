@@ -160,7 +160,7 @@ class PostForm
                                             ->image()
                                             ->directory('posts/gallery')
                                             ->optimize('jpg')
-                                            ->resize(30)
+                                            ->resize(50)
                                             ->imageEditor()
                                             ->multiple()
                                             ->reorderable()
@@ -168,8 +168,9 @@ class PostForm
                                             ->helperText('Загрузите дополнительные изображения для галереи')
                                             ->maxFiles(200)
                                             ->maxSize(20480)
-                                            ->acceptedFileTypes(['image/jpeg', 'image/png'])
-                                            ->imagePreviewHeight('150'),
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                            ->imagePreviewHeight('150')
+                                            ->maxParallelUploads(1),
                                     ]),
                                 Tabs\Tab::make('Слайдер')
                                     ->icon('heroicon-o-view-columns')
