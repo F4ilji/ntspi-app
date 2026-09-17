@@ -6,14 +6,16 @@ use App\Containers\InstituteStructure\Models\Department;
 use App\Ship\Enums\Education\LevelEducational;
 use App\Ship\Models\Model;
 use App\Ship\Traits\HasSeo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EducationalProgram extends Model
 {
-    use HasFactory, HasSeo;
+    use HasContainerFactory, HasSeo;
+
+    protected static string $factory = \Database\Factories\EducationalProgramFactory::class;
 
     protected $guarded = false;
 

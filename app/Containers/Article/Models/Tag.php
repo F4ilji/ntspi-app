@@ -3,9 +3,16 @@
 namespace App\Containers\Article\Models;
 
 use App\Ship\Models\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 
 class Tag extends Model
 {
-    use HasFactory;
+    use HasContainerFactory;
+
+    protected static string $factory = \Database\Factories\TagFactory::class;
+
+    protected $casts = [
+        'name' => 'array',
+        'slug' => 'array',
+    ];
 }

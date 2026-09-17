@@ -3,13 +3,15 @@
 namespace App\Containers\AppStructure\Models;
 
 use App\Ship\Models\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SubSection extends Model
 {
-    use HasFactory;
+    use HasContainerFactory;
+
+    protected static string $factory = \Database\Factories\SubSectionFactory::class;
 
     protected $guarded = false;
 

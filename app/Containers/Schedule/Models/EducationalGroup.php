@@ -4,11 +4,13 @@ namespace App\Containers\Schedule\Models;
 
 use App\Containers\InstituteStructure\Models\Faculty;
 use App\Ship\Models\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 
 class EducationalGroup extends Model
 {
-    use HasFactory;
+    use HasContainerFactory;
+
+    protected static string $factory = \Database\Factories\EducationalGroupFactory::class;
 
     protected $guarded = false;
 

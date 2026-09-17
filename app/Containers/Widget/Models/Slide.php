@@ -3,13 +3,15 @@
 namespace App\Containers\Widget\Models;
 
 use App\Containers\Widget\Data\Factories\SlideFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Slide extends Model
 {
-    use HasFactory;
+    use HasContainerFactory;
+
+    protected static string $factory = \App\Containers\Widget\Data\Factories\SlideFactory::class;
 
     protected $guarded = false;
 

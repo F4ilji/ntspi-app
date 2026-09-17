@@ -3,13 +3,15 @@
 namespace App\Containers\Widget\Models;
 
 use App\Containers\Widget\Enums\CustomFormStatus;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CustomForm extends Model
 {
-    use HasFactory;
+    use HasContainerFactory;
+
+    protected static string $factory = \Database\Factories\CustomFormFactory::class;
 
     protected $guarded = false;
 

@@ -3,13 +3,15 @@
 namespace App\Containers\Education\Models;
 
 use App\Ship\Models\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class AdmissionCampaign extends Model
 {
-    use HasFactory;
+    use HasContainerFactory;
+
+    protected static string $factory = \Database\Factories\AdmissionCampaignFactory::class;
 
     protected $guarded = false;
 

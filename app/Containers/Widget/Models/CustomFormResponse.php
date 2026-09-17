@@ -2,12 +2,14 @@
 
 namespace App\Containers\Widget\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CustomFormResponse extends Model
 {
-    use HasFactory;
+    use HasContainerFactory;
+
+    protected static string $factory = \Database\Factories\CustomFormResponseFactory::class;
 
     protected $guarded = false;
 

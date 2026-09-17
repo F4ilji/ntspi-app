@@ -6,11 +6,13 @@ use App\Containers\User\Models\User;
 use App\Ship\Contracts\SeoDescriptionInterface;
 use App\Ship\Models\Model;
 use App\Ship\Traits\HasSeo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 
 class Division extends Model implements SeoDescriptionInterface
 {
-    use HasFactory, HasSeo;
+    use HasContainerFactory, HasSeo;
+
+    protected static string $factory = \Database\Factories\DivisionFactory::class;
 
     protected $guarded = false;
 

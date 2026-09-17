@@ -4,11 +4,13 @@ namespace App\Containers\Schedule\Models;
 
 
 use App\Ship\Models\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 
 class Schedule extends Model
 {
-    use HasFactory;
+    use HasContainerFactory;
+
+    protected static string $factory = \Database\Factories\ScheduleFactory::class;
 
     protected $guarded = false;
 

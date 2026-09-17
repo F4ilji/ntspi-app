@@ -4,13 +4,15 @@ namespace App\Containers\AppStructure\Models;
 
 use App\Ship\Models\Model;
 use App\Ship\Models\Seo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Page extends Model
 {
-    use HasFactory;
+    use HasContainerFactory;
+
+    protected static string $factory = \Database\Factories\PageFactory::class;
 
     protected $guarded = false;
 

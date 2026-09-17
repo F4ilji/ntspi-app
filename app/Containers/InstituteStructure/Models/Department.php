@@ -6,13 +6,15 @@ use App\Containers\Education\Models\EducationalProgram;
 use App\Containers\User\Models\User;
 use App\Ship\Models\Model;
 use App\Ship\Traits\HasSeo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Department extends Model
 {
-    use HasFactory, HasSeo;
+    use HasContainerFactory, HasSeo;
+
+    protected static string $factory = \Database\Factories\DepartmentFactory::class;
 
     protected $guarded = false;
 

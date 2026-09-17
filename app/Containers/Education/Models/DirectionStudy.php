@@ -5,13 +5,15 @@ namespace App\Containers\Education\Models;
 use App\Ship\Enums\Education\LevelEducational;
 use App\Ship\Models\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 class DirectionStudy extends Model
 {
-    use HasFactory;
+    use HasContainerFactory;
+
+    protected static string $factory = \Database\Factories\DirectionStudyFactory::class;
 
     protected $guarded = false;
 

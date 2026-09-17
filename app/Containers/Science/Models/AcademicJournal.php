@@ -5,12 +5,14 @@ namespace App\Containers\Science\Models;
 use App\Ship\Contracts\SeoDescriptionInterface;
 use App\Ship\Models\Model;
 use App\Ship\Traits\HasSeo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AcademicJournal extends Model implements SeoDescriptionInterface
 {
-    use HasFactory, HasSeo;
+    use HasContainerFactory, HasSeo;
+
+    protected static string $factory = \Database\Factories\AcademicJournalFactory::class;
 
     protected $guarded = false;
 

@@ -3,11 +3,13 @@
 namespace App\Containers\User\Models;
 
 use App\Ship\Models\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 
 class UserDetail extends Model
 {
-    use HasFactory;
+    use HasContainerFactory;
+
+    protected static string $factory = \Database\Factories\UserDetailFactory::class;
 
     protected $guarded = false;
 

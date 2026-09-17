@@ -5,13 +5,15 @@ namespace App\Containers\AdditionalEducation\Models;
 use App\Ship\Enums\Education\FormEducation;
 use App\Ship\Models\Model;
 use App\Ship\Models\Seo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class AdditionalEducation extends Model
 {
-    use HasFactory;
+    use HasContainerFactory;
+
+    protected static string $factory = \Database\Factories\AdditionalEducationFactory::class;
 
     protected $guarded = false;
 

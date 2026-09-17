@@ -4,13 +4,15 @@ namespace App\Containers\Event\Models;
 
 use App\Ship\Models\Model;
 use App\Ship\Traits\HasSeo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Tags\HasTags;
 
 class Event extends Model
 {
-    use HasFactory, HasTags, HasSeo;
+    use HasContainerFactory, HasTags, HasSeo;
+
+    protected static string $factory = \Database\Factories\EventFactory::class;
 
     protected $guarded = false;
 

@@ -6,7 +6,7 @@ use App\Containers\Article\Enums\PostStatus;
 use App\Containers\User\Models\User;
 use App\Containers\Widget\Models\Slide;
 use App\Ship\Traits\HasSeo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -14,7 +14,9 @@ use Spatie\Tags\HasTags;
 
 class Post extends Model
 {
-    use HasFactory, HasTags, HasSeo;
+    use HasContainerFactory, HasTags, HasSeo;
+
+    protected static string $factory = \Database\Factories\PostFactory::class;
 
     protected $guarded = false;
 
