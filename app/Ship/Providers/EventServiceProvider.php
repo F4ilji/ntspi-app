@@ -27,7 +27,14 @@ class EventServiceProvider extends AbstractEventServiceProvider
      */
     public function boot()
     {
-        //
+        if (app()->environment('production')) {
+            Event::listen(\Illuminate\Console\Events\CommandStarting::class, function ($event) {
+                $blocked = ['migrate:fresh', 'migrate:refresh', 'migrate:reset', 'db:wipe', 'db:seed'];
+                if (in_array($event->command, $blocked)) {
+                    throw new \RuntimeException("BLOCKED: {$event->command} is disabled in production.");
+                }
+            });
+        }
     }
 
     /**
