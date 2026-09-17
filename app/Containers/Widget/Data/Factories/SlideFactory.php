@@ -36,7 +36,7 @@ class SlideFactory extends Factory
             'start_time' => $this->faker->dateTimeBetween('-1 week', '+1 week'),
             'end_time' => $this->faker->dateTimeBetween('+1 week', '+2 weeks'),
             'sort' => $this->faker->numberBetween(1, 10),
-            // slider_id будет установлен в сидере
+            'slider_id' => \App\Containers\Widget\Models\Slider::factory(),
             'slidable_id' => null,
             'slidable_type' => null,
         ];

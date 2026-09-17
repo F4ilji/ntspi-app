@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
  */
 class FacultyFactory extends Factory
 {
+    protected $model = \App\Containers\InstituteStructure\Models\Faculty::class;
+
     /**
      * Define the model's default state.
      *

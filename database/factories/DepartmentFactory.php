@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
  */
 class DepartmentFactory extends Factory
 {
+    protected $model = \App\Containers\InstituteStructure\Models\Department::class;
+
     /**
      * Define the model's default state.
      *

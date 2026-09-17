@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
  */
 class CategoryFactory extends Factory
 {
+    protected $model = \App\Containers\Article\Models\Category::class;
+
     /**
      * Define the model's default state.
      *

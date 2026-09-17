@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ScheduleFactory extends Factory
 {
+    protected $model = \App\Containers\Schedule\Models\Schedule::class;
+
     public function definition(): array
     {
         $fileName = $this->faker->unique()->word . '.pdf';
@@ -17,7 +19,7 @@ class ScheduleFactory extends Factory
                     'path' => 'schedules/' . $this->faker->slug . '-' . time() . '.pdf'
                 ]
             ],
-            'educational_group_id' => \App\Models\EducationalGroup::factory(),
+            'educational_group_id' => \App\Containers\Schedule\Models\EducationalGroup::factory(),
             'created_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
         ];

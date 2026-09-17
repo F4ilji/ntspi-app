@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class UserDetailFactory extends Factory
 {
+    protected $model = \App\Containers\User\Models\UserDetail::class;
+
     /**
      * Define the model's default state.
      *
@@ -36,7 +38,7 @@ class UserDetailFactory extends Factory
         };
 
         return [
-            'user_id' => null, // Это будет установлено позже
+            'user_id' => User::factory(),
             'is_only_worker' => $this->faker->boolean,
             'photo' => "images/01J7TKMCR55KY7ARS2DA6VVAHE.jpg",
             'academicTitle' => $this->faker->word,
@@ -48,7 +50,6 @@ class UserDetailFactory extends Factory
             'professionalDevelopment' => $generateItems(),
             'workExperience' => $this->faker->randomDigit(),
             'attendedConferences' => $generateItems(),
-            'participationScienceProjects' => $generateItems(),
             'publications' => $generateItems(),
             'contactEmail' => $this->faker->unique()->safeEmail,
             'contactPhone' => $this->faker->phoneNumber,

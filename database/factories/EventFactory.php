@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
  */
 class EventFactory extends Factory
 {
+    protected $model = \App\Containers\Event\Models\Event::class;
+
     /**
      * Define the model's default state.
      *

@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 
 class PostFactory extends Factory
 {
+    protected $model = \App\Containers\Article\Models\Post::class;
+
     /**
      * Define the model's default state.
      *

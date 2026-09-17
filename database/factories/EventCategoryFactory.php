@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
  */
 class EventCategoryFactory extends Factory
 {
+    protected $model = \App\Containers\Event\Models\EventCategory::class;
+
     /**
      * Define the model's default state.
      *
