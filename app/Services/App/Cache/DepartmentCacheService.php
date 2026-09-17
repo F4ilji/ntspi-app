@@ -21,6 +21,7 @@ class DepartmentCacheService extends AbstractCacheService implements CacheInterf
     {
         $this->clearCacheByPrefix(CacheKeys::DEPARTMENT_PREFIX->value.'*');
         $this->clearCacheByPrefix(CacheKeys::DEPARTMENTS_PREFIX->value.'*');
+        $this->clearCacheByPrefix(CacheKeys::USER_PREFIX->value.'*');
     }
 
     public function getCachedData(string $key)

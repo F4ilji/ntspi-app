@@ -18,7 +18,7 @@ class ListDepartmentWorkersAction
 
         // Фильтр по должности
         if (!empty($filters['position'])) {
-            $query->where('position', 'like', '%' . $filters['position'] . '%');
+            $query->wherePivot('position', 'like', '%' . $filters['position'] . '%');
         }
 
         $workers = $query->orderBy('workers_departments.sort')->paginate(20)->withQueryString();

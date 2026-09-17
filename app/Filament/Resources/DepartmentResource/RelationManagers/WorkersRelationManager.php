@@ -70,18 +70,18 @@ class WorkersRelationManager extends RelationManager
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('position')
+                Tables\Columns\TextColumn::make('pivot.position')
                     ->label('Должность')
                     ->searchable()
                     ->sortable()
                     ->wrap(),
 
-                Tables\Columns\TextColumn::make('service_email')
+                Tables\Columns\TextColumn::make('pivot.service_email')
                     ->label('Почта')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\TextColumn::make('cabinet')
+                Tables\Columns\TextColumn::make('pivot.cabinet')
                     ->label('Кабинет')
                     ->sortable()
                     ->toggleable(),
@@ -144,14 +144,20 @@ class WorkersRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->iconButton()
-                    ->tooltip('Редактировать'),
+                    ->tooltip('Редактировать')
+                    ->before(function () {
+                        app(DepartmentCacheService::class)->clearAllCacheByModel();
+                    }),
 
                 Tables\Actions\DetachAction::make()
                     ->iconButton()
                     ->tooltip('Убрать с кафедры')
                     ->modalHeading('Удаление связи')
                     ->modalSubmitActionLabel('Убрать')
-                    ->modalDescription('Вы уверены, что хотите убрать этого сотрудника с кафедры?'),
+                    ->modalDescription('Вы уверены, что хотите убрать этого сотрудника с кафедры?')
+                    ->before(function () {
+                        app(DepartmentCacheService::class)->clearAllCacheByModel();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -159,7 +165,10 @@ class WorkersRelationManager extends RelationManager
                         ->label('Убрать выбранных')
                         ->modalHeading('Удаление связей')
                         ->modalSubmitActionLabel('Убрать')
-                        ->modalDescription('Вы уверены, что хотите убрать выбранных сотрудников с кафедры?'),
+                        ->modalDescription('Вы уверены, что хотите убрать выбранных сотрудников с кафедры?')
+                        ->before(function () {
+                            app(DepartmentCacheService::class)->clearAllCacheByModel();
+                        }),
                 ]),
             ])
             ->emptyStateActions([

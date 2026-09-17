@@ -41,7 +41,11 @@
         <tbody class="divide-y divide-line-2 bg-layer">
           <tr v-for="worker in workers.data" :key="worker.id" class="hover:bg-muted/20">
             <td class="px-4 py-3 text-sm font-medium text-foreground">
-              {{ worker.name }}
+              <span
+                class="text-primary hover:underline cursor-pointer"
+                title="Открыть на сайте"
+                @click="openPerson(worker.slug)"
+              >{{ worker.name }}</span>
             </td>
             <td class="px-4 py-3 text-sm text-foreground">
               {{ worker.pivot.position }}
@@ -124,6 +128,7 @@
                 {{ user.name }}
               </option>
             </select>
+            <p v-if="$page.props.errors.user_id" class="mt-1 text-sm text-danger">{{ $page.props.errors.user_id }}</p>
           </div>
 
           <div>
@@ -138,6 +143,7 @@
               placeholder="Например: Заведующий кафедрой"
               class="w-full px-3 py-2 border border-layer-line rounded-lg bg-white text-foreground placeholder-muted-foreground-1 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
+            <p v-if="$page.props.errors.position" class="mt-1 text-sm text-danger">{{ $page.props.errors.position }}</p>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
@@ -152,6 +158,7 @@
                 placeholder="example@university.ru"
                 class="w-full px-3 py-2 border border-layer-line rounded-lg bg-white text-foreground placeholder-muted-foreground-1 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
+              <p v-if="$page.props.errors.service_email" class="mt-1 text-sm text-danger">{{ $page.props.errors.service_email }}</p>
             </div>
 
             <div>
@@ -165,6 +172,7 @@
                 placeholder="+7 (XXX) XXX-XX-XX"
                 class="w-full px-3 py-2 border border-layer-line rounded-lg bg-white text-foreground placeholder-muted-foreground-1 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
+              <p v-if="$page.props.errors.service_phone" class="mt-1 text-sm text-danger">{{ $page.props.errors.service_phone }}</p>
             </div>
           </div>
 
@@ -179,6 +187,7 @@
               placeholder="Например: 305а"
               class="w-full px-3 py-2 border border-layer-line rounded-lg bg-white text-foreground placeholder-muted-foreground-1 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
+            <p v-if="$page.props.errors.cabinet" class="mt-1 text-sm text-danger">{{ $page.props.errors.cabinet }}</p>
           </div>
 
           <div class="flex items-center justify-end gap-3 pt-4">
@@ -205,11 +214,13 @@
 
 <script>
 import DashboardIcon from '../../Components/DashboardIcon.vue';
+import { Link } from '@inertiajs/vue3';
 
 export default {
   name: 'DepartmentWorkers',
   components: {
     DashboardIcon,
+    Link,
   },
   props: {
     department: { type: Object, required: true },
@@ -284,6 +295,10 @@ export default {
         service_phone: '',
         cabinet: ''
       };
+      this.$page.props.errors = {};
+    },
+    openPerson(slug) {
+      window.open(route('client.person.show', slug), '_blank');
     }
   }
 }

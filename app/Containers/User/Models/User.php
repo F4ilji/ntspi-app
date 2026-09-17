@@ -12,7 +12,7 @@ use BezhanSalleh\FilamentShield\Support\Utils;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Tables\Columns\Layout\Panel;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Ship\Traits\HasContainerFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -23,7 +23,9 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser, SeoTitleInterface, SeoDescriptionInterface
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPanelShield, HasSeo;
+    use HasApiTokens, HasContainerFactory, Notifiable, HasRoles, HasPanelShield, HasSeo;
+
+    protected static string $factory = \Database\Factories\UserFactory::class;
 
     /**
      * The attributes that are mass assignable.
@@ -65,12 +67,14 @@ class User extends Authenticatable implements FilamentUser, SeoTitleInterface, S
 
     public function departments_work(): BelongsToMany
     {
-        return $this->belongsToMany(Department::class, 'workers_departments')->withPivot(['position']);
+        return $this->belongsToMany(Department::class, 'workers_departments')
+            ->withPivot(['position', 'sort', 'service_email', 'service_phone', 'cabinet']);
     }
 
     public function departments_teach(): BelongsToMany
     {
-        return $this->belongsToMany(Department::class, 'teachers_departments')->withPivot(['teaching_position']);
+        return $this->belongsToMany(Department::class, 'teachers_departments')
+            ->withPivot(['teaching_position', 'sort', 'service_email', 'service_phone', 'cabinet']);
     }
 
     public function divisions(): BelongsToMany

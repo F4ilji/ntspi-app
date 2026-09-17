@@ -17,7 +17,7 @@ class ListDepartmentTeachersAction
 
         // Фильтр по должности
         if (!empty($filters['position'])) {
-            $query->where('teaching_position', 'like', '%' . $filters['position'] . '%');
+            $query->wherePivot('teaching_position', 'like', '%' . $filters['position'] . '%');
         }
 
         $teachers = $query->orderBy('teachers_departments.sort')->paginate(20)->withQueryString();
