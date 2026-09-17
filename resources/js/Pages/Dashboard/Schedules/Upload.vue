@@ -440,6 +440,7 @@ export default {
       });
 
       this.$inertia.post(route('dashboard.schedules.upload.store'), formData, {
+        forceFormData: true,
         preserveScroll: true,
         onError: (errors) => {
           this.errors = { ...errors };

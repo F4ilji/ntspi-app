@@ -5,6 +5,7 @@ namespace App\Containers\Dashboard\UI\WEB\Controllers;
 use App\Containers\Dashboard\Actions\Schedules\UploadMultipleSchedulesAction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class UploadSchedulesController extends Controller
@@ -18,6 +19,10 @@ class UploadSchedulesController extends Controller
      */
     public function create(): \Inertia\Response
     {
+        Log::info('UploadSchedules: create called', [
+            'method' => request()->method(),
+            'user_id' => request()->user()?->id,
+        ]);
         return Inertia::render('Dashboard/Schedules/Upload');
     }
 
@@ -26,6 +31,14 @@ class UploadSchedulesController extends Controller
      */
     public function store(Request $request): \Inertia\Response
     {
+        Log::info('UploadSchedules: store called', [
+            'method' => $request->method(),
+            'content_type' => $request->header('Content-Type'),
+            'files_count' => count($request->file('files', [])),
+            'has_inertia_header' => $request->header('X-Inertia') ? 'yes' : 'no',
+            'user_id' => $request->user()?->id,
+        ]);
+
         // Получаем файлы из request (FormData с files[])
         $files = $request->file('files', []);
         

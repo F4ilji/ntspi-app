@@ -320,8 +320,10 @@ export default {
         formData.append('file[0][path]', this.form.file[0].path);
       }
 
+      formData.append('_method', 'PUT');
+
       this.$inertia.post(route('dashboard.schedules.update', this.schedule.id), formData, {
-        _method: 'PUT',
+        forceFormData: true,
         onFinish: () => {
           this.processing = false;
         },

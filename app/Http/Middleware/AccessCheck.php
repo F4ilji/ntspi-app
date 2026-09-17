@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Containers\AppStructure\Models\Page;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class AccessCheck
@@ -28,6 +29,13 @@ class AccessCheck
 
         // Если код не 200, возвращаем соответствующий код ошибки
         if ($registeredRoute->code != 200) {
+            Log::warning('AccessCheck: abort', [
+                'uri' => $request->route()->uri,
+                'method' => $request->method(),
+                'page_id' => $registeredRoute->id,
+                'code' => $registeredRoute->code,
+                'path' => $registeredRoute->path,
+            ]);
             abort($registeredRoute->code);
         }
 
