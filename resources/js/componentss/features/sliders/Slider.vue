@@ -3,7 +3,7 @@
     <div class="group block rounded-xl overflow-hidden animate-pulse min-h-[calc(100vh)] bg-gray-200"></div>
   </div>
 
-  <transition v-else name="fade">
+  <transition v-else-if="hasSlides" name="fade">
     <SliderBody :slides="slider.slides" />
   </transition>
 </template>
@@ -27,6 +27,11 @@ export default {
       slider: null,
     }
   },
+  computed: {
+    hasSlides() {
+      return this.slider?.slides?.length > 0;
+    },
+  },
   methods: {
     getSlider(id) {
       axios.get(route('client.widget.slider.show', id))
@@ -36,6 +41,7 @@ export default {
           })
           .catch(error => {
             console.error('Ошибка:', error);
+            this.loading = false;
           });
     },
   },
