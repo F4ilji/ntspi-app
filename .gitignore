@@ -24,3 +24,4 @@ public/vikon_core
 QWEN.md
 AGENTS.md
 docs
+.phpunit.result.cache

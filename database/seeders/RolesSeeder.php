@@ -2,33 +2,29 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use BezhanSalleh\FilamentShield\FilamentShield;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
-class  RolesSeeder extends Seeder
+class RolesSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-//        $role_admin = Role::create(['name' => 'admin']);
-//        $role_user = Role::create(['name' => 'user']);
-//        $permission_read = Permission::create(['name' => 'read posts']);
-//        $permission_create = Permission::create(['name' => 'create posts']);
-//        $permission_edit = Permission::create(['name' => 'edit posts']);
-//        $permission_delete = Permission::create(['name' => 'delete posts']);
-//
-//        $permission_admin = [
-//            $permission_create,
-//            $permission_read,
-//            $permission_edit,
-//            $permission_delete,
-//        ];
-//
-//        $role_admin->syncPermissions($permission_admin);
-//        $role_user->givePermissionTo($permission_read);
+        FilamentShield::createRole(
+            name: config('filament-shield.super_admin.name', 'super_admin')
+        );
+
+        FilamentShield::createRole(
+            name: config('filament-shield.dashboard_user.name', 'dashboard_user')
+        );
+
+        FilamentShield::createRole(
+            name: config('filament-shield.invited_user.name', 'invited_user')
+        );
+
+        $adminRole = Role::findByName('super_admin');
+        $allPerms = Permission::where('guard_name', 'web')->get();
+        $adminRole->syncPermissions($allPerms);
     }
 }

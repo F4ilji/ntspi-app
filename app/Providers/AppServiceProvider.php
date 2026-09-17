@@ -49,8 +49,10 @@ use Carbon\Carbon;
 use Filament\Facades\Filament;
 use Filament\Support\Facades\FilamentView;
 use Filament\Tables\View\TablesRenderHook;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Facades\Str;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Sleep;
 use Intervention\Image\Facades\Image;
@@ -70,6 +72,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        self::configureFactoryResolution();
         self::setObserversByModel();
         self::setLocaleTime();
         Model::preventLazyLoading(!app()->isProduction());
@@ -78,6 +81,21 @@ class AppServiceProvider extends ServiceProvider
         FilamentView::registerRenderHook(TablesRenderHook::TOOLBAR_REORDER_TRIGGER_AFTER, function () {
             (new SliderCacheService())->clearAllCacheByModel();
             (new SubSectionCacheService())->clearAllCacheByModel();
+        });
+    }
+
+    private static function configureFactoryResolution(): void
+    {
+        Factory::guessFactoryNamesUsing(function (string $modelName) {
+            $appNamespace = 'App\\';
+
+            if (str_starts_with($modelName, $appNamespace.'Models\\')) {
+                $modelName = substr($modelName, strlen($appNamespace.'Models\\'));
+            } else {
+                $modelName = substr($modelName, strlen($appNamespace));
+            }
+
+            return 'Database\\Factories\\'.$modelName.'Factory';
         });
     }
 
