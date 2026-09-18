@@ -54,28 +54,43 @@
 <body class="">
 @inertia
 
-@if(config('services.yandex_metrika.id') && app()->environment('production'))
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript">
-        (function(m,e,t,r,i,k,a){
-            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-            m[i].l=1*new Date();
-            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-        })(window, document,'script','https://mc.yandex.ru/metrika/tag.js', 'ym');
-
-        ym({{ config('services.yandex_metrika.id') }}, 'init', {
-            defer: true,
-            webvisor:true,
-            clickmap:true,
-            ecommerce:"dataLayer",
-            accurateTrackBounce:true,
-            trackLinks:true
-        });
-    </script>
-    <noscript><div><img src="https://mc.yandex.ru/watch/{{ config('services.yandex_metrika.id') }}" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-    <!-- /Yandex.Metrika counter -->
-@endif
+<div id="consent-banner" style="display:none; position:fixed; bottom:0; inset-x:0; z-index:9999; padding:1rem;">
+  <div style="max-width:48rem; margin:0 auto; background:#fff; border:1px solid #e5e7eb; border-radius:0.5rem; box-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1); padding:1.25rem; display:flex; flex-direction:column; gap:1rem; align-items:flex-start;" class="sm:flex-row sm:items-center sm:justify-between">
+    <div style="flex:1;">
+      <h3 style="font-size:0.875rem; font-weight:600; color:#111827; margin:0 0 0.25rem;">Cookie и аналитика</h3>
+      <p style="font-size:0.75rem; color:#6b7280; line-height:1.5; margin:0;">
+        Мы собираем анонимную статистику посещений для улучшения качества сайта. Данные не передаются третьим лицам.
+      </p>
+    </div>
+    <div style="display:flex; gap:0.5rem; flex-shrink:0;">
+      <button onclick="declineConsent()" style="padding:0.375rem 0.75rem; font-size:0.75rem; font-weight:500; color:#6b7280; background:transparent; border:1px solid #e5e7eb; border-radius:0.375rem; cursor:pointer;">Отклонить</button>
+      <button onclick="acceptConsent()" style="padding:0.375rem 0.75rem; font-size:0.75rem; font-weight:500; color:#fff; background:#1E57A3; border:none; border-radius:0.375rem; cursor:pointer;">Принять</button>
+    </div>
+  </div>
+</div>
+<script>
+(function() {
+    var KEY = 'analytics_consent';
+    var banner = document.getElementById('consent-banner');
+    if (!banner) return;
+    var path = window.location.pathname;
+    if (path.startsWith('/dashboard') || path.startsWith('/admin')) return;
+    if (!localStorage.getItem(KEY)) {
+        banner.style.display = 'block';
+    }
+})();
+function acceptConsent() {
+    localStorage.setItem('analytics_consent', 'granted');
+    document.getElementById('consent-banner').style.display = 'none';
+    if (typeof window._ntspiTrackHit === 'function') {
+        window._ntspiTrackHit();
+    }
+}
+function declineConsent() {
+    localStorage.setItem('analytics_consent', 'denied');
+    document.getElementById('consent-banner').style.display = 'none';
+}
+</script>
 
 </body>
 </html>

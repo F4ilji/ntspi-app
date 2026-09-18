@@ -12,6 +12,7 @@ import cookieMixin from "@/mixins/cookieMixin.js";
 import {helpers} from "@/mixins/Helpers.js";
 import store from '@/store/index.js';
 import '@vuepic/vue-datepicker/dist/main.css';
+import { initAnalytics } from '@/services/analytics.js';
 
 // Load TinyMCE globally before app initialization
 const loadTinyMCE = () => {
@@ -36,10 +37,15 @@ loadTinyMCE().then(() => {
     createInertiaApp({
         resolve: name => {
             const pages = import.meta.glob('./Pages/**/*.vue')
-            return pages[`./Pages/${name}.vue`]()
+            const page = pages[`./Pages/${name}.vue`]
+            if (!page) {
+                console.error(`Page not found: ${name}`)
+                return pages['./Pages/Error.vue']()
+            }
+            return page()
         },
         setup({ el, App, props, plugin }) {
-            return createSSRApp({ render: () => h(App, props) })
+            const app = createSSRApp({ render: () => h(App, props) })
                 .use(plugin)
                 .use(store)
                 .mixin(linksReform)
@@ -47,21 +53,14 @@ loadTinyMCE().then(() => {
                 .mixin(helpers)
                 .use(ZiggyVue)
                 .mount(el);
+
+            initAnalytics();
+
+            return app;
         },
         progress: {
             color: '#1E57A3',
             delay: 250,
         },
-    });
-
-    router.on('navigate', (event) => {
-        const metrikaId = event.detail.page.props.yandex_metrika_id;
-
-        if (metrikaId && typeof ym === 'function') {
-            ym(metrikaId, 'hit', window.location.href, {
-                title: document.title,
-                referer: event.detail.page.props.ziggy?.previous_url || document.referrer,
-            });
-        }
     });
 });

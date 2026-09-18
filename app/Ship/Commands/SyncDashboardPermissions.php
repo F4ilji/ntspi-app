@@ -21,6 +21,11 @@ class SyncDashboardPermissions extends AbstractConsoleCommand
         'educational_group', 'division',
     ];
 
+    private const EXTRA_PERMISSIONS = [
+        'view_analytics',
+        'view_any_analytic',
+    ];
+
     private const PREFIXES = [
         'view_any', 'create', 'update', 'delete', 'restore', 'force_delete',
     ];
@@ -45,6 +50,13 @@ class SyncDashboardPermissions extends AbstractConsoleCommand
         Permission::firstOrCreate(
             ['name' => 'view_any_contact_widget', 'guard_name' => 'web'],
         );
+
+        foreach (self::EXTRA_PERMISSIONS as $name) {
+            Permission::firstOrCreate(
+                ['name' => $name, 'guard_name' => 'web'],
+            );
+            $created++;
+        }
 
         $roleNames = explode(',', $this->option('role'));
         $allPerms = Permission::where('guard_name', 'web')->get();

@@ -173,6 +173,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         \App\Providers\ForceHttpsServiceProvider::class,
         \App\Containers\VikonIntegration\Providers\VikonServiceProvider::class,
+        \App\Containers\Analytics\Providers\AnalyticsServiceProvider::class,
     ])->toArray(),
 
     /*

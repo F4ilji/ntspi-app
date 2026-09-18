@@ -21,7 +21,6 @@ class HandleInertiaRequests extends Middleware
 
     public function share(Request $request): array
     {
-        // Отключаем SSR для Dashboard роутов
         if (str_starts_with($request->path(), 'dashboard')) {
             config(['inertia.ssr.enabled' => false]);
         }
@@ -49,7 +48,6 @@ class HandleInertiaRequests extends Middleware
                 }
                 return 'empty';
             },
-            'yandex_metrika_id' => config('services.yandex_metrika.id'),
             'flash' => function () use ($request) {
                 return [
                     'success' => $request->session()->get('success'),

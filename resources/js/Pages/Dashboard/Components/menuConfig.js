@@ -159,4 +159,12 @@ export const menuItems = [
     activePrefixes: ['dashboard.integration-credentials'],
     permission: null,
   },
+  {
+    key: 'analytics',
+    label: 'Аналитика',
+    icon: 'chart-bar',
+    route: 'dashboard.analytics.index',
+    activePrefixes: ['dashboard.analytics'],
+    permission: 'view_analytics',
+  },
 ];

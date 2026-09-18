@@ -57,7 +57,7 @@ services:
     volumes:
       - ./:/var/www
     container_name: ntspi-php-queue
-    command: php artisan queue:work --tries=3 --timeout=90 --sleep=3
+    command: php artisan queue:work --queue=analytics,default --tries=3 --timeout=90 --sleep=3
     depends_on:
       db:
         condition: service_healthy

@@ -87,15 +87,9 @@ class AppServiceProvider extends ServiceProvider
     private static function configureFactoryResolution(): void
     {
         Factory::guessFactoryNamesUsing(function (string $modelName) {
-            $appNamespace = 'App\\';
+            $className = class_basename($modelName);
 
-            if (str_starts_with($modelName, $appNamespace.'Models\\')) {
-                $modelName = substr($modelName, strlen($appNamespace.'Models\\'));
-            } else {
-                $modelName = substr($modelName, strlen($appNamespace));
-            }
-
-            return 'Database\\Factories\\'.$modelName.'Factory';
+            return 'Database\\Factories\\'.$className.'Factory';
         });
     }
 

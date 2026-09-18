@@ -6,23 +6,13 @@ use App\Containers\Event\Models\EventCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Event>
- */
 class EventFactory extends Factory
 {
     protected $model = \App\Containers\Event\Models\Event::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
-        $id = $this->faker->numberBetween(1, 1000000);
         $title = $this->faker->sentence;
-        $slug = Str::slug($title);
         $content = array_map(function () {
             return [
                 'type' => $this->faker->randomElement(['heading', 'paragraph']),
@@ -32,29 +22,26 @@ class EventFactory extends Factory
                 ],
             ];
         }, range(1, $this->faker->numberBetween(1, 5)));
-        $today = now();
-        $random_days = rand(1, 25); // Генерируем случайное число дней от 1 до 365
-        $event_date_start = date('Y-m-d', strtotime($today->format('Y-m-d') . ' +' . $random_days . ' days'));
-        $event_time_start = $this->faker->time('H:i');
-        $address = $this->faker->address;
-        $is_online = $this->faker->randomElement([true, false]);
-        $category_id = EventCategory::inRandomOrder()->first();
-        $created_at = now();
-        $updated_at = now();
+
+        $eventDateStart = $this->faker->dateTimeBetween('-6 months', 'now');
+        $endDate = date('Y-m-d', strtotime($eventDateStart->format('Y-m-d') . ' +' . rand(1, 30) . ' days'));
+        $eventDateEnd = $this->faker->optional(0.5)->dateTimeBetween(
+            $eventDateStart->format('Y-m-d'),
+            $endDate
+        );
 
         return [
-            'id' => $id,
             'title' => $title,
-            'slug' => $slug,
+            'slug' => Str::slug($title),
             'content' => $content,
-            'event_date_start' => $event_date_start,
-            'event_time_start' => $event_time_start,
-            'address' => $address,
-            'is_online' => $is_online,
-            'category_id' => $category_id,
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
+            'event_date_start' => $eventDateStart->format('Y-m-d'),
+            'event_date_end' => $eventDateEnd?->format('Y-m-d'),
+            'event_time_start' => $this->faker->time('H:i'),
+            'address' => $this->faker->address,
+            'is_online' => $this->faker->boolean,
+            'category_id' => EventCategory::factory(),
+            'created_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
+            'updated_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
         ];
-
     }
 }

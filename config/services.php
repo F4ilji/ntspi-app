@@ -31,10 +31,6 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'yandex_metrika' => [
-        'id' => env('YANDEX_METRIKA_ID'),
-    ],
-
     'vk' => [
         'app_id' => env('VK_APP_ID'),
         'service_key' => env('SERVICE_ACCESS_VK_KEY'),

@@ -16,8 +16,6 @@ use App\Containers\Education\Models\AdmissionCampaign;
 use App\Containers\Education\Models\AdmissionPlan;
 use App\Containers\Education\Models\DirectionStudy;
 use App\Containers\Education\Models\EducationalProgram;
-use App\Containers\Event\Models\Event;
-use App\Containers\Event\Models\EventCategory;
 use App\Containers\InstituteStructure\Models\Department;
 use App\Containers\InstituteStructure\Models\Division;
 use App\Containers\InstituteStructure\Models\Faculty;
@@ -49,52 +47,61 @@ class MockDataSeeder extends Seeder
         // 1. Users & Roles
         $this->createUsers();
 
-        // 2. Institute Structure
-        $faculties = Faculty::factory()->count(8)->create();
-        $departments = Department::factory()->count(15)->create();
-        $divisions = Division::factory()->count(5)->create();
+        // 2. Institute Structure: 6 факультетов, по 2 кафедры на каждый
+        $faculties = Faculty::factory()->count(6)->create();
+
+        $departments = collect();
+        foreach ($faculties as $faculty) {
+            $departments = $departments->merge(
+                Department::factory()->count(2)->create(['faculty_id' => $faculty->id])
+            );
+        }
+
+        $divisions = Division::factory()->count(20)->create();
 
         // 3. Pivot: workers_faculties, workers_departments, teachers_departments
         $this->attachWorkers($faculties, $departments);
 
         // 4. Article
         $categories = Category::factory()->count(20)->create();
-        Post::factory()->count(100)->create();
+        Post::factory()->count(1000)->create();
         Tag::factory()->count(30)->create();
 
-        // 5. Events
-        $eventCategories = EventCategory::factory()->count(8)->create();
-        Event::factory()->count(50)->create();
-
-        // 6. Education
+        // 5. Education
         $directionStudies = DirectionStudy::factory()->count(10)->create();
-        $programs = EducationalProgram::factory()->count(25)->create();
-        $campaigns = AdmissionCampaign::factory()->count(5)->create();
-        AdmissionPlan::factory()->count(30)->create();
+        $programs = EducationalProgram::factory()->count(25)
+            ->sequence(fn () => ['direction_study_id' => $directionStudies->random()->id])
+            ->create();
+        $campaigns = AdmissionCampaign::factory()->count(6)->create();
+        AdmissionPlan::factory()->count(30)
+            ->sequence(fn () => [
+                'admission_campaigns_id' => $campaigns->random()->id,
+                'educational_programs_id' => $programs->random()->id,
+            ])
+            ->create();
 
-        // 7. Pivot: program_department
+        // 6. Pivot: program_department
         $this->attachProgramsToDepartments($programs, $departments);
 
-        // 8. Additional Education
-        $directions = DirectionAdditionalEducation::factory()->count(5)->create();
-        $addCategories = AdditionalEducationCategory::factory()->count(12)->create();
+        // 7. Additional Education
+        DirectionAdditionalEducation::factory()->count(5)->create();
+        AdditionalEducationCategory::factory()->count(12)->create();
         AdditionalEducation::factory()->count(20)->create();
 
-        // 9. Science
-        $journals = AcademicJournal::factory()->count(4)->create();
+        // 8. Science
+        AcademicJournal::factory()->count(4)->create();
         JournalIssue::factory()->count(15)->create();
 
-        // 10. Schedule
+        // 9. Schedule
         $groups = EducationalGroup::factory()->count(40)->create();
         Schedule::factory()->count(90)->create();
 
-        // 11. Widgets
+        // 10. Widgets: 1 главный слайдер + 5 слайдов
         Slider::create([
             'title' => 'Главный слайдер',
             'slug' => 'quos-velit-quisquam',
             'is_active' => true,
         ]);
-        Slider::factory()->count(4)->create();
 
         $mainSlider = Slider::where('slug', 'quos-velit-quisquam')->first();
         Slide::factory()->count(5)->create([
@@ -103,8 +110,8 @@ class MockDataSeeder extends Seeder
             'start_time' => now()->subWeek(),
             'end_time' => now()->addMonth(),
         ]);
-        Slide::factory()->count(15)->create();
 
+        // 11. Contact & Reference widgets
         ContactWidget::create([
             'title' => 'Главная страница контакты',
             'slug' => 'glavnaia-stranica-kontakty',
@@ -130,7 +137,6 @@ class MockDataSeeder extends Seeder
             ],
             'is_active' => true,
         ]);
-        ContactWidget::factory()->count(2)->create();
 
         PageReferenceList::create([
             'title' => 'Главная страница ресурсы',
@@ -142,8 +148,8 @@ class MockDataSeeder extends Seeder
             ],
             'is_active' => true,
         ]);
-        PageReferenceList::factory()->count(4)->create();
-        $forms = CustomForm::factory()->count(8)->create();
+
+        CustomForm::factory()->count(8)->create();
         CustomFormResponse::factory()->count(40)->create();
 
         // 12. App Structure
@@ -152,10 +158,16 @@ class MockDataSeeder extends Seeder
             ->count(15)
             ->sequence(fn () => ['main_section_id' => $mainSections->random()->id])
             ->create();
-        Page::factory()
-            ->count(40)
-            ->sequence(fn () => ['sub_section_id' => $subSections->random()->id])
-            ->create();
+
+        $pages = collect();
+        for ($i = 0; $i < 40; $i++) {
+            $ss = $subSections->random();
+            $ms = $ss->mainSection;
+            $page = Page::factory()->make(['sub_section_id' => $ss->id]);
+            $page->path = $ms->slug . '/' . $ss->slug . '/' . $page->slug;
+            $page->save();
+            $pages->push($page);
+        }
 
         // 13. Integration Credentials
         IntegrationCredential::factory()->count(3)->create();
@@ -188,7 +200,6 @@ class MockDataSeeder extends Seeder
         );
 
         User::factory()->count(50)->create();
-
         UserDetail::factory()->count(30)->create();
     }
 

@@ -18,7 +18,6 @@ class PageFactory extends Factory
         return [
             'title' => $title,
             'slug' => $slug,
-            'path' => $slug,
             'content' => [['type' => 'paragraph', 'data' => ['content' => $this->faker->paragraph]]],
             'is_registered' => false,
             'is_visible' => true,

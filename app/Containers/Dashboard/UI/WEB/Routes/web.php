@@ -431,6 +431,11 @@ Route::middleware(['access-check', 'dashboard.auth', 'dashboard.permission'])->g
         Route::put('/{credential}', [IntegrationCredentialsController::class, 'update'])->name('update');
         Route::delete('/{credential}', [IntegrationCredentialsController::class, 'destroy'])->name('destroy');
     });
+
+    // Аналитика
+    Route::get('/dashboard/analytics', \App\Containers\Analytics\UI\WEB\Controllers\AnalyticsController::class)->name('dashboard.analytics.index');
+    Route::get('/dashboard/analytics/section', [\App\Containers\Analytics\UI\WEB\Controllers\AnalyticsController::class, 'section'])->name('dashboard.analytics.section');
+    Route::post('/dashboard/analytics/clear', [\App\Containers\Analytics\UI\WEB\Controllers\AnalyticsController::class, 'clear'])->name('dashboard.analytics.clear');
 });
 
 

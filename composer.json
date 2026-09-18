@@ -37,6 +37,7 @@
         "tomatophp/filament-icons": "v1.1.4",
         "vkcom/vk-php-sdk": "^5.131",
         "webklex/php-imap": "^6.2",
+        "whichbrowser/parser": "^2.1",
         "xvladqt/faker-lorem-flickr": "^1.0",
         "yepsua/filament-range-field": "^0.3.4"
     },
@@ -91,5 +92,10 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [{
+        "name": "packagist",
+        "type": "composer",
+        "url": "https://repo.packagist.org"
+    }]
 }
